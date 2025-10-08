@@ -1,0 +1,76 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.hypercert.record",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A hypercert record tracking impact work.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["impact_claim_id", "description", "work_scope", "work_timeframe_from", "work_timeframe_to"],
+        "properties": {
+          "hypercertID": {
+            "type": "string",
+            "description": "Identifier for the impact claim",
+            "maxLength": 256
+          },
+          "imageURI": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI reference to hypercert image/visual representation"
+          },
+          "descriptionURI": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI reference to detailed description (supports formatted text)"
+          },
+          "workScope": {
+            "type": "string",
+            "description": "Scope of the work performed",
+            "maxLength": 5000,
+            "maxGraphemes": 1000
+          },
+          "workStartTime": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the work began"
+          },
+          "workEndTime": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the work ended"
+          },
+          "URIs": {
+            "type": "array",
+            "description": "Supporting evidence, documentation, or external data URIs",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "maxLength": 50
+          },
+          "contributorDIDs": {
+            "type": "array",
+            "description": "DIDs identifying contributors",
+            "items": {
+              "type": "string",
+              "format": "did"
+            },
+            "maxLength": 100
+          },
+          "rightsURI": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI specifying rights and licensing"
+          },
+          "locationURI": {
+            "type": "string",
+            "format": "uri",
+            "description": "Geographic location URI"
+          }
+        }
+      }
+    }
+  }
+}

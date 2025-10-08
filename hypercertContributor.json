@@ -1,0 +1,54 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.hypercert.contributor",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Detailed information about a contributor's work on a hypercert",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["hypercert", "contributorDid"],
+        "properties": {
+          "hypercert": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Reference to the hypercert"
+          },
+          "contributorDID": {
+            "type": "string",
+            "format": "did",
+            "description": "DID of the contributor"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role or title of the contributor",
+            "maxLength": 100
+          },
+          "contributionDescription": {
+            "type": "string",
+            "description": "What the contributor concretely did",
+            "maxLength": 2000,
+            "maxGraphemes": 500
+          },
+          "weight": {
+            "type": "number",
+            "description": "Contribution weight (0.0 to 1.0)",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "workTimeframeFrom": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this contributor started"
+          },
+          "workTimeframeTo": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this contributor finished"
+          }
+        }
+      }
+    }
+  }
+}

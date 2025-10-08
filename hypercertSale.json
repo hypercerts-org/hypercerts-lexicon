@@ -1,0 +1,43 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.hypercert.sale",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A record of a non-tokenized hypercert sale transaction",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["hypercert", "fraction_purchased"],
+        "properties": {
+          "hypercert": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Reference to the hypercert record being sold"
+          },
+          "fractionPurchased": {
+            "type": "number",
+            "description": "Fraction of the hypercert purchased (0.0 to 1.0)",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "priceAmount": {
+            "type": "number",
+            "description": "Purchase price amount",
+            "minimum": 0
+          },
+          "priceCurrency": {
+            "type": "string",
+            "description": "Currency (e.g., 'USD', 'EUR')",
+            "maxLength": 10
+          },
+          "buyerDID": {
+            "type": "string",
+            "format": "uri",
+            "description": "DID identifying the buyer"
+          }
+        }
+      }
+    }
+  }
+}

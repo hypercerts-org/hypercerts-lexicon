@@ -1,0 +1,51 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.hypercert.measurement",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "External measurement data supporting a hypercert claim",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["hypercert", "measurer_did", "metric", "value"],
+        "properties": {
+          "hypercert": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Reference to the hypercert being measured"
+          },
+          "measurerDID": {
+            "type": "string",
+            "format": "did",
+            "description": "DID of the entity performing the measurement"
+          },
+          "metric": {
+            "type": "string",
+            "description": "The metric being measured",
+            "maxLength": 500
+          },
+          "value": {
+            "type": "string",
+            "description": "The measured value",
+            "maxLength": 500
+          },
+          "measurementMethodURI": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI to methodology documentation, standard protocol, or measurement procedure"
+          },
+          "evidenceURI": {
+            "type": "array",
+            "description": "URIs to supporting evidence or data",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            },
+            "maxLength": 50
+          }
+        }
+      }
+    }
+  }
+}

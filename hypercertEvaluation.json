@@ -1,0 +1,44 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.hypercert.evaluation",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "An evaluation of a hypercert or other claim",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "evaluator_did", "summary"],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Reference to what is being evaluated (hypercert, measurement, etc.)"
+          },
+          "evaluator_did": {
+            "type": "string",
+            "format": "did",
+            "description": "DID of the evaluator"
+          },
+          "rating": {
+            "type": "number",
+            "description": "Numerical rating (e.g., 0-10 scale)",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "evaluation_uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "URI to detailed evaluation report or methodology"
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief evaluation summary",
+            "maxLength": 5000,
+            "maxGraphemes": 1000
+          }
+        }
+      }
+    }
+  }
+}
