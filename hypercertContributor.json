@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Detailed information about a contributor's work on a hypercert",
+      "description": "Information about a contributor's work on a hypercert",
       "key": "tid",
       "record": {
         "type": "object",
