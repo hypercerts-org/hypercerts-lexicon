@@ -20,12 +20,6 @@
             "format": "did",
             "description": "DID of the evaluator"
           },
-          "rating": {
-            "type": "number",
-            "description": "Numerical rating (e.g., 0-10 scale)",
-            "minimum": 0,
-            "maximum": 10
-          },
           "evaluationURI": {
             "type": "string",
             "format": "uri",
