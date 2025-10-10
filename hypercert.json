@@ -8,22 +8,24 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["hypercertID", "descriptionURI", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
+        "required": ["hypercertID", "description", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
         "properties": {
           "hypercertID": {
             "type": "string",
             "description": "Identifier for the impact claim",
             "maxLength": 256
           },
+          "description": {
+            "type": "string",
+            "format": "uri",
+            "description": "A description of the impact work done.",
+            "maxLength": 30000,
+            "maxGraphemes": 3000
+          },
           "imageURI": {
             "type": "string",
             "format": "uri",
             "description": "URI reference to hypercert image/visual representation"
-          },
-          "descriptionURI": {
-            "type": "string",
-            "format": "uri",
-            "description": "URI reference to detailed description (supports formatted text)"
           },
           "workScope": {
             "type": "string",
