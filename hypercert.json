@@ -8,7 +8,7 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["hypercertID", "description", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
+        "required": ["hypercertID", "description", "workScope", "workTimeframeFrom", "workTimeFrameTo", "createdAt"],
         "properties": {
           "hypercertID": {
             "type": "string",
@@ -70,6 +70,10 @@
             "type": "string",
             "format": "uri",
             "description": "Geographic location URI"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
           }
         }
       }

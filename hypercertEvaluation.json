@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["subject", "evaluatorDID", "summary"],
+        "required": ["subject", "evaluatorDID", "summary", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",
@@ -30,6 +30,10 @@
             "description": "Brief evaluation summary",
             "maxLength": 5000,
             "maxGraphemes": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
           }
         }
       }
