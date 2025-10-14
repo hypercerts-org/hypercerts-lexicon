@@ -8,8 +8,13 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["hypercertID", "description", "image", "createdAt", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
+        "required": ["hypercertID", "title", "description", "image", "createdAt", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
         "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the hypercert",
+            "maxLength": 256
+          },
           "hypercertID": {
             "type": "string",
             "description": "Identifier for the impact claim",
