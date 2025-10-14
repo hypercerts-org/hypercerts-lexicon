@@ -1,41 +1,35 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.contributor",
+  "id": "app.certified.hypercert.contribution",
   "defs": {
     "main": {
       "type": "record",
-      "description": "Information about a contributor's work on a hypercert",
-      "key": "tid",
+      "description": "A contribution made toward a hypercert's impact.",
+      "key": "any",
       "record": {
         "type": "object",
-        "required": ["hypercert", "contributorDID", "weight", "workTimeframeFrom", "workTimeframeTo"],
+        "required": ["contributor", "role", "createdAt"],
         "properties": {
           "hypercert": {
             "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
+            "ref": "app.certified.hypercert.record",
             "description": "Reference to the hypercert"
-          },
-          "contributorDID": {
-            "type": "string",
-            "format": "did",
-            "description": "DID of the contributor"
           },
           "role": {
             "type": "string",
             "description": "Role or title of the contributor",
             "maxLength": 100
           },
-          "contributionDescription": {
+          "contributor": {
+            "type": "string",
+            "format": "did",
+            "description": "DID identifying the contributor"
+          },
+          "description": {
             "type": "string",
             "description": "What the contributor concretely did",
             "maxLength": 2000,
             "maxGraphemes": 500
-          },
-          "weight": {
-            "type": "number",
-            "description": "Contribution weight (0.0 to 1.0)",
-            "minimum": 0,
-            "maximum": 1
           },
           "workTimeframeFrom": {
             "type": "string",
@@ -46,9 +40,15 @@
             "type": "string",
             "format": "datetime",
             "description": "When this contributor finished"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
           }
         }
       }
     }
   }
 }
+
+

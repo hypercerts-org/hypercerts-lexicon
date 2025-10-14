@@ -8,7 +8,7 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["hypercertID", "description", "workScope", "workTimeframeFrom", "workTimeFrameTo", "createdAt"],
+        "required": ["hypercertID", "description", "image", "createdAt", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
         "properties": {
           "hypercertID": {
             "type": "string",
@@ -22,10 +22,11 @@
             "maxLength": 30000,
             "maxGraphemes": 3000
           },
-          "imageURI": {
-            "type": "string",
-            "format": "uri",
-            "description": "URI reference to hypercert image/visual representation"
+          "image": {
+            "type": "blob",
+            "accept": ["image/*"],
+            "maxSize": 5000000,
+            "description": "Blob reference to hypercert image/visual representation. Maximum size is in bytes"
           },
           "workScope": {
             "type": "string",
@@ -43,33 +44,45 @@
             "format": "datetime",
             "description": "When the work ended"
           },
-          "URIs": {
+          "evidence": {
             "type": "array",
             "description": "Supporting evidence, documentation, or external data URIs",
             "items": {
-              "type": "string",
-              "format": "uri"
+              "type": "object",
+              "required": ["uri"],
+              "properties": {
+                "uri": {
+                  "type": "string",
+                  "format": "uri",
+                  "description": "Evidence resource URI"
+                },
+                "title": {
+                  "type": "string",
+                  "maxLength": 256,
+                  "description": "Optional title to describe the nature of the evidence"
+                }
+              }
             },
-            "maxLength": 50
+            "maxLength": 100
           },
-          "contributorDIDs": {
+          "contributors": {
             "type": "array",
-            "description": "DIDs identifying contributors",
+            "description": "DIDs identifying contributors to this hypercert",
             "items": {
               "type": "string",
               "format": "did"
             },
             "maxLength": 100
           },
-          "rightsURI": {
+          "rights": {
             "type": "string",
-            "format": "uri",
-            "description": "URI specifying rights and licensing"
+            "description": "Rights keyword (as defined in app.certified.hypercert.rights)",
+            "maxLength": 10
           },
-          "locationURI": {
+          "location": {
             "type": "string",
-            "format": "uri",
-            "description": "Geographic location URI"
+            "format": "at-uri",
+            "description": "AT URI referencing a location record (app.certified.hypercert.location)"
           },
           "createdAt": {
             "type": "string",
