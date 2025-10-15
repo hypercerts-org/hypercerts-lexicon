@@ -85,12 +85,12 @@
           },
           "contributors": {
             "type": "array",
-            "description": "DIDs identifying contributors to this hypercert",
+            "description": "Contributors to this hypercert (names, pseudonyms, or DIDs)",
             "items": {
               "type": "string",
-              "format": "did"
-            },
-            "maxLength": 100
+              "maxLength": 2560,
+              "maxGraphemes": 256
+            }
           },
           "rights": {
             "type": "string",
