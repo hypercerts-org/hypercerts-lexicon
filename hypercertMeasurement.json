@@ -12,7 +12,7 @@
         "properties": {
           "hypercert": {
             "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
+            "ref": "app.certified.hypercert.record",
             "description": "Reference to the hypercert being measured"
           },
           "measurerDID": {
