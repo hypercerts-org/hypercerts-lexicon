@@ -24,10 +24,14 @@
             },
             "maxLength": 100
           },
-          "evaluation": {
-            "type": "string",
-            "format": "uri",
-            "description": "URI to detailed evaluation report or methodology"
+          "evaluations": {
+            "type": "array",
+            "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
+            "items": {
+              "type": "union",
+              "refs": ["app.certified.hypercert.defs#uri", "app.certified.hypercert.defs#smallBlob"]
+            },
+            "maxLength": 100
           },
           "summary": {
             "type": "string",
