@@ -8,17 +8,21 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["subject", "evaluator", "summary", "createdAt"],
+        "required": ["subject", "evaluators", "summary", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",
             "ref": "app.certified.hypercert.record",
             "description": "Reference to what is being evaluated (hypercert, measurement, etc.)"
           },
-          "evaluator": {
-            "type": "string",
-            "format": "did",
-            "description": "DID of the evaluator"
+          "evaluators": {
+            "type": "array",
+            "description": "DIDs of the evaluators",
+            "items": {
+              "type": "string",
+              "format": "did"
+            },
+            "maxLength": 100
           },
           "evaluation": {
             "type": "string",
