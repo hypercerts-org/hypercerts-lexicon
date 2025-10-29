@@ -30,10 +30,12 @@
             "maxGraphemes": 3000
           },
           "image": {
-            "type": "blob",
-            "accept": ["image/*"],
-            "maxSize": 5000000,
-            "description": "Blob reference to hypercert image/visual representation. Maximum size is in bytes"
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallBlob"
+            ],
+            "description": "The hypercert visual representation as a URI or blob"
           },
           "workScope": {
             "type": "string",
