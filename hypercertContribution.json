@@ -12,8 +12,8 @@
         "properties": {
           "hypercert": {
             "type": "ref",
-            "ref": "app.certified.hypercert.record",
-            "description": "Reference to the hypercert"
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the hypercert. The record referenced must conform with the lexicon org.hypercerts.claim.record"
           },
           "role": {
             "type": "string",
