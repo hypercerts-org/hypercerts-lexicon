@@ -5,6 +5,7 @@
     "uri": {
       "type": "string",
       "format": "uri",
+      "maxGraphemes": 1000,
       "description": "URI to external data"
     },
     "smallBlob": {
