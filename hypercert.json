@@ -17,7 +17,6 @@
           },
           "shortDescription": {
             "type": "string",
-            "format": "uri",
             "description": "(Optional) short blurb of the impact work done.",
             "maxLength": 3000,
             "maxGraphemes": 300
