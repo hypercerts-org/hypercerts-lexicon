@@ -34,12 +34,12 @@
           "workTimeframeFrom": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution started"
+            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
           },
           "workTimeframeTo": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished"
+            "description": "When this contribution finished.  This should be a subset of the hypercert timeframe."
           },
           "createdAt": {
             "type": "string",
