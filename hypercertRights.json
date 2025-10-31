@@ -1,0 +1,36 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.rights",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Describes the rights that a user has with a hypercert, such as whether it can be sold, transferred, and under what conditions.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["rightsName", "rightsType", "rightsDescription", "createdAt"],
+        "properties": {
+          "rightsName": {
+            "type": "string",
+            "description": "Full name of the rights",
+            "maxLength": 100
+          },
+          "rightsType": {
+            "type": "string",
+            "description": "Short rights identifier for easier search",
+            "maxLength": 10
+          },
+          "rightsDescription": {
+            "type": "string",
+            "description": "Description of the rights of this hypercert"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}

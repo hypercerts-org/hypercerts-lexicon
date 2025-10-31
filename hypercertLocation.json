@@ -1,0 +1,49 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.location",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A location reference for a hypercert",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["value", "createdAt"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Optional name for this location",
+            "maxLength": 200,
+            "maxGraphemes": 100
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description for this location",
+            "maxLength": 2000,
+            "maxGraphemes": 500
+          },
+          "srs": {
+            "type": "string",
+            "description": "Spatial Reference System: the coordinate system within which the object is positioned (e.g ESPG:4326)",
+            "maxLength": 20
+          },
+          "value": {
+            "type": "union",
+            "refs": [
+              "app.certified.defs#uri",
+              "app.certified.defs#smallBlob"
+            ],
+            "description": "The location of where the work was performed as a URI or blob."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}
+
+

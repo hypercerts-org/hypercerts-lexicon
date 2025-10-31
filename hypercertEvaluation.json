@@ -1,0 +1,51 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.evaluation",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "An evaluation of a hypercert or other claim",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "evaluators", "summary", "createdAt"],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the evaluated claim. (e.g measurement, hypercert, contribution, etc)"
+          },
+          "evaluators": {
+            "type": "array",
+            "description": "DIDs of the evaluators",
+            "items": {
+              "type": "string",
+              "format": "did"
+            },
+            "maxLength": 100
+          },
+          "evaluations": {
+            "type": "array",
+            "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
+            "items": {
+              "type": "union",
+              "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"]
+            },
+            "maxLength": 100
+          },
+          "summary": {
+            "type": "string",
+            "description": "Brief evaluation summary",
+            "maxLength": 5000,
+            "maxGraphemes": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}
