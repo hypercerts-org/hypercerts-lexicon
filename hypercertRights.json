@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.rights",
+  "id": "org.hypercerts.claim.rights",
   "defs": {
     "main": {
       "type": "record",
@@ -8,7 +8,7 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["rightsType", "rightsDescription"],
+        "required": ["rightsName", "rightsType", "rightsDescription", "createdAt"],
         "properties": {
           "rightsName": {
             "type": "string",
@@ -17,7 +17,7 @@
           },
           "rightsType": {
             "type": "string",
-            "description": "Short rights identifer for easier search",
+            "description": "Short rights identifier for easier search",
             "maxLength": 10
           },
           "rightsDescription": {
@@ -26,7 +26,8 @@
           },
           "createdAt": {
             "type": "string",
-            "format": "datetime"
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }

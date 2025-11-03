@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.contribution",
+  "id": "org.hypercerts.claim.contribution",
   "defs": {
     "main": {
       "type": "record",
@@ -8,42 +8,46 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["contributor", "role", "createdAt"],
+        "required": ["contributors", "role", "createdAt"],
         "properties": {
           "hypercert": {
             "type": "ref",
-            "ref": "app.certified.hypercert.record",
-            "description": "Reference to the hypercert"
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the hypercert this contribution is for. The record referenced must conform with the lexicon org.hypercerts.claim.record"
           },
           "role": {
             "type": "string",
-            "description": "Role or title of the contributor",
+            "description": "Role or title of the contributor(s).",
             "maxLength": 100
           },
-          "contributor": {
-            "type": "string",
-            "format": "did",
-            "description": "DID identifying the contributor"
+          "contributors": {
+            "type": "array",
+            "description": "List of DIDs identifying the contributors. If multiple are stored in the same hypercertContribution, then they would have the exact same role.",
+            "items": {
+              "type": "string",
+              "format": "did"
+            }
           },
           "description": {
             "type": "string",
-            "description": "What the contributor concretely did",
+            "description": "What the contribution concretely achieved",
             "maxLength": 2000,
             "maxGraphemes": 500
           },
           "workTimeframeFrom": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contributor started"
+            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
           },
           "workTimeframeTo": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contributor finished"
+            "description": "When this contribution finished.  This should be a subset of the hypercert timeframe."
           },
           "createdAt": {
             "type": "string",
-            "format": "datetime"
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }

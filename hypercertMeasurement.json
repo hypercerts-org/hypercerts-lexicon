@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.measurement",
+  "id": "org.hypercerts.claim.measurement",
   "defs": {
     "main": {
       "type": "record",
@@ -8,17 +8,21 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["hypercert", "measurerDID", "metric", "value", "createdAt"],
+        "required": ["hypercert", "measurers", "metric", "value", "createdAt"],
         "properties": {
           "hypercert": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Reference to the hypercert being measured"
+            "description": "A strong reference to the hypercert that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim.record"
           },
-          "measurerDID": {
-            "type": "string",
-            "format": "did",
-            "description": "DID of the entity performing the measurement"
+          "measurers": {
+            "type": "array",
+            "description": "DIDs of the entity (or entities) that measured this data. ",
+            "items": {
+              "type": "string",
+              "format": "did"
+            },
+            "maxLength": 100
           },
           "metric": {
             "type": "string",
@@ -46,7 +50,8 @@
           },
           "createdAt": {
             "type": "string",
-            "format": "datetime"
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }

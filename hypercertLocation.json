@@ -1,24 +1,60 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.location",
+  "id": "global.astral.location.record",
   "defs": {
     "main": {
       "type": "record",
-      "description": "A location reference for a hypercert",
+      "description": "A location reference",
       "key": "any",
       "record": {
         "type": "object",
         "required": ["value", "createdAt"],
         "properties": {
+          "specVersion": {
+            "type": "string",
+            "description": "The version of the location protocol this record is using"
+          },
           "name": {
             "type": "string",
             "description": "Optional name for this location",
             "maxLength": 200,
             "maxGraphemes": 100
           },
-          "description": {
+          "timestamp": {
             "type": "string",
-            "description": "Optional description for this location",
+            "format": "datetime",
+            "description": "Time the location proof was created.",
+            "maxLength": 200,
+            "maxGraphemes": 100
+          },
+          "eventTimestamp": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Time of the event referenced by the location proof."
+          },
+          "recipePayload": {
+            "array": {
+              "refs": [
+                "app.certified.defs#largeBlob"
+              ],
+              "description": "Proof recipe payload: Encoded data specific to the proof recipe, which could include encrypted location data, a zero-knowledge proof, or references to other verification data."
+            }
+          }, 
+          "mediaType": {
+            "array": {
+              "type": "string",
+              "description": "A unique string referring to the media to be included in a bytes field, Media Data. This pattern is similar to OpenGraph Protocol’s type definition."
+            }
+          },
+          "mediaData": {
+            "array": {
+              "type": "string",
+              "description": "A string field allowing the attachment of arbitrary data to a location proof, referenced by CID. This data is intended to be irrelevant to the location proof and not required/utilized in the proof recipe verification."
+            }
+          },
+          "memo": {
+            "type": "string",
+            "description": "An arbitrary message",
             "maxLength": 2000,
             "maxGraphemes": 500
           },
@@ -28,13 +64,17 @@
             "maxLength": 20
           },
           "value": {
-            "type": "blob",
-            "accept": [".geojson", ".kml"],
-            "description": "The location of where the work was performed"
+            "type": "union",
+            "refs": [
+              "app.certified.defs#uri",
+              "app.certified.defs#smallBlob"
+            ],
+            "description": "The location of where the work was performed as a URI or blob."
           },
           "createdAt": {
             "type": "string",
-            "format": "datetime"
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }

@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.certified.hypercert.evaluation",
+  "id": "org.hypercerts.claim.evaluation",
   "defs": {
     "main": {
       "type": "record",
@@ -8,22 +8,30 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["subject", "evaluatorDID", "summary", "createdAt"],
+        "required": ["subject", "evaluators", "summary", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Reference to what is being evaluated (hypercert, measurement, etc.)"
+            "description": "A strong reference to the evaluated claim. (e.g measurement, hypercert, contribution, etc)"
           },
-          "evaluatorDID": {
-            "type": "string",
-            "format": "did",
-            "description": "DID of the evaluator"
+          "evaluators": {
+            "type": "array",
+            "description": "DIDs of the evaluators",
+            "items": {
+              "type": "string",
+              "format": "did"
+            },
+            "maxLength": 100
           },
-          "evaluationURI": {
-            "type": "string",
-            "format": "uri",
-            "description": "URI to detailed evaluation report or methodology"
+          "evaluations": {
+            "type": "array",
+            "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
+            "items": {
+              "type": "union",
+              "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"]
+            },
+            "maxLength": 100
           },
           "summary": {
             "type": "string",
@@ -33,7 +41,8 @@
           },
           "createdAt": {
             "type": "string",
-            "format": "datetime"
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }
