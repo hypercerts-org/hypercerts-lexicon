@@ -55,6 +55,7 @@
             "type": "array",
             "description": "Supporting evidence, documentation, or external data URIs",
             "items": {
+              "type": "ref",
               "ref": "com.atproto.repo.strongRef",
               "description": "A strong reference to the evidence that supports this impact claim. The record referenced must conform with the org.hypercerts.claim.evidence lexicon"
             },
@@ -69,11 +70,13 @@
             }
           },
           "rights": {
+            "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights"
           },
           "location": {
-           "ref": "com.atproto.repo.strongRef",
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon org.hypercerts.claim.location"
           },
           "createdAt": {
