@@ -31,19 +31,8 @@
             "type": "array",
             "description": "Array of claims with their associated weights in this collection",
             "items": {
-              "type": "object",
-              "required": ["claim", "weight"],
-              "properties": {
-                "claim": {
-                  "type": "ref",
-                  "ref": "com.atproto.repo.strongRef",
-                  "description": "A strong reference to a hypercert claim record. This claim must conform to the lexicon org.hypercerts.claim.record"
-                },
-                "weight": {
-                  "type": "string",
-                  "description": "The weight/importance of this claim in the collection (a percentage from 0-100, stored as a string to avoid float precision issues). The total claim weights should add up to 100."
-                }
-              }
+              "type": "ref",
+              "ref": "#claimItem"
             }
           },
           "createdAt": {
@@ -52,6 +41,21 @@
             "description": "Client-declared timestamp when this record was originally created"
           }
         }
+      }
+    },
+      "claimItem": {
+        "type": "object",
+        "required": ["claim", "weight"],
+        "properties": {
+          "claim": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to a hypercert claim record. This claim must conform to the lexicon org.hypercerts.claim.record"
+          },
+          "weight": {
+            "type": "string",
+            "description": "The weight/importance of this hypercert claim in the collection (a percentage from 0-100, stored as a string to avoid float precision issues). The total claim weights should add up to 100."
+          }
       }
     }
   }
