@@ -183,15 +183,16 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                                | Comments                                            |
-| ------------ | -------- | -------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
-| `subject`    | `ref`    | ❌       | A strong reference to what is being evaluated                              | (e.g activity, measurement, contribution, etc.)     |
-| `evaluators` | `array`  | ✅       | DIDs of the evaluators                                                     |                                                     |
-| `content`    | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology |                                                     |
-| `summary`    | `string` | ✅       | Brief evaluation summary                                                   |                                                     |
-| `score`      | `object` | ❌       | Optional overall score for this evaluation on a numeric scale              | Object with `min`, `max`, and `value` (integers)    |
-| `location`   | `ref`    | ❌       | An optional reference for georeferenced evaluations                        | References must conform to `app.certified.location` |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created          |                                                     |
+| Property       | Type     | Required | Description                                                                 | Comments                                                      |
+| -------------- | -------- | -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated                               | (e.g activity, measurement, contribution, etc.)               |
+| `evaluators`   | `array`  | ✅       | DIDs of the evaluators                                                      |                                                               |
+| `content`      | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology  |                                                               |
+| `measurements` | `array`  | ❌       | Optional references to the measurements that contributed to this evaluation | References must conform to `org.hypercerts.claim.measurement` |
+| `summary`      | `string` | ✅       | Brief evaluation summary                                                    |                                                               |
+| `score`        | `object` | ❌       | Optional overall score for this evaluation on a numeric scale               | Object with `min`, `max`, and `value` (integers)              |
+| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations                         | References must conform to `app.certified.location`           |
+| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created           |                                                               |
 
 ---
 
