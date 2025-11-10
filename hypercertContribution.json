@@ -13,7 +13,7 @@
           "hypercert": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the hypercert this contribution is for. The record referenced must conform with the lexicon org.hypercerts.claim.record"
+            "description": "A strong reference to the hypercert this contribution is for. The record referenced must conform with the lexicon org.hypercerts.claim."
           },
           "role": {
             "type": "string",

@@ -13,11 +13,11 @@
           "hypercert": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the hypercert that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim.record"
+            "description": "A strong reference to the hypercert that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim."
           },
           "measurers": {
             "type": "array",
-            "description": "DIDs of the entity (or entities) that measured this data. ",
+            "description": "DIDs of the entity (or entities) that measured this data",
             "items": {
               "type": "string",
               "format": "did"
