@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.record",
+  "id": "org.hypercerts.claim",
   "defs": {
     "main": {
       "type": "record",
@@ -8,7 +8,14 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["title", "shortDescription", "createdAt", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
+        "required": [
+          "title",
+          "shortDescription",
+          "createdAt",
+          "workScope",
+          "workTimeFrameFrom",
+          "workTimeFrameTo"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -29,10 +36,7 @@
           },
           "image": {
             "type": "union",
-            "refs": [
-              "app.certified.defs#uri",
-              "app.certified.defs#smallBlob"
-            ],
+            "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"],
             "description": "The hypercert visual representation as a URI or blob"
           },
           "workScope": {
@@ -41,7 +45,7 @@
             "maxLength": 5000,
             "maxGraphemes": 1000
           },
-          "workTimeframeFrom": {
+          "workTimeFrameFrom": {
             "type": "string",
             "format": "datetime",
             "description": "When the work began"
@@ -55,6 +59,7 @@
             "type": "array",
             "description": "Supporting evidence, documentation, or external data URIs",
             "items": {
+              "type": "ref",
               "ref": "com.atproto.repo.strongRef",
               "description": "A strong reference to the evidence that supports this impact claim. The record referenced must conform with the org.hypercerts.claim.evidence lexicon"
             },
@@ -69,11 +74,13 @@
             }
           },
           "rights": {
+            "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights"
           },
           "location": {
-           "ref": "com.atproto.repo.strongRef",
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon org.hypercerts.claim.location"
           },
           "createdAt": {
