@@ -8,7 +8,14 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["title", "shortDescription", "createdAt", "workScope", "workTimeframeFrom", "workTimeFrameTo"],
+        "required": [
+          "title",
+          "shortDescription",
+          "createdAt",
+          "workScope",
+          "workTimeFrameFrom",
+          "workTimeFrameTo"
+        ],
         "properties": {
           "title": {
             "type": "string",
@@ -29,10 +36,7 @@
           },
           "image": {
             "type": "union",
-            "refs": [
-              "app.certified.defs#uri",
-              "app.certified.defs#smallBlob"
-            ],
+            "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"],
             "description": "The hypercert visual representation as a URI or blob"
           },
           "workScope": {
