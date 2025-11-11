@@ -2,6 +2,12 @@
 
 Hypercerts lexicon definitions and types.
 
+## Installation
+
+```
+npm i hypercerts-lexicon
+```
+
 ## Usage
 
 ```
