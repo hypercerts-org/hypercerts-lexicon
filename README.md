@@ -6,7 +6,7 @@ Hypercerts lexicon definitions and types.
 
 ```
 import { AtpBaseClient } from 'hypercerts-lexicon'
-import type { HypercertClaim } from 'hypercerts-lexicon'
+import type { HypercertClaim } from 'hypercerts-lexicon' //to check
 
 const client = new AtpBaseClient({
   service: 'https://bsky.social',

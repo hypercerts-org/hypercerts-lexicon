@@ -1,0 +1,11 @@
+node_modules/
+*.json
+!package.json
+!package-lock.json
+.git/
+.gitignore
+.DS_Store
+*.log
+results/
+bun.lockb
+lexicons/
