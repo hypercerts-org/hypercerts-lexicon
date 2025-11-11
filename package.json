@@ -20,8 +20,7 @@
     "hypercerts",
     "atproto",
     "lexicon",
-    "typescript",
-    "bluesky"
+    "typescript"
   ],
   "author": "",
   "license": "MIT",
