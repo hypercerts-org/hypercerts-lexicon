@@ -36,7 +36,10 @@
           },
           "image": {
             "type": "union",
-            "refs": ["app.certified.defs#uri", "app.certified.defs#smallImage"],
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
             "description": "The hypercert visual representation as a URI or image blob"
           },
           "workScope": {

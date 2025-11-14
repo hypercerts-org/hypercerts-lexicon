@@ -29,7 +29,10 @@
             "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
             "items": {
               "type": "union",
-              "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"]
+              "refs": [
+                "org.hypercerts.defs#uri",
+                "org.hypercerts.defs#smallBlob"
+              ]
             },
             "maxLength": 100
           },
