@@ -3,10 +3,16 @@
   "id": "app.certified.defs",
   "defs": {
     "uri": {
-      "type": "string",
-      "format": "uri",
-      "maxGraphemes": 1000,
-      "description": "URI to external data"
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "format": "uri",
+          "maxGraphemes": 1000,
+          "description": "URI to external data"
+        }
+      },
+      "required": ["value"]
     },
     "smallBlob": {
       "type": "blob",
