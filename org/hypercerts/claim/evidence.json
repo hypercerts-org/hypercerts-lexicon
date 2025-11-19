@@ -12,7 +12,10 @@
         "properties": {
           "content": {
             "type": "union",
-            "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"],
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallBlob"
+            ],
             "description": "A piece of evidence (URI or blobs) supporting a hypercert claim"
           },
           "title": {
@@ -27,16 +30,16 @@
             "description": "Short description explaining what this evidence demonstrates or proves"
           },
           "description": {
-              "type": "string",
-              "description": "Optional longer description describing the impact claim evidence.",
-              "maxLength": 30000,
-              "maxGraphemes": 3000
+            "type": "string",
+            "description": "Optional longer description describing the impact claim evidence.",
+            "maxLength": 30000,
+            "maxGraphemes": 3000
           },
           "createdAt": {
-              "type": "string",
-              "format": "datetime",
-              "description": "Client-declared timestamp when this hypercert claim was originally created"
-            }
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this hypercert claim was originally created"
+          }
         }
       }
     }
