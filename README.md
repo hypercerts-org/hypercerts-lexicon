@@ -1,6 +1,41 @@
 # Hypercerts Lexicon Documentation
 
-This repository contains ATProto lexicon definitions for the Hypercerts protocol. Each lexicon defines a record type that can be stored on the ATProto network.
+This repository contains ATProto lexicon definitions for the
+Hypercerts protocol. Each lexicon defines a record type that can be
+stored on the ATProto network.
+
+## Installation
+
+```
+npm i @hypercerts-org/lexicon
+```
+
+## Usage
+
+```typescript
+import { AtpBaseClient } from '@hypercerts-org/lexicon'
+import type { HypercertClaim } from '@hypercerts-org/lexicon'
+
+const client = new AtpBaseClient({
+  service: 'https://bsky.social',
+  headers: { Authorization: `Bearer ${token}` }
+})
+
+const hypercert: HypercertClaim = {
+  $type: 'org.hypercerts.claim',
+  title: 'My Impact Work',
+  shortDescription: 'Description here',
+  workScope: 'Scope of work',
+  workTimeFrameFrom: '2023-01-01T00:00:00Z',
+  workTimeFrameTo: '2023-12-31T23:59:59Z',
+  createdAt: new Date().toISOString()
+}
+
+await client.org.hypercerts.claim.create(
+  { repo: 'did:plc:example' },
+  hypercert
+)
+```
 
 ## Certified Lexicons
 

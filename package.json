@@ -1,0 +1,51 @@
+{
+  "name": "@hypercerts-org/lexicon",
+  "version": "0.1.0",
+  "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.ts",
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts"
+    }
+  },
+  "files": [
+    "index.ts",
+    "types",
+    "lexicons"
+  ],
+  "keywords": [
+    "hypercerts",
+    "atproto",
+    "lexicon",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "list": "find ./lexicons -name '*.json'",
+    "check": "npm run gen-api",
+    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./types",
+    "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
+    "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > lexicons.ts",
+    "lex": "lex",
+    "prepublishOnly": "npm run check"
+  },
+  "dependencies": {
+    "@atproto/lex-cli": "^0.9.5"
+  },
+  "peerDependencies": {
+    "@atproto/xrpc": "*",
+    "@atproto/lexicon": "*"
+  },
+  "devDependencies": {
+    "@atproto/xrpc": "^0.7.5",
+    "@atproto/lexicon": "^0.5.1"
+  }
+}
