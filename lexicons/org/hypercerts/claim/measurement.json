@@ -13,7 +13,7 @@
           "hypercert": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the hypercert that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim."
+            "description": "A strong reference to the hypercert that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim.impact"
           },
           "measurers": {
             "type": "array",

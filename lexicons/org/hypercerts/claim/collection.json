@@ -53,7 +53,7 @@
         "claim": {
           "type": "ref",
           "ref": "com.atproto.repo.strongRef",
-          "description": "A strong reference to a hypercert claim record. This claim must conform to the lexicon org.hypercerts.claim.record"
+          "description": "A strong reference to a hypercert claim record. This claim must conform to the lexicon org.hypercerts.claim.impact"
         },
         "weight": {
           "type": "string",
