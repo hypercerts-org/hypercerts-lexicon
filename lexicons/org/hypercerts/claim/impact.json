@@ -84,7 +84,7 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon org.hypercerts.claim.location"
+            "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon app.certified.location"
           },
           "createdAt": {
             "type": "string",
