@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim",
+  "id": "org.hypercerts.claim.impact",
   "defs": {
     "main": {
       "type": "record",
@@ -36,8 +36,11 @@
           },
           "image": {
             "type": "union",
-            "refs": ["app.certified.defs#uri", "app.certified.defs#smallBlob"],
-            "description": "The hypercert visual representation as a URI or blob"
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "The hypercert visual representation as a URI or image blob"
           },
           "workScope": {
             "type": "string",
@@ -81,7 +84,7 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon org.hypercerts.claim.location"
+            "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon app.certified.location"
           },
           "createdAt": {
             "type": "string",

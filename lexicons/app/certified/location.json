@@ -30,17 +30,14 @@
           "locationType": {
             "type": "string",
             "description": "An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)",
-            "knownValues": [
-              "coordinate-decimal",
-              "geojson-point"
-            ],
+            "knownValues": ["coordinate-decimal", "geojson-point"],
             "maxLength": 20
           },
           "location": {
             "type": "union",
             "refs": [
-              "app.certified.defs#uri",
-              "app.certified.defs#smallBlob"
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallBlob"
             ],
             "description": "The location of where the work was performed as a URI or blob."
           },
