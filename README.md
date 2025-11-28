@@ -4,6 +4,17 @@ This repository contains ATProto lexicon definitions for the
 Hypercerts protocol. Each lexicon defines a record type that can be
 stored on the ATProto network.
 
+## Entity Relationship Diagram
+
+![Hypercert ERD](ERD.svg)
+
+<details>
+<summary>View ERD with field details</summary>
+
+![Hypercert ERD with fields](ERD-with-fields.svg)
+
+</details>
+
 ## Installation
 
 ```
