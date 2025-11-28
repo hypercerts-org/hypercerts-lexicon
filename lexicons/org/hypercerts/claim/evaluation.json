@@ -42,6 +42,11 @@
             "maxLength": 5000,
             "maxGraphemes": 1000
           },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

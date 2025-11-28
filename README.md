@@ -144,13 +144,14 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                                | Comments                                        |
-| ------------- | -------- | -------- | -------------------------------------------------------------------------- | ----------------------------------------------- |
-| `subject`     | `ref`    | ✅       | A strong reference to the evaluated claim                                  | (e.g measurement, hypercert, contribution, etc) |
-| `evaluators`  | `array`  | ✅       | DIDs of the evaluators                                                     |                                                 |
-| `evaluations` | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology |                                                 |
-| `summary`     | `string` | ✅       | Brief evaluation summary                                                   |                                                 |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created          |                                                 |
+| Property      | Type     | Required | Description                                                                | Comments                                                       |
+| ------------- | -------- | -------- | -------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `subject`     | `ref`    | ✅       | A strong reference to the evaluated claim                                  | (e.g measurement, hypercert, contribution, etc)                |
+| `evaluators`  | `array`  | ✅       | DIDs of the evaluators                                                     |                                                                |
+| `evaluations` | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology |                                                                |
+| `summary`     | `string` | ✅       | Brief evaluation summary                                                   |                                                                |
+| `location`    | `ref`    | ❌       | An optional reference for georeferenced evaluations                        | References must conform to `app.certified.location`            |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created          |                                                                |
 
 ---
 
@@ -164,13 +165,14 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                | Comments |
-| ------------------ | -------- | -------- | -------------------------------------------------------------------------- | -------- |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blobs) supporting a hypercert claim            |          |
-| `title`            | `string` | ❌       | Optional title to describe the nature of the evidence                      |          |
-| `shortDescription` | `string` | ✅       | Short description explaining what this evidence demonstrates or proves     |          |
-| `description`      | `string` | ❌       | Optional longer description describing the impact claim evidence.          |          |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this hypercert claim was originally created |          |
+| Property           | Type     | Required | Description                                                                | Comments                                                                          |
+| ------------------ | -------- | -------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `hypercert`        | `ref`    | ❌       | A strong reference to the hypercert this evidence is for                   | The record referenced must conform with the lexicon `org.hypercerts.claim.activity` |
+| `content`          | `union`  | ✅       | A piece of evidence (URI or blobs) supporting a hypercert claim            |                                                                                   |
+| `title`            | `string` | ❌       | Optional title to describe the nature of the evidence                      |                                                                                   |
+| `shortDescription` | `string` | ✅       | Short description explaining what this evidence demonstrates or proves     |                                                                                   |
+| `description`      | `string` | ❌       | Optional longer description describing the impact claim evidence.          |                                                                                   |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this hypercert claim was originally created |                                                                                   |
 
 ---
 
@@ -192,6 +194,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `value`                | `string` | ✅       | The measured value                                                            |                                                                                   |
 | `measurementMethodURI` | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                                                   |
 | `evidenceURI`          | `array`  | ❌       | URIs to supporting evidence or data                                           |                                                                                   |
+| `location`             | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`                               |
 | `createdAt`            | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                                                   |
 
 ---

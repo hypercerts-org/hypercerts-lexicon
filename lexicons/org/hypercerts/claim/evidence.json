@@ -10,6 +10,11 @@
         "type": "object",
         "required": ["content", "shortDescription", "createdAt"],
         "properties": {
+          "hypercert": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the hypercert this evidence is for."
+          },
           "content": {
             "type": "union",
             "refs": [

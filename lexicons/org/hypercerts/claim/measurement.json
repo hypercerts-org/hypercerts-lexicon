@@ -48,6 +48,11 @@
             },
             "maxLength": 50
           },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the location where the measurement was taken. The record referenced must conform with the lexicon app.certified.location"
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
