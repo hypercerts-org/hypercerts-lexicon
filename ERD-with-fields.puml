@@ -1,0 +1,7 @@
+@startuml "HypercertERD-with-fields"
+
+!define SHOW_FIELDS true
+
+!include ERD.puml
+
+@enduml
