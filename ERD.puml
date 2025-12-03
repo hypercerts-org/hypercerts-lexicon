@@ -63,8 +63,8 @@ dataclass evidence {
     !if (SHOW_FIELDS == "true")
     hypercert?
     content
-    title?
-    shortDescription
+    title
+    shortDescription?
     description?
     createdAt
     !endif
