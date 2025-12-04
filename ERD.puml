@@ -47,26 +47,26 @@ dataclass activity <<largeBold>> #B4E5D0 {
     !if (SHOW_FIELDS == "true")
     title
     shortDescription
-    description
-    image
+    description?
+    image?
     workScope
     workTimeFrameFrom
     workTimeFrameTo
-    evidence[]
-    contributions[]
-    rights
-    location
+    evidence[]?
+    contributions[]?
+    rights?
+    location?
     createdAt
     !endif
 }
 
 dataclass evidence {
     !if (SHOW_FIELDS == "true")
-    hypercert
+    hypercert?
     content
-    title
+    title?
     shortDescription
-    description
+    description?
     createdAt
     !endif
 }
@@ -77,9 +77,9 @@ dataclass measurements {
     measurers[]
     metric
     value
-    measurementMethodURI
-    evidenceURI[]
-    location
+    measurementMethodURI?
+    evidenceURI[]?
+    location?
     createdAt
     !endif
 }
@@ -88,9 +88,9 @@ dataclass evaluations {
     !if (SHOW_FIELDS == "true")
     subject
     evaluators[]
-    evaluations[]
+    evaluations[]?
     summary
-    location
+    location?
     createdAt
     !endif
 }
@@ -98,11 +98,11 @@ dataclass evaluations {
 dataclass contributions {
     !if (SHOW_FIELDS == "true")
     hypercert
-    role
+    role?
     contributor[]
-    description
-    workTimeframeFrom
-    workTimeframeTo
+    description?
+    workTimeframeFrom?
+    workTimeframeTo?
     createdAt
     !endif
 }
@@ -113,8 +113,8 @@ dataclass location {
     srs
     locationType
     location
-    name
-    description
+    name?
+    description?
     createdAt
     !endif
 }
@@ -131,8 +131,8 @@ dataclass rights {
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     title
-    shortDescription
-    coverPhoto
+    shortDescription?
+    coverPhoto?
     claims[]
     createdAt
     !endif
