@@ -70,7 +70,7 @@ dataclass evidence {
     !endif
 }
 
-dataclass measurements {
+dataclass measurement {
     !if (SHOW_FIELDS == "true")
     activity
     measurers[]
@@ -84,7 +84,7 @@ dataclass measurements {
     !endif
 }
 
-dataclass evaluations {
+dataclass evaluation {
     !if (SHOW_FIELDS == "true")
     subject
     summary
@@ -99,7 +99,7 @@ dataclass evaluations {
 dataclass contribution {
     !if (SHOW_FIELDS == "true")
     role?
-    contributor[]
+    contributors[]
     description?
     startDate
     endDate
@@ -145,19 +145,19 @@ protocol token <<largeBold>> #FFB6C1 {
     !endif
 }
 
-activity::contributions --> contributions
+activity::contributions --> contribution
 activity::rights --> rights
 activity::location --> location
 evidence::activity --> activity
-measurements::activity --> activity
-measurements::location --> location
-evaluations::evidence --> evidence
-evaluations::measurements --> measurements
-evaluations::subject --> activity
-evaluations::location --> location
+measurement::activity --> activity
+measurement::location --> location
+evaluation::evidence --> evidence
+evaluation::measurements --> measurement
+evaluation::subject --> activity
+evaluation::location --> location
 collection::claims --> activity
 activity <-- token : tokenizes
-contributor --> contributions : makes
+contributor --> contribution : makes
 contributor --> rights : has
 
 @enduml
