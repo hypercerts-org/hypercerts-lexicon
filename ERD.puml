@@ -61,7 +61,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
 
 dataclass evidence {
     !if (SHOW_FIELDS == "true")
-    hypercert?
+    hypercert
     content
     title
     shortDescription?
