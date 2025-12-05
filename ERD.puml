@@ -123,6 +123,7 @@ dataclass rights {
     rightsName
     rightsType
     rightsDescription
+    attachment
     createdAt
     !endif
 }

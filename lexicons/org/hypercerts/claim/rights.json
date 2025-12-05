@@ -24,6 +24,14 @@
             "type": "string",
             "description": "Description of the rights of this hypercert"
           },
+          "attachment": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallBlob"
+            ],
+            "description": "An attachment to define the rights further, e.g. a legal document."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
