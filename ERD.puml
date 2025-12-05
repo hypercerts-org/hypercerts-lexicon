@@ -72,7 +72,7 @@ dataclass evidence {
 
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
-    activity
+    activity?
     measurers[]
     metric
     value
