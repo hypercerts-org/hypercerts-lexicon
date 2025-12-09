@@ -83,9 +83,9 @@
     },
     "workScope": {
       "type": "object",
-      "description": "Logical scope of the work using label-based conditions. All labels in `allOf` must apply; at least one label in `anyOf` must apply if provided; no label in `noneOf` may apply.",
+      "description": "Logical scope of the work using label-based conditions. All labels in `withinAllOf` must apply; at least one label in `withinAnyOf` must apply if provided; no label in `withinNoneOf` may apply.",
       "properties": {
-        "allOf": {
+        "withinAllOf": {
           "type": "array",
           "description": "Labels that MUST all hold for the scope to apply.",
           "items": {
@@ -93,7 +93,7 @@
           },
           "maxLength": 100
         },
-        "anyOf": {
+        "withinAnyOf": {
           "type": "array",
           "description": "Labels of which AT LEAST ONE must hold (optional). If omitted or empty, imposes no additional condition.",
           "items": {
@@ -101,7 +101,7 @@
           },
           "maxLength": 100
         },
-        "noneOf": {
+        "withinNoneOf": {
           "type": "array",
           "description": "Labels that MUST NOT hold for the scope to apply.",
           "items": {
