@@ -8,7 +8,12 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["rightsName", "rightsType", "rightsDescription", "createdAt"],
+        "required": [
+          "rightsName",
+          "rightsType",
+          "rightsDescription",
+          "createdAt"
+        ],
         "properties": {
           "rightsName": {
             "type": "string",

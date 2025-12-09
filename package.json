@@ -35,6 +35,9 @@
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
     "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > lexicons.ts",
     "lex": "lex",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "npm run format:check",
     "prepublishOnly": "npm run check"
   },
   "dependencies": {
@@ -46,6 +49,7 @@
   },
   "devDependencies": {
     "@atproto/xrpc": "^0.7.5",
-    "@atproto/lexicon": "^0.5.1"
+    "@atproto/lexicon": "^0.5.1",
+    "prettier": "^3.2.5"
   }
 }
