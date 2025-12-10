@@ -13,7 +13,8 @@
           "shortDescription",
           "createdAt",
           "startDate",
-          "endDate"
+          "endDate",
+          "workScope"
         ],
         "properties": {
           "title": {
