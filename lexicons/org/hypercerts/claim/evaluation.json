@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["subject", "evaluators", "summary", "createdAt"],
+        "required": ["subject", "content", "evaluators", "summary", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",
@@ -24,7 +24,7 @@
             },
             "maxLength": 100
           },
-          "evaluations": {
+          "content": {
             "type": "array",
             "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
             "items": {
