@@ -110,6 +110,21 @@
           "maxLength": 100
         }
       }
+    },
+    "activityWeight": {
+      "type": "object",
+      "required": ["activity", "weight"],
+      "properties": {
+        "activity": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity"
+        },
+        "weight": {
+          "type": "string",
+          "description": "The weight/importance of this hypercert activity in the project (a percentage from 0-100, stored as a string to avoid float precision issues). The total activity weights should add up to 100."
+        }
+      }
     }
   }
 }
