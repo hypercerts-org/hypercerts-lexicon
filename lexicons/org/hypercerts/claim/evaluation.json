@@ -43,7 +43,7 @@
             },
             "maxLength": 1000
           },
-          "attachments": {
+          "content": {
             "type": "array",
             "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
             "items": {
