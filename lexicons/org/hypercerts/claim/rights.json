@@ -5,7 +5,7 @@
     "main": {
       "type": "record",
       "description": "Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.",
-      "key": "any",
+      "key": "tid",
       "record": {
         "type": "object",
         "required": [
