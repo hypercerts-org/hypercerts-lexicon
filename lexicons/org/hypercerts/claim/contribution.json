@@ -5,7 +5,7 @@
     "main": {
       "type": "record",
       "description": "A contribution made toward a hypercert's impact.",
-      "key": "any",
+      "key": "tid",
       "record": {
         "type": "object",
         "required": ["contributors", "createdAt"],
