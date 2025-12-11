@@ -62,7 +62,8 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to a location record describing where the work for this project took place. The referenced record must conform to the app.certified.location lexicon."          },
+            "description": "A strong reference to a location record describing where the work for this project took place. The referenced record must conform to the app.certified.location lexicon."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
