@@ -4,16 +4,16 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "External measurement data supporting a hypercert claim",
+      "description": "Measurement data related to a hypercert record (e.g. an activity and its impact).",
       "key": "tid",
       "record": {
         "type": "object",
         "required": ["measurers", "metric", "value", "createdAt"],
         "properties": {
-          "activity": {
+          "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the activity that this measurement is for. The record referenced must conform with the lexicon org.hypercerts.claim.activity"
+            "description": "A strong reference to the record this measurement refers to (e.g. an activity, project, or claim)."
           },
           "measurers": {
             "type": "array",
@@ -46,7 +46,7 @@
           },
           "evidenceURI": {
             "type": "array",
-            "description": "URIs to supporting evidence or data",
+            "description": "URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)",
             "items": {
               "type": "string",
               "format": "uri"
