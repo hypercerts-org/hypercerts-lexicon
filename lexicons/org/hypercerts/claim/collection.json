@@ -41,7 +41,7 @@
             "description": "Array of activities with their associated weights in this collection",
             "items": {
               "type": "ref",
-              "ref": "#activity"
+              "ref": "#activityItem"
             }
           },
           "createdAt": {
