@@ -1,0 +1,33 @@
+reviews:
+  pre_merge_checks:
+    custom_checks:
+      - name: "Lexicon Documentation Sync"
+        mode: "error"
+        instructions: |
+          Verify that JSON lexicons, README.md, and ERD.puml are kept in sync.
+
+          Pass/fail criteria:
+          1. If any file in lexicons/**/*.json is added, modified, or deleted:
+             - README.md must be updated to reflect the lexicon changes (new lexicons documented, modified properties updated, removed lexicons removed from docs)
+             - ERD.puml must be updated if entity relationships changed (new entities added, relationships modified, entities removed)
+
+          2. If README.md is modified:
+             - All documented lexicons must exist as JSON files in lexicons/
+             - All properties documented in README.md must match the actual JSON schema definitions
+             - No lexicon should be documented that doesn't have a corresponding JSON file
+
+          3. If ERD.puml is modified:
+             - All entities referenced in ERD.puml must correspond to lexicons defined in lexicons/**/*.json
+             - All relationships shown in ERD.puml must be valid based on the JSON lexicon schemas
+             - No entity should appear in ERD.puml without a corresponding lexicon JSON file
+
+          4. If multiple files are changed together (lexicons + README.md + ERD.puml), verify they are consistent with each other.
+
+          Exclude from this check:
+          - Changes only to types/ directory (generated code)
+          - Changes only to other documentation files (AGENTS.md, REMAINING_WORK.md, etc.)
+          - Changes only to package.json, build files, or configuration files
+
+          Use the diff to identify which files changed and verify synchronization accordingly.
+          Check that lexicon IDs in JSON files match what's documented in README.md.
+          Verify that entity names in ERD.puml match lexicon IDs (e.g., "activity" entity should correspond to org.hypercerts.claim.activity lexicon).
