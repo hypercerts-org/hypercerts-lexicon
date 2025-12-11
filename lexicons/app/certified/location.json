@@ -5,7 +5,7 @@
     "main": {
       "type": "record",
       "description": "A location reference",
-      "key": "any",
+      "key": "tid",
       "record": {
         "type": "object",
         "required": [

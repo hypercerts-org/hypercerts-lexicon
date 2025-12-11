@@ -96,7 +96,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 **Description:** A location reference for use across certified protocols. For more information about
 
-**Key:** `any`
+**Key:** `tid`
 
 #### Properties
 
