@@ -34,12 +34,10 @@
             "maxSize": 1000000
           },
           "coverPhoto": {
-            "type": "union",
-            "refs": [
-              "org.hypercerts.defs#uri",
-              "org.hypercerts.defs#smallBlob"
-            ],
-            "description": "The cover photo of this project (either in URI format or in a blob)."
+            "type": "blob",
+            "description": "The cover photo of this project.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
           },
           "activities": {
             "type": "array",
