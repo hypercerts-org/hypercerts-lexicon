@@ -53,10 +53,10 @@
             "description": "Optional notes or additional context for this funding receipt.",
             "maxLength": 500
           },
-          "occuredAt": {
+          "occurredAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Timestamp when the payment occured."
+            "description": "Timestamp when the payment occurred."
           },
           "createdAt": {
             "type": "string",
