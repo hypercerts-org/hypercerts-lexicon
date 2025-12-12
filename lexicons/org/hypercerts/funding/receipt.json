@@ -17,7 +17,7 @@
         "properties": {
           "from": {
             "type": "string",
-            "description": "DID of the sender who transferred the funds."
+            "description": "DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous."
           },
           "to": {
             "type": "string",
