@@ -17,11 +17,12 @@
         "properties": {
           "from": {
             "type": "string",
+            "format": "did",
             "description": "DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous."
           },
           "to": {
             "type": "string",
-            "description": "The recipient of the funds. Can be anonymous, identified by DID, or a clear-text name."
+            "description": "The recipient of the funds. Can be identified by DID or a clear-text name."
           },
           "amount": {
             "type": "number",
