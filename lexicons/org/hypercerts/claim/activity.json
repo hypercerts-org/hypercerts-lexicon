@@ -76,7 +76,7 @@
           "project": {
             "type": "string",
             "format": "at-uri",
-            "description": "A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. The activity must also be referenced by the project, establishing a bidirectional link."
+            "description": "A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. This activity must also be referenced by the project, establishing a bidirectional link."
           },
           "createdAt": {
             "type": "string",
