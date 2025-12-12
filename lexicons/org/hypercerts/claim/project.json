@@ -23,19 +23,9 @@
             "description": "Short summary of this project, suitable for previews and list views."
           },
           "description": {
-            "type": "object",
-            "description": "Rich-text description of this project as a sequence of content blocks.",
-            "required": ["blocks"],
-            "properties": {
-              "blocks": {
-                "type": "array",
-                "maxItems": 100,
-                "items": {
-                  "type": "ref",
-                  "ref": "#block"
-                }
-              }
-            }
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description of this project, represented as a Leaflet linear document."
           },
           "avatar": {
             "type": "blob",
@@ -69,50 +59,6 @@
           }
         }
       }
-    },
-    "block": {
-      "type": "object",
-      "required": ["block"],
-      "properties": {
-        "block": {
-          "type": "union",
-          "refs": [
-            "pub.leaflet.blocks.iframe",
-            "pub.leaflet.blocks.text",
-            "pub.leaflet.blocks.blockquote",
-            "pub.leaflet.blocks.header",
-            "pub.leaflet.blocks.image",
-            "pub.leaflet.blocks.unorderedList",
-            "pub.leaflet.blocks.website",
-            "pub.leaflet.blocks.math",
-            "pub.leaflet.blocks.code",
-            "pub.leaflet.blocks.horizontalRule",
-            "pub.leaflet.blocks.bskyPost",
-            "pub.leaflet.blocks.button"
-          ]
-        },
-        "alignment": {
-          "type": "string",
-          "knownValues": [
-            "#textAlignLeft",
-            "#textAlignCenter",
-            "#textAlignRight",
-            "#textAlignJustify"
-          ]
-        }
-      }
-    },
-    "textAlignLeft": {
-      "type": "token"
-    },
-    "textAlignCenter": {
-      "type": "token"
-    },
-    "textAlignRight": {
-      "type": "token"
-    },
-    "textAlignJustify": {
-      "type": "token"
     },
     "activityItem": {
       "type": "object",
