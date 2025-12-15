@@ -37,12 +37,16 @@ classDiagram {
 }
 </style>
 
+' Contributors are represented by DIDs or human-readable strings
+' therefore do not require modelling via a lexicon.
 entity contributor #FFD4A3 {
     !if (SHOW_FIELDS == "true")
     DID or name/pseudonym
     !endif
 }
 
+' org.hypercerts.claim.activity - this is the main record
+' representing a hypercert.
 dataclass activity <<largeBold>> #B4E5D0 {
     !if (SHOW_FIELDS == "true")
     title
@@ -59,6 +63,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     !endif
 }
 
+' org.hypercerts.claim.evidence
 dataclass evidence {
     !if (SHOW_FIELDS == "true")
     activity?
@@ -70,6 +75,7 @@ dataclass evidence {
     !endif
 }
 
+' org.hypercerts.claim.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
     activity?
@@ -84,6 +90,7 @@ dataclass measurement {
     !endif
 }
 
+' org.hypercerts.claim.evaluation
 dataclass evaluation {
     !if (SHOW_FIELDS == "true")
     subject
@@ -96,6 +103,7 @@ dataclass evaluation {
     !endif
 }
 
+' org.hypercerts.claim.contribution
 dataclass contribution {
     !if (SHOW_FIELDS == "true")
     role?
@@ -107,6 +115,7 @@ dataclass contribution {
     !endif
 }
 
+' app.certified.location
 dataclass location {
     !if (SHOW_FIELDS == "true")
     lpVersion
@@ -119,6 +128,7 @@ dataclass location {
     !endif
 }
 
+' org.hypercerts.claim.rights
 dataclass rights {
     !if (SHOW_FIELDS == "true")
     rightsName
@@ -129,6 +139,7 @@ dataclass rights {
     !endif
 }
 
+' org.hypercerts.claim.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     title
@@ -139,6 +150,9 @@ dataclass collection {
     !endif
 }
 
+' NOTE: this is NOT a lexicon, but instead reflects an onchain
+' tokenization of an activity record.  So it does not need
+' a lexicon definition.
 protocol token <<largeBold>> #FFB6C1 {
     !if (SHOW_FIELDS == "true")
     (on-chain only)
@@ -161,4 +175,3 @@ contribution::contributors --> contributor : made by
 contributor -r-> rights : has
 
 @enduml
-
