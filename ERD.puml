@@ -82,8 +82,8 @@ dataclass measurement {
     measurers[]
     metric
     value
-    measurementMethodType?
-    measurementMethodURI?
+    methodType?
+    methodURI?
     evidenceURI[]?
     location?
     createdAt
