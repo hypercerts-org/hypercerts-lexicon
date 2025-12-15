@@ -93,7 +93,7 @@ made to the lexicon JSON files, then types regenerated.
 
 ### Project Structure
 
-```
+```text
 lexicons/
   app/certified/location.json
   com/atproto/repo/strongRef.json
@@ -117,45 +117,38 @@ types/              # Generated - do not edit
 
 ## Common Patterns
 
-### Adding a New Lexicon
+### Adding / modifying a lexicon
 
-1. Create a new JSON file in `lexicons/` following the namespace
+1. Create / edit JSON file in `lexicons/` following the namespace
    structure
-2. Define the lexicon schema with `lexicon`, `id`, and `defs.main`
-3. Run `npm run gen-api` to generate TypeScript types
-4. Update ERD.puml if the new lexicon affects entity relationships
-
-### Modifying an Existing Lexicon
-
-1. Edit the JSON file in `lexicons/`
-2. Run `npm run gen-api` to regenerate types
-3. Update any affected documentation
+2. Update `ERD.puml` as appropriate
+3. Update `README.md` as appropriate
+4. Run `npm run format` to ensure everything is formatted correctly
+   via Prettier.
 
 ### Testing Changes
 
 After modifying lexicons:
 
 ```bash
-# Regenerate types
-npm run gen-api
-
 # Check formatting
 npm run lint
 
-# Verify the generated code compiles (if TypeScript is configured)
+# Validate lexicon syntax
+npm run check
 ```
 
 ## Important Notes
 
-- **Never edit `types/` directly** - all changes are lost on regeneration
 - Lexicon JSON files should follow ATProto lexicon schema v1
 - Use `npm run format` before committing to ensure consistent formatting
+- Use `npm run check` before committing to ensure valid lexicons
+- **Never edit `types/` directly** - all changes are lost on regeneration
 - The `.prettierignore` excludes `types/` since it's generated code
-- See `REMAINING_WORK.md` for outstanding design decisions
 
 ## Entity Relationships
 
-See `ERD.md` for the entity relationship diagram. Key relationships:
+See `ERD.puml` for the entity relationship diagram. Key relationships:
 
 - Claims reference collections, contributions, evidence, measurements,
   evaluations, and rights

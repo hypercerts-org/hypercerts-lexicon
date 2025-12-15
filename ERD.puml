@@ -82,8 +82,8 @@ dataclass measurement {
     measurers[]
     metric
     value
-    measurementMethodType
-    measurementMethodURI
+    methodType?
+    methodURI?
     evidenceURI[]?
     location?
     createdAt
@@ -134,7 +134,7 @@ dataclass rights {
     rightsName
     rightsType
     rightsDescription
-    attachment
+    attachment?
     createdAt
     !endif
 }

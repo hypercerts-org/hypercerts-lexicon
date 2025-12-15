@@ -215,17 +215,17 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property                | Type     | Required | Description                                                                   | Comments                                                                            |
-| ----------------------- | -------- | -------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `activity`              | `ref`    | ❌       | A strong reference to the activity that this measurement is for               | The record referenced must conform with the lexicon `org.hypercerts.claim.activity` |
-| `measurers`             | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                                                     |
-| `metric`                | `string` | ✅       | The metric being measured                                                     |                                                                                     |
-| `value`                 | `string` | ✅       | The measured value                                                            |                                                                                     |
-| `measurementMethodType` | `string` | ❌       | Short identifier for the measurement methodology                              |                                                                                     |
-| `measurementMethodURI`  | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                                                     |
-| `evidenceURI`           | `array`  | ❌       | URIs to supporting evidence or data                                           |                                                                                     |
-| `location`              | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`                                 |
-| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                                                     |
+| Property      | Type     | Required | Description                                                                   | Comments                                                                            |
+| ------------- | -------- | -------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `activity`    | `ref`    | ❌       | A strong reference to the activity that this measurement is for               | The record referenced must conform with the lexicon `org.hypercerts.claim.activity` |
+| `measurers`   | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                                                     |
+| `metric`      | `string` | ✅       | The metric being measured                                                     |                                                                                     |
+| `value`       | `string` | ✅       | The measured value                                                            |                                                                                     |
+| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                              |                                                                                     |
+| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                                                     |
+| `evidenceURI` | `array`  | ❌       | URIs to supporting evidence or data                                           |                                                                                     |
+| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`                                 |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                                                     |
 
 ---
 
