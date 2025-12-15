@@ -6,6 +6,26 @@ stored on the ATProto network.
 
 ## Entity Relationship Diagram
 
+The following diagrams show the relationship between:
+
+- data classes represented by ATProto lexicons, which model the data
+  sets relating to hypercerts
+
+- contributors to activity records (modelled/identified by ATProto
+  DIDs rather than lexicons)
+
+- hypercerts protocol tokens which are onchain representations of
+  activity records in ATProto
+
+Note that contributors and tokens do not require lexicons.
+
+To distinguish these in the diagrams, each class has one of the
+following icons:
+
+- "D" means "data class"
+- "E" means "entity"
+- "P" means "protocol"
+
 ![Hypercert ERD](ERD.svg)
 
 <details>
