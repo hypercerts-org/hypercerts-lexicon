@@ -18,7 +18,7 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "Title of the hypercert",
+            "description": "Title of the hypercert.",
             "maxLength": 256
           },
           "shortDescription": {
@@ -39,7 +39,7 @@
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#smallImage"
             ],
-            "description": "The hypercert visual representation as a URI or image blob"
+            "description": "The hypercert visual representation as a URI or image blob."
           },
           "workScope": {
             "type": "ref",
@@ -57,7 +57,7 @@
           },
           "contributions": {
             "type": "array",
-            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contribution",
+            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
@@ -66,12 +66,17 @@
           "rights": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights"
+            "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights."
           },
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the work for done hypercert was located. The record referenced must conform with the lexicon app.certified.location"
+            "description": "A strong reference to the location where the activity was performed. The record referenced must conform with the lexicon app.certified.location."
+          },
+          "project": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. This activity must also be referenced by the project, establishing a bidirectional link."
           },
           "createdAt": {
             "type": "string",
@@ -108,6 +113,21 @@
             "type": "string"
           },
           "maxLength": 100
+        }
+      }
+    },
+    "activityWeight": {
+      "type": "object",
+      "required": ["activity", "weight"],
+      "properties": {
+        "activity": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity"
+        },
+        "weight": {
+          "type": "string",
+          "description": "The weight/importance of this hypercert activity in the project (a percentage from 0-100, stored as a string to avoid float precision issues). The total activity weights should add up to 100."
         }
       }
     }

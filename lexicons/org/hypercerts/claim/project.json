@@ -1,0 +1,64 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.project",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A project that can include multiple activities, each of which may be linked to at most one project.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["title", "shortDescription", "createdAt"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of this project",
+            "maxLength": 800,
+            "maxGraphemes": 80
+          },
+          "shortDescription": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "Short summary of this project, suitable for previews and list views."
+          },
+          "description": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description of this project, represented as a Leaflet linear document."
+          },
+          "avatar": {
+            "type": "blob",
+            "description": "Primary avatar image representing this project across apps and views; typically a square logo or project identity image.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "coverPhoto": {
+            "type": "blob",
+            "description": "The cover photo of this project.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "activities": {
+            "type": "array",
+            "description": "Array of activities with their associated weights in this project",
+            "items": {
+              "type": "ref",
+              "ref": "org.hypercerts.claim.activity#activityWeight"
+            }
+          },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to a location record describing where the work for this project took place. The referenced record must conform to the app.certified.location lexicon."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}

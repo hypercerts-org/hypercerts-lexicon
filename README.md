@@ -138,7 +138,17 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts | References must conform to `org.hypercerts.claim.contribution`            |
 | `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                            | References must conform to `org.hypercerts.claim.rights`                  |
 | `location`         | `ref`    | ❌       | A strong reference to the location where the work for done hypercert was located    | References must conform to `app.certified.location`                       |
+| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of            | References must conform to `org.hypercerts.claim.project`                 |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
+
+#### Defs
+
+##### activityWeight
+
+| Property   | Type     | Required | Description                                                                                                                                                                      | Comments |
+| ---------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                       |          |
+| `weight`   | `string` | ✅       | The weight/importance of this hypercert activity (a percentage from 0-100, stored as a string to avoid float precision issues). The total activity weights should add up to 100. |          |
 
 ---
 
@@ -239,22 +249,37 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                             | Comments                          |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | --------------------------------- |
-| `title`            | `string` | ✅       | The title of this collection                                            |                                   |
-| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                   |
-| `coverPhoto`       | `union`  | ❌       | The cover photo of this collection (either in URI format or in a blob). |                                   |
-| `claims`           | `array`  | ✅       | Array of claims with their associated weights in this collection        | Each item references `#claimItem` |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                   |
+| Property           | Type     | Required | Description                                                             | Comments                                                            |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `title`            | `string` | ✅       | The title of this collection                                            |                                                                     |
+| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
+| `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
+| `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |
+| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
 
-#### Defs
+---
 
-##### claimItem
+### org.hypercerts.claim.project
 
-| Property | Type     | Required | Description                                                                                                                                                                                  | Comments |
-| -------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| `claim`  | `ref`    | ✅       | A strong reference to a hypercert claim record. This claim must conform to the lexicon org.hypercerts.claim.activity                                                                         |          |
-| `weight` | `string` | ✅       | The weight/importance of this hypercert claim in the collection (a percentage from 0-100, stored as a string to avoid float precision issues). The total claim weights should add up to 100. |          |
+**Lexicon ID:** `org.hypercerts.claim.project`
+
+**Description:** A project that can include multiple activities, each of which may be linked to at most one project.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property           | Type     | Required | Description                                                                     | Comments                                                            |
+| ------------------ | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `title`            | `string` | ✅       | Title of this project                                                           |                                                                     |
+| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views             |                                                                     |
+| `description`      | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
+| `avatar`           | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
+| `coverPhoto`       | `blob`   | ❌       | The cover photo of this project                                                 |                                                                     |
+| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.claim.activity#activityWeight` |
+| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place    | References must conform to `app.certified.location`                 |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
 
 ---
 
