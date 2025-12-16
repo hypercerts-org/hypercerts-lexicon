@@ -1,4 +1,7 @@
 @startuml "HypercertERD"
+
+'!pragma layout smetana
+
 title "Hypercert ERD"
 
 ' Configuration variables
@@ -59,6 +62,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     contributions[]?
     location?
     rights?
+    project?
     createdAt
     !endif
 }
@@ -144,8 +148,23 @@ dataclass collection {
     !if (SHOW_FIELDS == "true")
     title
     shortDescription?
+    avatar?
     coverPhoto?
-    claims[]
+    activities[]
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.project
+dataclass project {
+    !if (SHOW_FIELDS == "true")
+    title
+    shortDescription
+    description?
+    avatar?
+    coverPhoto?
+    activities[]?
+    location?
     createdAt
     !endif
 }
@@ -159,9 +178,10 @@ protocol token <<largeBold>> #FFB6C1 {
     !endif
 }
 
-activity::contributions -l-> contribution
+activity::contributions --> contribution
 activity::rights --> rights
 activity::location --> location
+activity::project --> project
 evidence::activity --> activity
 measurement::activity --> activity
 measurement::location --> location
@@ -169,7 +189,9 @@ evaluation::evidence --> evidence
 evaluation::measurements --> measurement
 evaluation::subject --> activity
 evaluation::location --> location
-collection::claims -d-> activity
+collection::activities --> activity
+project::activities --> activity
+project::location --> location
 token -l-> activity : tokenizes
 contribution::contributors --> contributor : made by
 contributor -r-> rights : has
