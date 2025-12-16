@@ -4,16 +4,16 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A piece of evidence supporting a hypercert claim",
-      "key": "any",
+      "description": "A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.",
+      "key": "tid",
       "record": {
         "type": "object",
         "required": ["content", "title", "createdAt"],
         "properties": {
-          "activity": {
+          "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the activity this evidence is for. The record referenced must conform with the lexicon org.hypercerts.claim.activity"
+            "description": "A strong reference to the record this evidence relates to (e.g. an activity, project, claim, or evaluation)."
           },
           "content": {
             "type": "union",
@@ -21,29 +21,34 @@
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#smallBlob"
             ],
-            "description": "A piece of evidence (URI or blobs) supporting a hypercert claim"
+            "description": "A piece of evidence (URI or blob) related to the subject record; it may support, clarify, or challenge a hypercert claim."
           },
           "title": {
             "type": "string",
             "maxLength": 256,
-            "description": "Title to describe the nature of the evidence"
+            "description": "Title to describe the nature of the evidence."
           },
           "shortDescription": {
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
-            "description": "Short description explaining what this evidence demonstrates or proves"
+            "description": "Short description explaining what this evidence shows."
           },
           "description": {
             "type": "string",
-            "description": "Longer description describing the impact claim evidence.",
+            "description": "Longer description describing the evidence in more detail.",
             "maxLength": 30000,
             "maxGraphemes": 3000
+          },
+          "relationType": {
+            "type": "string",
+            "description": "How this evidence relates to the subject.",
+            "knownValues": ["supports", "challenges", "clarifies"]
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this hypercert claim was originally created"
+            "description": "Client-declared timestamp when this record was originally created"
           }
         }
       }

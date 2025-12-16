@@ -2,18 +2,37 @@
   "lexicon": 1,
   "id": "org.hypercerts.claim.evaluation",
   "defs": {
+    "score": {
+      "type": "object",
+      "description": "Overall score for an evaluation on a numeric scale.",
+      "required": ["min", "max", "value"],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "description": "Minimum value of the scale, e.g. 0 or 1."
+        },
+        "max": {
+          "type": "integer",
+          "description": "Maximum value of the scale, e.g. 5 or 10."
+        },
+        "value": {
+          "type": "integer",
+          "description": "Score within the inclusive range [min, max]."
+        }
+      }
+    },
     "main": {
       "type": "record",
-      "description": "An evaluation of a hypercert or other claim",
+      "description": "An evaluation of a hypercert record (e.g. an activity and its impact).",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["subject", "evaluators", "summary", "createdAt"],
+        "required": ["evaluators", "summary", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the evaluated claim. (e.g measurement, hypercert, contribution, etc)"
+            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)"
           },
           "evaluators": {
             "type": "array",
@@ -22,9 +41,9 @@
               "type": "string",
               "format": "did"
             },
-            "maxLength": 100
+            "maxLength": 1000
           },
-          "evaluations": {
+          "content": {
             "type": "array",
             "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
             "items": {
@@ -41,6 +60,11 @@
             "description": "Brief evaluation summary",
             "maxLength": 5000,
             "maxGraphemes": 1000
+          },
+          "score": {
+            "type": "ref",
+            "ref": "#score",
+            "description": "Optional overall score for this evaluation on a numeric scale."
           },
           "location": {
             "type": "ref",
