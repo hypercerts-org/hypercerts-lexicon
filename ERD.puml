@@ -105,6 +105,7 @@ dataclass evaluation {
     summary
     evaluators[]
     content[]?
+    measurements[]?
     score
     location?
     createdAt
@@ -228,7 +229,7 @@ activity -l[hidden]-> token
 'fundingReceipt -[hidden]-> contributor
 
 evaluation::subject --> evidence
-evaluation::subject --> measurement
+evaluation::measurements --> measurement
 evaluation::subject --> activity
 
 ' Impossible to get this one on without screwing up the layout
