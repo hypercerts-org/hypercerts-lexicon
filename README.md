@@ -303,6 +303,32 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### org.hypercerts.funding.receipt
+
+**Lexicon ID:** `org.hypercerts.funding.receipt`
+
+**Description:** Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property         | Type     | Required | Description                                                                                                                 | Comments                                                    |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `from`           | `string` | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                 | Format: did                                                 |
+| `to`             | `string` | ✅       | The recipient of the funds, who can be identified by DID or a clear-text name.                                              |                                                             |
+| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                 |                                                             |
+| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                               |                                                             |
+| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                  |                                                             |
+| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                     |                                                             |
+| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). | Use paymentNetwork to specify the network where applicable. |
+| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                       | Format: at-uri                                              |
+| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                              | maxLength: 500                                              |
+| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                        | Format: datetime                                            |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                             | Format: datetime                                            |
+
+---
+
 ## Notes
 
 - All timestamps use the `datetime` format (ISO 8601)

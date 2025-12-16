@@ -1,0 +1,66 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.funding.receipt",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["from", "to", "amount", "currency", "createdAt"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "did",
+            "description": "DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous."
+          },
+          "to": {
+            "type": "string",
+            "description": "The recipient of the funds. Can be identified by DID or a clear-text name."
+          },
+          "amount": {
+            "type": "string",
+            "description": "Amount of funding received."
+          },
+          "currency": {
+            "type": "string",
+            "description": "Currency of the payment (e.g. EUR, USD, ETH)."
+          },
+          "paymentRail": {
+            "type": "string",
+            "description": "How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor)."
+          },
+          "paymentNetwork": {
+            "type": "string",
+            "description": "Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal)."
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable."
+          },
+          "for": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "Optional reference to the activity, project, or organization this funding relates to."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional notes or additional context for this funding receipt.",
+            "maxLength": 500
+          },
+          "occurredAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp when the payment occurred."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this receipt record was created."
+          }
+        }
+      }
+    }
+  }
+}

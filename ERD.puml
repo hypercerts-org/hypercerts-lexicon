@@ -1,6 +1,9 @@
 @startuml "HypercertERD"
 
+' None of these support arrows originating from individual fields
 '!pragma layout smetana
+'!pragma layout elk
+'!pragma layout vizjs
 
 title "Hypercert ERD"
 
@@ -100,9 +103,9 @@ dataclass evaluation {
     subject
     summary
     evaluators[]
+    measurements[]?
     evidence[]?
     location?
-    measurements[]?
     createdAt
     !endif
 }
@@ -169,6 +172,35 @@ dataclass project {
     !endif
 }
 
+'together {
+
+' Funders are represented by DIDs or human-readable strings
+' therefore do not require modelling via a lexicon.
+entity funder #FFD4A3 {
+    !if (SHOW_FIELDS == "true")
+    DID or name/pseudonym
+    !endif
+}
+
+' org.hypercerts.funding.receipt
+dataclass fundingReceipt {
+    !if (SHOW_FIELDS == "true")
+    to
+    from
+    for?
+    amount
+    currency
+    paymentRail?
+    paymentNetwork?
+    transactionId?
+    notes?
+    occurredAt?
+    createdAt
+    !endif
+}
+
+'} ' end together
+
 ' NOTE: this is NOT a lexicon, but instead reflects an onchain
 ' tokenization of an activity record.  So it does not need
 ' a lexicon definition.
@@ -178,22 +210,79 @@ protocol token <<largeBold>> #FFB6C1 {
     !endif
 }
 
-activity::contributions --> contribution
-activity::rights --> rights
-activity::location --> location
-activity::project --> project
-evidence::activity --> activity
-measurement::activity --> activity
-measurement::location --> location
+' layout hints
+'evaluation --d[hidden]-> evidence
+'evaluation --d[hidden]-> measurement
+'measurement -d[hidden]-> activity
+'evidence -r[hidden]-> measurement
+activity -l[hidden]-> token
+'evidence -d[hidden]-> activity
+'collection -d[hidden]-> activity
+'project -d[hidden]-> activity
+'project -r[hidden]-> location
+'activity -u[hidden]-> contributor
+'activity -u[hidden]-> location
+'activity -d[hidden]-> rights
+'contribution -r[hidden]-> contributor
+'fundingReceipt -[hidden]-> contributor
+
 evaluation::evidence --> evidence
 evaluation::measurements --> measurement
 evaluation::subject --> activity
-evaluation::location --> location
+
+' Impossible to get this one on without screwing up the layout
+'evaluation::location --[norank]-> location
+
+' so instead make a dangling arrow using a hidden class
+skinparam class {
+    BackgroundColor<<Ghost>> Transparent
+    BorderColor<<Ghost>> Transparent
+    EntityColor<<Ghost>> Transparent
+}
+class " " as hiddenLocation1 <<Ghost>>
+hide hiddenLocation1 circle
+evaluation::location --> hiddenLocation1
+!if (SHOW_FIELDS == "true")
+' Also ensure the hidden class is somewhere "en route" to location
+hiddenLocation1 -[hidden]-> activity
+!else
+' Also Impossible to get this one on without screwing up the layout
+'evaluation -d[norank]--> location
+!endif
+
+evidence::activity --> activity
+
+measurement::activity --> activity
+
+' Somewhat similarly for measurement --> location
+!if (SHOW_FIELDS == "true")
+class " " as hiddenLocation2 <<Ghost>>
+hide hiddenLocation2 circle
+measurement::location --> hiddenLocation2
+' Also ensure the hidden class is somewhere "en route" to location
+hiddenLocation2 -[hidden]-> location
+!else
+measurement --> location
+!endif
+
 collection::activities --> activity
+
 project::activities --> activity
 project::location --> location
-token -l-> activity : tokenizes
+
+activity::contributions -l--> contribution
+activity::rights --> rights
+activity::location --> location
+activity::project --> project
+
+token --> activity : tokenizes
+
 contribution::contributors --> contributor : made by
-contributor -r-> rights : has
+contributor --> rights : has
+
+funder --> activity : funds
+fundingReceipt::from --> funder
+fundingReceipt::to --> contributor
+fundingReceipt::for --> activity : funds
 
 @enduml
