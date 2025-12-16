@@ -73,11 +73,12 @@ dataclass activity <<largeBold>> #B4E5D0 {
 ' org.hypercerts.claim.evidence
 dataclass evidence {
     !if (SHOW_FIELDS == "true")
-    activity?
+    subject?
     content
     title
     shortDescription?
     description?
+    relationType?
     createdAt
     !endif
 }
@@ -85,7 +86,7 @@ dataclass evidence {
 ' org.hypercerts.claim.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
-    activity?
+    subject?
     measurers[]
     metric
     value
@@ -100,11 +101,11 @@ dataclass measurement {
 ' org.hypercerts.claim.evaluation
 dataclass evaluation {
     !if (SHOW_FIELDS == "true")
-    subject
+    subject?
     summary
     evaluators[]
-    measurements[]?
-    evidence[]?
+    content[]?
+    score
     location?
     createdAt
     !endif
@@ -116,8 +117,8 @@ dataclass contribution {
     role?
     contributors[]
     description?
-    startDate
-    endDate
+    startDate?
+    endDate?
     createdAt
     !endif
 }
@@ -226,8 +227,8 @@ activity -l[hidden]-> token
 'contribution -r[hidden]-> contributor
 'fundingReceipt -[hidden]-> contributor
 
-evaluation::evidence --> evidence
-evaluation::measurements --> measurement
+evaluation::subject --> evidence
+evaluation::subject --> measurement
 evaluation::subject --> activity
 
 ' Impossible to get this one on without screwing up the layout
@@ -250,9 +251,9 @@ hiddenLocation1 -[hidden]-> activity
 'evaluation -d[norank]--> location
 !endif
 
-evidence::activity --> activity
+evidence::subject --> activity
 
-measurement::activity --> activity
+measurement::subject --> activity
 
 ' Somewhat similarly for measurement --> location
 !if (SHOW_FIELDS == "true")
@@ -275,14 +276,21 @@ activity::rights --> rights
 activity::location --> location
 activity::project --> project
 
-token --> activity : tokenizes
-
 contribution::contributors --> contributor : made by
-contributor --> rights : has
 
-funder --> activity : funds
+' These ones are not described by any lexicon, but are added to
+' the diagram for clarity
+token ..> activity : tokenizes
+funder ..> activity : funds
+contributor ..> rights : has
+
+' These two are strings which will reference the counterparty's
+' DID or human-readable name (if they're not on ATProto).
+' However we still deliberately use solid arrows because they are
+' explicitly described within the fundingReceipt lexicon.
 fundingReceipt::from --> funder
 fundingReceipt::to --> contributor
+
 fundingReceipt::for --> activity : funds
 
 @enduml

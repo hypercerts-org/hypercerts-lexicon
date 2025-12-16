@@ -158,7 +158,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Description:** A contribution made toward a hypercert's impact.
 
-**Key:** `any`
+**Key:** `tid`
 
 #### Properties
 
@@ -177,20 +177,21 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.evaluation`
 
-**Description:** An evaluation of a hypercert or other claim
+**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
 
 **Key:** `tid`
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                                | Comments                                            |
-| ------------- | -------- | -------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
-| `subject`     | `ref`    | ✅       | A strong reference to the evaluated claim                                  | (e.g measurement, hypercert, contribution, etc)     |
-| `evaluators`  | `array`  | ✅       | DIDs of the evaluators                                                     |                                                     |
-| `evaluations` | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology |                                                     |
-| `summary`     | `string` | ✅       | Brief evaluation summary                                                   |                                                     |
-| `location`    | `ref`    | ❌       | An optional reference for georeferenced evaluations                        | References must conform to `app.certified.location` |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created          |                                                     |
+| Property     | Type     | Required | Description                                                                | Comments                                            |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------- | --------------------------------------------------- |
+| `subject`    | `ref`    | ❌       | A strong reference to what is being evaluated                              | (e.g activity, measurement, contribution, etc.)     |
+| `evaluators` | `array`  | ✅       | DIDs of the evaluators                                                     |                                                     |
+| `content`    | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology |                                                     |
+| `summary`    | `string` | ✅       | Brief evaluation summary                                                   |                                                     |
+| `score`      | `object` | ❌       | Optional overall score for this evaluation on a numeric scale              | Object with `min`, `max`, and `value` (integers)    |
+| `location`   | `ref`    | ❌       | An optional reference for georeferenced evaluations                        | References must conform to `app.certified.location` |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created          |                                                     |
 
 ---
 
@@ -198,20 +199,21 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.evidence`
 
-**Description:** A piece of evidence supporting a hypercert claim
+**Description:** A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.
 
-**Key:** `any`
+**Key:** `tid`
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                | Comments                                                                            |
-| ------------------ | -------- | -------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `activity`         | `ref`    | ❌       | A strong reference to the activity this evidence is for                    | The record referenced must conform with the lexicon `org.hypercerts.claim.activity` |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blobs) supporting a hypercert claim            |                                                                                     |
-| `title`            | `string` | ✅       | Title to describe the nature of the evidence                               |                                                                                     |
-| `shortDescription` | `string` | ❌       | Short description explaining what this evidence demonstrates or proves     |                                                                                     |
-| `description`      | `string` | ❌       | Optional longer description describing the impact claim evidence.          |                                                                                     |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this hypercert claim was originally created |                                                                                     |
+| Property           | Type     | Required | Description                                                       | Comments                                             |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| `subject`          | `ref`    | ❌       | A strong reference to the record this evidence relates to         | (e.g. an activity, project, claim, or evaluation)    |
+| `content`          | `union`  | ✅       | A piece of evidence (URI or blob) related to the subject record   | May support, clarify, or challenge a hypercert claim |
+| `title`            | `string` | ✅       | Title to describe the nature of the evidence                      |                                                      |
+| `shortDescription` | `string` | ❌       | Short description explaining what this evidence shows             |                                                      |
+| `description`      | `string` | ❌       | Longer description describing the evidence in more detail         |                                                      |
+| `relationType`     | `string` | ❌       | How this evidence relates to the subject                          | Known values: `supports`, `challenges`, `clarifies`  |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created |                                                      |
 
 ---
 
@@ -219,23 +221,23 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.measurement`
 
-**Description:** External measurement data supporting a hypercert claim
+**Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
 
 **Key:** `tid`
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                                   | Comments                                                                            |
-| ------------- | -------- | -------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `activity`    | `ref`    | ❌       | A strong reference to the activity that this measurement is for               | The record referenced must conform with the lexicon `org.hypercerts.claim.activity` |
-| `measurers`   | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                                                     |
-| `metric`      | `string` | ✅       | The metric being measured                                                     |                                                                                     |
-| `value`       | `string` | ✅       | The measured value                                                            |                                                                                     |
-| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                              |                                                                                     |
-| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                                                     |
-| `evidenceURI` | `array`  | ❌       | URIs to supporting evidence or data                                           |                                                                                     |
-| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`                                 |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                                                     |
+| Property      | Type     | Required | Description                                                                   | Comments                                                     |
+| ------------- | -------- | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `subject`     | `ref`    | ❌       | A strong reference to the record this measurement refers to                   | (e.g. an activity, project, or claim)                        |
+| `measurers`   | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                              |
+| `metric`      | `string` | ✅       | The metric being measured                                                     |                                                              |
+| `value`       | `string` | ✅       | The measured value                                                            |                                                              |
+| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                              |                                                              |
+| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                              |
+| `evidenceURI` | `array`  | ❌       | URIs to related evidence or underlying data                                   | (e.g. org.hypercerts.claim.evidence records or raw datasets) |
+| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`          |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                              |
 
 ---
 
@@ -287,9 +289,9 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.rights`
 
-**Description:** Describes the rights that a user has with a hypercert, such as whether it can be sold, transferred, and under what conditions.
+**Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
 
-**Key:** `any`
+**Key:** `tid`
 
 #### Properties
 
@@ -315,7 +317,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 | Property         | Type     | Required | Description                                                                                                                 | Comments                                                    |
 | ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `from`           | `string` | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                 | Format: did                                                 |
+| `from`           | `string` | ✅       | DID of the sender who transferred the funds. If sender wants to stay anonymous, mark this explicitly.                       | Format: did                                                 |
 | `to`             | `string` | ✅       | The recipient of the funds, who can be identified by DID or a clear-text name.                                              |                                                             |
 | `amount`         | `string` | ✅       | Amount of funding received.                                                                                                 |                                                             |
 | `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                               |                                                             |
