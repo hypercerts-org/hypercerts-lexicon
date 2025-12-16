@@ -19,8 +19,8 @@
             "type": "array",
             "description": "DIDs of the entity (or entities) that measured this data",
             "items": {
-              "type": "string",
-              "format": "did"
+              "type": "ref",
+              "ref": "app.certified.defs#did"
             },
             "maxLength": 100
           },

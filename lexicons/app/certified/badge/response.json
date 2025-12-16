@@ -1,0 +1,36 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.badge.response",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Recipient response to a badge award.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["badgeAward", "response", "createdAt"],
+        "properties": {
+          "badgeAward": {
+            "type": "ref",
+            "ref": "app.certified.badge.award",
+            "description": "Reference to the badge award."
+          },
+          "response": {
+            "type": "string",
+            "enum": ["accepted", "rejected"],
+            "description": "The recipient’s response for the badge (accepted or rejected)."
+          },
+          "weight": {
+            "type": "string",
+            "description": "Optional relative weight for accepted badges, assigned by the recipient."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}

@@ -137,6 +137,36 @@ dataclass location {
     !endif
 }
 
+' Certified badges (data class + award + response)
+dataclass badgeDefinition {
+    !if (SHOW_FIELDS == "true")
+    badgeType
+    title
+    icon
+    description?
+    allowedIssuers[]?
+    createdAt
+    !endif
+}
+
+dataclass badgeAward {
+    !if (SHOW_FIELDS == "true")
+    badge
+    subject
+    note?
+    createdAt
+    !endif
+}
+
+dataclass badgeResponse {
+    !if (SHOW_FIELDS == "true")
+    badgeAward
+    response
+    weight?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.claim.rights
 dataclass rights {
     !if (SHOW_FIELDS == "true")
@@ -293,5 +323,12 @@ fundingReceipt::from --> funder
 fundingReceipt::to --> contributor
 
 fundingReceipt::for --> activity : funds
+
+badgeAward::badge --> badgeDefinition
+badgeResponse::badgeAward --> badgeAward
+badgeAward::subject --> contributor
+badgeAward::subject --> activity
+' This screws up the layout
+'badgeAward::subject --[norank]-> project
 
 @enduml
