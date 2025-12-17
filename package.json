@@ -3,16 +3,15 @@
   "version": "0.1.0",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
-  "main": "./index.js",
-  "types": "./index.ts",
+  "main": "./types/index.ts",
+  "types": "./types/index.ts",
   "exports": {
     ".": {
-      "types": "./index.ts",
-      "import": "./index.ts"
+      "types": "./types/index.ts",
+      "import": "./types/index.ts"
     }
   },
   "files": [
-    "index.ts",
     "types",
     "lexicons"
   ],

@@ -37,7 +37,7 @@ following icons:
 
 ## Installation
 
-```
+```bash
 npm i @hypercerts-org/lexicon
 ```
 
