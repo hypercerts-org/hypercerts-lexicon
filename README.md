@@ -192,10 +192,10 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### activityWeight
 
-| Property   | Type     | Required | Description                                                                                                                                                                      |
-| ---------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                       |
-| `weight`   | `string` | ✅       | The weight/importance of this hypercert activity (a percentage from 0-100, stored as a string to avoid float precision issues). The total activity weights should add up to 100. |
+| Property   | Type     | Required | Description                                                                                                                                                                                                                                                                   |
+| ---------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                                                                                                                    |
+| `weight`   | `string` | ✅       | The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 
 ---
 
