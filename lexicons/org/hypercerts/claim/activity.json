@@ -127,7 +127,7 @@
         },
         "weight": {
           "type": "string",
-          "description": "The weight/importance of this hypercert activity in the project (a percentage from 0-100, stored as a string to avoid float precision issues). The total activity weights should add up to 100."
+          "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
         }
       }
     }
