@@ -1,0 +1,36 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.badge.award",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Records a badge award to a user, project, or activity claim.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["badge", "subject", "createdAt"],
+        "properties": {
+          "badge": {
+            "type": "ref",
+            "ref": "app.certified.badge.definition",
+            "description": "Reference to the badge definition for this award."
+          },
+          "subject": {
+            "type": "union",
+            "description": "Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim.",
+            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional statement explaining the reason for this badge award."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}

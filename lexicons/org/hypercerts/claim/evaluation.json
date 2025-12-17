@@ -38,8 +38,8 @@
             "type": "array",
             "description": "DIDs of the evaluators",
             "items": {
-              "type": "string",
-              "format": "did"
+              "type": "ref",
+              "ref": "app.certified.defs#did"
             },
             "maxLength": 1000
           },

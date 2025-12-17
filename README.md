@@ -110,6 +110,53 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `description`  | `string` | ❌       | Optional description for this location                                                                                    |          |
 | `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |          |
 
+### Badges Lexicon
+
+**Lexicon IDs:** `app.certified.badge.definition`, `app.certified.badge.award`, `app.certified.badge.response`
+
+**Description:** Defines badge metadata, award records, and recipient responses for certified badges that can be used across protocols.
+
+#### Badge Definition
+
+**Lexicon ID:** `app.certified.badge.definition`
+
+**Key:** `tid`
+
+| Property         | Type     | Required | Description                                                            |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------- |
+| `badgeType`      | `string` | ✅       | Category of the badge (e.g., endorsement, participation, affiliation). |
+| `title`          | `string` | ✅       | Human-readable title of the badge.                                     |
+| `icon`           | `blob`   | ✅       | Icon representing the badge (accepted `image/*` types, maxSize 1MB).   |
+| `description`    | `string` | ❌       | Optional short statement describing the badge.                         |
+| `allowedIssuers` | `array`  | ❌       | Optional allowlist of DIDs allowed to issue this badge.                |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.     |
+
+#### Badge Award
+
+**Lexicon ID:** `app.certified.badge.award`
+
+**Key:** `tid`
+
+| Property    | Type     | Required | Description                                                                          |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------ |
+| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award (`app.certified.badge.definition`). |
+| `subject`   | `union`  | ✅       | Entity the badge award is for (either a DID or a specific AT Protocol record).       |
+| `note`      | `string` | ❌       | Optional explanation for the award.                                                  |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                   |
+
+#### Badge Response
+
+**Lexicon ID:** `app.certified.badge.response`
+
+**Key:** `tid`
+
+| Property     | Type     | Required | Description                                                            |
+| ------------ | -------- | -------- | ---------------------------------------------------------------------- |
+| `badgeAward` | `ref`    | ✅       | Reference to the badge award (`app.certified.badge.award`).            |
+| `response`   | `string` | ✅       | Enum: `accepted` or `rejected`.                                        |
+| `weight`     | `string` | ❌       | Optional relative weight assigned by the recipient (stored as string). |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.     |
+
 ---
 
 ## Hypercerts Lexicons
