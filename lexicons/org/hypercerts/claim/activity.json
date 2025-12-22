@@ -69,9 +69,12 @@
             "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights."
           },
           "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the activity was performed. The record referenced must conform with the lexicon app.certified.location."
+            "type": "array",
+            "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef" 
+            }
           },
           "project": {
             "type": "string",
