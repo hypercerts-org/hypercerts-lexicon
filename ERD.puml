@@ -63,7 +63,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     startDate
     endDate
     contributions[]?
-    location?
+    locations[]?
     rights?
     project?
     createdAt
@@ -304,7 +304,7 @@ project::location --> location
 
 activity::contributions -l--> contribution
 activity::rights --> rights
-activity::location --> location
+activity::locations --> location
 activity::project --> project
 
 contribution::contributors --> contributor : made by
