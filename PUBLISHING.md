@@ -1,34 +1,66 @@
 # Publishing Guide for Maintainers
 
 This document describes how to publish the `@hypercerts-org/lexicon`
-package to npm using GitHub Actions workflows. All publishing
-workflows are manually triggered to give you full control over when
-releases are made.
+package to npm using GitHub Actions workflows with Changesets. All
+publishing workflows are manually triggered to give you full control
+over when releases are made.
 
 ## Prerequisites
 
 Before publishing, ensure you have:
 
 1. **GitHub Secrets configured:**
-   - `GH_PA_TOKEN`: GitHub Personal Access Token with permissions for
-     releases
+   - `RELEASE_PAT`: GitHub Personal Access Token with permissions to bypass
+     branch protection rules. Required for the beta release workflow that
+     commits and pushes version changes to protected branches.
+     - **Recommended:** Fine-grained Personal Access Token
+       - Create at: <https://github.com/settings/tokens?type=beta>
+       - Repository access: Select this repository
+       - Repository permissions: `Contents` (read and write), `Metadata`
+         (read-only)
+     - **Alternative:** Classic Personal Access Token (if fine-grained
+       doesn't work with your branch protection settings)
+       - Create at: <https://github.com/settings/tokens>
+       - Required scopes: `repo` (full control of private repositories)
+     - This is needed because `GITHUB_TOKEN` cannot bypass branch protection
+     - **Note:** Ensure branch protection rules allow the token to bypass
+       protection (uncheck "Do not allow bypassing the above settings" or
+       add the token as an allowed actor)
    - `NPM_TOKEN`: npm access token with publish permissions for
      `@hypercerts-org` scope
 
-2. **GitHub Environments configured:**
-   - `test`: For the build-and-test job
-   - `staging`: For the semantic-release job
+## Adding Changesets
 
-## Publishing a Release
+Before publishing, you need to create changesets for any user-facing
+changes:
 
-To publish a new release to npm:
+```bash
+npm run changeset
+```
+
+This will:
+
+1. Prompt you to select which packages changed
+2. Ask for the version bump type (major/minor/patch)
+3. Create a markdown file in `.changeset/` with your changes
+
+**Note:** Changesets generates files with random names (e.g.,
+`beige-clowns-relax.md`). This is intentional to prevent filename
+collisions when multiple contributors create changesets simultaneously.
+The filename doesn't affect version ordering—Changesets uses git history
+to determine the order of changes. You can rename these files if desired,
+but it's not necessary and not recommended in collaborative environments.
+
+## Publishing a Stable Release
+
+To publish a stable release to npm:
 
 1. **Navigate to GitHub Actions:**
    - Go to the repository on GitHub
    - Click on the "Actions" tab
 
 2. **Select the workflow:**
-   - Choose "Build and release" from the workflow list
+   - Choose "Release" from the workflow list
 
 3. **Run the workflow:**
    - Click "Run workflow"
@@ -36,53 +68,58 @@ To publish a new release to npm:
    - Click "Run workflow" to start
 
 4. **What happens:**
-   - The workflow runs linting and regenerates TypeScript types
-   - If successful, semantic-release analyzes your commits
-   - If there are version-worthy changes, it:
-     - Determines the new version based on
-       [Conventional Commits](https://www.conventionalcommits.org/)
-     - Updates `CHANGELOG.md`
-     - Creates a GitHub release
-     - Publishes to npm with the new version
+   - The workflow validates the code and regenerates TypeScript types
+   - If there are pending changesets, it creates a "Release Pull Request"
+   - Merge the Release PR to publish to npm with the `latest` tag
+   - If no changesets exist, nothing is published
 
-## Publishing a Prerelease
+## Publishing a Beta Release
 
 To publish a beta/prerelease version:
 
 1. **Navigate to GitHub Actions:**
    - Go to the "Actions" tab
 
-2. **Select the prerelease workflow:**
-   - Choose "Build and release - staging"
+2. **Select the workflow:**
+   - Choose "Release Beta"
 
 3. **Run the workflow:**
    - Click "Run workflow"
-   - Select the branch (typically `develop` or a feature branch)
+   - Select the branch (must be `main`)
    - Click "Run workflow"
 
 4. **What happens:**
-   - Same process as above, but publishes with a `beta` tag
-   - Version format: `1.2.3-beta.1`, `1.2.3-beta.2`, etc.
+   - The workflow enters beta prerelease mode (if not already)
+   - Versions packages based on pending changesets
+   - Publishes to npm with the `beta` tag
+   - Version format: `0.9.0-beta.1`, `0.9.0-beta.2`, etc.
+   - Commits and pushes version changes back to the repository
+
+**Note:** This workflow requires the `RELEASE_PAT` secret to bypass
+branch protection rules when pushing version changes.
 
 ## Validating Releases (PRs)
 
-When you open a pull request, the "Build and release - staging"
-workflow automatically runs in dry-run mode to:
+When you open a pull request, the "PR Check" workflow automatically
+runs to:
 
-- Validate that the code builds successfully
-- Check that types regenerate correctly
-- Show what version would be released (without actually publishing)
+- Check if package changes (lexicons, types, package.json) have
+  corresponding changesets
+- Warn if changesets are missing
 
-This helps catch issues before merging.
+This helps ensure all user-facing changes are properly documented
+before merging.
 
 ## Version Management
 
-Versions are automatically determined by semantic-release based on
-commit messages:
+Versions are determined by Changesets:
 
-- `feat:` → minor version bump (1.0.0 → 1.1.0)
-- `fix:` → patch version bump (1.0.0 → 1.0.1)
-- `BREAKING CHANGE:` or `!` → major version bump (1.0.0 → 2.0.0)
+- **Patch**: Bug fixes and minor updates (0.9.0 → 0.9.1)
+- **Minor**: New features (0.9.0 → 0.10.0)
+- **Major**: Breaking changes (0.9.0 → 1.0.0)
+
+You specify the version bump type when creating a changeset with
+`npm run changeset`.
 
 The `prepublishOnly` script ensures types are regenerated before
 publishing, so the published package always includes the latest
