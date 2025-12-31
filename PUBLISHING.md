@@ -1,33 +1,61 @@
 # Publishing Guide for Maintainers
 
 This document describes how to publish the `@hypercerts-org/lexicon`
-package to npm using GitHub Actions workflows with Changesets. All
-publishing workflows are manually triggered to give you full control
-over when releases are made.
+package to npm using GitHub Actions workflows with Changesets. The
+workflow uses separate branches for beta and stable releases, with all
+releases manually triggered to give you full control over when releases
+are made.
+
+## Branch Strategy
+
+- **`develop` branch**: Beta/prerelease versions
+- **`main` branch**: Stable releases
+
+**Suggested Flow:** `feature` → `develop` (beta) → `main` (stable)
+
+**Note:** Direct development on `main` is also supported. The `develop` → `main` flow is suggested when you want to publish beta versions for testing before stable releases. If you work directly on `main`, you can skip the beta testing phase and go straight to stable releases.
+
+### Release Flow
+
+```text
+┌──────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│  feature/* ──────────────────┐                                   │
+│       │                      │                                   │
+│       │  npm run changeset   │ PR                                │
+│       │  (describe changes)  │                                   │
+│       ▼                      ▼                                   │
+│  ┌─────────┐  merge    ┌──────────┐                              │
+│  │ commit  │ ────────► │ develop  │ ──► Manual publish @beta     │
+│  │  + .md  │           └────┬─────┘     (0.9.0-beta.1)           │
+│  └─────────┘                │                                    │
+│                             │ PR (after: npm changeset pre exit) │
+│                             ▼                                    │
+│                        ┌────────┐                                │
+│                        │  main  │ ──► Creates "Release PR"       │
+│                        └────┬───┘                                │
+│                             │                                    │
+│                             │ merge Release PR                   │
+│                             ▼                                    │
+│                     ┌──────────────┐                             │
+│                     │ npm publish  │ ──► @latest (0.9.0)         │
+│                     └──────────────┘                             │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
 
 ## Prerequisites
 
 Before publishing, ensure you have:
 
-1. **GitHub Secrets configured:**
-   - `RELEASE_PAT`: GitHub Personal Access Token with permissions to bypass
-     branch protection rules. Required for the beta release workflow that
-     commits and pushes version changes to protected branches.
-     - **Recommended:** Fine-grained Personal Access Token
-       - Create at: <https://github.com/settings/tokens?type=beta>
-       - Repository access: Select this repository
-       - Repository permissions: `Contents` (read and write), `Metadata`
-         (read-only)
-     - **Alternative:** Classic Personal Access Token (if fine-grained
-       doesn't work with your branch protection settings)
-       - Create at: <https://github.com/settings/tokens>
-       - Required scopes: `repo` (full control of private repositories)
-     - This is needed because `GITHUB_TOKEN` cannot bypass branch protection
-     - **Note:** Ensure branch protection rules allow the token to bypass
-       protection (uncheck "Do not allow bypassing the above settings" or
-       add the token as an allowed actor)
-   - `NPM_TOKEN`: npm access token with publish permissions for
-     `@hypercerts-org` scope
+1. **npm Trusted Publisher configured:**
+   - The workflow uses npm Trusted Publishers via GitHub OIDC for secure,
+     token-less publishing
+   - Configure on npmjs.com: Package settings → Publishing access → Add a
+     GitHub Actions publisher
+   - Workflow name: `Release`
+   - See: <https://docs.npmjs.com/trusted-publishers>
+   - No `NPM_TOKEN` secret is required
 
 ## Adding Changesets
 
@@ -49,27 +77,45 @@ This will:
 collisions when multiple contributors create changesets simultaneously.
 The filename doesn't affect version ordering—Changesets uses git history
 to determine the order of changes. You can rename these files if desired,
-but it's not necessary and not recommended in collaborative environments.
+but it's not necessary.
 
 ## Publishing a Stable Release
 
+**If merging from `develop` → `main`:** Before merging, you must exit prerelease mode on the `develop` branch:
+
+```bash
+# On develop branch
+npm run changeset pre exit
+git add .changeset/pre.json
+git commit -m "chore: exit prerelease mode"
+git push
+```
+
+This sets the exit intent in `pre.json`, which is required before merging to `main`. The PR check will verify this.
+
+**If working directly on `main`:** You can skip this step since `pre.json` won't exist.
+
 To publish a stable release to npm:
 
-1. **Navigate to GitHub Actions:**
-   - Go to the repository on GitHub
-   - Click on the "Actions" tab
+1. **If merging from `develop` → `main`:**
+   - Run `npm run changeset pre exit` on `develop` branch
+   - Commit and push the change
+   - Merge `develop` → `main` (the PR check will verify exit intent)
 
-2. **Select the workflow:**
-   - Choose "Release" from the workflow list
+   **If working directly on `main`:**
+   - Skip this step and proceed to step 2
 
-3. **Run the workflow:**
+2. **Run the workflow:**
+   - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
    - Click "Run workflow"
-   - Select the branch (typically `main`)
+   - Select the branch: **`main`** (the workflow automatically detects this is a stable release)
    - Click "Run workflow" to start
 
-4. **What happens:**
+3. **What happens:**
    - The workflow validates the code and regenerates TypeScript types
+   - If `pre.json` exists (from `develop`), verifies that prerelease mode has been exited
    - If there are pending changesets, it creates a "Release Pull Request"
+   - The Release PR will remove prerelease tags (if any) and exit prerelease mode
    - Merge the Release PR to publish to npm with the `latest` tag
    - If no changesets exist, nothing is published
 
@@ -77,38 +123,37 @@ To publish a stable release to npm:
 
 To publish a beta/prerelease version:
 
-1. **Navigate to GitHub Actions:**
-   - Go to the "Actions" tab
-
-2. **Select the workflow:**
-   - Choose "Release Beta"
-
-3. **Run the workflow:**
+1. **Run the workflow:**
+   - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
    - Click "Run workflow"
-   - Select the branch (must be `main`)
+   - Select the branch: **`develop`** (the workflow automatically detects this is a beta release)
    - Click "Run workflow"
 
-4. **What happens:**
-   - The workflow enters beta prerelease mode (if not already)
+2. **What happens:**
+   - The workflow validates the code and regenerates TypeScript types
+   - Enters beta prerelease mode (if not already) and commits `pre.json` to `develop`
    - Versions packages based on pending changesets
    - Publishes to npm with the `beta` tag
    - Version format: `0.9.0-beta.1`, `0.9.0-beta.2`, etc.
-   - Commits and pushes version changes back to the repository
+   - Commits and pushes version changes back to the `develop` branch
 
-**Note:** This workflow requires the `RELEASE_PAT` secret to bypass
-branch protection rules when pushing version changes.
+**Note:** Beta releases run on the `develop` branch, so no `RELEASE_PAT` is needed (unlike protected `main` branch).
 
 ## Validating Releases (PRs)
 
-When you open a pull request, the "PR Check" workflow automatically
+When you open a pull request to `main`, the "PR Check" workflow automatically
 runs to:
 
 - Check if package changes (lexicons, types, package.json) have
   corresponding changesets
 - Warn if changesets are missing
+- **Reject the PR if `pre.json` exists without exit intent** - This only applies
+  when merging from `develop` to `main`. It ensures prerelease mode has been
+  properly exited before merging. Direct work on `main` doesn't have `pre.json`,
+  so this check is skipped.
 
-This helps ensure all user-facing changes are properly documented
-before merging.
+This helps ensure all user-facing changes are properly documented and that
+prerelease mode is correctly managed when using the `develop` → `main` flow.
 
 ## Version Management
 
