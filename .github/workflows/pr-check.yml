@@ -1,0 +1,29 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  changeset-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - run: npm ci
+      - name: Check for changeset
+        run: |
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "^lexicons/\|^types/\|^package.json"; then
+            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "^\.changeset/.*\.md$"; then
+              echo "Changeset found"
+            else
+              echo "::warning::No changeset found. Run 'npm run changeset' if this PR includes user-facing changes."
+            fi
+          else
+            echo "No package changes detected"
+          fi
