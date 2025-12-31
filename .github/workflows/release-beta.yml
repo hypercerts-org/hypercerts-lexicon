@@ -20,8 +20,9 @@ jobs:
       - name: Check RELEASE_PAT secret exists
         run: |
           if [ -z "${{ secrets.RELEASE_PAT }}" ]; then
-            echo "Error: RELEASE_PAT secret is required but not set"
-            echo "This workflow requires a Personal Access Token to bypass branch protection rules"
+            echo "Error: RELEASE_PAT secret is required but not set."
+            echo "This workflow requires a Personal Access Token to bypass branch protection rules."
+            echo "See PUBLISHING.md."
             exit 1
           fi
       - uses: actions/checkout@v6
