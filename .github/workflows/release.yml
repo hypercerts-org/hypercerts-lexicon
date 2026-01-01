@@ -77,9 +77,21 @@ jobs:
       # Beta-specific: Version packages manually
       - name: Version packages
         if: env.RELEASE_TYPE == 'beta'
+        # GITHUB_TOKEN is required for @changesets/changelog-github to fetch PR/commit
+        # information from GitHub API when generating changelog entries
         run: npm run version-packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Beta-specific: Commit and push version changes (before publishing)
+      - name: Commit and push version changes
+        if: env.RELEASE_TYPE == 'beta'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: version packages (beta)"
+          git push
 
       # No .npmrc creation needed - npm Trusted Publishers uses GitHub OIDC tokens
       # automatically via the id-token: write permission and registry-url configuration
@@ -101,22 +113,13 @@ jobs:
       # Beta-specific: Publish beta packages directly
       - name: Publish beta packages
         if: env.RELEASE_TYPE == 'beta'
-        # Run check first, then publish with beta tag
+        # Run check first, then publish with beta tag using changesets
+        # Note: We use npx directly to pass --tag flag to changeset, not npm
         run: |
           npm run check
-          npm run changeset publish --tag beta
+          npx changeset publish --tag beta
         env:
           NPM_CONFIG_PROVENANCE: true
-
-      # Beta-specific: Commit and push version changes
-      - name: Commit and push version changes
-        if: env.RELEASE_TYPE == 'beta'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --staged --quiet || git commit -m "chore: version packages (beta)"
-          git push
 
       # Stable release: Log published packages
       - name: Log published packages
