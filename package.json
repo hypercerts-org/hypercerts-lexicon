@@ -29,7 +29,7 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api",
+    "check": "npm run lint && npm run gen-api && npm run typecheck",
     "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./types",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
     "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > lexicons.ts",
@@ -37,7 +37,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "npm run format:check",
-    "prepublishOnly": "npm run lint && npm run check",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run check",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "npm run check && changeset publish"
@@ -54,6 +55,7 @@
     "@atproto/lexicon": "^0.5.1",
     "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.8",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "typescript": "^5.7.2"
   }
 }
