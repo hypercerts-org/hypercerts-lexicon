@@ -53,9 +53,14 @@ Before publishing, ensure you have:
      token-less publishing
    - Configure on npmjs.com: Package settings → Publishing access → Add a
      GitHub Actions publisher
-   - Workflow name: `Release`
+   - **Required settings:**
+     - Organization/User: `hypercerts-org`
+     - Repository: `hypercerts-lexicon`
+     - Workflow filename: `release.yml` (must match exactly, case-sensitive)
+   - The npm CLI (v11.5.1+) automatically detects OIDC and uses it
    - See: <https://docs.npmjs.com/trusted-publishers>
-   - No `NPM_TOKEN` secret is required
+   - **No `NPM_TOKEN` secret is required** - Trusted Publishers eliminates
+     the need for long-lived tokens
 
 ## Adding Changesets
 
