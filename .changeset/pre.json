@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@hypercerts-org/lexicon": "0.9.0"
+  },
+  "changesets": []
+}
