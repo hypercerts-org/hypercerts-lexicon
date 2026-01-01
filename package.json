@@ -40,7 +40,7 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run check",
     "changeset": "changeset",
-    "version-packages": "changeset version",
+    "version-packages": "changeset version && npm install --package-lock-only",
     "release": "npm run check && changeset publish"
   },
   "dependencies": {
