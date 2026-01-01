@@ -69,6 +69,53 @@ npm run format
 npm run check
 ```
 
+### Versioning
+
+**For AI agents**: Create changeset files directly in `.changeset/` directory.
+The `npm run changeset` command is interactive and not suitable for automation.
+
+**Changeset file format** (create a `.md` file in `.changeset/`):
+
+```markdown
+---
+"@hypercerts-org/lexicon": minor
+---
+
+Description of the changes. This will appear in the changelog.
+```
+
+- **Version bump types**: `major`, `minor`, or `patch`
+  - **Note**: While the package is still on version 0.x (initial development),
+    do not use `major` version bumps. Use `minor` for potentially breaking
+    changes and `patch` for non-breaking changes, as semantic versioning
+    considers 0.x versions unstable where breaking changes are expected.
+- **Filename**: Use a descriptive name or random identifier (e.g., `add-activity-lexicon.md`)
+- **Package name**: Always use `"@hypercerts-org/lexicon"` for this repository
+
+**IMPORTANT: Agents should NEVER perform releases.** The release process is
+handled manually by maintainers through GitHub Actions workflows. Agents should
+only create changeset files.
+
+**Release Process Overview** (for reference only - agents do not perform this):
+
+The repository uses a two-branch release strategy:
+
+- **`develop` branch**: Beta/prerelease versions
+  - Maintainers manually trigger the GitHub Actions release workflow from `develop`
+  - Publishes to npm with the `beta` tag (e.g., `0.9.0-beta.1`)
+  - Used for testing before stable releases
+
+- **`main` branch**: Stable releases
+  - Before merging `develop` → `main`, maintainers must run `npm run changeset pre exit` on `develop`
+  - Maintainers manually trigger the GitHub Actions release workflow from `main`
+  - Creates a "Release Pull Request" that must be merged to publish
+  - Publishes to npm with the `latest` tag (e.g., `0.9.0`)
+
+**Suggested Flow:** `feature` → `develop` (beta) → `main` (stable)
+
+Agents should create changesets when making changes, but releases are handled
+exclusively by maintainers through the GitHub Actions workflow.
+
 ## Architecture
 
 ### Lexicon Structure
@@ -125,6 +172,9 @@ types/              # Generated - do not edit
 3. Update `README.md` as appropriate
 4. Run `npm run format` to ensure everything is formatted correctly
    via Prettier.
+5. Create a changeset file in `.changeset/` if the changes affect the public
+   API or require a version bump (see "Versioning" section below). Create
+   the file directly - do not use the interactive `npm run changeset` command.
 
 ### Testing Changes
 
@@ -145,6 +195,18 @@ npm run check
 - Use `npm run check` before committing to ensure valid lexicons
 - **Never edit `types/` directly** - all changes are lost on regeneration
 - The `.prettierignore` excludes `types/` since it's generated code
+- **Create changesets** when making changes that affect the public API:
+  - Adding new lexicons
+  - Modifying existing lexicon schemas (breaking or non-breaking)
+  - Changing TypeScript type exports
+  - Any change that requires a version bump
+    **For AI agents**: Create changeset files directly in `.changeset/` directory
+    (do not use the interactive `npm run changeset` command). See the "Versioning"
+    section for the file format.
+- **NEVER perform releases**: Agents should only create changeset files. The
+  release process (including running `npm run version-packages`, `npm run release`,
+  or triggering GitHub Actions workflows) must be done manually by maintainers.
+  See the "Versioning" section for details on the release process.
 
 ## Entity Relationships
 
