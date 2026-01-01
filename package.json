@@ -3,16 +3,24 @@
   "version": "0.10.0-beta.0",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
-  "main": "./types/index.ts",
-  "types": "./types/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./types/index.ts",
-      "import": "./types/index.ts"
-    }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./lexicons": {
+      "types": "./dist/lexicons.d.ts",
+      "import": "./dist/lexicons.mjs",
+      "require": "./dist/lexicons.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "types",
+    "dist",
     "lexicons"
   ],
   "keywords": [
@@ -29,33 +37,50 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run lint && npm run gen-api && npm run typecheck",
-    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./types",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build",
+    "build": "rollup -c",
+    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
-    "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > lexicons.ts",
+    "//gen-ts": "UNUSED - use gen-api instead",
+    "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
+    "gen-index": "node ./scripts/generate-exports.js",
     "lex": "lex",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "npm run format:check",
+    "lint": "npm run format:check && npm run eslint",
+    "eslint": "eslint generated/exports.ts",
     "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist generated",
     "prepublishOnly": "npm run check",
     "changeset": "changeset",
     "version-packages": "changeset version && npm install --package-lock-only",
     "release": "npm run check && changeset publish"
   },
   "dependencies": {
-    "@atproto/lex-cli": "^0.9.5"
-  },
-  "peerDependencies": {
-    "@atproto/xrpc": "*",
-    "@atproto/lexicon": "*"
+    "@atcute/leaflet": "^1.0.15",
+    "@atproto/lexicon": "^0.5.1",
+    "multiformats": "^13.3.6"
   },
   "devDependencies": {
+    "@atproto/lex-cli": "^0.9.5",
     "@atproto/xrpc": "^0.7.5",
-    "@atproto/lexicon": "^0.5.1",
     "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.8",
+    "@eslint/js": "^9.39.2",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.7.2"
+    "rollup": "^4.53.3",
+    "rollup-plugin-dts": "^6.2.3",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.51.0"
+  },
+  "peerDependencies": {
+    "@atproto/xrpc": "*"
   }
 }

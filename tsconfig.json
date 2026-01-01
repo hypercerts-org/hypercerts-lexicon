@@ -12,9 +12,16 @@
     "forceConsistentCasingInFileNames": true,
     "declaration": true,
     "declarationMap": true,
-    "noEmit": true,
-    "allowImportingTsExtensions": false
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": ".",
+    "allowImportingTsExtensions": false,
+    "paths": {
+      "../../../pub/leaflet/pages/*": [
+        "./node_modules/@atcute/leaflet/lib/lexicons/types/pub/leaflet/pages/*"
+      ]
+    }
   },
-  "include": ["types/**/*", "lexicons/**/*.json"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["generated/**/*", "lexicons/**/*.json"],
+  "exclude": ["node_modules", "dist", "generated/index.ts"]
 }

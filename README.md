@@ -38,22 +38,31 @@ following icons:
 ## Installation
 
 ```bash
-npm i @hypercerts-org/lexicon
+npm install @hypercerts-org/lexicon
 ```
 
 ## Usage
 
+### Basic Import
+
 ```typescript
-import { AtpBaseClient } from "@hypercerts-org/lexicon";
-import type { HypercertClaim } from "@hypercerts-org/lexicon";
+import {
+  HYPERCERTS_SCHEMAS,
+  ACTIVITY_NSID,
+  validate,
+} from "@hypercerts-org/lexicon";
 
-const client = new AtpBaseClient({
-  service: "https://bsky.social",
-  headers: { Authorization: `Bearer ${token}` },
-});
+// Use with AT Protocol Agent
+import { Agent } from "@atproto/api";
 
-const hypercert: HypercertClaim = {
-  $type: "org.hypercerts.claim.activity",
+const agent = new Agent({ service: "https://bsky.social" });
+
+// Register lexicons with the agent
+agent.api.lex.add(...HYPERCERTS_SCHEMAS);
+
+// Create a record
+const activityRecord = {
+  $type: ACTIVITY_NSID,
   title: "My Impact Work",
   shortDescription: "Description here",
   workScope: "Scope of work",
@@ -62,11 +71,87 @@ const hypercert: HypercertClaim = {
   createdAt: new Date().toISOString(),
 };
 
-await client.org.hypercerts.claim.activity.create(
-  { repo: "did:plc:example" },
-  hypercert,
-);
+// Validate before creating
+const validation = validate(ACTIVITY_NSID, activityRecord);
+if (!validation.valid) {
+  console.error("Validation failed:", validation.errors);
+}
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: ACTIVITY_NSID,
+  record: activityRecord,
+});
 ```
+
+### Accessing NSIDs (Lexicon IDs)
+
+**Recommended**: Use individual NSID constants for cleaner, more readable code:
+
+```typescript
+import { ACTIVITY_NSID, COLLECTION_NSID } from "@hypercerts-org/lexicon";
+
+// Clean and explicit
+const record = {
+  $type: ACTIVITY_NSID,
+  // ...
+};
+```
+
+**Alternative**: Use the NSID namespace object when you need multiple NSIDs:
+
+```typescript
+import { HYPERCERTS_NSIDS } from "@hypercerts-org/lexicon";
+
+// Access via namespace
+const activityId = HYPERCERTS_NSIDS.OrgHypercertsClaimActivity;
+const collectionId = HYPERCERTS_NSIDS.OrgHypercertsClaimCollection;
+```
+
+**Lightweight Bundle**: Import from `/lexicons` for runtime validation without TypeScript types (smaller bundle size):
+
+```typescript
+import { schemas, validate, ids } from "@hypercerts-org/lexicon/lexicons";
+
+// Lighter bundle, but namespace-style access only
+const result = validate(ids.OrgHypercertsClaimActivity, record);
+```
+
+**Note**: Individual constants (e.g., `ACTIVITY_NSID`) are the recommended approach for most use cases as they provide the best developer experience with clear, concise naming.
+
+### TypeScript Types
+
+All lexicon types are exported as namespaces:
+
+```typescript
+import { OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon";
+
+// Use the Main type
+const activity: OrgHypercertsClaimActivity.Main = {
+  $type: "org.hypercerts.claim.activity",
+  title: "My Impact Work",
+  // ... other fields
+};
+```
+
+### Individual Lexicon Imports
+
+Each lexicon is available in two forms:
+
+```typescript
+import {
+  // Raw JSON (untyped) - direct import from JSON files
+  ACTIVITY_LEXICON_JSON,
+
+  // Typed LexiconDoc - from lexicons.get() at module initialization
+  ACTIVITY_LEXICON_DOC,
+} from "@hypercerts-org/lexicon";
+```
+
+| Suffix  | Type                 | Source                    | Use Case                       |
+| ------- | -------------------- | ------------------------- | ------------------------------ |
+| `_JSON` | Untyped JSON         | Direct JSON import        | Raw schema data                |
+| `_DOC`  | `LexiconDoc` (typed) | `lexicons.get()` instance | Type-safe lexicon manipulation |
 
 ## Certified Lexicons
 

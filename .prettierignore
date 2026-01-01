@@ -3,8 +3,9 @@ dist
 build
 coverage
 *.lock
+pnpm-lock.yaml
 *.log
 .DS_Store
-types/
+generated/
 tmp/
 .changeset/pre.json
