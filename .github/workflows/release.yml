@@ -113,12 +113,13 @@ jobs:
       # Beta-specific: Publish beta packages directly
       - name: Publish beta packages
         if: env.RELEASE_TYPE == 'beta'
-        # Run check first, then publish using changesets
-        # Note: In prerelease mode, changesets automatically uses the tag from pre.json
-        # (set to "beta" when entering prerelease mode), so --tag flag is not needed/allowed
+        # Run check first, then publish directly with npm to ensure beta tag
+        # Note: We bypass changeset publish because it publishes first releases to
+        # 'latest' even in prerelease mode. Using npm publish directly gives us
+        # full control over the dist tag for beta releases.
         run: |
           npm run check
-          npx changeset publish
+          npm publish --tag beta --access public --provenance
         env:
           NPM_CONFIG_PROVENANCE: true
 
