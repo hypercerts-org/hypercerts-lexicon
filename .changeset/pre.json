@@ -4,5 +4,7 @@
   "initialVersions": {
     "@hypercerts-org/lexicon": "0.9.0"
   },
-  "changesets": []
+  "changesets": [
+    "initial-version-post-repo-migration"
+  ]
 }

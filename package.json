@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/lexicon",
-  "version": "0.9.0",
+  "version": "0.10.0-beta.0",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
   "main": "./types/index.ts",
