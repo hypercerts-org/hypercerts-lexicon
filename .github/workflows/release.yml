@@ -11,37 +11,113 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # Required for npm Trusted Publishers via GitHub OIDC
+      # See: https://docs.npmjs.com/trusted-publishers
       id-token: write
 
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      # Branch validation: Only allow develop (beta) or main (stable)
+      - name: Validate branch
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
+            echo "Detected beta release from develop branch"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "RELEASE_TYPE=stable" >> $GITHUB_ENV
+            echo "Detected stable release from main branch"
+          else
+            echo "Error: This workflow can only be run from 'develop' (beta) or 'main' (stable) branches"
+            exit 1
+          fi
+
       - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: "npm"
+          # registry-url is required for npm Trusted Publishers
           registry-url: "https://registry.npmjs.org"
+
       - run: npm ci
       - run: npm run check
 
-      - name: Create .npmrc
+      # Stable release: Verify prerelease mode has been exited
+      # The exit intent should already be set on develop before merging to main
+      - name: Verify prerelease mode exit
+        if: env.RELEASE_TYPE == 'stable'
         run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          echo "@hypercerts-org:registry=https://registry.npmjs.org/" >> .npmrc
+          if [ -f .changeset/pre.json ]; then
+            # Check if prerelease mode has been exited (exit intent set)
+            if ! grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
+              echo "Error: Prerelease mode must be exited before merging to main."
+              echo "Run 'npm run changeset pre exit' on the develop branch and commit the change."
+              exit 1
+            fi
+            echo "Prerelease mode exit intent confirmed - changeset version will handle the exit"
+          else
+            echo "No prerelease mode detected (pre.json not present)"
+          fi
 
+      # Beta-specific: Enter prerelease mode (if not already)
+      - name: Enter prerelease mode (if not already)
+        if: env.RELEASE_TYPE == 'beta'
+        run: |
+          if [ ! -f .changeset/pre.json ]; then
+            npx changeset pre enter beta
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .changeset/pre.json
+            git commit -m "chore: enter beta prerelease mode"
+            git push
+          fi
+
+      # Beta-specific: Version packages manually
+      - name: Version packages
+        if: env.RELEASE_TYPE == 'beta'
+        run: npm run version-packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # No .npmrc creation needed - npm Trusted Publishers uses GitHub OIDC tokens
+      # automatically via the id-token: write permission and registry-url configuration
+
+      # Stable release: Use changesets/action which handles versioning and publishing
       - name: Create Release Pull Request or Publish
+        if: env.RELEASE_TYPE == 'stable'
         id: changesets
         uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
         with:
           publish: npm run release
           version: npm run version-packages
-          title: "chore: release packages"
-          commit: "chore: release packages"
+          title: "chore: release package"
+          commit: "chore: release package"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
+      # Beta-specific: Publish beta packages directly
+      - name: Publish beta packages
+        if: env.RELEASE_TYPE == 'beta'
+        # Use npm run release to match regular releases - it runs check before publishing
+        # to ensure validation after versioning (package.json/changelog changes)
+        run: npm run release
+        env:
+          NPM_CONFIG_PROVENANCE: true
+
+      # Beta-specific: Commit and push version changes
+      - name: Commit and push version changes
+        if: env.RELEASE_TYPE == 'beta'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: version packages (beta)"
+          git push
+
+      # Stable release: Log published packages
       - name: Log published packages
-        if: steps.changesets.outputs.published == 'true'
+        if: env.RELEASE_TYPE == 'stable' && steps.changesets.outputs.published == 'true'
         run: echo "Published - ${{ steps.changesets.outputs.publishedPackages }}"
