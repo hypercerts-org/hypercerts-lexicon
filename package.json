@@ -33,7 +33,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/hypercerts-org/hypercerts-lexicon"
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
