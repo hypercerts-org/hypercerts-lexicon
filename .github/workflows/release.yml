@@ -41,6 +41,9 @@ jobs:
           # registry-url is required for npm Trusted Publishers
           registry-url: "https://registry.npmjs.org"
 
+      # Upgrade to npm >=11.5.1 for Trusted Publishers support
+      - run: npm install -g npm@latest
+
       - run: npm ci
       - run: npm run check
 
