@@ -3,6 +3,18 @@
 This file provides guidance to AI coding assistants when working with
 code in this repository.
 
+## ⚠️ CRITICAL REMINDER FOR AI AGENTS
+
+**ALWAYS CREATE A CHANGESET** when making changes that affect the public API:
+
+- Adding or modifying lexicon files
+- Changing generated TypeScript exports
+- Renaming constants, types, or functions
+- Any change that users of this package will need to know about
+
+See the "Versioning" section below for the changeset file format.
+**DO NOT skip this step!** Changesets are required for proper release management.
+
 ## Overview
 
 This repository contains ATProto lexicon definitions for the Hypercerts
@@ -223,11 +235,14 @@ dist/                   # Built output (gitignored)
 5. Run `npm run format` to ensure everything is formatted correctly
    via Prettier
 6. Run `npm run check` to validate, typecheck, and build
-7. Create a changeset file in `.changeset/` if the changes affect the public
-   API or require a version bump (see "Versioning" section). Create
-   the file directly - do not use the interactive `npm run changeset` command
+7. **REQUIRED: Create a changeset file** in `.changeset/` directory
+   - **This step is MANDATORY for ALL changes that affect users**
+   - See "Versioning" section below for file format
+   - Create the file directly - do not use the interactive `npm run changeset` command
 
 **No manual edits needed!** Everything is automatically regenerated.
+
+**⚠️ IMPORTANT: Did you create a changeset?** All public API changes require a changeset!
 
 ### Testing Changes
 
@@ -249,14 +264,34 @@ npm run check
 - **Never edit `generated/` or `dist/` directly** - all changes are lost on regeneration
 - The `.prettierignore` excludes `generated/` and `dist/` since they're auto-generated
 - The `.gitignore` excludes `generated/` and `dist/` to keep the repo clean
-- **Create changesets** when making changes that affect the public API:
-  - Adding new lexicons
-  - Modifying existing lexicon schemas (breaking or non-breaking)
-  - Changing TypeScript type exports
-  - Any change that requires a version bump
-    **For AI agents**: Create changeset files directly in `.changeset/` directory
-    (do not use the interactive `npm run changeset` command). See the "Versioning"
-    section for the file format.
+
+### ⚠️ CHANGESET REQUIREMENTS (MANDATORY)
+
+**AI agents MUST create a changeset file** for ANY of the following changes:
+
+- ✅ Adding new lexicons
+- ✅ Modifying existing lexicon schemas (breaking or non-breaking)
+- ✅ Changing TypeScript type exports
+- ✅ Renaming any exported constants, types, or functions
+- ✅ Modifying generation scripts that affect exported code
+- ✅ Any change that requires a version bump or affects package consumers
+
+**How to create a changeset** (AI agents):
+
+1. Create a new `.md` file in `.changeset/` directory
+2. Use format shown in "Versioning" section
+3. DO NOT use the interactive `npm run changeset` command
+
+**Example scenarios requiring changesets:**
+
+- Renaming `ACTIVITY_LEXICON_NSID` → `ACTIVITY_NSID` (breaking change)
+- Adding a new lexicon file (feature addition)
+- Modifying a lexicon schema field (potentially breaking)
+- Updating generation scripts that change exports
+
+**⚠️ If you're unsure whether a changeset is needed, CREATE ONE ANYWAY.**
+It's better to have an unnecessary changeset than to miss a required one.
+
 - **NEVER perform releases**: Agents should only create changeset files. The
   release process (including running `npm run version-packages`, `npm run release`,
   or triggering GitHub Actions workflows) must be done manually by maintainers.
