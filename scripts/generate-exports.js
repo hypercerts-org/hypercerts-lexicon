@@ -186,6 +186,7 @@ function generateIndex() {
   lines.push(``);
 
   lines.push(`import { lexicons } from "./lexicons.js";`);
+  lines.push(`import type { LexiconDoc } from "@atproto/lexicon";`);
   lines.push(``);
 
   // Imports
@@ -261,11 +262,14 @@ function generateIndex() {
   lines.push(``);
 
   // Export individual lexicon objects from the lexicons instance
-  lines.push(`// Individual lexicon objects (typed, from lexicons.get())`);
+  // Type annotated to prevent TypeScript from inferring the massive internal type
+  lines.push(`// Individual lexicon objects (from lexicons.get())`);
   for (const lex of validLexicons) {
     const docName = importNameToLexiconDocName(lex.importName);
     const nsidName = importNameToNsidName(lex.importName);
-    lines.push(`export const ${docName} = lexicons.get(${nsidName})!;`);
+    lines.push(
+      `export const ${docName}: LexiconDoc = lexicons.get(${nsidName})!;`,
+    );
   }
   lines.push(``);
 
@@ -273,7 +277,9 @@ function generateIndex() {
   lines.push(`/**`);
   lines.push(` * Lexicon document objects organized by semantic record type.`);
   lines.push(` */`);
-  lines.push(`export const HYPERCERTS_LEXICON_DOC = {`);
+  lines.push(
+    `export const HYPERCERTS_LEXICON_DOC: Record<string, LexiconDoc> = {`,
+  );
 
   for (const lex of validLexicons) {
     const friendlyKey = importNameToFriendlyKey(lex.importName);

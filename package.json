@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@atcute/leaflet": "^1.0.15",
-    "@atproto/lexicon": "^0.5.1",
+    "@atproto/lexicon": "^0.6.0",
     "multiformats": "^13.3.6"
   },
   "devDependencies": {
