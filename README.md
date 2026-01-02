@@ -98,14 +98,25 @@ const record = {
 };
 ```
 
-**Alternative**: Use the NSID namespace object when you need multiple NSIDs:
+**Alternative**: Use the semantic NSID object when you need multiple NSIDs:
 
 ```typescript
 import { HYPERCERTS_NSIDS } from "@hypercerts-org/lexicon";
 
-// Access via namespace
-const activityId = HYPERCERTS_NSIDS.OrgHypercertsClaimActivity;
-const collectionId = HYPERCERTS_NSIDS.OrgHypercertsClaimCollection;
+// Access via semantic keys
+const activityId = HYPERCERTS_NSIDS.ACTIVITY;
+const collectionId = HYPERCERTS_NSIDS.COLLECTION;
+const rightsId = HYPERCERTS_NSIDS.RIGHTS;
+```
+
+**Type-based mapping**: If you need to map TypeScript type namespaces to NSIDs:
+
+```typescript
+import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon";
+
+// Access via type namespace names
+const activityId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
+const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimCollection;
 ```
 
 **Lightweight Bundle**: Import from `/lexicons` for runtime validation without TypeScript types (smaller bundle size):
@@ -113,7 +124,7 @@ const collectionId = HYPERCERTS_NSIDS.OrgHypercertsClaimCollection;
 ```typescript
 import { schemas, validate, ids } from "@hypercerts-org/lexicon/lexicons";
 
-// Lighter bundle, but namespace-style access only
+// Lighter bundle, type-based namespace access
 const result = validate(ids.OrgHypercertsClaimActivity, record);
 ```
 
@@ -136,15 +147,17 @@ const activity: OrgHypercertsClaimActivity.Main = {
 
 ### Individual Lexicon Imports
 
-Each lexicon is available in two forms:
+Each lexicon is available in two forms as individual constants:
 
 ```typescript
 import {
   // Raw JSON (untyped) - direct import from JSON files
   ACTIVITY_LEXICON_JSON,
+  RIGHTS_LEXICON_JSON,
 
   // Typed LexiconDoc - from lexicons.get() at module initialization
   ACTIVITY_LEXICON_DOC,
+  RIGHTS_LEXICON_DOC,
 } from "@hypercerts-org/lexicon";
 ```
 
@@ -152,6 +165,21 @@ import {
 | ------- | -------------------- | ------------------------- | ------------------------------ |
 | `_JSON` | Untyped JSON         | Direct JSON import        | Raw schema data                |
 | `_DOC`  | `LexiconDoc` (typed) | `lexicons.get()` instance | Type-safe lexicon manipulation |
+
+Or access all lexicons via semantic mapping objects:
+
+```typescript
+import {
+  HYPERCERTS_LEXICON_JSON,
+  HYPERCERTS_LEXICON_DOC,
+} from "@hypercerts-org/lexicon";
+
+// Access via semantic keys (same keys as HYPERCERTS_NSIDS)
+const activityJSON = HYPERCERTS_LEXICON_JSON.ACTIVITY;
+const activityDoc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
+const rightsJSON = HYPERCERTS_LEXICON_JSON.RIGHTS;
+const rightsDoc = HYPERCERTS_LEXICON_DOC.RIGHTS;
+```
 
 ## Certified Lexicons
 

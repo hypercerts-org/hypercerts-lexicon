@@ -95,6 +95,15 @@ function importNameToNsidName(importName) {
 }
 
 /**
+ * Convert import name to friendly key for HYPERCERTS_NSIDS object
+ * e.g., "ACTIVITY_LEXICON_JSON" -> "ACTIVITY"
+ * e.g., "BADGE_AWARD_LEXICON_JSON" -> "BADGE_AWARD"
+ */
+function importNameToFriendlyKey(importName) {
+  return importName.replace(/_LEXICON_JSON$/, "");
+}
+
+/**
  * Convert file path to namespace export name
  * e.g., "app/certified/location.json" -> "AppCertifiedLocation"
  */
@@ -188,19 +197,12 @@ function generateIndex() {
 
   // Re-export individual lexicons
   lines.push(``);
-  lines.push(`// Re-export individual lexicons for direct access`);
+  lines.push(`// Re-export individual lexicon JSON objects for direct access`);
   lines.push(`export {`);
   for (const lex of validLexicons) {
     lines.push(`  ${lex.importName},`);
   }
   lines.push(`};`);
-  lines.push(``);
-
-  // Re-export type namespaces
-  lines.push(`// Re-export generated types as namespaces (avoiding conflicts)`);
-  for (const lex of validLexicons) {
-    lines.push(`export * as ${lex.namespace} from "${lex.generatedTypePath}";`);
-  }
   lines.push(``);
 
   // Re-export core utilities
@@ -211,7 +213,7 @@ function generateIndex() {
   lines.push(`  lexicons,`);
   lines.push(`  validate,`);
   lines.push(
-    `  ids as HYPERCERTS_NSIDS, // NSID constants mapped to type namespaces`,
+    `  ids as HYPERCERTS_NSIDS_BY_TYPE, // NSID constants mapped to type namespaces`,
   );
   lines.push(`} from "./lexicons.js";`);
   lines.push(``);
@@ -224,12 +226,68 @@ function generateIndex() {
   }
   lines.push(``);
 
+  // Generate HYPERCERTS_NSIDS object (dynamically from discovered lexicons)
+  lines.push(`/**`);
+  lines.push(` * Collection NSIDs organized by semantic record type.`);
+  lines.push(` *`);
+  lines.push(
+    ` * Use these constants when performing record operations to ensure`,
+  );
+  lines.push(` * correct collection names.`);
+  lines.push(` */`);
+  lines.push(`export const HYPERCERTS_NSIDS = {`);
+
+  for (const lex of validLexicons) {
+    const friendlyKey = importNameToFriendlyKey(lex.importName);
+    const nsidConstName = importNameToNsidName(lex.importName);
+    lines.push(`  ${friendlyKey}: ${nsidConstName},`);
+  }
+
+  lines.push(`} as const;`);
+  lines.push(``);
+
+  // Generate HYPERCERTS_LEXICON_JSON object (dynamically from discovered lexicons)
+  lines.push(`/**`);
+  lines.push(` * Lexicon JSON objects organized by semantic record type.`);
+  lines.push(` */`);
+  lines.push(`export const HYPERCERTS_LEXICON_JSON = {`);
+
+  for (const lex of validLexicons) {
+    const friendlyKey = importNameToFriendlyKey(lex.importName);
+    lines.push(`  ${friendlyKey}: ${lex.importName},`);
+  }
+
+  lines.push(`} as const;`);
+  lines.push(``);
+
   // Export individual lexicon objects from the lexicons instance
   lines.push(`// Individual lexicon objects (typed, from lexicons.get())`);
   for (const lex of validLexicons) {
     const docName = importNameToLexiconDocName(lex.importName);
     const nsidName = importNameToNsidName(lex.importName);
     lines.push(`export const ${docName} = lexicons.get(${nsidName})!;`);
+  }
+  lines.push(``);
+
+  // Generate HYPERCERTS_LEXICON_DOC object (dynamically from discovered lexicons)
+  lines.push(`/**`);
+  lines.push(` * Lexicon document objects organized by semantic record type.`);
+  lines.push(` */`);
+  lines.push(`export const HYPERCERTS_LEXICON_DOC = {`);
+
+  for (const lex of validLexicons) {
+    const friendlyKey = importNameToFriendlyKey(lex.importName);
+    const docName = importNameToLexiconDocName(lex.importName);
+    lines.push(`  ${friendlyKey}: ${docName},`);
+  }
+
+  lines.push(`} as const;`);
+  lines.push(``);
+
+  // Re-export type namespaces
+  lines.push(`// Re-export generated types as namespaces (avoiding conflicts)`);
+  for (const lex of validLexicons) {
+    lines.push(`export * as ${lex.namespace} from "${lex.generatedTypePath}";`);
   }
   lines.push(``);
 

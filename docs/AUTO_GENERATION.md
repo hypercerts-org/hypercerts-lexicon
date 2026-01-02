@@ -18,20 +18,33 @@ When you run `npm run gen-api`, the build process:
 
 - **Raw JSON imports** with `_JSON` suffix (e.g., `BADGE_AWARD_LEXICON_JSON`)
 - **Typed LexiconDoc exports** with `_DOC` suffix (e.g., `BADGE_AWARD_LEXICON_DOC`)
+- **Individual NSID constants** with `_NSID` suffix (e.g., `ACTIVITY_NSID`)
 - **Type namespace re-exports** (e.g., `AppCertifiedBadgeAward`)
-- **Core utilities** (`HYPERCERTS_SCHEMAS`, `HYPERCERTS_SCHEMA_DICT`, `lexicons`, `validate`, `HYPERCERTS_NSIDS`)
+- **Semantic mapping objects** (`HYPERCERTS_NSIDS`, `HYPERCERTS_LEXICON_JSON`, `HYPERCERTS_LEXICON_DOC`)
+- **Core utilities** (`HYPERCERTS_SCHEMAS`, `HYPERCERTS_SCHEMA_DICT`, `HYPERCERTS_NSIDS_BY_TYPE`, `lexicons`, `validate`)
 
 ### Naming Conventions
 
 The script generates intelligent names:
 
-| Source                | Raw JSON (untyped)         | LexiconDoc (typed)        | Type Namespace               |
-| --------------------- | -------------------------- | ------------------------- | ---------------------------- |
-| `badge/award.json`    | `BADGE_AWARD_LEXICON_JSON` | `BADGE_AWARD_LEXICON_DOC` | `AppCertifiedBadgeAward`     |
-| `claim/activity.json` | `ACTIVITY_LEXICON_JSON`    | `ACTIVITY_LEXICON_DOC`    | `OrgHypercertsClaimActivity` |
+| Source                | Raw JSON (untyped)         | LexiconDoc (typed)        | NSID Constant      | Type Namespace               | Semantic Key  |
+| --------------------- | -------------------------- | ------------------------- | ------------------ | ---------------------------- | ------------- |
+| `badge/award.json`    | `BADGE_AWARD_LEXICON_JSON` | `BADGE_AWARD_LEXICON_DOC` | `BADGE_AWARD_NSID` | `AppCertifiedBadgeAward`     | `BADGE_AWARD` |
+| `claim/activity.json` | `ACTIVITY_LEXICON_JSON`    | `ACTIVITY_LEXICON_DOC`    | `ACTIVITY_NSID`    | `OrgHypercertsClaimActivity` | `ACTIVITY`    |
 
-- **NSIDs**: Available via `HYPERCERTS_NSIDS` (e.g., `HYPERCERTS_NSIDS.OrgHypercertsClaimActivity`)
-- **Schemas**: Available via `HYPERCERTS_SCHEMAS` (array) or `HYPERCERTS_SCHEMA_DICT` (keyed by namespace)
+**Semantic Mapping Objects** (all share the same keys):
+
+- `HYPERCERTS_NSIDS.ACTIVITY` → NSID string
+- `HYPERCERTS_LEXICON_JSON.ACTIVITY` → Raw JSON
+- `HYPERCERTS_LEXICON_DOC.ACTIVITY` → Typed LexiconDoc
+
+**Type-based Mapping**:
+
+- `HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity` → NSID string
+
+**Schemas**:
+
+- `HYPERCERTS_SCHEMAS` (array) or `HYPERCERTS_SCHEMA_DICT` (keyed by namespace)
 
 ## When to Regenerate
 
