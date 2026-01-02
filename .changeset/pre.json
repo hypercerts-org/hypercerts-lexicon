@@ -5,6 +5,9 @@
     "@hypercerts-org/lexicon": "0.9.0"
   },
   "changesets": [
-    "initial-version-post-repo-migration"
+    "improved-exports-structure",
+    "initial-version-post-repo-migration",
+    "rollup-build-system",
+    "unbundle-type-declarations"
   ]
 }
