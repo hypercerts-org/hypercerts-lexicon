@@ -4,7 +4,6 @@ import typescript from "@rollup/plugin-typescript";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
-import dts from "rollup-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -19,8 +18,8 @@ const getPlugins = () => [
   json(),
   typescript({
     tsconfig: resolve(__dirname, "tsconfig.json"),
-    declaration: false,
-    declarationMap: false,
+    declaration: true,
+    declarationMap: true,
     rootDir: resolve(__dirname),
     outDir: resolve(__dirname, "dist"),
   }),
@@ -33,8 +32,8 @@ const getPlugins = () => [
 // External dependencies check
 const external = (id) => !id.startsWith(".") && !id.startsWith("/");
 
-// Generate JS builds (ESM and CJS) for each entrypoint
-const jsBuild = entrypoints.map(({ name, input }) => ({
+// Generate JS builds (ESM and CJS) with TypeScript declarations for each entrypoint
+const builds = entrypoints.map(({ name, input }) => ({
   input: resolve(__dirname, input),
   output: [
     {
@@ -53,19 +52,4 @@ const jsBuild = entrypoints.map(({ name, input }) => ({
   external,
 }));
 
-// Generate type declaration builds for each entrypoint
-const dtsBuild = entrypoints.map(({ name, input }) => ({
-  input: resolve(__dirname, input),
-  output: {
-    file: resolve(__dirname, `dist/${name}.d.ts`),
-    format: "es",
-  },
-  plugins: [
-    dts({
-      tsconfig: resolve(__dirname, "tsconfig.json"),
-    }),
-  ],
-  external,
-}));
-
-export default [...jsBuild, ...dtsBuild];
+export default builds;

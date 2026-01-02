@@ -5,10 +5,10 @@
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/exports.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/exports.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
@@ -38,7 +38,8 @@
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
     "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build",
-    "build": "rollup -c",
+    "build": "rollup -c && npm run build:types",
+    "build:types": "tsc --project tsconfig.build.json",
     "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
     "//gen-ts": "UNUSED - use gen-api instead",
@@ -75,7 +76,6 @@
     "globals": "^17.0.0",
     "prettier": "^3.2.5",
     "rollup": "^4.53.3",
-    "rollup-plugin-dts": "^6.2.3",
     "tslib": "^2.8.1",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.51.0"
