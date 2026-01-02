@@ -2,7 +2,7 @@ name: PR Check
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   changeset-check:
@@ -26,4 +26,35 @@ jobs:
             fi
           else
             echo "No package changes detected"
+          fi
+      - name: Check prerelease mode exit
+        run: |
+          if [ "${{ github.base_ref }}" = "main" ]; then
+            # For main branch: require that prerelease mode is exited
+            if [ -f .changeset/pre.json ]; then
+              # Check if prerelease mode has been exited (exit intent set)
+              if ! grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
+                echo "::error::Prerelease mode must be exited before merging to main."
+                echo "Run 'npm run changeset pre exit' on the develop branch and commit the change."
+                echo "Then merge that commit into this PR branch."
+                exit 1
+              fi
+              echo "Prerelease mode exit intent confirmed on main branch"
+            else
+              echo "No prerelease mode detected (pre.json not present)"
+            fi
+          else
+            # For develop branch: require that prerelease mode is active
+            if [ ! -f .changeset/pre.json ]; then
+              echo "::error::Prerelease mode must be active on develop branch."
+              echo "Run 'npm run changeset pre enter beta' to enable prerelease mode."
+              exit 1
+            fi
+            # Check that prerelease mode has not been exited
+            if grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
+              echo "::error::Prerelease mode must not be exited on develop branch."
+              echo "Remove the exit intent from .changeset/pre.json or run 'npm run changeset pre enter beta'."
+              exit 1
+            fi
+            echo "Prerelease mode is active on develop branch (as required)"
           fi
