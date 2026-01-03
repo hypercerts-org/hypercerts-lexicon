@@ -37,7 +37,7 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types",
     "build:types": "tsc --project tsconfig.build.json",
     "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
@@ -46,6 +46,8 @@
     "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
     "gen-index": "node ./scripts/generate-exports.js",
     "lex": "lex",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "npm run format:check && npm run eslint",
@@ -78,7 +80,8 @@
     "rollup": "^4.53.3",
     "tslib": "^2.8.1",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.51.0"
+    "typescript-eslint": "^8.51.0",
+    "vitest": "^4.0.16"
   },
   "peerDependencies": {
     "@atproto/xrpc": "*"
