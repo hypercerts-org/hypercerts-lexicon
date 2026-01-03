@@ -3,3 +3,4 @@ node_modules
 dist/
 generated/
 pnpm-lock.yaml
+/tmp/
