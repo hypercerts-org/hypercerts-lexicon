@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.3
+
+### Patch Changes
+
+- [`ece7629`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/ece7629956d6efbfed757d66609fe4ccc1c81d5a) Thanks [@aspiers](https://github.com/aspiers)! - Include CHANGELOG.md in package distribution for better user documentation.
+
 ## 0.10.0-beta.2
 
 ### Patch Changes
