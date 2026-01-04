@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.2
+
+### Patch Changes
+
+- [`5a490bf`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/5a490bf4404f6690fe832f82023ea05663050977) Thanks [@aspiers](https://github.com/aspiers)! - Add basic test suite using vitest 4.
+
 ## 0.10.0-beta.1
 
 ### Minor Changes
