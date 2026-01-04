@@ -62,6 +62,11 @@ Before publishing, ensure you have:
    - **No `NPM_TOKEN` secret is required** - Trusted Publishers eliminates
      the need for long-lived tokens
 
+2. **Repository URL in package.json:**
+   - `package.json` must have a `repository.url` field
+   - This is required for npm Trusted Publishers to verify the package source
+   - The repo already has this configured correctly
+
 ## Adding Changesets
 
 Before publishing, you need to create changesets for any user-facing
