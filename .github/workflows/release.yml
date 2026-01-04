@@ -123,6 +123,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
+      # Push git tags created by changeset publish
+      - name: Push git tags
+        if: env.RELEASE_TYPE == 'beta'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git push origin --tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Log published packages
       - name: Log published packages
         if: |
