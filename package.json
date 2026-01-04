@@ -21,7 +21,8 @@
   },
   "files": [
     "dist",
-    "lexicons"
+    "lexicons",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "hypercerts",
