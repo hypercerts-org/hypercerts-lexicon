@@ -90,10 +90,12 @@ jobs:
       - name: Commit and push version changes
         if: env.RELEASE_TYPE == 'beta'
         run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Versioning to: $VERSION"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git diff --staged --quiet || git commit -m "chore: version packages (beta)"
+          git diff --staged --quiet || git commit -m "chore: version packages (beta) - $VERSION"
           git push
 
       # No .npmrc creation needed - npm Trusted Publishers uses GitHub OIDC tokens
@@ -142,5 +144,6 @@ jobs:
           if [ "${{ env.RELEASE_TYPE }}" == "stable" ]; then
             echo "Published - ${{ steps.changesets.outputs.publishedPackages }}"
           else
-            echo "Published beta release"
+            VERSION=$(node -p "require('./package.json').version")
+            echo "Published beta release: $VERSION"
           fi
