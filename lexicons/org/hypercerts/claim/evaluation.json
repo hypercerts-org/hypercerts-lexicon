@@ -29,10 +29,19 @@
         "type": "object",
         "required": ["evaluators", "summary", "createdAt"],
         "properties": {
-          "subject": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)"
+          "subjects": {
+            "type": "array",
+            "description": "A reference to the evaluated subject(s)—this may be an activity claim, outcome claim, measurement, annotation, or even another evaluation. Multiple claims can be evaluated together.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
+          },
+          "evaluationFocus": {
+            "type": "string",
+            "description": "The aspect/dimension being evaluated, e.g. activityValidity, evidenceQuality, contributionAssessment, or fundingWorthiness.",
+            "maxLength": 100
           },
           "evaluators": {
             "type": "array",
@@ -43,9 +52,9 @@
             },
             "maxLength": 1000
           },
-          "content": {
+          "attachments": {
             "type": "array",
-            "description": "Evaluation data (URIs or blobs) containing detailed reports or methodology",
+            "description": "Evaluation data containing detailed reports, data, or methodology, that have been used as inputs for the evaluation.",
             "items": {
               "type": "union",
               "refs": [
@@ -66,7 +75,7 @@
           },
           "summary": {
             "type": "string",
-            "description": "Brief evaluation summary",
+            "description": "A brief, human-readable summary of the evaluation and its main conclusions.",
             "maxLength": 5000,
             "maxGraphemes": 1000
           },
@@ -79,6 +88,15 @@
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location."
+          },
+          "locations": {
+            "type": "array",
+            "description": "Optional geographic references related to this evaluation. Each referenced record must conform with the app.certified.location lexicon.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
           },
           "createdAt": {
             "type": "string",

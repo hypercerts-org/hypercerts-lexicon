@@ -1,0 +1,63 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.outcome",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "An outcome claim describing a valuable goal or observed change. Outcomes can stand alone and be linked to activities later.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["outcome", "startDate", "endDate", "createdAt"],
+        "properties": {
+          "outcome": {
+            "type": "string",
+            "description": "A statement of the goal or observed change.",
+            "maxLength": 5000,
+            "maxGraphemes": 1000
+          },
+          "relatedActivities": {
+            "type": "array",
+            "description": "Optional references to activity claims that may have contributed. Links can be added later as understanding of causal relationships develops.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
+          },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Optional geographic reference. The record referenced must conform with the lexicon app.certified.location."
+          },
+          "locations": {
+            "type": "array",
+            "description": "Optional geographic references related to this outcome. Each referenced record must conform with the app.certified.location lexicon.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
+          },
+          "startDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "The start date and time, when the outcome was observed or is expected."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "The end date and time, when the outcome was observed or is expected."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}
+
+
