@@ -428,5 +428,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 - All timestamps use the `datetime` format (ISO 8601)
 - Strong references (`com.atproto.repo.strongRef`) include both the URI and CID of the referenced record
 - Union types allow multiple possible formats (e.g., URI or blob)
+- Rich text facet arrays (e.g., `descriptionFacets`, `summaryFacets`) are arrays of `app.bsky.richtext.facet`
 - Array items may have constraints like `maxLength` to limit the number of elements
 - String fields may have both `maxLength` (bytes) and `maxGraphemes` (Unicode grapheme clusters) constraints
