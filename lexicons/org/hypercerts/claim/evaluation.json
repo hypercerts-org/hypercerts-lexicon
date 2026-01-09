@@ -27,7 +27,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["evaluators", "subject", "createdAt"],
+        "required": ["contributors", "subject", "createdAt"],
         "properties": {
           "subject": {
             "type": "ref",

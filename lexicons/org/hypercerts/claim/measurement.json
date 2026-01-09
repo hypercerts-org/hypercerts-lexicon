@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["measurers", "metric", "unit", "value", "createdAt"],
+        "required": ["contributors", "metric", "unit", "value", "createdAt"],
         "properties": {
           "subjects": {
             "type": "array",
