@@ -31,7 +31,17 @@
           },
           "description": {
             "type": "string",
-            "description": "Optional short statement describing what the badge represents."
+            "description": "Optional short statement describing what the badge represents. Rich text annotations may be provided via `descriptionFacets`.",
+            "maxLength": 30000,
+            "maxGraphemes": 3000
+          },
+          "descriptionFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `description` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
           },
           "allowedIssuers": {
             "type": "array",
