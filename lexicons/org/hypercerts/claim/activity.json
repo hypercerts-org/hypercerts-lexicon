@@ -61,7 +61,7 @@
             "description": "List of contributors to this activity with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records.",
             "items": {
               "type": "ref",
-              "ref": "#weightedContributor"
+              "ref": "org.hypercerts.defs#weightedContributor"
             }
           },
           "workScope": {

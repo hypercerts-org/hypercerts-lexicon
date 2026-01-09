@@ -173,20 +173,22 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                         | Comments                                                                  |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of the hypercert                                                              |                                                                           |
-| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                |                                                                           |
-| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                |                                                                           |
-| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                          |                                                                           |
-| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                              | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
-| `startDate`        | `string` | ✅       | When the work began                                                                 |                                                                           |
-| `endDate`          | `string` | ✅       | When the work ended                                                                 |                                                                           |
-| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts | References must conform to `org.hypercerts.claim.contribution`            |
-| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                            | References must conform to `org.hypercerts.claim.rights`                  |
-| `location`         | `ref`    | ❌       | A strong reference to the location where the work for done hypercert was located    | References must conform to `app.certified.location`                       |
-| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of            | References must conform to `org.hypercerts.claim.project`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
+| Property                | Type     | Required | Description                                                                         | Comments                                                                  |
+| ----------------------- | -------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `title`                 | `string` | ✅       | Title of this activity claim.                                                       |                                                                           |
+| `shortDescription`      | `string` | ✅       | Short summary of this activity claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`. |                                                                           |
+| `shortDescriptionFacets` | `array`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).        |                                                                           |
+| `description`           | `string` | ❌       | Optional longer description of this activity claim, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`. |                                                                           |
+| `descriptionFacets`     | `array`  | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).             |                                                                           |
+| `image`                 | `union`  | ❌       | The hypercert visual representation as a URI or image blob                          |                                                                           |
+| `project`               | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. This activity must also be referenced by the project, establishing a bidirectional link. | References must conform to `org.hypercerts.claim.project`                 |
+| `contributors`          | `array`  | ❌       | List of contributors to this activity with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records. |                                                               |
+| `workScope`             | `object` | ❌       | Logical scope of the work using label-based conditions                              | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
+| `startDate`             | `string` | ❌       | The start date and time when the work began.                                        |                                                                           |
+| `endDate`               | `string` | ❌       | The end date and time when the work ended.                                          |                                                                           |
+| `locations`             | `array`  | ❌       | Optional geographic references related to the location of the activity.             | References must conform to `app.certified.location`                       |
+| `rights`                | `ref`    | ❌       | A strong reference to the rights that this hypercert has.                          | References must conform to `org.hypercerts.claim.rights`                  |
+| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
 
 #### Defs
 
@@ -209,14 +211,16 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                                                                             |
-| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `role`         | `string` | ❌       | Role or title of the contributor(s).                                                                                                                                    |
-| `contributors` | `array`  | ✅       | List of the contributors (names, pseudonyms, or DIDs). If multiple contributors are stored in the same hypercertContribution, then they would have the exact same role. |
-| `description`  | `string` | ❌       | What the contribution concretely achieved                                                                                                                               |
-| `startDate`    | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.                                                                                     |
-| `endDate`      | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe.                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                       |
+| Property           | Type     | Required | Description                                                                                                                                                             |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`          | `ref`    | ✅       | A reference to the subject that the contributors contributed to. This may be an activity claim, measurement, or attachment.                                               |
+| `role`             | `string` | ❌       | Role or title of the contributor(s).                                                                                                                                    |
+| `contributors`     | `array`  | ✅       | List of the contributors (names, pseudonyms, or DIDs). If multiple contributors are stored in the same hypercertContribution, then they would have the exact same role. |
+| `description`      | `string` | ❌       | What the contribution concretely entailed. Rich text annotations may be provided via `descriptionFacets`.                                                              |
+| `descriptionFacets` | `array`  | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                                |
+| `startDate`        | `string` | ❌       | The start date and time when this contribution started. This should be a subset of the hypercert timeframe.                                                            |
+| `endDate`          | `string` | ❌       | The end date and time when this contribution finished. This should be a subset of the hypercert timeframe.                                                               |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                       |
 
 ---
 
@@ -230,38 +234,70 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                 | Comments                                                      |
-| -------------- | -------- | -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated                               | (e.g activity, measurement, contribution, etc.)               |
-| `evaluators`   | `array`  | ✅       | DIDs of the evaluators                                                      |                                                               |
-| `content`      | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology  |                                                               |
-| `measurements` | `array`  | ❌       | Optional references to the measurements that contributed to this evaluation | References must conform to `org.hypercerts.claim.measurement` |
-| `summary`      | `string` | ✅       | Brief evaluation summary                                                    |                                                               |
-| `score`        | `object` | ❌       | Optional overall score for this evaluation on a numeric scale               | Object with `min`, `max`, and `value` (integers)              |
-| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations                         | References must conform to `app.certified.location`           |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created           |                                                               |
+| Property            | Type     | Required | Description                                                                 | Comments                                                      |
+| ------------------- | -------- | -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `subject`           | `ref`    | ✅       | A reference to the evaluated subject. This may be an activity claim, outcome claim, measurement, attachment, or even another evaluation. An evaluation always refers to only a single evaluated subject (unlike other claim types that may reference multiple subjects). |                                                               |
+| `evaluationDimension` | `string` | ❌       | The aspect/dimension being evaluated, e.g. activityValidity, evidenceQuality, contributionAssessment, or fundingWorthiness. |                                                               |
+| `contributors`      | `array`  | ✅       | List of contributors to this evaluation with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records. |                                                               |
+| `inputs`            | `array`  | ❌       | Evaluation data containing detailed reports, data, or methodology, that have been used as inputs for the evaluation. | URIs or blobs                                                 |
+| `measurements`      | `array`  | ❌       | Optional references to the measurements that contributed to this evaluation. | References must conform to `org.hypercerts.claim.measurement` |
+| `summary`           | `string` | ❌       | A brief, human-readable summary of the evaluation and its main conclusions. Rich text annotations may be provided via `summaryFacets`. |                                                               |
+| `summaryFacets`     | `array`  | ❌       | Rich text annotations for `summary` (mentions, URLs, hashtags, etc).         |                                                               |
+| `score`             | `object` | ❌       | Optional overall score for this evaluation on a numeric scale                | Object with `min`, `max`, and `value` (integers)              |
+| `locations`         | `array`  | ❌       | Optional geographic references related to this evaluation.                  | References must conform to `app.certified.location`           |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created            |                                                               |
 
 ---
 
-### Hypercerts Evidence
+### Hypercerts Attachment
 
-**Lexicon ID:** `org.hypercerts.claim.evidence`
+**Lexicon ID:** `org.hypercerts.claim.attachment`
 
-**Description:** A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.
+**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation). Attachments may support, clarify, or challenge the referenced subject.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                       | Comments                                             |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
-| `subject`          | `ref`    | ❌       | A strong reference to the record this evidence relates to         | (e.g. an activity, project, claim, or evaluation)    |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blob) related to the subject record   | May support, clarify, or challenge a hypercert claim |
-| `title`            | `string` | ✅       | Title to describe the nature of the evidence                      |                                                      |
-| `shortDescription` | `string` | ❌       | Short description explaining what this evidence shows             |                                                      |
-| `description`      | `string` | ❌       | Longer description describing the evidence in more detail         |                                                      |
-| `relationType`     | `string` | ❌       | How this evidence relates to the subject                          | Known values: `supports`, `challenges`, `clarifies`  |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created |                                                      |
+| Property                | Type     | Required | Description                                                       | Comments                                             |
+| ----------------------- | -------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| `subjects`              | `array`  | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. |                                                      |
+| `attachmentType`        | `string` | ❌       | The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc. |                                                      |
+| `relationType`          | `string` | ❌       | How this attachment relates to the subject. If omitted, the attachment is not asserting a specific relationship. | Known values: `supports`, `challenges`, `clarifies`  |
+| `contributors`          | `array`  | ✅       | List of contributors to this attachment with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records. |                                                      |
+| `title`                 | `string` | ✅       | Title of this attachment.                                         |                                                      |
+| `shortDescription`      | `string` | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`. |                                                      |
+| `shortDescriptionFacets` | `array`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc). |                                                      |
+| `description`           | `string` | ❌       | Optional longer description of this attachment, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`. |                                                      |
+| `descriptionFacets`     | `array`  | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc). |                                                      |
+| `content`               | `array`  | ❌       | The files, documents, or external references included in this attachment record. | URIs or blobs                                         |
+| `locations`             | `array`  | ❌       | Optional geographic references that this attachment relates to.   | References must conform to `app.certified.location`  |
+| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created |                                                      |
+
+---
+
+### Hypercerts Outcome
+
+**Lexicon ID:** `org.hypercerts.claim.outcome`
+
+**Description:** An outcome claim describing a valuable goal or observed change. Outcomes can stand alone and be linked to activities later.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property                | Type     | Required | Description                                                       | Comments                                             |
+| ----------------------- | -------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| `title`                 | `string` | ✅       | A statement of the goal or observed change.                       |                                                      |
+| `shortDescription`      | `string` | ❌       | Short summary of this outcome claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`. |                                                      |
+| `shortDescriptionFacets` | `array`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc). |                                                      |
+| `description`           | `string` | ❌       | Optional longer description of this outcome claim, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`. |                                                      |
+| `descriptionFacets`     | `array`  | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc). |                                                      |
+| `relatedActivities`     | `array`  | ❌       | Optional references to activity claims that may have contributed. Links can be added later as understanding of (causal) relationships develops. |                                                      |
+| `startDate`             | `string` | ❌       | The start date and time when the outcome was observed or is expected. |                                                      |
+| `endDate`               | `string` | ❌       | The end date and time when the outcome was observed or is expected. |                                                      |
+| `locations`             | `array`  | ❌       | Optional geographic references related to this outcome.           | References must conform to `app.certified.location`  |
+| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created |                                                      |
 
 ---
 
@@ -275,17 +311,22 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                                   | Comments                                                     |
-| ------------- | -------- | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `subject`     | `ref`    | ❌       | A strong reference to the record this measurement refers to                   | (e.g. an activity, project, or claim)                        |
-| `measurers`   | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                              |
-| `metric`      | `string` | ✅       | The metric being measured                                                     |                                                              |
-| `value`       | `string` | ✅       | The measured value                                                            |                                                              |
-| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                              |                                                              |
-| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                              |
-| `evidenceURI` | `array`  | ❌       | URIs to related evidence or underlying data                                   | (e.g. org.hypercerts.claim.evidence records or raw datasets) |
-| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`          |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                              |
+| Property                | Type     | Required | Description                                                                   | Comments                                                     |
+| ----------------------- | -------- | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `subjects`              | `array`  | ❌       | References to the subject(s) the measurement is connected to—this may be an activity claim, outcome claim, evaluation, or even another measurement. This is optional as the measurement can exist before the claim is recorded. |                                                              |
+| `contributors`          | `array`  | ✅       | List of contributors to this measurement with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records. |                                                              |
+| `metric`                | `string` | ✅       | The metric being measured, e.g. forest area restored, number of users, etc.   |                                                              |
+| `unit`                  | `string` | ✅       | The unit of the measured value (e.g. kg CO₂e, hectares, %, index score).      |                                                              |
+| `value`                 | `string` | ✅       | The measured numeric value.                                                   |                                                              |
+| `startDate`             | `string` | ❌       | The start date and time when the measurement began.                           |                                                              |
+| `endDate`               | `string` | ❌       | The end date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate. |                                                              |
+| `measurementMethodType` | `string` | ❌       | Short identifier for the measurement methodology                              |                                                              |
+| `measurementMethodUri`  | `string` | ❌       | URI pointing to detailed methodology documentation, a standard protocol, or a measurement procedure. |                                                              |
+| `resources`             | `array`  | ❌       | Files, documents, or external references related to the measurement.          | URIs or blobs                                                 |
+| `comment`               | `string` | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`. |                                                              |
+| `commentFacets`         | `array`  | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).         |                                                              |
+| `locations`             | `array`  | ❌       | Optional geographic references related to where the measurement was taken.    | References must conform to `app.certified.location`          |
+| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                              |
 
 ---
 
@@ -299,14 +340,17 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                             | Comments                                                            |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | The title of this collection                                            |                                                                     |
-| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |
-| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
+| Property                | Type     | Required | Description                                                             | Comments                                                            |
+| ----------------------- | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `title`                 | `string` | ✅       | Title of this collection.                                               |                                                                     |
+| `shortDescription`      | `string` | ❌       | Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`. |                                                                     |
+| `shortDescriptionFacets` | `array`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc). |                                                                     |
+| `description`           | `string` | ❌       | Optional longer description of this collection, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`. |                                                                     |
+| `descriptionFacets`     | `array`  | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc). |                                                                     |
+| `avatar`                | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
+| `coverImage`            | `blob`   | ❌       | The cover image of this collection                                      |                                                                     |
+| `activities`            | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.defs#weightedActivity`          |
+| `createdAt`             | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
 
 ---
 
@@ -320,16 +364,16 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                     | Comments                                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of this project                                                           |                                                                     |
-| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views             |                                                                     |
-| `description`      | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this project                                                 |                                                                     |
-| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place    | References must conform to `app.certified.location`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
+| Property      | Type     | Required | Description                                                                     | Comments                                                            |
+| ------------- | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `title`       | `string` | ✅       | Title of this project.                                                           |                                                                     |
+| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views.             |                                                                     |
+| `description` | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
+| `avatar`      | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
+| `coverImage`  | `blob`   | ❌       | The cover image of this project.                                                 |                                                                     |
+| `activities`  | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.defs#weightedActivity`         |
+| `locations`   | `array`  | ❌       | Optional geographic references related to the location of the project.          | References must conform to `app.certified.location`                 |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
 
 ---
 
@@ -348,7 +392,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `rightsName`        | `string` | ✅       | Full name of the rights                                           |             |
 | `rightsType`        | `string` | ✅       | Short rights identifier for easier search                         |             |
 | `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                       |             |
-| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document | URI or blob |
+| `documents`         | `array`  | ❌       | The files, documents, or external references to define the rights further, e.g. a legal document. | URIs or blobs |
 | `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created |             |
 
 ---

@@ -60,25 +60,43 @@ dataclass activity <<largeBold>> #B4E5D0 {
     description?
     image?
     workScope?
-    startDate
-    endDate
+    startDate?
+    endDate?
+    contributors[]?
     contributions[]?
-    location?
+    locations[]?
     rights?
     project?
     createdAt
     !endif
 }
 
-' org.hypercerts.claim.evidence
-dataclass evidence {
+' org.hypercerts.claim.attachment
+dataclass attachment {
     !if (SHOW_FIELDS == "true")
-    subject?
-    content
+    subjects[]?
+    attachmentType?
+    relationType?
+    contributors[]
     title
     shortDescription?
     description?
-    relationType?
+    content[]?
+    locations[]?
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.outcome
+dataclass outcome {
+    !if (SHOW_FIELDS == "true")
+    title
+    shortDescription?
+    description?
+    relatedActivities[]?
+    startDate?
+    endDate?
+    locations[]?
     createdAt
     !endif
 }
@@ -86,14 +104,18 @@ dataclass evidence {
 ' org.hypercerts.claim.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
-    subject?
-    measurers[]
+    subjects[]?
+    contributors[]
     metric
+    unit
     value
-    methodType?
-    methodURI?
-    evidenceURI[]?
-    location?
+    startDate?
+    endDate?
+    measurementMethodType?
+    measurementMethodUri?
+    resources[]?
+    comment?
+    locations[]?
     createdAt
     !endif
 }
@@ -101,13 +123,14 @@ dataclass measurement {
 ' org.hypercerts.claim.evaluation
 dataclass evaluation {
     !if (SHOW_FIELDS == "true")
-    subject?
-    summary
-    evaluators[]
-    content[]?
+    subject
+    evaluationDimension?
+    contributors[]
+    inputs[]?
     measurements[]?
-    score
-    location?
+    summary?
+    score?
+    locations[]?
     createdAt
     !endif
 }
@@ -115,6 +138,7 @@ dataclass evaluation {
 ' org.hypercerts.claim.contribution
 dataclass contribution {
     !if (SHOW_FIELDS == "true")
+    subject
     role?
     contributors[]
     description?
@@ -173,7 +197,7 @@ dataclass rights {
     rightsName
     rightsType
     rightsDescription
-    attachment?
+    documents[]?
     createdAt
     !endif
 }
@@ -183,8 +207,9 @@ dataclass collection {
     !if (SHOW_FIELDS == "true")
     title
     shortDescription?
+    description?
     avatar?
-    coverPhoto?
+    coverImage?
     activities[]
     createdAt
     !endif
@@ -197,9 +222,9 @@ dataclass project {
     shortDescription
     description?
     avatar?
-    coverPhoto?
+    coverImage?
     activities[]?
-    location?
+    locations[]?
     createdAt
     !endif
 }
@@ -258,12 +283,14 @@ activity -l[hidden]-> token
 'contribution -r[hidden]-> contributor
 'fundingReceipt -[hidden]-> contributor
 
-evaluation::subject --> evidence
-evaluation::measurements --> measurement
 evaluation::subject --> activity
+evaluation::subject --> outcome
+evaluation::subject --> measurement
+evaluation::subject --> attachment
+evaluation::measurements --> measurement
 
 ' Impossible to get this one on without screwing up the layout
-'evaluation::location --[norank]-> location
+'evaluation::locations --[norank]-> location
 
 ' so instead make a dangling arrow using a hidden class
 skinparam class {
@@ -273,7 +300,7 @@ skinparam class {
 }
 class " " as hiddenLocation1 <<Ghost>>
 hide hiddenLocation1 circle
-evaluation::location --> hiddenLocation1
+evaluation::locations --> hiddenLocation1
 !if (SHOW_FIELDS == "true")
 ' Also ensure the hidden class is somewhere "en route" to location
 hiddenLocation1 -[hidden]-> activity
@@ -282,15 +309,22 @@ hiddenLocation1 -[hidden]-> activity
 'evaluation -d[norank]--> location
 !endif
 
-evidence::subject --> activity
+attachment::subjects --> activity
+attachment::subjects --> outcome
+attachment::subjects --> measurement
+attachment::subjects --> evaluation
 
-measurement::subject --> activity
+outcome::relatedActivities --> activity
+
+measurement::subjects --> activity
+measurement::subjects --> outcome
+measurement::subjects --> evaluation
 
 ' Somewhat similarly for measurement --> location
 !if (SHOW_FIELDS == "true")
 class " " as hiddenLocation2 <<Ghost>>
 hide hiddenLocation2 circle
-measurement::location --> hiddenLocation2
+measurement::locations --> hiddenLocation2
 ' Also ensure the hidden class is somewhere "en route" to location
 hiddenLocation2 -[hidden]-> location
 !else
@@ -300,13 +334,17 @@ measurement --> location
 collection::activities --> activity
 
 project::activities --> activity
-project::location --> location
+project::locations --> location
 
 activity::contributions -l--> contribution
 activity::rights --> rights
-activity::location --> location
+activity::locations --> location
 activity::project --> project
+activity::contributors --> contributor : made by
 
+contribution::subject --> activity
+contribution::subject --> measurement
+contribution::subject --> attachment
 contribution::contributors --> contributor : made by
 
 ' These ones are not described by any lexicon, but are added to
