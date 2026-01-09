@@ -24,7 +24,7 @@
           },
           "description": {
             "type": "string",
-            "description": "What the contribution concretely achieved",
+            "description": "What the contribution concretely entailed.",
             "maxLength": 2000,
             "maxGraphemes": 500
           },
@@ -36,12 +36,12 @@
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished.  This should be a subset of the hypercert timeframe."
+            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

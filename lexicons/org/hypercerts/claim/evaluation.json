@@ -27,32 +27,27 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["evaluators", "summary", "createdAt"],
+        "required": ["evaluators", "subject", "createdAt"],
         "properties": {
-          "subjects": {
-            "type": "array",
-            "description": "A reference to the evaluated subject(s)—this may be an activity claim, outcome claim, measurement, annotation, or even another evaluation. Multiple claims can be evaluated together.",
-            "items": {
-              "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
-            },
-            "maxLength": 100
+          "subject": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A reference to the evaluated subject. This may be an activity claim, outcome claim, measurement, attachment, or even another evaluation. An evaluation always refers to only a single evaluated subject (unlike other claim types that may reference multiple subjects)."
           },
-          "evaluationFocus": {
+          "evaluationDimension": {
             "type": "string",
             "description": "The aspect/dimension being evaluated, e.g. activityValidity, evidenceQuality, contributionAssessment, or fundingWorthiness.",
             "maxLength": 100
           },
           "evaluators": {
             "type": "array",
-            "description": "DIDs of the evaluators",
+            "description": "List of the evaluators (names, pseudonyms, or DIDs). By default it is just the creator of the record.",
             "items": {
-              "type": "ref",
-              "ref": "app.certified.defs#did"
+              "type": "string"
             },
             "maxLength": 1000
           },
-          "attachments": {
+          "inputs": {
             "type": "array",
             "description": "Evaluation data containing detailed reports, data, or methodology, that have been used as inputs for the evaluation.",
             "items": {
@@ -66,7 +61,7 @@
           },
           "measurements": {
             "type": "array",
-            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement ",
+            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
@@ -84,11 +79,6 @@
             "ref": "#score",
             "description": "Optional overall score for this evaluation on a numeric scale."
           },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location."
-          },
           "locations": {
             "type": "array",
             "description": "Optional geographic references related to this evaluation. Each referenced record must conform with the app.certified.location lexicon.",
@@ -101,7 +91,7 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

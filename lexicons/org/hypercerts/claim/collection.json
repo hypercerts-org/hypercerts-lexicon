@@ -12,7 +12,7 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "The title of this collection",
+            "description": "Title of this collection.",
             "maxLength": 800,
             "maxGraphemes": 80
           },
@@ -20,7 +20,13 @@
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
-            "description": "A short description of this collection"
+            "description": "Short summary of this collection, suitable for previews and list views."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional longer description of this collection, including context or interpretation.",
+            "maxLength": 30000,
+            "maxGraphemes": 3000
           },
           "avatar": {
             "type": "blob",
@@ -28,24 +34,24 @@
             "accept": ["image/png", "image/jpeg"],
             "maxSize": 1000000
           },
-          "coverPhoto": {
+          "coverImage": {
             "type": "blob",
-            "description": "The cover photo of this collection.",
+            "description": "The cover image of this collection.",
             "accept": ["image/png", "image/jpeg"],
             "maxSize": 1000000
           },
           "activities": {
             "type": "array",
-            "description": "Array of activities with their associated weights in this collection",
+            "description": "Array of activities with their associated weights in this collection.",
             "items": {
               "type": "ref",
-              "ref": "org.hypercerts.claim.activity#activityWeight"
+              "ref": "org.hypercerts.defs#activityWeight"
             }
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

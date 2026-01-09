@@ -12,7 +12,7 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "Title of this project",
+            "description": "Title of this project.",
             "maxLength": 800,
             "maxGraphemes": 80
           },
@@ -33,29 +33,33 @@
             "accept": ["image/png", "image/jpeg"],
             "maxSize": 1000000
           },
-          "coverPhoto": {
+          "coverImage": {
             "type": "blob",
-            "description": "The cover photo of this project.",
+            "description": "The cover image of this project.",
             "accept": ["image/png", "image/jpeg"],
             "maxSize": 1000000
           },
           "activities": {
             "type": "array",
-            "description": "Array of activities with their associated weights in this project",
+            "description": "Array of activities with their associated weights in this project.",
             "items": {
               "type": "ref",
-              "ref": "org.hypercerts.claim.activity#activityWeight"
+              "ref": "org.hypercerts.defs#activityWeight"
             }
           },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to a location record describing where the work for this project took place. The referenced record must conform to the app.certified.location lexicon."
+          "locations": {
+            "type": "array",
+            "description": "Optional geographic references related to the location of the project. Each referenced record must conform with the app.certified.location lexicon.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

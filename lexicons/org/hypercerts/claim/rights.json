@@ -23,24 +23,30 @@
           "rightsType": {
             "type": "string",
             "description": "Short rights identifier for easier search",
-            "maxLength": 10
+            "maxLength": 50
           },
           "rightsDescription": {
             "type": "string",
-            "description": "Description of the rights of this hypercert"
+            "description": "Description of the rights of this hypercert.",
+            "maxLength": 50000,
+            "maxGraphemes": 5000
           },
-          "attachment": {
-            "type": "union",
-            "refs": [
-              "org.hypercerts.defs#uri",
-              "org.hypercerts.defs#smallBlob"
-            ],
-            "description": "An attachment to define the rights further, e.g. a legal document."
+          "documents": {
+            "type": "array",
+            "description": "The files, documents, or external references to define the rights further, e.g. a legal document.",
+            "items": {
+              "type": "union",
+              "refs": [
+                "org.hypercerts.defs#uri",
+                "org.hypercerts.defs#smallBlob"
+              ]
+            },
+            "maxLength": 100
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

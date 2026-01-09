@@ -1,14 +1,14 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.evidence",
+  "id": "org.hypercerts.claim.attachment",
   "defs": {
     "main": {
       "type": "record",
-      "description": "An attachment providing commentary, context, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation). Attachments may support, clarify, or challenge the referenced subject.",
+      "description": "An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation). Attachments may support, clarify, or challenge the referenced subject.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["attachments", "title", "createdAt"],
+        "required": ["contributors", "title", "createdAt"],
         "properties": {
           "subjects": {
             "type": "array",
@@ -19,37 +19,29 @@
             },
             "maxLength": 100
           },
-          "author": {
-            "type": "array",
-            "description": "The DID(s) of the entity or entities that produced the attachment.",
-            "items": {
-              "type": "ref",
-              "ref": "app.certified.defs#did"
-            },
-            "maxLength": 100
+          "attachmentType": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc."
           },
-          "attachments": {
+          "relationType": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "How this attachment relates to the subject. If omitted, the attachment is not asserting a specific relationship.",
+            "knownValues": ["supports", "challenges", "clarifies"]
+          },
+          "contributors": {
             "type": "array",
-            "description": "The files, documents, or external references included in this attachment record.",
+            "description": "List of the contributors (names, pseudonyms, or DIDs) that produced this attachment. By default it is just the creator of the record.",
             "items": {
-              "type": "union",
-              "refs": [
-                "org.hypercerts.defs#uri",
-                "org.hypercerts.defs#smallBlob"
-              ]
+              "type": "string"
             },
-            "maxLength": 100
+            "maxLength": 1000
           },
           "title": {
             "type": "string",
             "maxLength": 256,
             "description": "Human-readable title to describe the nature of the attachment."
-          },
-          "comment": {
-            "type": "string",
-            "description": "Optional short commentary about the attached material.",
-            "maxLength": 1000,
-            "maxGraphemes": 200
           },
           "shortDescription": {
             "type": "string",
@@ -63,6 +55,18 @@
             "maxLength": 30000,
             "maxGraphemes": 3000
           },
+          "content": {
+            "type": "array",
+            "description": "The files, documents, or external references included in this attachment record.",
+            "items": {
+              "type": "union",
+              "refs": [
+                "org.hypercerts.defs#uri",
+                "org.hypercerts.defs#smallBlob"
+              ]
+            },
+            "maxLength": 100
+          },
           "locations": {
             "type": "array",
             "description": "Optional geographic references that this attachment relates to. Each referenced record must conform with the app.certified.location lexicon.",
@@ -72,15 +76,10 @@
             },
             "maxLength": 100
           },
-          "relationType": {
-            "type": "string",
-            "description": "How this attachment relates to the subject.",
-            "knownValues": ["supports", "challenges", "clarifies"]
-          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

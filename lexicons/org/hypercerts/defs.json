@@ -66,6 +66,22 @@
           "description": "Image (up to 10MB)"
         }
       }
+    },
+    "activityWeight": {
+      "type": "object",
+      "required": ["activity", "weight"],
+      "properties": {
+        "activity": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity."
+        },
+        "weight": {
+          "type": "string",
+          "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 64
+        }
+      }
     }
   }
 }

@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["measurers", "metric", "value", "createdAt"],
+        "required": ["measurers", "metric", "unit", "value", "createdAt"],
         "properties": {
           "subjects": {
             "type": "array",
@@ -21,7 +21,7 @@
           },
           "measurers": {
             "type": "array",
-            "description": "DIDs of the entity (or entities) that measured this data",
+            "description": "DIDs of the entity (or entities) that measured this data. By default it is just the creator of the record.",
             "items": {
               "type": "ref",
               "ref": "app.certified.defs#did"
@@ -40,42 +40,40 @@
           },
           "value": {
             "type": "string",
-            "description": "The measured value",
+            "description": "The measured numeric value.",
             "maxLength": 500
           },
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The time when the measurement was started."
+            "description": "The date and time when the measurement was started."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate."
+            "description": "The date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate."
           },
           "measurementMethodType": {
             "type": "string",
             "description": "Short identifier for the measurement methodology",
             "maxLength": 30
           },
-          "measurementMethodURI": {
+          "measurementMethodUri": {
             "type": "string",
             "format": "uri",
             "description": "URI pointing to detailed methodology documentation, a standard protocol, or a measurement procedure."
           },
-          "evidenceURI": {
+          "resources": {
             "type": "array",
-            "description": "URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)",
+            "description": "Files, documents, or external references related to the measurement.",
             "items": {
-              "type": "string",
-              "format": "uri"
+              "type": "union",
+              "refs": [
+                "org.hypercerts.defs#uri",
+                "org.hypercerts.defs#smallBlob"
+              ]
             },
-            "maxLength": 50
-          },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the measurement was taken. The record referenced must conform with the lexicon app.certified.location"
+            "maxLength": 100
           },
           "locations": {
             "type": "array",
@@ -89,7 +87,7 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

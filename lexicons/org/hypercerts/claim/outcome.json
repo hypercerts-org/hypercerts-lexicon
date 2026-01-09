@@ -8,36 +8,33 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["outcome", "startDate", "endDate", "createdAt"],
+        "required": ["outcome", "createdAt"],
         "properties": {
-          "outcome": {
+          "title": {
             "type": "string",
             "description": "A statement of the goal or observed change.",
             "maxLength": 5000,
             "maxGraphemes": 1000
           },
+          "shortDescription": {
+            "type": "string",
+            "description": "Short summary of this outcome claim, suitable for previews and list views.",
+            "maxLength": 3000,
+            "maxGraphemes": 300
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional longer description of this outcome claim, including context or interpretation.",
+            "maxLength": 30000,
+            "maxGraphemes": 3000
+          },
           "relatedActivities": {
             "type": "array",
-            "description": "Optional references to activity claims that may have contributed. Links can be added later as understanding of causal relationships develops.",
+            "description": "Optional references to activity claims that may have contributed. Links can be added later as understanding of (causal) relationships develops.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
-            },
-            "maxLength": 100
-          },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "Optional geographic reference. The record referenced must conform with the lexicon app.certified.location."
-          },
-          "locations": {
-            "type": "array",
-            "description": "Optional geographic references related to this outcome. Each referenced record must conform with the app.certified.location lexicon.",
-            "items": {
-              "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
-            },
-            "maxLength": 100
+            }
           },
           "startDate": {
             "type": "string",
@@ -49,10 +46,19 @@
             "format": "datetime",
             "description": "The end date and time, when the outcome was observed or is expected."
           },
+          "locations": {
+            "type": "array",
+            "description": "Optional geographic references related to this outcome. Each referenced record must conform with the app.certified.location lexicon.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }
