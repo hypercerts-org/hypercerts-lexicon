@@ -32,22 +32,22 @@
           },
           "contributors": {
             "type": "array",
-            "description": "List of the contributors (names, pseudonyms, or DIDs) that produced this attachment. By default it is just the creator of the record.",
+            "description": "List of contributors to this attachment with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records.",
             "items": {
-              "type": "string"
-            },
-            "maxLength": 1000
+              "type": "ref",
+              "ref": "#weightedContributor"
+            }
           },
           "title": {
             "type": "string",
             "maxLength": 256,
-            "description": "Human-readable title to describe the nature of the attachment."
+            "description": "Title of this attachment."
           },
           "shortDescription": {
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
-            "description": "Short description explaining what this attachment shows or documents."
+            "description": "Short summary of this attachment, suitable for previews and list views."
           },
           "description": {
             "type": "string",

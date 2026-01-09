@@ -44,12 +44,12 @@
             "format": "at-uri",
             "description": "A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. This activity must also be referenced by the project, establishing a bidirectional link."
           },
-          "contributions": {
+          "contributors": {
             "type": "array",
-            "description": "A strong reference to the contributions to this activity. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.",
+            "description": "List of contributors to this activity with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records.",
             "items": {
               "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
+              "ref": "#weightedContributor"
             }
           },
           "workScope": {

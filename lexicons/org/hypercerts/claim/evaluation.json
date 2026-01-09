@@ -39,13 +39,13 @@
             "description": "The aspect/dimension being evaluated, e.g. activityValidity, evidenceQuality, contributionAssessment, or fundingWorthiness.",
             "maxLength": 100
           },
-          "evaluators": {
+          "contributors": {
             "type": "array",
-            "description": "List of the evaluators (names, pseudonyms, or DIDs). By default it is just the creator of the record.",
+            "description": "List of contributors to this evaluation with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records.",
             "items": {
-              "type": "string"
-            },
-            "maxLength": 1000
+              "type": "ref",
+              "ref": "#weightedContributor"
+            }
           },
           "inputs": {
             "type": "array",

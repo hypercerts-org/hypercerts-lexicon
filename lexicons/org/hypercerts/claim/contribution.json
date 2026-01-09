@@ -10,6 +10,11 @@
         "type": "object",
         "required": ["contributors", "createdAt"],
         "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A reference to the subject that the contributors contributed to. This may be an activity claim, measurement, or attachment."
+          },
           "role": {
             "type": "string",
             "description": "Role or title of the contributor(s).",
@@ -31,12 +36,12 @@
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
+            "description": "The start date and time when this contribution started. This should be a subset of the hypercert timeframe."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
+            "description": "The end date and time when this contribution finished. This should be a subset of the hypercert timeframe."
           },
           "createdAt": {
             "type": "string",

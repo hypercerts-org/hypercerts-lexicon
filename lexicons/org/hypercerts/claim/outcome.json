@@ -39,12 +39,12 @@
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The start date and time, when the outcome was observed or is expected."
+            "description": "The start date and time when the outcome was observed or is expected."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The end date and time, when the outcome was observed or is expected."
+            "description": "The end date and time when the outcome was observed or is expected."
           },
           "locations": {
             "type": "array",

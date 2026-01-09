@@ -19,14 +19,13 @@
             },
             "maxLength": 100
           },
-          "measurers": {
+          "contributors": {
             "type": "array",
-            "description": "DIDs of the entity (or entities) that measured this data. By default it is just the creator of the record.",
+            "description": "List of contributors to this measurement with optional relative weights. If omitted, `weight` defaults to 1. For richer semantics, use separate contribution records.",
             "items": {
               "type": "ref",
-              "ref": "app.certified.defs#did"
-            },
-            "maxLength": 100
+              "ref": "#weightedContributor"
+            }
           },
           "metric": {
             "type": "string",
@@ -46,12 +45,12 @@
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The date and time when the measurement was started."
+            "description": "The start date and time when the measurement began."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate."
+            "description": "The end date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate."
           },
           "measurementMethodType": {
             "type": "string",

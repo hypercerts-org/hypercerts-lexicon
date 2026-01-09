@@ -44,7 +44,7 @@
             "description": "Array of activities with their associated weights in this project.",
             "items": {
               "type": "ref",
-              "ref": "org.hypercerts.defs#activityWeight"
+              "ref": "org.hypercerts.defs#weightedActivity"
             }
           },
           "locations": {

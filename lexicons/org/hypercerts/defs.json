@@ -67,8 +67,9 @@
         }
       }
     },
-    "activityWeight": {
+    "weightedActivity": {
       "type": "object",
+      "description": "A weighted activity entry, e.g. to add activities to a collection or project.",
       "required": ["activity", "weight"],
       "properties": {
         "activity": {
@@ -79,6 +80,22 @@
         "weight": {
           "type": "string",
           "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 64
+        }
+      }
+    },
+    "weightedContributor": {
+      "type": "object",
+      "description": "A weighted contributor entry, e.g. for attribution on an activity.",
+      "required": ["contributor"],
+      "properties": {
+        "contributor": {
+          "type": "string",
+          "description": "The DID, name or pseudonym of the contributor."
+        },
+        "weight": {
+          "type": "string",
+          "description": "Relative contribution weight as a decimal string. If omitted, treat as 1.",
           "maxLength": 64
         }
       }
