@@ -74,6 +74,20 @@
             },
             "maxLength": 100
           },
+          "comment": {
+            "type": "string",
+            "description": "Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.",
+            "maxLength": 3000,
+            "maxGraphemes": 300
+          },
+          "commentFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `comment` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
+          },
           "locations": {
             "type": "array",
             "description": "Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon.",

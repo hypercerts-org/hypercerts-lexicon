@@ -70,9 +70,17 @@
           },
           "summary": {
             "type": "string",
-            "description": "A brief, human-readable summary of the evaluation and its main conclusions.",
+            "description": "A brief, human-readable summary of the evaluation and its main conclusions. Rich text annotations may be provided via `summaryFacets`.",
             "maxLength": 5000,
             "maxGraphemes": 1000
+          },
+          "summaryFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `summary` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
           },
           "score": {
             "type": "ref",

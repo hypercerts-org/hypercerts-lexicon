@@ -18,15 +18,31 @@
           },
           "shortDescription": {
             "type": "string",
+            "description": "Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.",
             "maxLength": 3000,
-            "maxGraphemes": 300,
-            "description": "Short summary of this collection, suitable for previews and list views."
+            "maxGraphemes": 300
+          },
+          "shortDescriptionFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
           },
           "description": {
             "type": "string",
-            "description": "Optional longer description of this collection, including context or interpretation.",
+            "description": "Optional longer description of this collection, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.",
             "maxLength": 30000,
             "maxGraphemes": 3000
+          },
+          "descriptionFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `description` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
           },
           "avatar": {
             "type": "blob",
