@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.4
+
+### Minor Changes
+
+- [#47](https://github.com/hypercerts-org/hypercerts-lexicon/pull/47) [`6a66e4b`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/6a66e4b78ef676cc66b35773f2f9828ea697d332) Thanks [@satyam-mishra-pce](https://github.com/satyam-mishra-pce)! - Add support for multiple locations in an activity claim.
+
 ## 0.10.0-beta.3
 
 ### Patch Changes

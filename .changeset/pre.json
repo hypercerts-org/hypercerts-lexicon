@@ -10,6 +10,7 @@
     "include-changelog-in-distribution",
     "initial-version-post-repo-migration",
     "rollup-build-system",
+    "sparkly-doors-bet",
     "unbundle-type-declarations"
   ]
 }
