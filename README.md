@@ -286,20 +286,20 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                         | Comments                                                                  |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of the hypercert                                                              |                                                                           |
-| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                |                                                                           |
-| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                |                                                                           |
-| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                          |                                                                           |
-| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                              | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
-| `startDate`        | `string` | ✅       | When the work began                                                                 |                                                                           |
-| `endDate`          | `string` | ✅       | When the work ended                                                                 |                                                                           |
-| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts | References must conform to `org.hypercerts.claim.contribution`            |
-| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                            | References must conform to `org.hypercerts.claim.rights`                  |
-| `location`         | `ref`    | ❌       | A strong reference to the location where the work for done hypercert was located    | References must conform to `app.certified.location`                       |
-| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of            | References must conform to `org.hypercerts.claim.project`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
+| Property           | Type     | Required | Description                                                                                  | Comments                                                                  |
+| ------------------ | -------- | -------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `title`            | `string` | ✅       | Title of the hypercert                                                                       |                                                                           |
+| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                         |                                                                           |
+| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                         |                                                                           |
+| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                                   |                                                                           |
+| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                                       | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
+| `startDate`        | `string` | ✅       | When the work began                                                                          |                                                                           |
+| `endDate`          | `string` | ✅       | When the work ended                                                                          |                                                                           |
+| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contribution`            |
+| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                                     | References must conform to `org.hypercerts.claim.rights`                  |
+| `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                       |
+| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of                     | References must conform to `org.hypercerts.claim.project`                 |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                           |
 
 #### Defs
 
