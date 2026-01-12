@@ -131,7 +131,7 @@ jobs:
         if: env.RELEASE_TYPE == 'beta'
         # changeset publish will automatically use the beta tag when in
         # prerelease mode and will create git tags for the release
-        run: npm run release
+        run: npm run release -- --tag beta
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
