@@ -1,0 +1,24 @@
+{
+  "lexicon": 1,
+  "id": "app.hyperboard.workscope",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A work scope record defining the scope of work.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "A description of the work scope.",
+            "maxLength": 3000
+          }
+        }
+      }
+    }
+  }
+}

@@ -12,8 +12,7 @@
           "title",
           "shortDescription",
           "createdAt",
-          "startDate",
-          "endDate"
+          "startDate"
         ],
         "properties": {
           "title": {
@@ -43,7 +42,8 @@
           },
           "workScope": {
             "type": "ref",
-            "ref": "#workScope"
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the work scope record."
           },
           "startDate": {
             "type": "string",
@@ -55,12 +55,19 @@
             "format": "datetime",
             "description": "When the work ended"
           },
-          "contributions": {
+          "contributors": {
             "type": "array",
-            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.",
+            "description": "An array of strong references to the contributors who performed the work. Each reference must point to a valid contributor record. The length of this array must match the length of contributorsWeights.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
+            }
+          },
+          "contributorsWeights": {
+            "type": "array",
+            "description": "An array of integers defining the contribution weight of each contributor in the contributors array. The index corresponds to the contributor at the same index in the contributors array. Both arrays must have the same length.",
+            "items": {
+              "type": "integer"
             }
           },
           "rights": {
@@ -86,51 +93,6 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
-        }
-      }
-    },
-    "workScope": {
-      "type": "object",
-      "description": "Logical scope of the work using label-based conditions. All labels in `withinAllOf` must apply; at least one label in `withinAnyOf` must apply if provided; no label in `withinNoneOf` may apply.",
-      "properties": {
-        "withinAllOf": {
-          "type": "array",
-          "description": "Labels that MUST all hold for the scope to apply.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
-        },
-        "withinAnyOf": {
-          "type": "array",
-          "description": "Labels of which AT LEAST ONE must hold (optional). If omitted or empty, imposes no additional condition.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
-        },
-        "withinNoneOf": {
-          "type": "array",
-          "description": "Labels that MUST NOT hold for the scope to apply.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
-        }
-      }
-    },
-    "activityWeight": {
-      "type": "object",
-      "required": ["activity", "weight"],
-      "properties": {
-        "activity": {
-          "type": "ref",
-          "ref": "com.atproto.repo.strongRef",
-          "description": "A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity"
-        },
-        "weight": {
-          "type": "string",
-          "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
         }
       }
     }
