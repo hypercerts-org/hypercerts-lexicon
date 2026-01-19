@@ -490,29 +490,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### org.hypercerts.claim.project
-
-**Lexicon ID:** `org.hypercerts.claim.project`
-
-**Description:** A project that can include multiple activities
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                     | Comments                                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of this project                                                           |                                                                     |
-| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views             |                                                                     |
-| `description`      | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this project                                                 |                                                                     |
-| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place    | References must conform to `app.certified.location`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
-
----
-
 ### org.hypercerts.claim.rights
 
 **Lexicon ID:** `org.hypercerts.claim.rights`
