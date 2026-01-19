@@ -265,22 +265,23 @@ npm run check
 - The `.prettierignore` excludes `generated/` and `dist/` since they're auto-generated
 - The `.gitignore` excludes `generated/` and `dist/` to keep the repo clean
 
+## Changesets
+
+This repository uses
+[Changesets](https://github.com/changesets/changesets) for versioning.
+
 ### ⚠️ CHANGESET REQUIREMENTS (MANDATORY)
 
 **AI agents MUST create a changeset file** for ANY of the following changes:
 
-- ✅ Adding new lexicons
-- ✅ Modifying existing lexicon schemas (breaking or non-breaking)
-- ✅ Changing TypeScript type exports
-- ✅ Renaming any exported constants, types, or functions
-- ✅ Modifying generation scripts that affect exported code
-- ✅ Any change that requires a version bump or affects package consumers
+- Adding new lexicons
+- Modifying existing lexicon schemas (breaking or non-breaking)
+- Changing TypeScript type exports
+- Renaming any exported constants, types, or functions
+- Modifying generation scripts that affect exported code
+- Any change that requires a version bump or affects package consumers
 
-**How to create a changeset** (AI agents):
-
-1. Create a new `.md` file in `.changeset/` directory
-2. Use format shown in "Versioning" section
-3. DO NOT use the interactive `npm run changeset` command
+Use the `writing-changesets` skill for writing changesets.
 
 **Example scenarios requiring changesets:**
 
