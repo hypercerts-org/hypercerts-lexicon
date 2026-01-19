@@ -197,6 +197,14 @@ dataclass collectionLocation {
     !endif
 }
 
+' org.hypercerts.claim.collection.project (sidecar)
+dataclass collectionProject {
+    !if (SHOW_FIELDS == "true")
+    description?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.claim.project
 dataclass project {
     !if (SHOW_FIELDS == "true")

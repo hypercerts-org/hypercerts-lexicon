@@ -1,0 +1,27 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.collection.project",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Project-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Provides rich-text description capabilities for project-type collections.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "description": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description of this project, represented as a Leaflet linear document."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this project metadata was created"
+          }
+        }
+      }
+    }
+  }
+}

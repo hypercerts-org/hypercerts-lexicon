@@ -441,6 +441,25 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### org.hypercerts.claim.collection.project (Sidecar)
+
+**Lexicon ID:** `org.hypercerts.claim.collection.project`
+
+**Description:** Project-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Provides rich-text description capabilities for project-type collections.
+
+**Key:** `tid` (same as the collection record)
+
+#### Properties
+
+| Property      | Type     | Required | Description                                                      | Comments                                                           |
+| ------------- | -------- | -------- | ---------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `description` | `ref`    | ❌       | Rich-text description of this project                            | References must conform to `pub.leaflet.pages.linearDocument#main` |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this project metadata was created |                                                                    |
+
+**Sidecar Pattern**: This record shares the same TID as its parent collection record but uses a different collection namespace. This allows project-specific rich-text descriptions to be added to collections without modifying the base collection record.
+
+---
+
 ### org.hypercerts.claim.project
 
 **Lexicon ID:** `org.hypercerts.claim.project`
