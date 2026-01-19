@@ -156,6 +156,104 @@ Lexicons are JSON files following the ATProto lexicon schema:
 - Records specify `key`, `record` schema, and validation rules
 - Lexicons are organized by namespace (e.g., `org.hypercerts.claim.*`)
 
+### Sidecar Pattern for Extensibility
+
+**The Hypercerts lexicon uses the ATProto sidecar pattern for collections.**
+
+#### What is the Sidecar Pattern?
+
+Sidecar records allow specialized metadata to be stored separately from base records while maintaining a relationship through shared record keys (TIDs). This follows ATProto best practices for extensibility.
+
+**Key principles:**
+
+- **Same TID, different NSID**: Sidecar records share the same record key (TID) as the base record but use a different collection namespace (NSID)
+- **Independent updates**: Sidecars can be updated without changing the base record's CID (version)
+- **Optional**: Sidecars are always optional; base records work fine without them
+- **Composable**: Multiple sidecars can be attached to a single base record
+
+#### Collection Sidecars in Hypercerts
+
+The `org.hypercerts.claim.collection` base lexicon has three sidecar lexicons:
+
+1. **`org.hypercerts.claim.collection.location`** - Location metadata
+   - For any collection type (projects, geographic groupings, etc.)
+   - Contains a reference to `app.certified.location`
+
+2. **`org.hypercerts.claim.collection.project`** - Project-specific metadata
+   - Rich-text descriptions via Leaflet linear documents
+   - For project-type collections
+
+3. **`org.hypercerts.claim.collection.hyperboard`** - Hyperboard metadata
+   - User/contributor display for sponsorship billboards
+   - Contains user objects with names, descriptions, and images
+
+#### When to Use Sidecars
+
+**Use sidecars when:**
+
+- Adding specialized metadata that only applies to certain use cases
+- Metadata needs to be updated independently of the base record
+- You want to avoid bloating the base lexicon with optional fields
+- Enabling third-party extensions without modifying core schemas
+
+**Don't use sidecars when:**
+
+- The field is required for all instances of the record type
+- The field is core to the record's identity or purpose
+- The relationship is better expressed through direct references
+
+#### Creating New Sidecar Lexicons
+
+When adding a new sidecar lexicon:
+
+1. **File location**: Place in subdirectory of the base lexicon
+   - Example: `lexicons/org/hypercerts/claim/collection/newsidecar.json`
+
+2. **Naming convention**: Use `{base}.{sidecar-name}` pattern
+   - Example: `org.hypercerts.claim.collection.newsidecar`
+
+3. **Key type**: Use `"key": "tid"` to match the base record's key type
+
+4. **Required fields**: Always include `createdAt` as a required field
+
+5. **Documentation**:
+   - Add README section explaining the sidecar's purpose
+   - Update ERD.puml with the sidecar entity
+   - Include usage examples showing the sidecar pattern
+
+6. **Changeset**: Create a changeset describing the new sidecar
+
+**Example sidecar lexicon structure:**
+
+```json
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.collection.newsidecar",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Description of sidecar purpose. Uses the sidecar pattern with the same record key (TID) as the collection record.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "someField": {
+            "type": "string",
+            "description": "Description of the field"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this sidecar was created"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ### Generated Code
 
 The `generated/` directory (gitignored) contains:

@@ -181,6 +181,155 @@ const rightsJSON = HYPERCERTS_LEXICON_JSON.RIGHTS;
 const rightsDoc = HYPERCERTS_LEXICON_DOC.RIGHTS;
 ```
 
+### Sidecar Pattern for Collections
+
+Collections in Hypercerts use the **ATProto sidecar pattern** to enable extensibility without modifying the base collection record. This pattern allows specialized metadata to be stored in separate records that share the same record key (TID) but use different collection namespaces.
+
+#### What is a Sidecar Record?
+
+A sidecar record is a supplementary record that:
+
+- **Shares the same TID** (record key) as the base collection record
+- **Uses a different NSID** (collection namespace)
+- **Can be updated independently** without changing the base record's CID (version)
+- **Is optional** - collections work fine without sidecars
+
+#### Available Collection Sidecars
+
+1. **`org.hypercerts.claim.collection.location`** - Location metadata
+   - For any collection type (projects, geographic groupings, etc.)
+   - References `app.certified.location` records
+
+2. **`org.hypercerts.claim.collection.project`** - Project-specific metadata
+   - Rich-text descriptions via Leaflet linear documents
+   - For project-type collections
+
+3. **`org.hypercerts.claim.collection.hyperboard`** - Hyperboard metadata
+   - User/contributor display for sponsorship billboards
+   - Includes user records with names, descriptions, and images
+
+#### Creating Collections with Sidecars
+
+```typescript
+import {
+  COLLECTION_NSID,
+  COLLECTION_LOCATION_NSID,
+  COLLECTION_PROJECT_NSID,
+  COLLECTION_HYPERBOARD_NSID,
+} from "@hypercerts-org/lexicon";
+import { TID } from "@atproto/common";
+
+// Generate a single TID to use across all related records
+const tid = TID.nextStr();
+
+// 1. Create the base collection record
+const collectionRecord = {
+  $type: COLLECTION_NSID,
+  title: "Climate Action in New Zealand",
+  shortDescription: "Projects reducing carbon emissions",
+  activities: [
+    /* activity references with weights */
+  ],
+  createdAt: new Date().toISOString(),
+};
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: COLLECTION_NSID,
+  rkey: tid, // Use the same TID
+  record: collectionRecord,
+});
+
+// 2. Optionally add location sidecar (same TID)
+const locationSidecar = {
+  $type: COLLECTION_LOCATION_NSID,
+  location: locationRef, // Reference to app.certified.location
+  createdAt: new Date().toISOString(),
+};
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: COLLECTION_LOCATION_NSID,
+  rkey: tid, // Same TID as collection
+  record: locationSidecar,
+});
+
+// 3. Optionally add project sidecar (same TID)
+const projectSidecar = {
+  $type: COLLECTION_PROJECT_NSID,
+  description: leafletDocumentRef, // Rich-text via Leaflet
+  createdAt: new Date().toISOString(),
+};
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: COLLECTION_PROJECT_NSID,
+  rkey: tid, // Same TID as collection
+  record: projectSidecar,
+});
+
+// 4. Optionally add hyperboard sidecar (same TID)
+const hyperboardSidecar = {
+  $type: COLLECTION_HYPERBOARD_NSID,
+  users: [
+    {
+      name: "alice.did",
+      displayName: "Alice",
+      description: "Lead contributor",
+      img: { uri: "https://example.com/alice.jpg" },
+    },
+  ],
+  createdAt: new Date().toISOString(),
+};
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: COLLECTION_HYPERBOARD_NSID,
+  rkey: tid, // Same TID as collection
+  record: hyperboardSidecar,
+});
+```
+
+#### Benefits of the Sidecar Pattern
+
+- ✅ **Independent updates**: Update location, project, or hyperboard metadata without changing the collection CID
+- ✅ **Mix and match**: Use only the sidecars you need (all are optional)
+- ✅ **Extensibility**: New collection types can add their own sidecars without modifying the base schema
+- ✅ **Clean separation**: Base collection remains simple; specialized metadata lives in sidecars
+- ✅ **Backwards compatibility**: Existing collections continue to work; sidecars are additive
+
+#### Fetching Collections with Sidecars
+
+```typescript
+// Fetch the base collection
+const collection = await agent.api.com.atproto.repo.getRecord({
+  repo: userDid,
+  collection: COLLECTION_NSID,
+  rkey: tid,
+});
+
+// Fetch optional sidecars (same TID, different collections)
+try {
+  const location = await agent.api.com.atproto.repo.getRecord({
+    repo: userDid,
+    collection: COLLECTION_LOCATION_NSID,
+    rkey: tid,
+  });
+} catch (e) {
+  // Location sidecar doesn't exist - that's ok!
+}
+
+try {
+  const project = await agent.api.com.atproto.repo.getRecord({
+    repo: userDid,
+    collection: COLLECTION_PROJECT_NSID,
+    rkey: tid,
+  });
+} catch (e) {
+  // Project sidecar doesn't exist - that's ok!
+}
+```
+
 ## Certified Lexicons
 
 Certified lexicons are common/shared lexicons that can be used across multiple protocols.
