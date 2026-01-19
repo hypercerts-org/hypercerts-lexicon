@@ -205,6 +205,14 @@ dataclass collectionProject {
     !endif
 }
 
+' org.hypercerts.claim.collection.hyperboard (sidecar)
+dataclass collectionHyperboard {
+    !if (SHOW_FIELDS == "true")
+    users[]
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.claim.project
 dataclass project {
     !if (SHOW_FIELDS == "true")

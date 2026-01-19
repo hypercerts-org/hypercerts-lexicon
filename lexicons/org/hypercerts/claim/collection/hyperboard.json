@@ -1,0 +1,57 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.collection.hyperboard",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Hyperboard-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Hyperboards are sponsorship billboards showcasing contributors and participants.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["users", "createdAt"],
+        "properties": {
+          "users": {
+            "type": "array",
+            "description": "Array of user records representing contributors or participants in this hyperboard.",
+            "items": {
+              "type": "ref",
+              "ref": "#user"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this hyperboard metadata was created"
+          }
+        }
+      }
+    },
+    "user": {
+      "type": "object",
+      "description": "A user record representing a contributor or participant.",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The user's identifier, can be a DID or a simple name.",
+          "maxLength": 256
+        },
+        "displayName": {
+          "type": "string",
+          "description": "The user's display name.",
+          "maxLength": 256
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the user.",
+          "maxLength": 3000
+        },
+        "img": {
+          "type": "union",
+          "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
+          "description": "The user's profile image as a URI or image blob."
+        }
+      }
+    }
+  }
+}

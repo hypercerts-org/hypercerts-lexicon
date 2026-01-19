@@ -460,6 +460,36 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### org.hypercerts.claim.collection.hyperboard (Sidecar)
+
+**Lexicon ID:** `org.hypercerts.claim.collection.hyperboard`
+
+**Description:** Hyperboard-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Hyperboards are sponsorship billboards showcasing contributors and participants.
+
+**Key:** `tid` (same as the collection record)
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                         | Comments                                 |
+| ----------- | -------- | -------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| `users`     | `array`  | ✅       | Array of user records representing contributors or participants     | Each item is a `user` object (see below) |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this hyperboard metadata was created |                                          |
+
+#### Defs
+
+##### user
+
+| Property      | Type     | Required | Description                                          | Comments                                                                 |
+| ------------- | -------- | -------- | ---------------------------------------------------- | ------------------------------------------------------------------------ |
+| `name`        | `string` | ✅       | The user's identifier, can be a DID or a simple name | maxLength: 256                                                           |
+| `displayName` | `string` | ❌       | The user's display name                              | maxLength: 256                                                           |
+| `description` | `string` | ❌       | A description of the user                            | maxLength: 3000                                                          |
+| `img`         | `union`  | ❌       | The user's profile image as a URI or image blob      | References `org.hypercerts.defs#uri` or `org.hypercerts.defs#smallImage` |
+
+**Sidecar Pattern**: This record shares the same TID as its parent collection record but uses a different collection namespace. This allows hyperboard-specific user/contributor displays to be added to collections for sponsorship billboard functionality.
+
+---
+
 ### org.hypercerts.claim.project
 
 **Lexicon ID:** `org.hypercerts.claim.project`
