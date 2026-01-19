@@ -31,3 +31,12 @@ reviews:
           Use the diff to identify which files changed and verify synchronization accordingly.
           Check that lexicon IDs in JSON files match what's documented in README.md.
           Verify that entity names in ERD.puml match lexicon IDs (e.g., "activity" entity should correspond to org.hypercerts.claim.activity lexicon).
+
+      - name: "Lexicons styleguide compliance"
+        mode: warning
+        instructions: |
+          Files in /lexicons should be reviewed on compliance against the lexicon styleguide as documented here: https://atproto.com/guides/lexicon-style-guide
+
+          The developers could deviate from the styleguide if they have a good reason to do so, but they must document their deviation in the lexicon JSON file.
+
+          When deviations are detected and undocumented provide guidance on how to make the changes compliant.
