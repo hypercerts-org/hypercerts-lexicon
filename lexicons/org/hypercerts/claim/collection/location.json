@@ -1,0 +1,27 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.collection.location",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Location metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Any collection type can have location metadata (projects, geographic groupings, etc.).",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["location", "createdAt"],
+        "properties": {
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to a location record. The referenced record must conform to the app.certified.location lexicon."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this location metadata was created"
+          }
+        }
+      }
+    }
+  }
+}

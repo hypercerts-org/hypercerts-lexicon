@@ -184,7 +184,15 @@ dataclass collection {
     shortDescription?
     avatar?
     coverPhoto?
-    activities[]
+    activities[]?
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.collection.location (sidecar)
+dataclass collectionLocation {
+    !if (SHOW_FIELDS == "true")
+    location
     createdAt
     !endif
 }
@@ -297,6 +305,8 @@ measurement --> location
 !endif
 
 collection::activities --> activity
+
+collectionLocation::location --> location : sidecar
 
 project::activities --> activity
 project::location --> location

@@ -422,6 +422,25 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### org.hypercerts.claim.collection.location (Sidecar)
+
+**Lexicon ID:** `org.hypercerts.claim.collection.location`
+
+**Description:** Location metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Any collection type can have location metadata (projects, geographic groupings, etc.).
+
+**Key:** `tid` (same as the collection record)
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                       | Comments                                            |
+| ----------- | -------- | -------- | ----------------------------------------------------------------- | --------------------------------------------------- |
+| `location`  | `ref`    | ✅       | A strong reference to a location record                           | References must conform to `app.certified.location` |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this location metadata was created |                                                     |
+
+**Sidecar Pattern**: This record shares the same TID as its parent collection record but uses a different collection namespace. This allows location metadata to be updated independently without changing the collection record's CID.
+
+---
+
 ### org.hypercerts.claim.project
 
 **Lexicon ID:** `org.hypercerts.claim.project`
