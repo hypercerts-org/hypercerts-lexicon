@@ -405,7 +405,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.collection`
 
-**Description:** A collection/group of hypercerts that have a specific property.
+**Description:** A collection/group of hypercerts. Collections are the universal base for all grouping types (projects, hyperboards, geographic groupings, etc.). Activities can be added after collection creation (container-first pattern).
 
 **Key:** `tid`
 
@@ -417,7 +417,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
 | `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
 | `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |
-| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
+| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
 
 ---

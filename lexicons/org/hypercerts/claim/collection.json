@@ -4,11 +4,11 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A collection/group of hypercerts that have a specific property.",
+      "description": "A collection/group of hypercerts. Collections are the universal base for all grouping types (projects, hyperboards, geographic groupings, etc.). Activities can be added after collection creation (container-first pattern).",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["title", "activities", "createdAt"],
+        "required": ["title", "createdAt"],
         "properties": {
           "title": {
             "type": "string",
