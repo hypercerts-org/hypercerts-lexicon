@@ -73,11 +73,6 @@
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the location where the activity was performed. The record referenced must conform with the lexicon app.certified.location."
           },
-          "project": {
-            "type": "string",
-            "format": "at-uri",
-            "description": "A reference (AT-URI) to the project record that this activity is part of. The record referenced must conform with the lexicon org.hypercerts.claim.project. This activity must also be referenced by the project, establishing a bidirectional link."
-          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
@@ -118,7 +113,10 @@
     },
     "activityWeight": {
       "type": "object",
-      "required": ["activity", "weight"],
+      "required": [
+        "activity",
+        "weight"
+      ],
       "properties": {
         "activity": {
           "type": "ref",
