@@ -298,7 +298,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contribution`            |
 | `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                                     | References must conform to `org.hypercerts.claim.rights`                  |
 | `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                       |
-| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of                     | References must conform to `org.hypercerts.claim.project`                 |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                           |
 
 #### Defs
@@ -427,7 +426,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.project`
 
-**Description:** A project that can include multiple activities, each of which may be linked to at most one project.
+**Description:** A project that can include multiple activities
 
 **Key:** `tid`
 

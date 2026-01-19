@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A project that can include multiple activities, each of which may be linked to at most one project.",
+      "description": "A project that can include multiple activities",
       "key": "tid",
       "record": {
         "type": "object",
