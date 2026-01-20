@@ -16,10 +16,6 @@
         "properties": {
           "type": {
             "type": "string",
-            "knownValues": [
-              "project",
-              "collection"
-            ],
             "description": "The type of this group. Can be 'project', 'collection', or any other custom type string."
           },
           "title": {
