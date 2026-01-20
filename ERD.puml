@@ -186,7 +186,6 @@ dataclass collection {
     shortCollectionDescription?
     collectionDescription?
     items[]
-    location?
     createdAt
     !endif
 }
@@ -199,20 +198,6 @@ dataclass collectionProject {
     projectDescription (Leaflet ref)
     avatar?
     coverPhoto?
-    createdAt
-    !endif
-}
-
-' org.hypercerts.claim.project (DEPRECATED)
-dataclass project {
-    !if (SHOW_FIELDS == "true")
-    title
-    shortDescription
-    description?
-    avatar?
-    coverPhoto?
-    activities[]
-    location?
     createdAt
     !endif
 }
@@ -310,11 +295,7 @@ measurement --> location
 
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
-collection::location --> location
 collection ..|> collectionProject : "sidecar\n(same TID)"
-
-project::activities --> activity
-project::location --> location
 
 activity::contributions -l--> contribution
 activity::rights --> rights

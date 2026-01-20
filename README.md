@@ -411,13 +411,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property                     | Type     | Required | Description                                                                  | Comments                                                                                                                                           |
-| ---------------------------- | -------- | -------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `collectionTitle`            | `string` | ✅       | The title of this collection                                                 |                                                                                                                                                    |
-| `shortCollectionDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views       |                                                                                                                                                    |
-| `collectionDescription`      | `string` | ❌       | Full description of this collection, suitable for detail views               |                                                                                                                                                    |
-| `items`                      | `array`  | ✅       | Array of strong references to items in this collection                       | Items can be activities (`org.hypercerts.claim.activity`) and/or other collections (`org.hypercerts.claim.collection`). Enables recursive nesting. |
-| `createdAt`                  | `string` | ✅       | Client-declared timestamp when this record was originally created            |                                                                                                                                                    |
+| Property                     | Type     | Required | Description                                                            | Comments                                                                                                                                           |
+| ---------------------------- | -------- | -------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `collectionTitle`            | `string` | ✅       | The title of this collection                                           | maxLength: 800, maxGraphemes: 80                                                                                                                   |
+| `shortCollectionDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views | maxLength: 3000, maxGraphemes: 300                                                                                                                 |
+| `collectionDescription`      | `string` | ❌       | Full description of this collection, suitable for detail views         | maxLength: 3000, maxGraphemes: 300                                                                                                                 |
+| `items`                      | `array`  | ✅       | Array of strong references to items in this collection                 | Items can be activities (`org.hypercerts.claim.activity`) and/or other collections (`org.hypercerts.claim.collection`). Enables recursive nesting. |
+| `createdAt`                  | `string` | ✅       | Client-declared timestamp when this record was originally created      |                                                                                                                                                    |
 
 #### Example: Creating a Collection with Nested Items
 
@@ -427,7 +427,7 @@ import { TID } from "@atproto/common";
 const collectionRecord = {
   $type: "org.hypercerts.claim.collection",
   collectionTitle: "Climate Action Projects",
-  shortDescription:
+  shortCollectionDescription:
     "A collection of climate-related activities and sub-collections",
   items: [
     // Reference to an activity
@@ -481,7 +481,7 @@ const tid = TID.nextStr(); // Same TID for both records
 // Base collection record
 const collectionRecord = {
   $type: "org.hypercerts.claim.collection",
-  title: "Carbon Offset Initiative",
+  collectionTitle: "Carbon Offset Initiative",
   items: [
     {
       uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
