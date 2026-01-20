@@ -180,24 +180,13 @@ dataclass rights {
 ' org.hypercerts.claim.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
+    type
     title
     shortDescription?
-    avatar?
-    coverPhoto?
-    activities[]
-    createdAt
-    !endif
-}
-
-' org.hypercerts.claim.project
-dataclass project {
-    !if (SHOW_FIELDS == "true")
-    title
-    shortDescription
     description?
     avatar?
     coverPhoto?
-    activities[]?
+    activities[]
     location?
     createdAt
     !endif
@@ -249,8 +238,6 @@ protocol token <<largeBold>> #FFB6C1 {
 activity -l[hidden]-> token
 'evidence -d[hidden]-> activity
 'collection -d[hidden]-> activity
-'project -d[hidden]-> activity
-'project -r[hidden]-> location
 'activity -u[hidden]-> contributor
 'activity -u[hidden]-> location
 'activity -d[hidden]-> rights
@@ -297,9 +284,7 @@ measurement --> location
 !endif
 
 collection::activities --> activity
-
-project::activities --> activity
-project::location --> location
+collection::location --> location
 
 activity::contributions -l--> contribution
 activity::rights --> rights
@@ -327,6 +312,6 @@ badgeResponse::badgeAward --> badgeAward
 badgeAward::subject --> contributor
 badgeAward::subject --> activity
 ' This screws up the layout
-'badgeAward::subject --[norank]-> project
+'badgeAward::subject --[norank]-> collection
 
 @enduml
