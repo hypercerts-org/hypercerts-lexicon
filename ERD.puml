@@ -183,9 +183,9 @@ dataclass rights {
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     type?
-    collectionTitle
-    shortCollectionDescription?
-    collectionDescription? (Leaflet ref)
+    title
+    shortDescription?
+    description? (Leaflet ref)
     items[]
     createdAt
     !endif
