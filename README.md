@@ -405,24 +405,21 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.collection`
 
-
-
 **Key:** `tid`
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                             | Comments                                                            |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `type`             | `string` | ✅       | The type of this group. Can be 'project', 'collection', or custom string| Known values: `project`, `collection`                               |
-| `title`            | `string` | ✅       | The title of this collection                                            |                                                                     |
-| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
-| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document         | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |
-| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place| References must conform to `app.certified.location`                 |
-| `ext`              | `unknown`| ❌       | Optional metadata extension field                                       |                                                                     |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
+| Property           | Type      | Required | Description                                                              | Comments                                                            |
+| ------------------ | --------- | -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `type`             | `string`  | ✅       | The type of this group. Can be 'project', 'collection', or custom string | Known values: `project`, `collection`                               |
+| `title`            | `string`  | ✅       | The title of this collection                                             |                                                                     |
+| `shortDescription` | `string`  | ❌       | A short description of this collection                                   |                                                                     |
+| `description`      | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document          | References must conform to `pub.leaflet.pages.linearDocument#main`  |
+| `avatar`           | `blob`    | ❌       | Primary avatar image representing this collection across apps and views  | Typically a square image                                            |
+| `coverPhoto`       | `blob`    | ❌       | The cover photo of this collection                                       |                                                                     |
+| `activities`       | `array`   | ✅       | Array of activities with their associated weights in this collection     | Each item references `org.hypercerts.claim.activity#activityWeight` |
+| `ext`              | `unknown` | ❌       | Optional metadata extension field                                        |                                                                     |
+| `createdAt`        | `string`  | ✅       | Client-declared timestamp when this record was originally created        |                                                                     |
 
 ---
 

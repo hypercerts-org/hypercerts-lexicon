@@ -116,10 +116,7 @@
     },
     "activityWeight": {
       "type": "object",
-      "required": [
-        "activity",
-        "weight"
-      ],
+      "required": ["activity", "weight"],
       "properties": {
         "activity": {
           "type": "ref",
