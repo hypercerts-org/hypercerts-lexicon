@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.contribution",
+  "id": "org.hypercerts.claim.contributor",
   "defs": {
     "main": {
       "type": "record",
