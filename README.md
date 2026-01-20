@@ -405,19 +405,20 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Lexicon ID:** `org.hypercerts.claim.collection`
 
-**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting, allowing collections to contain other collections. Use app.certified.location as a sidecar (same TID) for location metadata.
+**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting. Use `org.hypercerts.claim.collection.project` as a sidecar (same TID) for project-specific metadata.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property                     | Type     | Required | Description                                                            | Comments                                                                                                                                           |
-| ---------------------------- | -------- | -------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `collectionTitle`            | `string` | ✅       | The title of this collection                                           | maxLength: 800, maxGraphemes: 80                                                                                                                   |
-| `shortCollectionDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views | maxLength: 3000, maxGraphemes: 300                                                                                                                 |
-| `collectionDescription`      | `string` | ❌       | Full description of this collection, suitable for detail views         | maxLength: 3000, maxGraphemes: 300                                                                                                                 |
-| `items`                      | `array`  | ✅       | Array of strong references to items in this collection                 | Items can be activities (`org.hypercerts.claim.activity`) and/or other collections (`org.hypercerts.claim.collection`). Enables recursive nesting. |
-| `createdAt`                  | `string` | ✅       | Client-declared timestamp when this record was originally created      |                                                                                                                                                    |
+| Property                     | Type     | Required | Description                                                                  | Comments                                                                                                                                           |
+| ---------------------------- | -------- | -------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `collectionTitle`            | `string` | ✅       | The title of this collection                                                 |                                                                                                                                                    |
+| `shortCollectionDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views       |                                                                                                                                                    |
+| `collectionDescription`      | `string` | ❌       | Full description of this collection, suitable for detail views               |                                                                                                                                                    |
+| `items`                      | `array`  | ✅       | Array of strong references to items in this collection                       | Items can be activities (`org.hypercerts.claim.activity`) and/or other collections (`org.hypercerts.claim.collection`). Enables recursive nesting. |
+| `location`                   | `ref`    | ❌       | A strong reference to a location record describing where the work took place | The referenced record must conform to the `app.certified.location` lexicon.                                                                        |
+| `createdAt`                  | `string` | ✅       | Client-declared timestamp when this record was originally created            |                                                                                                                                                    |
 
 #### Example: Creating a Collection with Nested Items
 
@@ -427,8 +428,6 @@ import { TID } from "@atproto/common";
 const collectionRecord = {
   $type: "org.hypercerts.claim.collection",
   collectionTitle: "Climate Action Projects",
-  shortCollectionDescription:
-    "A collection of climate-related activities and sub-collections",
   items: [
     // Reference to an activity
     {
@@ -464,7 +463,7 @@ const collectionRecord = {
 
 | Property                  | Type     | Required | Description                                                                     | Comments                                                                                     |
 | ------------------------- | -------- | -------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `projectTitle`            | `string` | ❌       | The title of this collection                                                    | maxLength: 800, maxGraphemes: 80                                                             |
+| `projectTitle`            | `string` | ❌       | The title of this project                                                       | maxLength: 800, maxGraphemes: 80                                                             |
 | `shortProjectDescription` | `string` | ❌       | Short summary of this project, suitable for previews and list views             | maxLength: 3000, maxGraphemes: 300                                                           |
 | `projectDescription`      | `ref`    | ✅       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`                           |
 | `avatar`                  | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image; image/png or image/jpeg, maxSize: 1000000 |
