@@ -188,6 +188,7 @@ dataclass collection {
     coverPhoto?
     activities[]
     location?
+    ext?
     createdAt
     !endif
 }

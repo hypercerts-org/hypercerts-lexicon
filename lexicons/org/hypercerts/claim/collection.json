@@ -21,7 +21,7 @@
               "project",
               "collection"
             ],
-            "description": "The type of this group. Can be 'project' or 'collection'."
+            "description": "The type of this group. Can be 'project', 'collection', or any other custom type string."
           },
           "title": {
             "type": "string",
@@ -70,6 +70,10 @@
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to a location record describing where the work took place. The referenced record must conform to the app.certified.location lexicon."
+          },
+          "ext": {
+            "type": "unknown",
+            "description": "Optional metadata extension field."
           },
           "createdAt": {
             "type": "string",
