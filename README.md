@@ -415,7 +415,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | `type`             | `string` | ✅       | The type of this group. Can be 'project', 'collection', or custom string| Known values: `project`, `collection`                               |
 | `title`            | `string` | ✅       | The title of this collection                                            |                                                                     |
-| `shortDescription` | `string` | ✅       | A short description of this collection                                  |                                                                     |
+| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
 | `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document         | References must conform to `pub.leaflet.pages.linearDocument#main`  |
 | `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
 | `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |

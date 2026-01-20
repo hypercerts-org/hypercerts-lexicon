@@ -182,7 +182,7 @@ dataclass collection {
     !if (SHOW_FIELDS == "true")
     type
     title
-    shortDescription
+    shortDescription?
     description?
     avatar?
     coverPhoto?
