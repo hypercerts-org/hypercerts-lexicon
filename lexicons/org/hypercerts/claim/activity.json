@@ -8,13 +8,7 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": [
-          "title",
-          "shortDescription",
-          "createdAt",
-          "startDate",
-          "endDate"
-        ],
+        "required": ["title", "shortDescription", "createdAt"],
         "properties": {
           "title": {
             "type": "string",

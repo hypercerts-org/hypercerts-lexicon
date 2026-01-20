@@ -60,8 +60,8 @@ dataclass activity <<largeBold>> #B4E5D0 {
     description?
     image?
     workScope?
-    startDate
-    endDate
+    startDate?
+    endDate?
     contributions[]?
     locations[]?
     rights?
