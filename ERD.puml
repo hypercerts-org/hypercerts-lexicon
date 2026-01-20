@@ -182,17 +182,28 @@ dataclass rights {
 ' by creating a location record with the same TID
 dataclass collection {
     !if (SHOW_FIELDS == "true")
-    type
-    title
-    shortDescription?
-    avatar?
-    coverPhoto?
+    collectionTitle
+    shortCollectionDescription?
+    collectionDescription?
     items[]
+    location?
     createdAt
     !endif
 }
 
-' org.hypercerts.claim.project
+' org.hypercerts.claim.collection.project (sidecar)
+dataclass collectionProject {
+    !if (SHOW_FIELDS == "true")
+    projectTitle?
+    shortProjectDescription?
+    projectDescription (Leaflet ref)
+    avatar?
+    coverPhoto?
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.project (DEPRECATED)
 dataclass project {
     !if (SHOW_FIELDS == "true")
     title
@@ -299,6 +310,8 @@ measurement --> location
 
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
+collection::location --> location
+collection ..|> collectionProject : "sidecar\n(same TID)"
 
 project::activities --> activity
 project::location --> location

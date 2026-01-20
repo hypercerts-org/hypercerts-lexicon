@@ -417,7 +417,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `shortCollectionDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views       |                                                                                                                                                    |
 | `collectionDescription`      | `string` | ❌       | Full description of this collection, suitable for detail views               |                                                                                                                                                    |
 | `items`                      | `array`  | ✅       | Array of strong references to items in this collection                       | Items can be activities (`org.hypercerts.claim.activity`) and/or other collections (`org.hypercerts.claim.collection`). Enables recursive nesting. |
-| `location`                   | `ref`    | ❌       | A strong reference to a location record describing where the work took place | The referenced record must conform to the `app.certified.location` lexicon.                                                                        |
 | `createdAt`                  | `string` | ✅       | Client-declared timestamp when this record was originally created            |                                                                                                                                                    |
 
 #### Example: Creating a Collection with Nested Items
@@ -453,26 +452,77 @@ const collectionRecord = {
 
 ---
 
-### org.hypercerts.claim.project
+### org.hypercerts.claim.collection.project
 
-**Lexicon ID:** `org.hypercerts.claim.project`
+**Lexicon ID:** `org.hypercerts.claim.collection.project`
 
-**Description:** A project that can include multiple activities
+**Description:** Project-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. This allows collections to represent projects by adding rich-text descriptions and visual assets.
 
-**Key:** `tid`
+**Key:** `tid` (same as the collection record)
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                     | Comments                                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of this project                                                           |                                                                     |
-| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views             |                                                                     |
-| `description`      | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this project                                                 |                                                                     |
-| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place    | References must conform to `app.certified.location`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
+| Property                  | Type     | Required | Description                                                                     | Comments                                                                                     |
+| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `projectTitle`            | `string` | ❌       | The title of this collection                                                    | maxLength: 800, maxGraphemes: 80                                                             |
+| `shortProjectDescription` | `string` | ❌       | Short summary of this project, suitable for previews and list views             | maxLength: 3000, maxGraphemes: 300                                                           |
+| `projectDescription`      | `ref`    | ✅       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`                           |
+| `avatar`                  | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image; image/png or image/jpeg, maxSize: 1000000 |
+| `coverPhoto`              | `blob`   | ❌       | The cover photo of this project                                                 | image/png or image/jpeg, maxSize: 1000000                                                    |
+| `createdAt`               | `string` | ✅       | Client-declared timestamp when this project metadata was created                |                                                                                              |
+
+#### Example: Creating a Project (Collection + Project Sidecar)
+
+```typescript
+import { TID } from "@atproto/common";
+
+const tid = TID.nextStr(); // Same TID for both records
+
+// Base collection record
+const collectionRecord = {
+  $type: "org.hypercerts.claim.collection",
+  title: "Carbon Offset Initiative",
+  items: [
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+      cid: "...",
+    },
+    {
+      uri: "at://did:plc:bob/org.hypercerts.claim.activity/7x9def",
+      cid: "...",
+    },
+  ],
+  createdAt: new Date().toISOString(),
+};
+
+// Project sidecar with rich-text description and assets
+const projectSidecar = {
+  $type: "org.hypercerts.claim.collection.project",
+  projectTitle: "Carbon Offset Initiative",
+  shortProjectDescription: "A project focused on carbon reduction",
+  projectDescription: {
+    uri: "at://did:plc:alice/pub.leaflet.pages.linearDocument/abc123",
+    cid: "...",
+  },
+  avatar: avatarBlob,
+  coverPhoto: coverPhotoBlob,
+  createdAt: new Date().toISOString(),
+};
+
+// Create both with same TID
+await createRecord({
+  collection: "org.hypercerts.claim.collection",
+  rkey: tid,
+  record: collectionRecord,
+});
+await createRecord({
+  collection: "org.hypercerts.claim.collection.project",
+  rkey: tid,
+  record: projectSidecar,
+});
+```
+
+**Note**: The project sidecar is optional. Collections without this sidecar are simple groupings; collections with it are "projects" with rich documentation.
 
 ---
 
