@@ -4,11 +4,11 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A group of hypercerts that have a specific property. Can be a project or a collection.",
+      "description": "A collection/group of items (activities and/or other collections). Collections support recursive nesting. Use app.certified.location as a sidecar (same TID) for location metadata.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["type", "title", "createdAt"],
+        "required": ["title", "items", "createdAt"],
         "properties": {
           "type": {
             "type": "string",
@@ -43,12 +43,12 @@
             "accept": ["image/png", "image/jpeg"],
             "maxSize": 1000000
           },
-          "activities": {
+          "items": {
             "type": "array",
-            "description": "Array of activities with their associated weights in this collection",
+            "description": "Array of strong references to items in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).",
             "items": {
               "type": "ref",
-              "ref": "org.hypercerts.claim.activity#activityWeight"
+              "ref": "com.atproto.repo.strongRef"
             }
           },
           "createdAt": {

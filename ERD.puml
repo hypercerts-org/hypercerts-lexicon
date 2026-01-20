@@ -185,6 +185,18 @@ dataclass collection {
     type
     title
     shortDescription?
+    avatar?
+    coverPhoto?
+    items[]
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.project
+dataclass project {
+    !if (SHOW_FIELDS == "true")
+    title
+    shortDescription
     description?
     avatar?
     coverPhoto?
@@ -285,8 +297,8 @@ hiddenLocation2 -[hidden]-> location
 measurement --> location
 !endif
 
-collection::activities --> activity
-collection ..|> location : "sidecar\n(same TID)"
+collection::items --> activity
+collection::items --> collection : "recursive\nnesting"
 
 project::activities --> activity
 project::location --> location
