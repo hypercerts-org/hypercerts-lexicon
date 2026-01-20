@@ -4,12 +4,16 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A collection/group of hypercerts that have a specific property.",
+      "description": "A group of hypercerts that have a specific property. Can be a project or a collection.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["title", "activities", "createdAt"],
+        "required": ["type", "title", "createdAt"],
         "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of this group. Can be 'project', 'collection', or any other custom type string."
+          },
           "title": {
             "type": "string",
             "description": "The title of this collection",
@@ -21,6 +25,11 @@
             "maxLength": 3000,
             "maxGraphemes": 300,
             "description": "A short description of this collection"
+          },
+          "description": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description, represented as a Leaflet linear document."
           },
           "avatar": {
             "type": "blob",
@@ -41,6 +50,11 @@
               "type": "ref",
               "ref": "org.hypercerts.claim.activity#activityWeight"
             }
+          },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to a location record describing where the work took place. The referenced record must conform to the app.certified.location lexicon."
           },
           "createdAt": {
             "type": "string",
