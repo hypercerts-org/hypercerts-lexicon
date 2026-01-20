@@ -51,10 +51,6 @@
               "ref": "org.hypercerts.claim.activity#activityWeight"
             }
           },
-          "ext": {
-            "type": "unknown",
-            "description": "Optional metadata extension field."
-          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

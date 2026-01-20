@@ -286,19 +286,19 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                             | Comments                                                                  |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of the hypercert                                                  |                                                                           |
-| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                    |                                                                           |
-| `description`      | `string` | ❌       | Optional longer description of the impact work done.                    |                                                                           |
-| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob              |                                                                           |
-| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                  | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
-| `startDate`        | `string` | ✅       | When the work began                                                     |                                                                           |
-| `endDate`          | `string` | ✅       | When the work ended                                                     |                                                                           |
+| Property           | Type     | Required | Description                                                                         | Comments                                                                  |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `title`            | `string` | ✅       | Title of the hypercert                                                              |                                                                           |
+| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                |                                                                           |
+| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                |                                                                           |
+| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                          |                                                                           |
+| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                              | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
+| `startDate`        | `string` | ✅       | When the work began                                                                 |                                                                           |
+| `endDate`          | `string` | ✅       | When the work ended                                                                 |                                                                           |
 | `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts | References must conform to `org.hypercerts.claim.contribution`            |
-| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                             | References must conform to `org.hypercerts.claim.rights`                  |
-| `locations`        | `array`  | ❌       | An array of strong references to the locations where the work was performed          | References must conform to `app.certified.location`                       |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                    |                                                                           |
+| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                            | References must conform to `org.hypercerts.claim.rights`                  |
+| `locations`        | `array`  | ❌       | An array of strong references to the locations where the work was performed         | References must conform to `app.certified.location`                       |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
 
 #### Defs
 
@@ -409,21 +409,21 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type      | Required | Description                                                              | Comments                                                            |
-| ------------------ | --------- | -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `type`             | `string`  | ✅       | The type of this group. Can be 'project', 'collection', or custom string | Known values: `project`, `collection`                               |
-| `title`            | `string`  | ✅       | The title of this collection                                             |                                                                     |
-| `shortDescription` | `string`  | ❌       | A short description of this collection                                   |                                                                     |
-| `description`      | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document          | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`    | ❌       | Primary avatar image representing this collection across apps and views  | Typically a square image                                            |
-| `coverPhoto`       | `blob`    | ❌       | The cover photo of this collection                                       |                                                                     |
-| `activities`       | `array`   | ✅       | Array of activities with their associated weights in this collection     | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `ext`              | `unknown` | ❌       | Optional metadata extension field                                        |                                                                     |
-| `createdAt`        | `string`  | ✅       | Client-declared timestamp when this record was originally created        |                                                                     |
+| Property           | Type     | Required | Description                                                              | Comments                                                            |
+| ------------------ | -------- | -------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `type`             | `string` | ✅       | The type of this group. Can be 'project', 'collection', or custom string | Known values: `project`, `collection`                               |
+| `title`            | `string` | ✅       | The title of this collection                                             |                                                                     |
+| `shortDescription` | `string` | ❌       | A short description of this collection                                   |                                                                     |
+| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document          | References must conform to `pub.leaflet.pages.linearDocument#main`  |
+| `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views  | Typically a square image                                            |
+| `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                       |                                                                     |
+| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection     | Each item references `org.hypercerts.claim.activity#activityWeight` |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created        |                                                                     |
 
 ---
 
 <<<<<<< HEAD
+
 ### org.hypercerts.claim.project
 
 **Lexicon ID:** `org.hypercerts.claim.project`
@@ -446,9 +446,11 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
 
 ---
+
 =======
 **Description:** A group of hypercerts. Can be a project or a collection.
->>>>>>> 5a17d5a (refactor: unify project and collection schemas)
+
+> > > > > > > 5a17d5a (refactor: unify project and collection schemas)
 
 ### org.hypercerts.claim.rights
 

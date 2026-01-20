@@ -187,7 +187,6 @@ dataclass collection {
     avatar?
     coverPhoto?
     activities[]
-    ext?
     createdAt
     !endif
 }
