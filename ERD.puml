@@ -182,9 +182,10 @@ dataclass rights {
 ' by creating a location record with the same TID
 dataclass collection {
     !if (SHOW_FIELDS == "true")
-    collectionTitle
-    shortCollectionDescription?
-    collectionDescription?
+    type?
+    title
+    shortDescription?
+    description? (Leaflet ref)
     items[]
     createdAt
     !endif

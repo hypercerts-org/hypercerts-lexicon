@@ -8,25 +8,28 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["collectionTitle", "items", "createdAt"],
+        "required": ["title", "items", "createdAt"],
         "properties": {
-          "collectionTitle": {
+          "type": {
+            "type": "string",
+            "description": "The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection."
+          },
+          "title": {
             "type": "string",
             "description": "The title of this collection",
             "maxLength": 800,
             "maxGraphemes": 80
           },
-          "shortCollectionDescription": {
+          "shortDescription": {
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
             "description": "Short summary of this collection, suitable for previews and list views"
           },
-          "collectionDescription": {
-            "type": "string",
-            "maxLength": 3000,
-            "maxGraphemes": 300,
-            "description": "Full description of this collection, suitable for detail views"
+          "description": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description, represented as a Leaflet linear document."
           },
           "items": {
             "type": "array",
