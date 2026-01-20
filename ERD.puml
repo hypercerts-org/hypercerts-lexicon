@@ -178,6 +178,8 @@ dataclass rights {
 }
 
 ' org.hypercerts.claim.collection
+' Note: Collections can use app.certified.location as a sidecar
+' by creating a location record with the same TID
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     type
@@ -284,7 +286,10 @@ measurement --> location
 !endif
 
 collection::activities --> activity
-collection::location --> location
+collection ..|> location : "sidecar\n(same TID)"
+
+project::activities --> activity
+project::location --> location
 
 activity::contributions -l--> contribution
 activity::rights --> rights
