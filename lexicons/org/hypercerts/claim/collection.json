@@ -4,51 +4,36 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A group of hypercerts that have a specific property. Can be a project or a collection.",
+      "description": "A collection/group of items (activities and/or other collections). Collections support recursive nesting. Use app.certified.location as a sidecar (same TID) for location metadata.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["type", "title", "createdAt"],
+        "required": ["collectionTitle", "items", "createdAt"],
         "properties": {
-          "type": {
-            "type": "string",
-            "description": "The type of this group. Can be 'project', 'collection', or any other custom type string."
-          },
-          "title": {
+          "collectionTitle": {
             "type": "string",
             "description": "The title of this collection",
             "maxLength": 800,
             "maxGraphemes": 80
           },
-          "shortDescription": {
+          "shortCollectionDescription": {
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
-            "description": "A short description of this collection"
+            "description": "Short summary of this collection, suitable for previews and list views"
           },
-          "description": {
-            "type": "ref",
-            "ref": "pub.leaflet.pages.linearDocument#main",
-            "description": "Rich-text description, represented as a Leaflet linear document."
+          "collectionDescription": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "Full description of this collection, suitable for detail views"
           },
-          "avatar": {
-            "type": "blob",
-            "description": "Primary avatar image representing this collection across apps and views; typically a square image.",
-            "accept": ["image/png", "image/jpeg"],
-            "maxSize": 1000000
-          },
-          "coverPhoto": {
-            "type": "blob",
-            "description": "The cover photo of this collection.",
-            "accept": ["image/png", "image/jpeg"],
-            "maxSize": 1000000
-          },
-          "activities": {
+          "items": {
             "type": "array",
-            "description": "Array of activities with their associated weights in this collection",
+            "description": "Array of strong references to items in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).",
             "items": {
               "type": "ref",
-              "ref": "org.hypercerts.claim.activity#activityWeight"
+              "ref": "com.atproto.repo.strongRef"
             }
           },
           "createdAt": {

@@ -1,0 +1,51 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.collection.project",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Project-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Provides rich-text description capabilities for project-type collections.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["projectDescription", "createdAt"],
+        "properties": {
+          "projectTitle": {
+            "type": "string",
+            "description": "The title of this collection",
+            "maxLength": 800,
+            "maxGraphemes": 80
+          },
+          "shortProjectDescription": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "Short summary of this project, suitable for previews and list views"
+          },
+          "projectDescription": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description of this project, represented as a Leaflet linear document."
+          },
+          "avatar": {
+            "type": "blob",
+            "description": "Primary avatar image representing this project across apps and views; typically a square logo or project identity image.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "coverPhoto": {
+            "type": "blob",
+            "description": "The cover photo of this project.",
+            "accept": ["image/png", "image/jpeg"],
+            "maxSize": 1000000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this project metadata was created"
+          }
+        }
+      }
+    }
+  }
+}
