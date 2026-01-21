@@ -238,10 +238,11 @@ dist/                   # Built output (gitignored)
    - Auto-generate `generated/exports.ts` with all exports
 3. Update `ERD.puml` as appropriate
 4. Update `README.md` as appropriate
-5. Run `npm run format` to ensure everything is formatted correctly
+5. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
+6. Run `npm run format` to ensure everything is formatted correctly
    via Prettier
-6. Run `npm run check` to validate, typecheck, and build
-7. **REQUIRED: Create a changeset file** in `.changeset/` directory
+7. Run `npm run check` to validate, typecheck, and build
+8. **REQUIRED: Create a changeset file** in `.changeset/` directory
    - **This step is MANDATORY for ALL changes that affect users**
    - See "Versioning" section below for file format
    - Create the file directly - do not use the interactive `npm run changeset` command
