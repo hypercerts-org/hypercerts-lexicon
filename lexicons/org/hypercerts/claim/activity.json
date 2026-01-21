@@ -52,9 +52,14 @@
             "description": "The hypercert visual representation as a URI or image blob."
           },
           "workScope": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions."
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#workScopeAll",
+              "org.hypercerts.defs#workScopeAny",
+              "org.hypercerts.defs#workScopeNot",
+              "org.hypercerts.defs#workScopeAtom"
+            ],
+            "description": "Work scope logic expression using boolean operators (all/any/not) and atomic scope references."
           },
           "startDate": {
             "type": "string",
