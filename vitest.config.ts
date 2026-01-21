@@ -8,5 +8,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
     },
+    include: ["tests/**/*.{test,spec}.{js,ts}"],
   },
 });
