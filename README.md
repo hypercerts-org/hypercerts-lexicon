@@ -257,7 +257,7 @@ supports rich-text via Leaflet linear documents.
 
 ### Adding Visual Representation to Collections
 
-Collections can include `avatar` and `coverImage` fields for visual representation:
+Collections can include `avatar` and `banner` fields for visual representation:
 
 ```typescript
 import { COLLECTION_NSID } from "@hypercerts-org/lexicon";
@@ -268,7 +268,7 @@ const collectionRecord = {
   avatar: {
     image: blobRef, // or { uri: "https://..." }
   },
-  coverImage: {
+  banner: {
     image: largeBlobRef, // or { uri: "https://..." }
   },
   items: [
@@ -278,6 +278,6 @@ const collectionRecord = {
 };
 ```
 
-**Note**: Both `avatar` (up to 5MB) and `coverImage` (up to 10MB) fields
+**Note**: Both `avatar` (up to 5MB) and `banner` (up to 10MB) fields
 are optional and support either embedded image blobs or URI references to
 external images.

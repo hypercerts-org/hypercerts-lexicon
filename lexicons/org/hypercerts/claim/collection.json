@@ -39,13 +39,13 @@
             ],
             "description": "The collection's avatar/profile image as a URI or image blob."
           },
-          "coverImage": {
+          "banner": {
             "type": "union",
             "refs": [
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#largeImage"
             ],
-            "description": "The collection's cover/banner image as a URI or image blob."
+            "description": "Larger horizontal image to display behind the collection view."
           },
           "items": {
             "type": "array",
