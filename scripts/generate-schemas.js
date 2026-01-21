@@ -318,7 +318,6 @@ function generateMarkdown() {
       "org.hypercerts.claim.evidence",
       "org.hypercerts.claim.measurement",
       "org.hypercerts.claim.collection",
-      "org.hypercerts.claim.collection.project",
       "org.hypercerts.claim.rights",
       "org.hypercerts.funding.receipt",
     ];

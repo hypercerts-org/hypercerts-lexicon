@@ -191,7 +191,7 @@ property tables, see [SCHEMAS.md](SCHEMAS.md).
 
 ## Examples
 
-### Example: Creating a Collection with Nested Items
+### Creating a Collection with Nested Items
 
 ```typescript
 import { TID } from "@atproto/common";
@@ -222,17 +222,21 @@ const collectionRecord = {
 };
 ```
 
-### Example: Creating a Project (Collection + Project Sidecar)
+### Creating a Project
+
+Projects are collections with a `type` field set to "project" and can
+include rich-text descriptions:
 
 ```typescript
-import { TID } from "@atproto/common";
-
-const tid = TID.nextStr(); // Same TID for both records
-
-// Base collection record
-const collectionRecord = {
+const projectRecord = {
   $type: "org.hypercerts.claim.collection",
+  type: "project",
   title: "Carbon Offset Initiative",
+  shortDescription: "A project focused on carbon reduction and reforestation",
+  description: {
+    uri: "at://did:plc:alice/pub.leaflet.pages.linearDocument/abc123",
+    cid: "...",
+  },
   items: [
     {
       uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
@@ -245,32 +249,8 @@ const collectionRecord = {
   ],
   createdAt: new Date().toISOString(),
 };
-
-// Project sidecar with rich-text description and assets
-const projectSidecar = {
-  $type: "org.hypercerts.claim.collection.project",
-  projectTitle: "Carbon Offset Initiative",
-  shortProjectDescription: "A project focused on carbon reduction",
-  projectDescription: {
-    uri: "at://did:plc:alice/pub.leaflet.pages.linearDocument/abc123",
-    cid: "...",
-  },
-  avatar: avatarBlob,
-  coverPhoto: coverPhotoBlob,
-  createdAt: new Date().toISOString(),
-};
-
-// Create both with same TID
-await createRecord({
-  collection: "org.hypercerts.claim.collection",
-  rkey: tid,
-  record: collectionRecord,
-});
-await createRecord({
-  collection: "org.hypercerts.claim.collection.project",
-  rkey: tid,
-  record: projectSidecar,
-});
 ```
 
-**Note**: The project sidecar is optional. Collections without this sidecar are simple groupings; collections with it are "projects" with rich documentation.
+**Note**: The `type` field is optional and can be set to "project",
+"favorites", or any other collection type. The `description` field
+supports rich-text via Leaflet linear documents.

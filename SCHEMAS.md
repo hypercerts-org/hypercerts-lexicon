@@ -132,25 +132,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.collection.project`
-
-**Description:** Project-specific metadata for a collection. Uses the sidecar pattern with the same record key (TID) as the collection record. Provides rich-text description capabilities for project-type collections.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property                  | Type     | Required | Description                                                                                                              | Comments                                         |
-| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
-| `projectTitle`            | `string` | no       | The title of this collection                                                                                             | maxLength: 800, maxGraphemes: 80                 |
-| `shortProjectDescription` | `string` | no       | Short summary of this project, suitable for previews and list views                                                      | maxLength: 3000, maxGraphemes: 300               |
-| `projectDescription`      | `ref`    | yes      | Rich-text description of this project, represented as a Leaflet linear document.                                         |                                                  |
-| `avatar`                  | `blob`   | no       | Primary avatar image representing this project across apps and views; typically a square logo or project identity image. | maxSize: 1000000, accepts: image/png, image/jpeg |
-| `coverPhoto`              | `blob`   | no       | The cover photo of this project.                                                                                         | maxSize: 1000000, accepts: image/png, image/jpeg |
-| `createdAt`               | `string` | yes      | Client-declared timestamp when this project metadata was created                                                         |                                                  |
-
----
-
 ### `org.hypercerts.claim.rights`
 
 **Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
