@@ -10,6 +10,7 @@
     "add-project-sidecar",
     "add-richtext-facets-to-activity",
     "add-vitest-suite",
+    "add-work-scope-logic",
     "change-workscope-to-strongref",
     "document-location-sidecar-pattern",
     "improved-exports-structure",
