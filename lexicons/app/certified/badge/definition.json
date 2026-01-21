@@ -12,11 +12,13 @@
         "properties": {
           "badgeType": {
             "type": "string",
-            "description": "Category of the badge (e.g. endorsement, participation, affiliation)."
+            "description": "Category of the badge (e.g. endorsement, participation, affiliation).",
+            "maxLength": 100
           },
           "title": {
             "type": "string",
-            "description": "Human-readable title of the badge."
+            "description": "Human-readable title of the badge.",
+            "maxLength": 256
           },
           "icon": {
             "type": "blob",
@@ -31,7 +33,8 @@
           },
           "description": {
             "type": "string",
-            "description": "Optional short statement describing what the badge represents."
+            "description": "Optional short statement describing what the badge represents.",
+            "maxLength": 1000
           },
           "allowedIssuers": {
             "type": "array",
