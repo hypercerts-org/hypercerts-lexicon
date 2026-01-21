@@ -26,5 +26,8 @@ jobs:
         run: |
           sed -i 's|// skip|throw e;|g' node_modules/@atproto/lex-cli/dist/util.js
 
+      - name: Generate SCHEMAS.md
+        run: npm run gen-schemas-md
+
       - name: Run checks
         run: npm run check

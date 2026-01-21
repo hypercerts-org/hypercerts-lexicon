@@ -1,1 +1,3 @@
+npm run gen-schemas-md
+npm run format
 npm run check
