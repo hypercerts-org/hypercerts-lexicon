@@ -281,3 +281,22 @@ const collectionRecord = {
 **Note**: Both `avatar` (up to 5MB) and `banner` (up to 10MB) fields
 are optional and support either embedded image blobs or URI references to
 external images.
+
+### Adding Locations to Activities
+
+The `locations` field in activity records is an array of strong references
+(`com.atproto.repo.strongRef`) pointing to `app.certified.location` records.
+Each strong reference contains two required fields:
+
+- `uri`: The ATProto URI of the location record (e.g., `at://did:plc:alice/app.certified.location/abc123`)
+- `cid`: The content identifier (CID) of the location record, ensuring referential integrity
+
+**Validation and Expectations**:
+
+- All location records referenced in the `locations` array must conform to the
+  `app.certified.location` lexicon schema
+- The `uri` field must be a valid ATProto URI pointing to an existing location record
+- The `cid` field must match the current CID of the referenced location record
+- The `locations` field is optional; activities can be created without location data
+- When using the sidecar pattern (same TID), ensure the location record is created
+  or updated alongside the activity record for consistency
