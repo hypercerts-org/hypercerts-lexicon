@@ -35,11 +35,11 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### contributor
 
-| Property                 | Type     | Required | Description                                                                                                                                                                                                                                                        |
-| ------------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `contributorInformation` | `union`  | ✅       | Contributor information as a string (DID or identifier) or strong reference to for instance org.hypercerts.claim.contributorInformation#main.                                                                                                                      |
-| `weight`                 | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
-| `contributionDetails`    | `union`  | ❌       | Contribution details as a string or strong reference to org.hypercerts.claim.contributionDetails#main.                                                                                                                                                             |
+| Property              | Type     | Required | Description                                                                                                                                                                                                                                                        |
+| --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `contributorIdentity` | `union`  | ✅       | Contributor identity as a string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record.                                                                                             |
+| `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
+| `contributionDetails` | `union`  | ❌       | Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record.                                                                                                                        |
 
 ---
 

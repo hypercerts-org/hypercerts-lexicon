@@ -97,21 +97,21 @@
     },
     "contributor": {
       "type": "object",
-      "required": ["contributorInformation"],
+      "required": ["contributorIdentity"],
       "properties": {
-        "contributorInformation": {
+        "contributorIdentity": {
           "type": "union",
           "refs": ["#contributorIdentity", "com.atproto.repo.strongRef"],
-          "description": "Contributor information as a string (DID or identifier) or strong reference to for instance org.hypercerts.claim.contributorInformation#main."
+          "description": "Contributor identity as a string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record."
         },
-        "weight": {
+        "contributionWeight": {
           "type": "string",
           "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
         },
         "contributionDetails": {
           "type": "union",
           "refs": ["#contributorRole", "com.atproto.repo.strongRef"],
-          "description": "Contribution details as a string or strong reference to org.hypercerts.claim.contributionDetails#main."
+          "description": "Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record."
         }
       }
     },
