@@ -232,24 +232,45 @@ dist/                   # Built output (gitignored)
 
 1. Create / edit JSON file in `lexicons/` following the namespace
    structure
+
 2. Run `npm run gen-api` to:
    - Generate types in `generated/`
    - Create type shims for external lexicons
    - Auto-generate `generated/exports.ts` with all exports
-3. Update `ERD.puml` as appropriate
-4. Update `README.md` as appropriate
+
+3. Update `ERD.puml` as appropriate:
+   - **Include all fields except facet fields** (they're cosmetic and
+     don't affect structure)
+
+4. Update `README.md` as appropriate:
+   - If README.md already references that lexicon, it must be updated
+     to reflect the lexicon changes (modified properties updated,
+     removed lexicons removed from docs). If it doesn't already then
+     it's _recommended_ but _not mandatory_ to add some docs to it for
+     the lexicon in question.
+
+   - Document new lexicons or changes to existing ones
+
+   - Document all properties **except facet fields** (facets may be
+     omitted)
+
 5. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
+
 6. Run `npm run format` to ensure everything is formatted correctly
    via Prettier
+
 7. Run `npm run check` to validate, typecheck, and build
+
 8. **REQUIRED: Create a changeset file** in `.changeset/` directory
    - **This step is MANDATORY for ALL changes that affect users**
    - See "Versioning" section below for file format
-   - Create the file directly - do not use the interactive `npm run changeset` command
+   - Create the file directly - do not use the interactive
+     `npm run changeset` command
 
 **No manual edits needed!** Everything is automatically regenerated.
 
-**⚠️ IMPORTANT: Did you create a changeset?** All public API changes require a changeset!
+**⚠️ IMPORTANT: Did you create a changeset?** All public API changes
+require a changeset!
 
 ### Testing Changes
 

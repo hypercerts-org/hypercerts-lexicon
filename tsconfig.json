@@ -19,6 +19,9 @@
     "paths": {
       "../../../pub/leaflet/pages/*": [
         "./node_modules/@atcute/leaflet/lib/lexicons/types/pub/leaflet/pages/*"
+      ],
+      "../../../app/bsky/richtext/facet": [
+        "./generated/types/app/bsky/richtext/facet"
       ]
     }
   },

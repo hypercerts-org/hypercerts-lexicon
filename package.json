@@ -65,6 +65,7 @@
     "prepare": "husky && ./scripts/setup-merge-driver.sh"
   },
   "dependencies": {
+    "@atcute/bluesky": "^3.2.15",
     "@atcute/leaflet": "^1.0.15",
     "@atproto/lexicon": "^0.6.0",
     "multiformats": "^13.3.6"
