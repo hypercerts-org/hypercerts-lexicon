@@ -49,10 +49,10 @@
           },
           "items": {
             "type": "array",
-            "description": "Array of strong references to items in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).",
+            "description": "Array of items in this collection with optional weights.",
             "items": {
               "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
+              "ref": "#item"
             }
           },
           "createdAt": {
@@ -60,6 +60,21 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["itemIdentifier"],
+      "properties": {
+        "itemIdentifier": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection)."
+        },
+        "itemWeight": {
+          "type": "string",
+          "description": "Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
         }
       }
     }

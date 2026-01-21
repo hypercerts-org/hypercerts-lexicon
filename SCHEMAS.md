@@ -41,13 +41,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `weight`                 | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 | `contributionDetails`    | `union`  | ❌       | Contribution details as a string or strong reference to org.hypercerts.claim.contributionDetails#main.                                                                                                                                                             |
 
-##### activityWeight
-
-| Property   | Type     | Required | Description                                                                                                                                                                                                                                                                   |
-| ---------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                                                                                                                    |
-| `weight`   | `string` | ✅       | The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
-
 ---
 
 ### `org.hypercerts.claim.evaluation`
@@ -131,16 +124,25 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                                                                                                                 | Comments                           |
-| ------------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                                |                                    |
-| `title`            | `string` | ✅       | The title of this collection                                                                                                                                                | maxLength: 800, maxGraphemes: 80   |
-| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                                                                                      | maxLength: 3000, maxGraphemes: 300 |
-| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                            |                                    |
-| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                               |                                    |
-| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                              |                                    |
-| `items`            | `ref`    | ✅       | Array of strong references to items in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection). |                                    |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                           |                                    |
+| Property           | Type     | Required | Description                                                                                                  | Comments                           |
+| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection. |                                    |
+| `title`            | `string` | ✅       | The title of this collection                                                                                 | maxLength: 800, maxGraphemes: 80   |
+| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                       | maxLength: 3000, maxGraphemes: 300 |
+| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                             |                                    |
+| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                |                                    |
+| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                               |                                    |
+| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                     |                                    |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                            |                                    |
+
+#### Defs
+
+##### item
+
+| Property         | Type     | Required | Description                                                                                                                                                                                     |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).                             |
+| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 
 ---
 
