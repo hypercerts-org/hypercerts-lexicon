@@ -45,9 +45,9 @@ classDiagram {
 
 ' Contributors are represented by DIDs or human-readable strings
 ' therefore do not require modelling via a lexicon.
-entity contributor #FFD4A3 {
+entity "contributor (DID/profile)" as contributorEntity #FFD4A3 {
     !if (SHOW_FIELDS == "true")
-    DID or name/pseudonym
+    DID or social profile URI
     !endif
 }
 
@@ -111,12 +111,14 @@ dataclass evaluation {
     !endif
 }
 
-' org.hypercerts.claim.contribution
-dataclass contribution {
+' org.hypercerts.claim.contributor
+dataclass contributor {
     !if (SHOW_FIELDS == "true")
+    identifier?
+    displayName?
+    image?
     role?
-    contributors[]
-    description?
+    contributionDescription?
     startDate?
     endDate?
     createdAt
@@ -298,11 +300,11 @@ collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection ..|> collectionProject : "sidecar\n(same TID)"
 
-activity::contributions -l--> contribution
+activity::contributions -l--> contributor
 activity::rights --> rights
 activity::locations --> location
 
-contribution::contributors --> contributor : made by
+contributor::identifier --> contributorEntity : made by
 
 ' These ones are not described by any lexicon, but are added to
 ' the diagram for clarity
@@ -315,7 +317,7 @@ contributor ..> rights : has
 ' However we still deliberately use solid arrows because they are
 ' explicitly described within the fundingReceipt lexicon.
 fundingReceipt::from --> funder
-fundingReceipt::to --> contributor
+fundingReceipt::to --> contributorEntity
 
 fundingReceipt::for --> activity : funds
 

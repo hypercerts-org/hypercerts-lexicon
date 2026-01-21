@@ -295,7 +295,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                                       | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
 | `startDate`        | `string` | ❌       | When the work began                                                                          |                                                                           |
 | `endDate`          | `string` | ❌       | When the work ended                                                                          |                                                                           |
-| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contribution`            |
+| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contributor`             |
 | `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                                     | References must conform to `org.hypercerts.claim.rights`                  |
 | `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                       |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                           |
@@ -311,24 +311,26 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### Hypercerts Contribution
+### Hypercerts Contributor
 
-**Lexicon ID:** `org.hypercerts.claim.contribution`
+**Lexicon ID:** `org.hypercerts.claim.contributor`
 
-**Description:** A contribution made toward a hypercert's impact.
+**Description:** A contribution made toward a hypercert's impact, representing a single contributor's profile and role.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                                                                             |
-| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `role`         | `string` | ❌       | Role or title of the contributor(s).                                                                                                                                    |
-| `contributors` | `array`  | ✅       | List of the contributors (names, pseudonyms, or DIDs). If multiple contributors are stored in the same hypercertContribution, then they would have the exact same role. |
-| `description`  | `string` | ❌       | What the contribution concretely achieved                                                                                                                               |
-| `startDate`    | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.                                                                                     |
-| `endDate`      | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe.                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                       |
+| Property                  | Type     | Required | Description                                                                          |
+| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------------ |
+| `identifier`              | `string` | ❌       | DID or a URI to a social profile of the contributor.                                 |
+| `displayName`             | `string` | ❌       | Display name of the contributor.                                                     |
+| `image`                   | `union`  | ❌       | The contributor visual representation as a URI or image blob.                        |
+| `role`                    | `string` | ❌       | Role or title of the contributor.                                                    |
+| `contributionDescription` | `string` | ❌       | What the contribution concretely achieved.                                           |
+| `startDate`               | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.  |
+| `endDate`                 | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe. |
+| `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created                    |
 
 ---
 

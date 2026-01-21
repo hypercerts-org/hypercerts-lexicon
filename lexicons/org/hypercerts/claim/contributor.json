@@ -1,0 +1,60 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.contributor",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A contribution made toward a hypercert's impact.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "DID or a URI to a social profile of the contributor."
+          },
+          "displayName": {
+            "type": "string",
+            "description": "Display name of the contributor.",
+            "maxLength": 100
+          },
+          "image": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "The contributor visual representation as a URI or image blob."
+          },
+          "role": {
+            "type": "string",
+            "description": "Role or title of the contributor.",
+            "maxLength": 100
+          },
+          "contributionDescription": {
+            "type": "string",
+            "description": "What the contribution concretely achieved.",
+            "maxLength": 2000,
+            "maxGraphemes": 500
+          },
+          "startDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}
