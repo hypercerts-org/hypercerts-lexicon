@@ -51,7 +51,7 @@
           },
           "contributions": {
             "type": "array",
-            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.",
+            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contributor.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
