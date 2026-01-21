@@ -8,8 +8,9 @@ reviews:
 
           Pass/fail criteria:
           1. If any file in lexicons/**/*.json is added, modified, or deleted:
-             - README.md must be updated to reflect the lexicon changes (new lexicons documented, modified properties updated, removed lexicons removed from docs)
+             - If README.md already references that lexicon, it must be updated to reflect the lexicon changes (modified properties updated, removed lexicons removed from docs). If it doesn't already then it's *recommended* but *not mandatory* to add some docs to it for the lexicon in question. However the README.md shouldn't duplicate what's in SCHEMAS.md.
              - ERD.puml must be updated if entity relationships changed (new entities added, relationships modified, entities removed)
+             - SCHEMAS.md must be updated with any relevant changes (e.g. fields or lexicons added/changed/removed)
 
           2. If README.md is modified:
              - All documented lexicons must exist as JSON files in lexicons/

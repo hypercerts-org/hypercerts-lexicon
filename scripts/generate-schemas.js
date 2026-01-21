@@ -273,11 +273,16 @@ function generateLexiconSection(lexicon, isFirst = false) {
 
   if (additionalDefs.length > 0) {
     output.push("", "#### Defs", "");
-    for (const [defName, defData] of additionalDefs) {
+    for (let i = 0; i < additionalDefs.length; i++) {
+      const [defName, defData] = additionalDefs[i];
       output.push(`##### ${defName}`, "");
       const defRows = extractPropertyRows(defData, defData.required || []);
       if (defRows.length > 0) {
         output.push(...renderTable(defRows, false));
+        // Add blank line after table only if not the last def
+        if (i < additionalDefs.length - 1) {
+          output.push("");
+        }
       }
     }
   }

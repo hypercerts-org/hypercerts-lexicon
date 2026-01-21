@@ -39,7 +39,7 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-schemas-md && npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types",
     "build:types": "tsc --project tsconfig.build.json",
     "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",

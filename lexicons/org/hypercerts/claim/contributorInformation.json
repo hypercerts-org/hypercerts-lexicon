@@ -1,10 +1,10 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.contributor",
+  "id": "org.hypercerts.claim.contributorInformation",
   "defs": {
     "main": {
       "type": "record",
-      "description": "A contribution made toward a hypercert's impact.",
+      "description": "Contributor information including identifier, display name, and image.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -26,27 +26,6 @@
               "org.hypercerts.defs#smallImage"
             ],
             "description": "The contributor visual representation as a URI or image blob."
-          },
-          "role": {
-            "type": "string",
-            "description": "Role or title of the contributor.",
-            "maxLength": 100
-          },
-          "contributionDescription": {
-            "type": "string",
-            "description": "What the contribution concretely achieved.",
-            "maxLength": 2000,
-            "maxGraphemes": 500
-          },
-          "startDate": {
-            "type": "string",
-            "format": "datetime",
-            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
-          },
-          "endDate": {
-            "type": "string",
-            "format": "datetime",
-            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
           },
           "createdAt": {
             "type": "string",

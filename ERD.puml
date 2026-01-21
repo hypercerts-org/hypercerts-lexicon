@@ -62,7 +62,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     workScope?
     startDate?
     endDate?
-    contributions[]?
+    contributors[]?
     locations[]?
     rights?
     createdAt
@@ -111,12 +111,19 @@ dataclass evaluation {
     !endif
 }
 
-' org.hypercerts.claim.contributor
-dataclass contributor {
+' org.hypercerts.claim.contributorInformation
+dataclass contributorInformation {
     !if (SHOW_FIELDS == "true")
     identifier?
     displayName?
     image?
+    createdAt
+    !endif
+}
+
+' org.hypercerts.claim.contributionDetails
+dataclass contributionDetails {
+    !if (SHOW_FIELDS == "true")
     role?
     contributionDescription?
     startDate?
@@ -236,7 +243,7 @@ protocol token <<largeBold>> #FFB6C1 {
 'evaluation --d[hidden]-> measurement
 'measurement -d[hidden]-> activity
 'evidence -r[hidden]-> measurement
-activity -l[hidden]-> token
+'activity -r[hidden]-> token
 'evidence -d[hidden]-> activity
 'collection -d[hidden]-> activity
 'activity -u[hidden]-> contributor
@@ -287,17 +294,18 @@ measurement --> location
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 
-activity::contributions -l--> contributor
+activity::contributors -l--> contributorInformation
+activity::contributors --> contributionDetails
 activity::rights --> rights
 activity::locations --> location
 
-contributor::identifier --> contributorEntity : made by
+contributorInformation::identifier --> contributorEntity : identifies
 
 ' These ones are not described by any lexicon, but are added to
 ' the diagram for clarity
 token ..> activity : tokenizes
 funder ..> activity : funds
-contributor ..> rights : has
+contributorEntity ..> rights : has
 
 ' These two are strings which will reference the counterparty's
 ' DID or human-readable name (if they're not on ATProto).
@@ -310,7 +318,7 @@ fundingReceipt::for --> activity : funds
 
 badgeAward::badge --> badgeDefinition
 badgeResponse::badgeAward --> badgeAward
-badgeAward::subject --> contributor
+badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
