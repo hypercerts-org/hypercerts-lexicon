@@ -31,6 +31,22 @@
             "ref": "pub.leaflet.pages.linearDocument#main",
             "description": "Rich-text description, represented as a Leaflet linear document."
           },
+          "avatar": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "The collection's avatar/profile image as a URI or image blob."
+          },
+          "coverImage": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#largeImage"
+            ],
+            "description": "The collection's cover/banner image as a URI or image blob."
+          },
           "items": {
             "type": "array",
             "description": "Array of strong references to items in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).",
