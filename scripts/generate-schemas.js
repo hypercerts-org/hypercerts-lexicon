@@ -7,6 +7,7 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import stringWidth from "string-width";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
@@ -75,7 +76,7 @@ function extractPropertyRows(record, required = [], localDefs = null) {
     return {
       name,
       type: getTypeString(prop),
-      required: required?.includes(name) ? "yes" : "no",
+      required: required?.includes(name) ? "✅" : "❌",
       description,
       comments: getComments(prop),
     };
@@ -84,7 +85,7 @@ function extractPropertyRows(record, required = [], localDefs = null) {
 
 // Table rendering with auto-calculated widths
 function calculateColumnWidths(rows, headers) {
-  const widths = headers.map((h) => h.length);
+  const widths = headers.map((h) => getVisualWidth(h));
 
   for (const row of rows) {
     const values = [
@@ -99,7 +100,7 @@ function calculateColumnWidths(rows, headers) {
 
     values.forEach((val, i) => {
       if (i < widths.length) {
-        widths[i] = Math.max(widths[i], val.length);
+        widths[i] = Math.max(widths[i], getVisualWidth(val));
       }
     });
   }
@@ -107,8 +108,17 @@ function calculateColumnWidths(rows, headers) {
   return widths;
 }
 
+/**
+ * Get the visual/display width of a string in a monospace terminal.
+ * Uses the string-width package which properly handles emojis, full-width characters, etc.
+ */
+function getVisualWidth(str) {
+  return stringWidth(str);
+}
+
 function pad(str, length) {
-  return str + " ".repeat(Math.max(0, length - str.length));
+  const visualWidth = getVisualWidth(str);
+  return str + " ".repeat(Math.max(0, length - visualWidth));
 }
 
 function formatRow(cells, widths) {
@@ -200,7 +210,7 @@ function generateDefsSection(lexicon) {
   ]);
 
   const widths = headers.map((h, i) =>
-    Math.max(h.length, ...rows.map((r) => r[i].length)),
+    Math.max(getVisualWidth(h), ...rows.map((r) => getVisualWidth(r[i]))),
   );
 
   const output = [
