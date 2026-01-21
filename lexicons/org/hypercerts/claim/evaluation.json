@@ -57,7 +57,7 @@
           },
           "measurements": {
             "type": "array",
-            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement ",
+            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"

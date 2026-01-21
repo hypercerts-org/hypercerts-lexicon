@@ -58,6 +58,8 @@ and type declaration files in `dist/`.
 
 ## Development Commands
 
+**⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts (e.g., `npm run gen-schemas-md`) rather than executing Node.js files directly (e.g., `node scripts/generate-schemas.js`). This ensures proper environment setup and consistency with the project's workflow.
+
 ### Code Generation
 
 ```bash
@@ -69,6 +71,9 @@ npm run gen-index
 
 # Build distributable bundles
 npm run build
+
+# Generate SCHEMAS.md from lexicon definitions
+npm run gen-schemas-md
 
 # Generate markdown documentation from lexicons
 npm run gen-md
@@ -205,6 +210,7 @@ lexicons/               # Source of truth (committed)
 scripts/                # Build scripts (committed)
   create-shims.sh       # Generate type shims for external lexicons
   generate-exports.js   # Auto-generate generated/exports.ts
+  generate-schemas.js   # Auto-generate SCHEMAS.md from lexicons
 
 generated/              # Auto-generated (gitignored)
   index.ts              # Generated client (not exposed)
