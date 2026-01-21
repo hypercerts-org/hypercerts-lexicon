@@ -43,6 +43,29 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.claim.attachment`
+
+**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property                 | Type     | Required | Description                                                                                                                                                                                                                               | Comments                             |
+| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subjects`               | `ref`    | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                       |
+| `contentType`            | `string` | ❌       | The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc.                                                                                                                                                      | maxLength: 64                        |
+| `content`                | `union`  | ✅       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                       |
+| `title`                  | `string` | ✅       | Title of this attachment.                                                                                                                                                                                                                 | maxLength: 256                       |
+| `shortDescription`       | `string` | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300   |
+| `shortDescriptionFacets` | `ref`    | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                      |
+| `description`            | `string` | ❌       | Optional longer description of this attachment, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.                                                                                       | maxLength: 30000, maxGraphemes: 3000 |
+| `descriptionFacets`      | `ref`    | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                                                                                                  |                                      |
+| `location`               | `ref`    | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                      |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                      |
+
+---
+
 ### `org.hypercerts.claim.collection`
 
 **Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting.
@@ -137,26 +160,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
 | `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
 | `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
-
----
-
-### `org.hypercerts.claim.evidence`
-
-**Description:** A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                                                               | Comments                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `subject`          | `ref`    | ❌       | A strong reference to the record this evidence relates to (e.g. an activity, project, claim, or evaluation).              |                                                     |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blob) related to the subject record; it may support, clarify, or challenge a hypercert claim. |                                                     |
-| `title`            | `string` | ✅       | Title to describe the nature of the evidence.                                                                             | maxLength: 256                                      |
-| `shortDescription` | `string` | ❌       | Short description explaining what this evidence shows.                                                                    | maxLength: 3000, maxGraphemes: 300                  |
-| `description`      | `string` | ❌       | Longer description describing the evidence in more detail.                                                                | maxLength: 30000, maxGraphemes: 3000                |
-| `relationType`     | `string` | ❌       | How this evidence relates to the subject.                                                                                 | Known values: `supports`, `challenges`, `clarifies` |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |                                                     |
 
 ---
 

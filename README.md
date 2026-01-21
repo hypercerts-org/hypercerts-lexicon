@@ -322,3 +322,56 @@ const collectionRecord = {
 ```
 
 The `location` field is a strong reference to an `app.certified.location` record containing the same `uri` and `cid` fields as described above for activities.
+
+### Creating Attachments
+
+Attachments provide commentary, context, evidence, or documentary material
+related to hypercert records. They can be linked to activities, evaluations,
+measurements, or even other attachments:
+
+```typescript
+import { ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+
+const attachmentRecord = {
+  $type: ATTACHMENT_NSID,
+  title: "Field Survey Report",
+  subjects: [
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+      cid: "...",
+    },
+  ],
+  contentType: "report",
+  content: [
+    { uri: "https://example.com/reports/survey-2024.pdf" },
+    { uri: "ipfs://Qm..." },
+  ],
+  shortDescription: "Quarterly field survey documenting project progress",
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Key fields:**
+
+- `title` (required): String title for the attachment
+- `shortDescription`/`description`: Support rich text via facet annotations
+- `subjects` (optional): Array of strong references to records this attachment relates to
+- `contentType` (optional): Type descriptor (e.g., "report", "audit", "evidence", "testimonial")
+- `content` (required): Array of URIs or blobs containing the attachment files
+- `location` (optional): Strong reference to an `app.certified.location` record
+- `createdAt` (required): Timestamp when the attachment was created
+
+**Adding Location to Attachments:**
+
+```typescript
+const attachmentWithLocation = {
+  $type: ATTACHMENT_NSID,
+  title: "Site Inspection Photos",
+  content: [{ uri: "https://..." }],
+  location: {
+    uri: "at://did:plc:alice/app.certified.location/loc123",
+    cid: "...",
+  },
+  createdAt: new Date().toISOString(),
+};
+```
