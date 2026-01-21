@@ -254,3 +254,30 @@ const projectRecord = {
 **Note**: The `type` field is optional and can be set to "project",
 "favorites", or any other collection type. The `description` field
 supports rich-text via Leaflet linear documents.
+
+### Adding Visual Representation to Collections
+
+Collections can include `avatar` and `coverImage` fields for visual representation:
+
+```typescript
+import { COLLECTION_NSID } from "@hypercerts-org/lexicon";
+
+const collectionRecord = {
+  $type: COLLECTION_NSID,
+  title: "Climate Action Projects",
+  avatar: {
+    image: blobRef, // or { uri: "https://..." }
+  },
+  coverImage: {
+    image: largeBlobRef, // or { uri: "https://..." }
+  },
+  items: [
+    // ... collection items
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Note**: Both `avatar` (up to 5MB) and `coverImage` (up to 10MB) fields
+are optional and support either embedded image blobs or URI references to
+external images.
