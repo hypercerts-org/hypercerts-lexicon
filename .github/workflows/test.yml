@@ -29,5 +29,8 @@ jobs:
       - name: Generate SCHEMAS.md
         run: npm run gen-schemas-md
 
+      - name: Ensure SCHEMAS.md up to date / no diffs in worktree
+        run: git diff --exit-code
+
       - name: Run checks
         run: npm run check
