@@ -300,15 +300,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                       |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                           |
 
-#### Defs
-
-##### activityWeight
-
-| Property   | Type     | Required | Description                                                                                                                                                                                                                                                                   |
-| ---------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                                                                                                                    |
-| `weight`   | `string` | ✅       | The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
-
 ---
 
 ### Hypercerts Contribution
