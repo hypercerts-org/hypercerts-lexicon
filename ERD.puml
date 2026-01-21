@@ -193,18 +193,6 @@ dataclass collection {
     !endif
 }
 
-' org.hypercerts.claim.collection.project (sidecar)
-dataclass collectionProject {
-    !if (SHOW_FIELDS == "true")
-    projectTitle?
-    shortProjectDescription?
-    projectDescription (Leaflet ref)
-    avatar?
-    coverPhoto?
-    createdAt
-    !endif
-}
-
 'together {
 
 ' Funders are represented by DIDs or human-readable strings
@@ -298,7 +286,6 @@ measurement --> location
 
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
-collection ..|> collectionProject : "sidecar\n(same TID)"
 
 activity::contributions -l--> contributor
 activity::rights --> rights
