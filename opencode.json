@@ -6,6 +6,7 @@
       "npx prettier *": "allow",
       "npm run build": "allow",
       "npm run build:types": "allow",
+      "npm run changeset": "deny",
       "npm run check": "allow",
       "npm run clean": "allow",
       "npm run eslint": "allow",
@@ -16,9 +17,15 @@
       "npm run gen-md": "allow",
       "npm run gen-schemas-md": "allow",
       "npm run gen-ts": "allow",
+      "npm run lex": "allow",
       "npm run lint": "allow",
       "npm run list": "allow",
-      "npm run test": "allow"
+      "npm run prepublishOnly": "deny",
+      "npm run release": "deny",
+      "npm run test": "allow",
+      "npm run test:watch": "allow",
+      "npm run typecheck": "allow",
+      "npm run version-packages": "deny"
     }
   }
 }
