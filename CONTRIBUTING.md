@@ -71,7 +71,7 @@ npm run check   # Validate everything passes
 - **Formatting**: Run `npm run format` (uses Prettier + EditorConfig)
 - **Linting**: Run `npm run lint`
 - **Type checking**: Run `npm run typecheck`
-- **Lexicon style**: Run `npm run check-lexicon-style`
+- **Lexicon style**: Run `npm run style:check`
 
 See [LEXICON_STYLE_GUIDE.md](LEXICON_STYLE_GUIDE.md) for lexicon best
 practices.

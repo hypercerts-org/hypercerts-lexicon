@@ -22,6 +22,7 @@
       "npm run list": "allow",
       "npm run prepublishOnly": "deny",
       "npm run release": "deny",
+      "npm run style": "allow",
       "npm run test": "allow",
       "npm run test:watch": "allow",
       "npm run typecheck": "allow",

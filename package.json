@@ -57,6 +57,7 @@
     "eslint": "eslint generated/exports.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist generated",
+    "style:check": "node ./scripts/check-lexicon-style.js",
     "prepublishOnly": "npm run check",
     "changeset": "changeset",
     "version-packages": "changeset version && npm install --package-lock-only",
