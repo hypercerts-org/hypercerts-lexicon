@@ -37,7 +37,8 @@
           },
           "workScope": {
             "type": "ref",
-            "ref": "#workScope"
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions."
           },
           "startDate": {
             "type": "string",
@@ -75,36 +76,6 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
-        }
-      }
-    },
-    "workScope": {
-      "type": "object",
-      "description": "Logical scope of the work using label-based conditions. All labels in `withinAllOf` must apply; at least one label in `withinAnyOf` must apply if provided; no label in `withinNoneOf` may apply.",
-      "properties": {
-        "withinAllOf": {
-          "type": "array",
-          "description": "Labels that MUST all hold for the scope to apply.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
-        },
-        "withinAnyOf": {
-          "type": "array",
-          "description": "Labels of which AT LEAST ONE must hold (optional). If omitted or empty, imposes no additional condition.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
-        },
-        "withinNoneOf": {
-          "type": "array",
-          "description": "Labels that MUST NOT hold for the scope to apply.",
-          "items": {
-            "type": "string"
-          },
-          "maxLength": 100
         }
       }
     },

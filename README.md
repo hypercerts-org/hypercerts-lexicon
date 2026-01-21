@@ -65,7 +65,10 @@ const activityRecord = {
   $type: ACTIVITY_NSID,
   title: "My Impact Work",
   shortDescription: "Description here",
-  workScope: "Scope of work",
+  workScope: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.workscope/abc123",
+    cid: "...",
+  },
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
   createdAt: new Date().toISOString(),
@@ -286,19 +289,19 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                                  | Comments                                                                  |
-| ------------------ | -------- | -------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of the hypercert                                                                       |                                                                           |
-| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                         |                                                                           |
-| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                         |                                                                           |
-| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                                   |                                                                           |
-| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                                       | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
-| `startDate`        | `string` | ❌       | When the work began                                                                          |                                                                           |
-| `endDate`          | `string` | ❌       | When the work ended                                                                          |                                                                           |
-| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contributor`             |
-| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                                     | References must conform to `org.hypercerts.claim.rights`                  |
-| `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                       |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                           |
+| Property           | Type     | Required | Description                                                                                  | Comments                                                                             |
+| ------------------ | -------- | -------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `title`            | `string` | ✅       | Title of the hypercert                                                                       |                                                                                      |
+| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                         |                                                                                      |
+| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                         |                                                                                      |
+| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                                   |                                                                                      |
+| `workScope`        | `ref`    | ❌       | A strong reference to a record defining the scope of work                                    | The record referenced should describe the logical scope using label-based conditions |
+| `startDate`        | `string` | ❌       | When the work began                                                                          |                                                                                      |
+| `endDate`          | `string` | ❌       | When the work ended                                                                          |                                                                                      |
+| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts          | References must conform to `org.hypercerts.claim.contributor`                        |
+| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                                     | References must conform to `org.hypercerts.claim.rights`                             |
+| `locations`        | `ref`    | ❌       | An array of strong references to the locations where the work for done hypercert was located | References must conform to `app.certified.location`                                  |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                            |                                                                                      |
 
 #### Defs
 
