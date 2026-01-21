@@ -4,3 +4,4 @@ dist/
 generated/
 pnpm-lock.yaml
 /tmp/
+lexicons.md

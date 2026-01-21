@@ -22,6 +22,7 @@
   "files": [
     "dist",
     "lexicons",
+    "SCHEMAS.md",
     "CHANGELOG.md"
   ],
   "keywords": [
@@ -38,11 +39,12 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
+    "check": "npm run gen-schemas-md && npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types",
     "build:types": "tsc --project tsconfig.build.json",
     "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
+    "gen-schemas-md": "node ./scripts/generate-schemas.js",
     "//gen-ts": "UNUSED - use gen-api instead",
     "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
     "gen-index": "node ./scripts/generate-exports.js",
@@ -59,7 +61,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version && npm install --package-lock-only",
     "release": "npm run check && changeset publish",
-    "prepare": "husky"
+    "prepare": "husky && ./scripts/setup-merge-driver.sh"
   },
   "dependencies": {
     "@atcute/leaflet": "^1.0.15",
