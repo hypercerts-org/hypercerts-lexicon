@@ -13,7 +13,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the record this evidence relates to (e.g. an activity, project, claim, or evaluation)."
+            "description": "A strong reference to the record this evidence relates to (e.g. an activity, project, claim, or evaluation). The record referenced should conform to a hypercert lexicon type (e.g., org.hypercerts.claim.activity)."
           },
           "content": {
             "type": "union",
@@ -43,12 +43,14 @@
           "relationType": {
             "type": "string",
             "description": "How this evidence relates to the subject.",
+            "maxLength": 64,
             "knownValues": ["supports", "challenges", "clarifies"]
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }

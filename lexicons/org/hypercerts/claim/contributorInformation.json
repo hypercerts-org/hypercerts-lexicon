@@ -12,7 +12,8 @@
         "properties": {
           "identifier": {
             "type": "string",
-            "description": "DID or a URI to a social profile of the contributor."
+            "description": "DID or a URI to a social profile of the contributor.",
+            "maxLength": 2048
           },
           "displayName": {
             "type": "string",
@@ -30,7 +31,8 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created."
+            "description": "Client-declared timestamp when this record was originally created.",
+            "maxLength": 64
           }
         }
       }

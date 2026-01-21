@@ -6,7 +6,8 @@
     "did": {
       "type": "string",
       "format": "did",
-      "description": "A Decentralized Identifier (DID) string."
+      "description": "A Decentralized Identifier (DID) string.",
+      "maxLength": 2048
     }
   }
 }

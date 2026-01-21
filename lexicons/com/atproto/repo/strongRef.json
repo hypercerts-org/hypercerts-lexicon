@@ -5,10 +5,21 @@
   "defs": {
     "main": {
       "type": "object",
+      "description": "A strong reference to another record in the repository, containing both the AT-URI and the CID of the record.",
       "required": ["uri", "cid"],
       "properties": {
-        "uri": { "type": "string", "format": "at-uri" },
-        "cid": { "type": "string", "format": "cid" }
+        "uri": {
+          "type": "string",
+          "format": "at-uri",
+          "description": "AT-URI pointing to the referenced record.",
+          "maxLength": 2048
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid",
+          "description": "Content identifier (CID) of the referenced record.",
+          "maxLength": 256
+        }
       }
     }
   }

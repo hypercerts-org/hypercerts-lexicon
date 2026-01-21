@@ -13,7 +13,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the record this measurement refers to (e.g. an activity, project, or claim)."
+            "description": "A strong reference to the record this measurement refers to (e.g. an activity, project, or claim). The record referenced should conform to a hypercert lexicon type (e.g., org.hypercerts.claim.activity)."
           },
           "measurers": {
             "type": "array",
@@ -42,14 +42,16 @@
           "methodURI": {
             "type": "string",
             "format": "uri",
-            "description": "URI to methodology documentation, standard protocol, or measurement procedure"
+            "description": "URI to methodology documentation, standard protocol, or measurement procedure",
+            "maxLength": 2048
           },
           "evidenceURI": {
             "type": "array",
             "description": "URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)",
             "items": {
               "type": "string",
-              "format": "uri"
+              "format": "uri",
+              "maxLength": 2048
             },
             "maxLength": 50
           },
@@ -61,7 +63,8 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }

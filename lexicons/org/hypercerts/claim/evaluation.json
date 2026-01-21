@@ -32,7 +32,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)"
+            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.) The record referenced should conform to a hypercert lexicon type (e.g., org.hypercerts.claim.activity)."
           },
           "evaluators": {
             "type": "array",
@@ -83,7 +83,8 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }

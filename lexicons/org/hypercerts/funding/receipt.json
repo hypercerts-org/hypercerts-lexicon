@@ -17,32 +17,39 @@
           },
           "to": {
             "type": "string",
-            "description": "The recipient of the funds. Can be identified by DID or a clear-text name."
+            "description": "The recipient of the funds. Can be identified by DID or a clear-text name.",
+            "maxLength": 2048
           },
           "amount": {
             "type": "string",
-            "description": "Amount of funding received."
+            "description": "Amount of funding received.",
+            "maxLength": 100
           },
           "currency": {
             "type": "string",
-            "description": "Currency of the payment (e.g. EUR, USD, ETH)."
+            "description": "Currency of the payment (e.g. EUR, USD, ETH).",
+            "maxLength": 32
           },
           "paymentRail": {
             "type": "string",
-            "description": "How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor)."
+            "description": "How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).",
+            "maxLength": 64
           },
           "paymentNetwork": {
             "type": "string",
-            "description": "Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal)."
+            "description": "Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).",
+            "maxLength": 64
           },
           "transactionId": {
             "type": "string",
-            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable."
+            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable.",
+            "maxLength": 256
           },
           "for": {
             "type": "string",
             "format": "at-uri",
-            "description": "Optional reference to the activity, project, or organization this funding relates to."
+            "description": "Optional reference to the activity, project, or organization this funding relates to.",
+            "maxLength": 2048
           },
           "notes": {
             "type": "string",
@@ -52,12 +59,14 @@
           "occurredAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Timestamp when the payment occurred."
+            "description": "Timestamp when the payment occurred.",
+            "maxLength": 64
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this receipt record was created."
+            "description": "Client-declared timestamp when this receipt record was created.",
+            "maxLength": 64
           }
         }
       }

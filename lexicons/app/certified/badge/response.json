@@ -22,12 +22,14 @@
           },
           "weight": {
             "type": "string",
-            "description": "Optional relative weight for accepted badges, assigned by the recipient."
+            "description": "Optional relative weight for accepted badges, assigned by the recipient.",
+            "maxLength": 100
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }

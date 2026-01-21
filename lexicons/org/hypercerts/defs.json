@@ -1,6 +1,7 @@
 {
   "lexicon": 1,
   "id": "org.hypercerts.defs",
+  "description": "Common definitions used across hypercerts lexicons, including URI wrappers, blob types, and image types.",
   "defs": {
     "uri": {
       "type": "object",

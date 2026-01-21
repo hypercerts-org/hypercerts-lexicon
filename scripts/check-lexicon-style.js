@@ -331,8 +331,8 @@ class StyleChecker {
    * Check string property
    */
   checkStringProperty(prop, path, fileResult) {
-    // Check for maxLength
-    if (!prop.maxLength && !prop.maxGraphemes) {
+    // Check for maxLength (not required for enum fields)
+    if (!prop.maxLength && !prop.maxGraphemes && !prop.enum) {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,
         rule: "string-max-length",
@@ -368,7 +368,8 @@ class StyleChecker {
     if (
       propName &&
       uriLikeNames.includes(propName.toLowerCase()) &&
-      prop.format !== "uri"
+      prop.format !== "uri" &&
+      prop.format !== "at-uri"
     ) {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,

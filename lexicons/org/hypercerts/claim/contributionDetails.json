@@ -24,17 +24,20 @@
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
+            "description": "When this contribution started. This should be a subset of the hypercert timeframe.",
+            "maxLength": 64
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
+            "description": "When this contribution finished. This should be a subset of the hypercert timeframe.",
+            "maxLength": 64
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created."
+            "description": "Client-declared timestamp when this record was originally created.",
+            "maxLength": 64
           }
         }
       }

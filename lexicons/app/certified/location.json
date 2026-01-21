@@ -56,7 +56,8 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }

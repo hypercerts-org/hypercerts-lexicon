@@ -38,21 +38,24 @@
           "workScope": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions."
+            "description": "A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions and should conform to a workScope lexicon type."
           },
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When the work began"
+            "description": "When the work began",
+            "maxLength": 64
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When the work ended"
+            "description": "When the work ended",
+            "maxLength": 64
           },
           "contributors": {
             "type": "array",
             "description": "An array of contributor objects, each containing contributor information, weight, and contribution details.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "#contributor"
@@ -66,6 +69,7 @@
           "locations": {
             "type": "array",
             "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
@@ -74,13 +78,15 @@
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created",
+            "maxLength": 64
           }
         }
       }
     },
     "contributor": {
       "type": "object",
+      "description": "Represents a contributor to a hypercert activity, including their identity, weight, and contribution details.",
       "required": ["contributorInformation"],
       "properties": {
         "contributorInformation": {
@@ -90,7 +96,8 @@
         },
         "weight": {
           "type": "string",
-          "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
+          "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 100
         },
         "contributionDetails": {
           "type": "union",
@@ -101,7 +108,8 @@
     },
     "contributorIdentity": {
       "type": "string",
-      "description": "Contributor information as a string (DID or identifier)."
+      "description": "Contributor information as a string (DID or identifier).",
+      "maxLength": 2048
     },
     "contributorRole": {
       "type": "string",
@@ -111,6 +119,7 @@
     },
     "activityWeight": {
       "type": "object",
+      "description": "Represents the weight of a hypercert activity within a collection, used for calculating relative importance or impact.",
       "required": ["activity", "weight"],
       "properties": {
         "activity": {
@@ -120,7 +129,8 @@
         },
         "weight": {
           "type": "string",
-          "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
+          "description": "The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 100
         }
       }
     }
