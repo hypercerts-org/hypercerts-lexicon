@@ -50,12 +50,12 @@
             "format": "datetime",
             "description": "When the work ended"
           },
-          "contributions": {
+          "contributors": {
             "type": "array",
-            "description": "A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contributor.",
+            "description": "An array of contributor objects, each containing contributor information, weight, and contribution details.",
             "items": {
               "type": "ref",
-              "ref": "com.atproto.repo.strongRef"
+              "ref": "#contributor"
             }
           },
           "rights": {
@@ -78,6 +78,36 @@
           }
         }
       }
+    },
+    "contributor": {
+      "type": "object",
+      "required": ["contributorInformation"],
+      "properties": {
+        "contributorInformation": {
+          "type": "union",
+          "refs": ["#contributorIdentity", "com.atproto.repo.strongRef"],
+          "description": "Contributor information as a string (DID or identifier) or strong reference to for instance org.hypercerts.claim.contributorInformation#main."
+        },
+        "weight": {
+          "type": "string",
+          "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
+        },
+        "contributionDetails": {
+          "type": "union",
+          "refs": ["#contributorRole", "com.atproto.repo.strongRef"],
+          "description": "Contribution details as a string or strong reference to org.hypercerts.claim.contributionDetails#main."
+        }
+      }
+    },
+    "contributorIdentity": {
+      "type": "string",
+      "description": "Contributor information as a string (DID or identifier)."
+    },
+    "contributorRole": {
+      "type": "string",
+      "description": "Contribution details as a string.",
+      "maxLength": 10000,
+      "maxGraphemes": 1000
     },
     "activityWeight": {
       "type": "object",

@@ -15,21 +15,29 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                                                                                                                | Comments                             |
-| ------------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `title`            | `string` | yes      | Title of the hypercert.                                                                                                                                                    | maxLength: 256                       |
-| `shortDescription` | `string` | yes      | Short blurb of the impact work done.                                                                                                                                       | maxLength: 3000, maxGraphemes: 300   |
-| `description`      | `string` | no       | Optional longer description of the impact work done.                                                                                                                       | maxLength: 30000, maxGraphemes: 3000 |
-| `image`            | `union`  | no       | The hypercert visual representation as a URI or image blob.                                                                                                                |                                      |
-| `workScope`        | `ref`    | no       | A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions.                           |                                      |
-| `startDate`        | `string` | no       | When the work began                                                                                                                                                        |                                      |
-| `endDate`          | `string` | no       | When the work ended                                                                                                                                                        |                                      |
-| `contributions`    | `ref`    | no       | A strong reference to the contributions done to create the impact in the hypercerts. The record referenced must conform with the lexicon org.hypercerts.claim.contributor. |                                      |
-| `rights`           | `ref`    | no       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.                                 |                                      |
-| `locations`        | `ref`    | no       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                    |                                      |
-| `createdAt`        | `string` | yes      | Client-declared timestamp when this record was originally created                                                                                                          |                                      |
+| Property           | Type     | Required | Description                                                                                                                                             | Comments                             |
+| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `title`            | `string` | yes      | Title of the hypercert.                                                                                                                                 | maxLength: 256                       |
+| `shortDescription` | `string` | yes      | Short blurb of the impact work done.                                                                                                                    | maxLength: 3000, maxGraphemes: 300   |
+| `description`      | `string` | no       | Optional longer description of the impact work done.                                                                                                    | maxLength: 30000, maxGraphemes: 3000 |
+| `image`            | `union`  | no       | The hypercert visual representation as a URI or image blob.                                                                                             |                                      |
+| `workScope`        | `ref`    | no       | A strong reference to a record defining the scope of work. The record referenced should describe the logical scope using label-based conditions.        |                                      |
+| `startDate`        | `string` | no       | When the work began                                                                                                                                     |                                      |
+| `endDate`          | `string` | no       | When the work ended                                                                                                                                     |                                      |
+| `contributors`     | `ref`    | no       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                             |                                      |
+| `rights`           | `ref`    | no       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                      |
+| `locations`        | `ref`    | no       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. |                                      |
+| `createdAt`        | `string` | yes      | Client-declared timestamp when this record was originally created                                                                                       |                                      |
 
 #### Defs
+
+##### contributor
+
+| Property                 | Type     | Required | Description                                                                                                                                                                                                                                                        |
+| ------------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `contributorInformation` | `union`  | yes      | Contributor information as a string (DID or identifier) or strong reference to for instance org.hypercerts.claim.contributorInformation#main.                                                                                                                      |
+| `weight`                 | `string` | no       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
+| `contributionDetails`    | `union`  | no       | Contribution details as a string or strong reference to org.hypercerts.claim.contributionDetails#main.                                                                                                                                                             |
 
 ##### activityWeight
 
