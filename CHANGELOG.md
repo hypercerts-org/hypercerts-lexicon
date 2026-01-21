@@ -1,5 +1,55 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.7
+
+### Minor Changes
+
+- [#106](https://github.com/hypercerts-org/hypercerts-lexicon/pull/106) [`b03a1f7`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/b03a1f7925b56a5d614bb3a40f7fe5e6321f3d34) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add avatar and banner fields to collection lexicon for visual representation
+
+- [#113](https://github.com/hypercerts-org/hypercerts-lexicon/pull/113) [`c3f9ca2`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/c3f9ca2f5cb2c5da4d0f4272a74d06f6798e058b) Thanks [@holkexyz](https://github.com/holkexyz)! - Refactor collection items structure to support optional weights and remove activityWeight from activity schema
+
+  **Breaking Changes:**
+  - **Activity lexicon (`org.hypercerts.claim.activity`):**
+    - Removed `org.hypercerts.claim.activity#activityWeight` def
+    - Activity records no longer include activity weight information
+  - **Collection lexicon (`org.hypercerts.claim.collection`):**
+    - Changed `org.hypercerts.claim.collection#items` from array of strongRefs to array of item objects
+    - Added `org.hypercerts.claim.collection#item` def with:
+      - `itemIdentifier` (required): strongRef to an item (activity or collection)
+      - `itemWeight` (optional): positive numeric value stored as string
+    - Supports recursive collection nesting (items can reference activities or other collections)
+
+  **Migration:**
+
+  **Collection items:** Convert from array of strongRefs to array of item objects:
+
+  ```json
+  // Before
+  "items": [strongRef1, strongRef2]
+
+  // After
+  "items": [
+    { "itemIdentifier": strongRef1, "itemWeight": "1.5" },
+    { "itemIdentifier": strongRef2 }
+  ]
+  ```
+
+  **Activity weights:** Migrate existing `org.hypercerts.claim.activity#activityWeight` data to collection `org.hypercerts.claim.collection#item.itemWeight`:
+
+  ```json
+  // Old (removed from activity)
+  { "activity": { "uri": "...", "cid": "..." }, "weight": "1.5" }
+
+  // New (in collection items)
+  { "itemIdentifier": { "uri": "...", "cid": "..." }, "itemWeight": "1.5" }
+  ```
+
+  Update collections that reference activities to include weights in `org.hypercerts.claim.collection#item.itemWeight`. Weights can be dropped if not needed.
+
+- [#91](https://github.com/hypercerts-org/hypercerts-lexicon/pull/91) [`0c6da09`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/0c6da093c8a38a3ee516a85b6bffee0850535b14) Thanks [@holkexyz](https://github.com/holkexyz)! - Add rich text facet support to activity claim descriptions
+
+  Add `shortDescriptionFacets` and `descriptionFacets` fields to the activity lexicon to support rich text annotations (mentions, URLs, hashtags, etc.) in activity claim descriptions.
+
 ## 0.10.0-beta.6
 
 ### Minor Changes
