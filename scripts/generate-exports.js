@@ -43,10 +43,19 @@ function findJsonFiles(dir, baseDir = dir) {
 }
 
 /**
+ * Split camelCase string into parts with underscores
+ * e.g., "contributionDetails" -> "contribution_Details"
+ */
+function splitCamelCase(str) {
+  return str.replace(/([a-z])([A-Z])/g, "$1_$2");
+}
+
+/**
  * Convert file path to import name for raw JSON (UPPERCASE constant)
  * e.g., "app/certified/location.json" -> "LOCATION_LEXICON_JSON"
  * e.g., "app/certified/badge/award.json" -> "BADGE_AWARD_LEXICON_JSON"
- * e.g., "com/atproto/repo/strongRef.json" -> "STRONGREF_LEXICON_JSON"
+ * e.g., "com/atproto/repo/strongRef.json" -> "STRONG_REF_LEXICON_JSON"
+ * e.g., "org/hypercerts/claim/contributionDetails.json" -> "CONTRIBUTION_DETAILS_LEXICON_JSON"
  */
 function pathToImportName(filePath) {
   const parsed = parse(filePath);
@@ -61,7 +70,7 @@ function pathToImportName(filePath) {
 
   // For external lexicons (com.atproto.*), use just the base name
   if (filePath.startsWith("com/")) {
-    return `${baseName.toUpperCase()}_LEXICON_JSON`;
+    return `${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
   }
 
   // For files in subdirectories, include the subdirectory name
@@ -71,11 +80,11 @@ function pathToImportName(filePath) {
 
     // If it's a meaningful subdirectory (not just namespace)
     if (lastDir !== "claim" && lastDir !== "certified") {
-      return `${lastDir.toUpperCase()}_${baseName.toUpperCase()}_LEXICON_JSON`;
+      return `${lastDir.toUpperCase()}_${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
     }
   }
 
-  return `${baseName.toUpperCase()}_LEXICON_JSON`;
+  return `${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
 }
 
 /**
