@@ -13,6 +13,7 @@
     "add-work-scope-logic",
     "change-workscope-to-strongref",
     "document-location-sidecar-pattern",
+    "drop-helper-prefix",
     "fix-camelcase-exports",
     "improved-exports-structure",
     "include-changelog-in-distribution",

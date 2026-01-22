@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.10
+
+### Minor Changes
+
+- [#122](https://github.com/hypercerts-org/hypercerts-lexicon/pull/122) [`3e3da41`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/3e3da41df8016d4d7f63477000a01756704d0820) Thanks [@aspiers](https://github.com/aspiers)! - Drop HELPER\_ prefix from workScopeTag constants. `HELPER_WORK_SCOPE_TAG_NSID`, `HELPER_WORK_SCOPE_TAG_LEXICON_JSON`, and `HELPER_WORK_SCOPE_TAG_LEXICON_DOC` are now `WORK_SCOPE_TAG_NSID`, `WORK_SCOPE_TAG_LEXICON_JSON`, and `WORK_SCOPE_TAG_LEXICON_DOC`.
+
 ## 0.10.0-beta.9
 
 ### Minor Changes
