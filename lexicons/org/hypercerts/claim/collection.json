@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A collection/group of items (activities and/or other collections). Collections support recursive nesting. Use app.certified.location as a sidecar (same TID) for location metadata.",
+      "description": "A collection/group of items (activities and/or other collections). Collections support recursive nesting.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -54,6 +54,11 @@
               "type": "ref",
               "ref": "#item"
             }
+          },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
           },
           "createdAt": {
             "type": "string",
