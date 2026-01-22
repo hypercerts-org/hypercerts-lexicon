@@ -79,7 +79,11 @@ function pathToImportName(filePath) {
     const lastDir = parts[parts.length - 1];
 
     // If it's a meaningful subdirectory (not just namespace)
-    if (lastDir !== "claim" && lastDir !== "certified") {
+    if (
+      lastDir !== "claim" &&
+      lastDir !== "certified" &&
+      lastDir !== "helper"
+    ) {
       return `${lastDir.toUpperCase()}_${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
     }
   }
