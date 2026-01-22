@@ -1,5 +1,17 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.9
+
+### Minor Changes
+
+- [#121](https://github.com/hypercerts-org/hypercerts-lexicon/pull/121) [`5c33b79`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/5c33b796f78eca2a207116d246a715cd5712f392) Thanks [@aspiers](https://github.com/aspiers)! - Fix camelCase export names to use underscores. Generated constants like `CONTRIBUTIONDETAILS_LEXICON_*` are now `CONTRIBUTION_DETAILS_LEXICON_*` for consistency.
+
+  Affected exports:
+  - `CONTRIBUTION_DETAILS_NSID`, `CONTRIBUTION_DETAILS_LEXICON_JSON`, `CONTRIBUTION_DETAILS_LEXICON_DOC` (was `CONTRIBUTIONDETAILS_*`)
+  - `CONTRIBUTOR_INFORMATION_NSID`, `CONTRIBUTOR_INFORMATION_LEXICON_JSON`, `CONTRIBUTOR_INFORMATION_LEXICON_DOC` (was `CONTRIBUTORINFORMATION_*`)
+  - `STRONG_REF_NSID`, `STRONG_REF_LEXICON_JSON`, `STRONG_REF_LEXICON_DOC` (was `STRONGREF_*`)
+  - `HELPER_WORK_SCOPE_TAG_NSID`, `HELPER_WORK_SCOPE_TAG_LEXICON_JSON`, `HELPER_WORK_SCOPE_TAG_LEXICON_DOC` (was `HELPER_WORKSCOPETAG_*`)
+
 ## 0.10.0-beta.8
 
 ### Minor Changes
