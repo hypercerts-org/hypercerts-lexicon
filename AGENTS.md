@@ -12,8 +12,7 @@ code in this repository.
 - Renaming constants, types, or functions
 - Any change that users of this package will need to know about
 
-See the "Versioning" section below for the changeset file format.
-**DO NOT skip this step!** Changesets are required for proper release management.
+Use the `writing-changesets` skill. **DO NOT skip this step!**
 
 ## Overview
 
@@ -104,52 +103,20 @@ npm run check
 npm run typecheck
 ```
 
-### Versioning
+### Changesets and Versioning
 
-**For AI agents**: Create changeset files directly in `.changeset/` directory.
-The `npm run changeset` command is interactive and not suitable for automation.
+This repository uses
+[Changesets](https://github.com/changesets/changesets) for versioning.
 
-**Changeset file format** (create a `.md` file in `.changeset/`):
+Use the `writing-changesets` skill to create changeset files. Do NOT
+write changeset files manually - always use the skill to ensure proper
+format.
 
-```markdown
----
-"@hypercerts-org/lexicon": minor
----
+See the `writing-changesets` skill for details on:
 
-Description of the changes. This will appear in the changelog.
-```
-
-- **Version bump types**: `major`, `minor`, or `patch`
-  - **Note**: While the package is still on version 0.x (initial development),
-    do not use `major` version bumps. Use `minor` for potentially breaking
-    changes and `patch` for non-breaking changes, as semantic versioning
-    considers 0.x versions unstable where breaking changes are expected.
-- **Filename**: Use a descriptive name or random identifier (e.g., `add-activity-lexicon.md`)
-- **Package name**: Always use `"@hypercerts-org/lexicon"` for this repository
-
-**IMPORTANT: Agents should NEVER perform releases.** The release process is
-handled manually by maintainers through GitHub Actions workflows. Agents should
-only create changeset files.
-
-**Release Process Overview** (for reference only - agents do not perform this):
-
-The repository uses a two-branch release strategy:
-
-- **`develop` branch**: Beta/prerelease versions
-  - Maintainers manually trigger the GitHub Actions release workflow from `develop`
-  - Publishes to npm with the `beta` tag (e.g., `0.9.0-beta.1`)
-  - Used for testing before stable releases
-
-- **`main` branch**: Stable releases
-  - Before merging `develop` → `main`, maintainers must run `npm run changeset pre exit` on `develop`
-  - Maintainers manually trigger the GitHub Actions release workflow from `main`
-  - Creates a "Release Pull Request" that must be merged to publish
-  - Publishes to npm with the `latest` tag (e.g., `0.9.0`)
-
-**Suggested Flow:** `feature` → `develop` (beta) → `main` (stable)
-
-Agents should create changesets when making changes, but releases are handled
-exclusively by maintainers through the GitHub Actions workflow.
+- When changesets are required
+- Proper file format and conventions
+- Version bump types (major, minor, patch)
 
 ## Architecture
 
@@ -261,11 +228,10 @@ dist/                   # Built output (gitignored)
 
 7. Run `npm run check` to validate, typecheck, and build
 
-8. **REQUIRED: Create a changeset file** in `.changeset/` directory
+8. **REQUIRED: Create a changeset file** using the `writing-changesets` skill
    - **This step is MANDATORY for ALL changes that affect users**
-   - See "Versioning" section below for file format
-   - Create the file directly - do not use the interactive
-     `npm run changeset` command
+   - See the `writing-changesets` skill for details on changeset requirements
+   - Use the skill - do NOT write changeset files manually
 
 **No manual edits needed!** Everything is automatically regenerated.
 
@@ -292,39 +258,6 @@ npm run check
 - **Never edit `generated/` or `dist/` directly** - all changes are lost on regeneration
 - The `.prettierignore` excludes `generated/` and `dist/` since they're auto-generated
 - The `.gitignore` excludes `generated/` and `dist/` to keep the repo clean
-
-## Changesets
-
-This repository uses
-[Changesets](https://github.com/changesets/changesets) for versioning.
-
-### ⚠️ CHANGESET REQUIREMENTS (MANDATORY)
-
-**AI agents MUST create a changeset file** for ANY of the following changes:
-
-- Adding new lexicons
-- Modifying existing lexicon schemas (breaking or non-breaking)
-- Changing TypeScript type exports
-- Renaming any exported constants, types, or functions
-- Modifying generation scripts that affect exported code
-- Any change that requires a version bump or affects package consumers
-
-Use the `writing-changesets` skill for writing changesets.
-
-**Example scenarios requiring changesets:**
-
-- Renaming `ACTIVITY_LEXICON_NSID` → `ACTIVITY_NSID` (breaking change)
-- Adding a new lexicon file (feature addition)
-- Modifying a lexicon schema field (potentially breaking)
-- Updating generation scripts that change exports
-
-**⚠️ If you're unsure whether a changeset is needed, CREATE ONE ANYWAY.**
-It's better to have an unnecessary changeset than to miss a required one.
-
-- **NEVER perform releases**: Agents should only create changeset files. The
-  release process (including running `npm run version-packages`, `npm run release`,
-  or triggering GitHub Actions workflows) must be done manually by maintainers.
-  See the "Versioning" section for details on the release process.
 
 ## Entity Relationships
 
