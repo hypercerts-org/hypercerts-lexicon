@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.11
+
+### Minor Changes
+
+- [#123](https://github.com/hypercerts-org/hypercerts-lexicon/pull/123) [`c623d32`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/c623d327e0e6c1a4f5ca92135ece284cfe166421) Thanks [@aspiers](https://github.com/aspiers)! - Add `location` property to collections. Collections can now reference a location record directly via strongRef. This replaces the sidecar pattern which was impractical since location records cannot be reused across multiple collections.
+
 ## 0.10.0-beta.10
 
 ### Minor Changes
