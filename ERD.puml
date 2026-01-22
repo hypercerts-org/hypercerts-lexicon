@@ -187,8 +187,6 @@ dataclass rights {
 }
 
 ' org.hypercerts.claim.collection
-' Note: Collections can use app.certified.location as a sidecar
-' by creating a location record with the same TID
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     type?
@@ -196,6 +194,7 @@ dataclass collection {
     shortDescription?
     description? (Leaflet ref)
     items[]
+    location?
     createdAt
     !endif
 }
@@ -293,6 +292,7 @@ measurement --> location
 
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
+collection::location --> location
 
 activity::contributors -l--> contributorInformation
 activity::contributors --> contributionDetails

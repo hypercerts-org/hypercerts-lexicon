@@ -118,22 +118,23 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.claim.collection`
 
-**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting. Use app.certified.location as a sidecar (same TID) for location metadata.
+**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                                                  | Comments                           |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
-| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection. |                                    |
-| `title`            | `string` | ✅       | The title of this collection                                                                                 | maxLength: 800, maxGraphemes: 80   |
-| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                       | maxLength: 3000, maxGraphemes: 300 |
-| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                             |                                    |
-| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                |                                    |
-| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                               |                                    |
-| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                     |                                    |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                            |                                    |
+| Property           | Type     | Required | Description                                                                                                                                                       | Comments                           |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                      |                                    |
+| `title`            | `string` | ✅       | The title of this collection                                                                                                                                      | maxLength: 800, maxGraphemes: 80   |
+| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                                                                            | maxLength: 3000, maxGraphemes: 300 |
+| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                    |
+| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                    |
+| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                    |
+| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                                                                          |                                    |
+| `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
 
 #### Defs
 

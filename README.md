@@ -298,5 +298,25 @@ Each strong reference contains two required fields:
 - The `uri` field must be a valid ATProto URI pointing to an existing location record
 - The `cid` field must match the current CID of the referenced location record
 - The `locations` field is optional; activities can be created without location data
-- When using the sidecar pattern (same TID), ensure the location record is created
-  or updated alongside the activity record for consistency
+
+### Adding Location to Collections
+
+Collections can include an optional `location` field to specify where the collection's activities were performed:
+
+```typescript
+const collectionRecord = {
+  $type: "org.hypercerts.claim.collection",
+  title: "Climate Action Projects",
+  shortDescription: "A collection of climate-related activities",
+  location: {
+    uri: "at://did:plc:alice/app.certified.location/xyz789",
+    cid: "...",
+  },
+  items: [
+    // ... collection items
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+The `location` field is a strong reference to an `app.certified.location` record containing the same `uri` and `cid` fields as described above for activities.
