@@ -23,7 +23,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `description`            | `string` | ❌       | Optional longer description of this activity claim, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`. | maxLength: 30000, maxGraphemes: 3000 |
 | `descriptionFacets`      | `ref`    | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                |                                      |
 | `image`                  | `union`  | ❌       | The hypercert visual representation as a URI or image blob.                                                                                             |                                      |
-| `workScope`              | `union`  | ❌       | Work scope logic expression using boolean operators (all/any/not) and atomic scope references.                                                          |                                      |
+| `workScope`              | `union`  | ❌       | Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes.   |                                      |
 | `startDate`              | `string` | ❌       | When the work began                                                                                                                                     |                                      |
 | `endDate`                | `string` | ❌       | When the work ended                                                                                                                                     |                                      |
 | `contributors`           | `ref`    | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                             |                                      |
@@ -199,17 +199,13 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Defs
 
-| Def             | Type     | Description                                                    | Comments                                |
-| --------------- | -------- | -------------------------------------------------------------- | --------------------------------------- |
-| `uri`           | `object` | Object containing a URI to external data                       | Has `uri` property (string, format uri) |
-| `smallBlob`     | `object` | Object containing a blob to external data                      | Has `blob` property (blob, up to 10MB)  |
-| `largeBlob`     | `object` | Object containing a blob to external data                      | Has `blob` property (blob, up to 100MB) |
-| `smallImage`    | `object` | Object containing a small image                                | Has `image` property (blob, up to 5MB)  |
-| `largeImage`    | `object` | Object containing a large image                                | Has `image` property (blob, up to 10MB) |
-| `workScopeAll`  | `object` | Logical AND operation: all arguments must be satisfied.        |                                         |
-| `workScopeAny`  | `object` | Logical OR operation: at least one argument must be satisfied. |                                         |
-| `workScopeNot`  | `object` | Logical NOT operation: the argument must not be satisfied.     |                                         |
-| `workScopeAtom` | `object` | Atomic scope reference: a strong reference to a scope record.  |                                         |
+| Def          | Type     | Description                               | Comments                                |
+| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
+| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
+| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
+| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
+| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
+| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
 
 ---
 
