@@ -54,7 +54,7 @@
           "workScope": {
             "type": "union",
             "refs": ["com.atproto.repo.strongRef", "#workScopeString"],
-            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes."
+            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon."
           },
           "startDate": {
             "type": "string",
