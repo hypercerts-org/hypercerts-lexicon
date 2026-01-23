@@ -1,0 +1,34 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.helper.ops",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Operator node for work scope logic. Nesting is achieved by having args strongRefs point to either workScopeTag records (leaf atoms) or other ops records (nested expressions). Operator semantics are defined by consuming applications.\n\nExamples: op='all' (AND), op='any' (OR), op='not' (NOT; typically unary).",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt", "op", "args"],
+        "properties": {
+          "op": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "Operator identifier. Semantics are defined by the evaluating application. Examples: 'all', 'any', 'not'."
+          },
+          "args": {
+            "type": "array",
+            "minLength": 1,
+            "maxLength": 100,
+            "items": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
+            "description": "Arguments. Each strongRef should point to either org.hypercerts.helper.workScopeTag (leaf) or org.hypercerts.helper.ops (nested). For op='not', args SHOULD have exactly one element (enforced by clients)."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    }
+  }
+}
