@@ -174,24 +174,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.acknowledgement`
-
-**Description:** Acknowledgement of inclusion/association between subjects and a context.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property    | Type      | Required | Description                                                             | Comments        |
-| ----------- | --------- | -------- | ----------------------------------------------------------------------- | --------------- |
-| `subjects`  | `ref`     | yes      | The records being acknowledged (e.g., activities).                      |                 |
-| `context`   | `ref`     | yes      | The target context (e.g. a collection) for the acknowledgement/consent. |                 |
-| `given`     | `boolean` | yes      | Indicates whether acknowledgement is granted (true) or denied (false).  |                 |
-| `comment`   | `string`  | no       | Optional comment providing additional details or reasoning.             | maxLength: 1000 |
-| `createdAt` | `string`  | yes      | Client-declared timestamp when this record was originally created.      |                 |
-
----
-
 ## Certified Lexicons
 
 Certified lexicons are common/shared lexicons that can be used across multiple protocols.
