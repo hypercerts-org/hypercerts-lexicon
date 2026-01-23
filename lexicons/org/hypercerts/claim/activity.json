@@ -116,20 +116,41 @@
       }
     },
     "contributorIdentity": {
-      "type": "string",
-      "description": "Contributor information as a string (DID or identifier)."
+      "type": "object",
+      "required": ["value"],
+      "description": "Contributor information as a string (DID or identifier).",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The contributor DID or identifier"
+        }
+      }
     },
     "contributorRole": {
-      "type": "string",
+      "type": "object",
+      "required": ["value"],
       "description": "Contribution details as a string.",
-      "maxLength": 10000,
-      "maxGraphemes": 1000
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The contribution role or details",
+          "maxLength": 10000,
+          "maxGraphemes": 1000
+        }
+      }
     },
     "workScopeString": {
-      "type": "string",
+      "type": "object",
+      "required": ["value"],
       "description": "A free-form string describing the work scope for simple or legacy scopes.",
-      "maxLength": 10000,
-      "maxGraphemes": 1000
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The work scope description",
+          "maxLength": 10000,
+          "maxGraphemes": 1000
+        }
+      }
     }
   }
 }

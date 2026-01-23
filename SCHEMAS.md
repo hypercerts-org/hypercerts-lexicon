@@ -41,6 +41,24 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 | `contributionDetails` | `union`  | ❌       | Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record.                                                                                                                        |
 
+##### contributorIdentity
+
+| Property | Type     | Required | Description                       |
+| -------- | -------- | -------- | --------------------------------- |
+| `value`  | `string` | ✅       | The contributor DID or identifier |
+
+##### contributorRole
+
+| Property | Type     | Required | Description                      |
+| -------- | -------- | -------- | -------------------------------- |
+| `value`  | `string` | ✅       | The contribution role or details |
+
+##### workScopeString
+
+| Property | Type     | Required | Description                |
+| -------- | -------- | -------- | -------------------------- |
+| `value`  | `string` | ✅       | The work scope description |
+
 ---
 
 ### `org.hypercerts.claim.evaluation`
