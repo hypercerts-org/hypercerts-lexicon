@@ -145,6 +145,29 @@ dataclass location {
     !endif
 }
 
+' org.hypercerts.helper.workScopeTag
+dataclass workScopeTag {
+    !if (SHOW_FIELDS == "true")
+    createdAt
+    key
+    label
+    kind?
+    description?
+    parent?
+    aliases[]?
+    externalReference?
+    !endif
+}
+
+' org.hypercerts.helper.ops
+dataclass ops {
+    !if (SHOW_FIELDS == "true")
+    createdAt
+    op
+    args[]
+    !endif
+}
+
 ' Certified badges (data class + award + response)
 dataclass badgeDefinition {
     !if (SHOW_FIELDS == "true")
@@ -298,6 +321,11 @@ activity::contributors -l--> contributorInformation
 activity::contributors --> contributionDetails
 activity::rights --> rights
 activity::locations --> location
+activity::workScope --> workScopeTag
+activity::workScope --> ops
+
+ops::args --> workScopeTag
+ops::args --> ops : "recursive\nnesting"
 
 contributorInformation::identifier --> contributorEntity : identifies
 
