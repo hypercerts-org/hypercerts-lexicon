@@ -53,13 +53,8 @@
           },
           "workScope": {
             "type": "union",
-            "refs": [
-              "org.hypercerts.defs#workScopeAll",
-              "org.hypercerts.defs#workScopeAny",
-              "org.hypercerts.defs#workScopeNot",
-              "org.hypercerts.defs#workScopeAtom"
-            ],
-            "description": "Work scope logic expression using boolean operators (all/any/not) and atomic scope references."
+            "refs": ["com.atproto.repo.strongRef", "#workScopeString"],
+            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon."
           },
           "startDate": {
             "type": "string",
@@ -127,6 +122,12 @@
     "contributorRole": {
       "type": "string",
       "description": "Contribution details as a string.",
+      "maxLength": 10000,
+      "maxGraphemes": 1000
+    },
+    "workScopeString": {
+      "type": "string",
+      "description": "A free-form string describing the work scope for simple or legacy scopes.",
       "maxLength": 10000,
       "maxGraphemes": 1000
     }

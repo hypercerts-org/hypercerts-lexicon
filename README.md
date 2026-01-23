@@ -65,10 +65,12 @@ const activityRecord = {
   $type: ACTIVITY_NSID,
   title: "My Impact Work",
   shortDescription: "Description here",
+  // workScope can be a strongRef to a work-scope record:
   workScope: {
-    uri: "at://did:plc:alice/org.hypercerts.claim.workscope/abc123",
+    uri: "at://did:plc:alice/org.hypercerts.helper.workScopeTag/abc123",
     cid: "...",
   },
+  // OR a simple string: workScope: "Environmental conservation",
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
   createdAt: new Date().toISOString(),
