@@ -162,19 +162,53 @@ function renderTable(rows, includeComments = false) {
 // Lexicon categorization and naming
 function categorizeLexicons(lexicons) {
   const categories = {
-    certified: [],
-    hypercerts: [],
-    external: [],
+    defs: {
+      title: "Type Definitions",
+      description: "Common type definitions used across all protocols.",
+      lexicons: [],
+      ordering: (lex) => lex.data.id,
+    },
+    hypercerts: {
+      title: "Hypercerts Lexicons",
+      description:
+        "Hypercerts-specific lexicons for tracking impact work and claims.",
+      lexicons: [],
+      ordering: (lex) => lex.data.id,
+    },
+    certified: {
+      title: "Certified Lexicons",
+      description:
+        "Certified lexicons are common/shared lexicons that can be used across multiple protocols.",
+      lexicons: [],
+      ordering: (lex) => {
+        const order = [
+          "app.certified.location",
+          "app.certified.badge.definition",
+          "app.certified.badge.award",
+          "app.certified.badge.response",
+        ];
+        const index = order.indexOf(lex.data.id);
+        return index === -1 ? 999 : index;
+      },
+    },
+    external: {
+      title: "External Lexicons",
+      description: "External lexicons from other protocols and systems.",
+      lexicons: [],
+      ordering: (lex) => lex.data.id,
+    },
   };
 
   for (const lex of lexicons) {
     const id = lex.data.id;
-    if (id.startsWith("app.certified.")) {
-      categories.certified.push(lex);
+    if (id === "org.hypercerts.defs") {
+      categories.defs.lexicons.push(lex);
+    } else if (id.startsWith("app.certified.")) {
+      categories.certified.lexicons.push(lex);
     } else if (id.startsWith("org.hypercerts.")) {
-      categories.hypercerts.push(lex);
+      categories.hypercerts.lexicons.push(lex);
     } else {
-      categories.external.push(lex);
+      categories.external.lexicons.push(lex);
     }
   }
 
@@ -227,34 +261,28 @@ function generateDefsSection(lexicon) {
   return output;
 }
 
-function generateLexiconSection(lexicon, isFirst = false) {
+function generateLexiconHeader(lexicon, isFirst) {
   const output = [];
   const id = lexicon.data.id;
-  const mainDef = lexicon.data.defs?.main;
 
   if (!isFirst) {
     output.push("---", "");
   }
 
   output.push(`### \`${id}\``, "");
+  return output;
+}
 
-  // Special case: org.hypercerts.defs has no main, only defs
-  if (id === "org.hypercerts.defs") {
-    output.push(
-      "**Description:** Common type definitions used across all certified protocols.",
-      "",
-    );
-    const defsOutput = generateDefsSection(lexicon);
-    output.push(...defsOutput);
-    output.push("");
-    return output;
-  }
+function generateDescription(description) {
+  return description ? [`**Description:** ${description}`, ""] : [];
+}
+
+function generateMainSection(mainDef, lexicon) {
+  const output = [];
 
   if (!mainDef) return output;
 
-  if (mainDef.description) {
-    output.push(`**Description:** ${mainDef.description}`, "");
-  }
+  output.push(...generateDescription(mainDef.description));
 
   // Determine key type
   const keyType = mainDef.key || "tid";
@@ -276,28 +304,107 @@ function generateLexiconSection(lexicon, isFirst = false) {
     }
   }
 
-  // Handle additional defs (beyond main)
+  return { output, hasProperties: mainDef.record?.properties !== undefined };
+}
+
+function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
+  const output = [];
+
   const additionalDefs = Object.entries(lexicon.data.defs || {})
     .filter(([name]) => name !== "main")
     .filter(([, def]) => def.type === "object" && def.properties);
 
-  if (additionalDefs.length > 0) {
-    output.push("", "#### Defs", "");
-    for (let i = 0; i < additionalDefs.length; i++) {
-      const [defName, defData] = additionalDefs[i];
-      output.push(`##### ${defName}`, "");
-      const defRows = extractPropertyRows(defData, defData.required || []);
-      if (defRows.length > 0) {
-        output.push(...renderTable(defRows, false));
-        // Add blank line after table only if not the last def
-        if (i < additionalDefs.length - 1) {
-          output.push("");
-        }
+  if (additionalDefs.length === 0) return output;
+
+  // Add leading blank if there were properties before this section
+  if (hasPropertiesBefore) {
+    output.push("");
+  }
+
+  output.push("#### Defs", "");
+
+  additionalDefs.forEach(([defName, defData], index) => {
+    output.push(`##### \`${lexicon.data.id}#${defName}\``, "");
+    const defRows = extractPropertyRows(
+      defData,
+      defData.required || [],
+      lexicon.data.defs,
+    );
+    if (defRows.length > 0) {
+      output.push(...renderTable(defRows, false));
+      // Add blank line after table only if not the last def
+      if (index < additionalDefs.length - 1) {
+        output.push("");
       }
+    }
+  });
+
+  return output;
+}
+
+function generateLexiconSection(lexicon, isFirst = false) {
+  const output = [];
+  const mainDef = lexicon.data.defs?.main;
+
+  output.push(...generateLexiconHeader(lexicon, isFirst));
+
+  // Use lexicon description if no main, otherwise use main's description
+  let hasProperties = false;
+  if (mainDef) {
+    const mainResult = generateMainSection(mainDef, lexicon);
+    output.push(...mainResult.output);
+    hasProperties = mainResult.hasProperties;
+  } else {
+    output.push(...generateDescription(lexicon.data.description));
+  }
+
+  // Always generate additional defs (this handles defs-only lexicons too)
+  const additionalDefs = generateAdditionalDefsSection(lexicon, hasProperties);
+  output.push(...additionalDefs);
+
+  // Add trailing blank unless we end with just description/key (no tables)
+  const hasAdditionalDefs = additionalDefs.length > 0;
+  if (hasProperties || hasAdditionalDefs) {
+    output.push("");
+  }
+
+  return output;
+}
+
+function generateCategoryMarkdown(
+  category,
+  allLexicons,
+  emittedIds,
+  isFirstCategory = false,
+) {
+  const output = [];
+
+  if (!isFirstCategory) {
+    output.push("---", "");
+  }
+
+  output.push(`## ${category.title}`, "");
+  output.push(category.description, "");
+
+  // Sort lexicons according to the category's ordering function
+  const orderedLexicons = [...category.lexicons].sort((a, b) => {
+    const aOrder = category.ordering(a);
+    const bOrder = category.ordering(b);
+    if (typeof aOrder === "string" && typeof bOrder === "string") {
+      return aOrder.localeCompare(bOrder);
+    }
+    return aOrder - bOrder;
+  });
+
+  let isFirst = true;
+  for (const lex of orderedLexicons) {
+    if (lex && !emittedIds.has(lex.data.id)) {
+      output.push(...generateLexiconSection(lex, isFirst));
+      emittedIds.add(lex.data.id);
+      isFirst = false;
     }
   }
 
-  output.push("");
   return output;
 }
 
@@ -318,60 +425,26 @@ function generateMarkdown() {
     "",
   ];
 
-  // Hypercerts Lexicons (main lexicons come first)
-  if (categories.hypercerts.length > 0) {
-    output.push("## Hypercerts Lexicons", "");
+  // Track emitted schema IDs to ensure no duplicates
+  const emittedIds = new Set();
+
+  // Generate sections for each category in order
+  const categoryOrder = ["hypercerts", "certified", "defs", "external"];
+  let isFirstCategory = true;
+
+  for (const categoryKey of categoryOrder) {
+    const category = categories[categoryKey];
+    if (category.lexicons.length === 0) continue;
+
     output.push(
-      "Hypercerts-specific lexicons for tracking impact work and claims.",
-      "",
+      ...generateCategoryMarkdown(
+        category,
+        lexicons,
+        emittedIds,
+        isFirstCategory,
+      ),
     );
-
-    const hypercertsOrder = [
-      "org.hypercerts.claim.activity",
-      "org.hypercerts.claim.contribution",
-      "org.hypercerts.claim.evaluation",
-      "org.hypercerts.claim.evidence",
-      "org.hypercerts.claim.measurement",
-      "org.hypercerts.claim.collection",
-      "org.hypercerts.claim.rights",
-      "org.hypercerts.funding.receipt",
-    ];
-
-    let isFirst = true;
-    for (const id of hypercertsOrder) {
-      const lex = lexicons.find((l) => l.data.id === id);
-      if (lex) {
-        output.push(...generateLexiconSection(lex, isFirst));
-        isFirst = false;
-      }
-    }
-  }
-
-  // Certified Lexicons (common/shared lexicons come after)
-  if (categories.certified.length > 0) {
-    output.push("---", "", "## Certified Lexicons", "");
-    output.push(
-      "Certified lexicons are common/shared lexicons that can be used across multiple protocols.",
-      "",
-    );
-
-    // Define desired order for certified lexicons
-    const certifiedOrder = [
-      "org.hypercerts.defs",
-      "app.certified.location",
-      "app.certified.badge.definition",
-      "app.certified.badge.award",
-      "app.certified.badge.response",
-    ];
-
-    let isFirst = true;
-    for (const id of certifiedOrder) {
-      const lex = lexicons.find((l) => l.data.id === id);
-      if (lex) {
-        output.push(...generateLexiconSection(lex, isFirst));
-        isFirst = false;
-      }
-    }
+    isFirstCategory = false;
   }
 
   // Notes section
