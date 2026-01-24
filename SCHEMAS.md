@@ -33,7 +33,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Defs
 
-##### contributor
+##### `org.hypercerts.claim.activity#contributor`
 
 | Property              | Type     | Required | Description                                                                                                                                                                                                                                                        |
 | --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -88,7 +88,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Defs
 
-##### item
+##### `org.hypercerts.claim.collection#item`
 
 | Property         | Type     | Required | Description                                                                                                                                                                                     |
 | ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -153,7 +153,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Defs
 
-##### score
+##### `org.hypercerts.claim.evaluation#score`
 
 | Property | Type      | Required | Description                                  |
 | -------- | --------- | -------- | -------------------------------------------- |
@@ -208,22 +208,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.defs`
-
-**Description:** Common type definitions used across all certified protocols.
-
-#### Defs
-
-| Def          | Type     | Description                               | Comments                                |
-| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
-| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
-| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
-| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
-| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
-| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
-
----
-
 ### `org.hypercerts.funding.receipt`
 
 **Description:** Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.
@@ -272,22 +256,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 ## Certified Lexicons
 
 Certified lexicons are common/shared lexicons that can be used across multiple protocols.
-
-### `org.hypercerts.defs`
-
-**Description:** Common type definitions used across all certified protocols.
-
-#### Defs
-
-| Def          | Type     | Description                               | Comments                                |
-| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
-| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
-| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
-| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
-| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
-| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
-
----
 
 ### `app.certified.location`
 
@@ -359,6 +327,62 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           |
 | `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |
+
+---
+
+### `app.certified.defs`
+
+**Description:** Common type definitions used across certified protocols.
+
+---
+
+## Type Definitions
+
+Common type definitions used across all protocols.
+
+### `org.hypercerts.defs`
+
+#### Defs
+
+##### `org.hypercerts.defs#uri`
+
+| Property | Type     | Required | Description          |
+| -------- | -------- | -------- | -------------------- |
+| `uri`    | `string` | ✅       | URI to external data |
+
+##### `org.hypercerts.defs#smallBlob`
+
+| Property | Type   | Required | Description                        |
+| -------- | ------ | -------- | ---------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 10MB) |
+
+##### `org.hypercerts.defs#largeBlob`
+
+| Property | Type   | Required | Description                         |
+| -------- | ------ | -------- | ----------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 100MB) |
+
+##### `org.hypercerts.defs#smallImage`
+
+| Property | Type   | Required | Description       |
+| -------- | ------ | -------- | ----------------- |
+| `image`  | `blob` | ✅       | Image (up to 5MB) |
+
+##### `org.hypercerts.defs#largeImage`
+
+| Property | Type   | Required | Description        |
+| -------- | ------ | -------- | ------------------ |
+| `image`  | `blob` | ✅       | Image (up to 10MB) |
+
+---
+
+## External Lexicons
+
+External lexicons from other protocols and systems.
+
+### `com.atproto.repo.strongRef`
+
+**Key:** `tid`
 
 ---
 
