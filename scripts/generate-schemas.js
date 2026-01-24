@@ -326,16 +326,9 @@ function generateMarkdown() {
       "",
     );
 
-    const hypercertsOrder = [
-      "org.hypercerts.claim.activity",
-      "org.hypercerts.claim.contribution",
-      "org.hypercerts.claim.evaluation",
-      "org.hypercerts.claim.evidence",
-      "org.hypercerts.claim.measurement",
-      "org.hypercerts.claim.collection",
-      "org.hypercerts.claim.rights",
-      "org.hypercerts.funding.receipt",
-    ];
+    const hypercertsOrder = categories.hypercerts
+      .map((lex) => lex.data.id)
+      .sort();
 
     let isFirst = true;
     for (const id of hypercertsOrder) {

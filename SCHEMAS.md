@@ -43,6 +43,72 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.claim.collection`
+
+**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property           | Type     | Required | Description                                                                                                                                                       | Comments                           |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                      |                                    |
+| `title`            | `string` | ✅       | The title of this collection                                                                                                                                      | maxLength: 800, maxGraphemes: 80   |
+| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                                                                            | maxLength: 3000, maxGraphemes: 300 |
+| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                    |
+| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                    |
+| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                    |
+| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                                                                          |                                    |
+| `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
+
+#### Defs
+
+##### item
+
+| Property         | Type     | Required | Description                                                                                                                                                                                     |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).                             |
+| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
+
+---
+
+### `org.hypercerts.claim.contributionDetails`
+
+**Description:** Details about a specific contribution including role, description, and timeframe.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property                  | Type     | Required | Description                                                                          | Comments                             |
+| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------------ | ------------------------------------ |
+| `role`                    | `string` | ❌       | Role or title of the contributor.                                                    | maxLength: 100                       |
+| `contributionDescription` | `string` | ❌       | What the contribution concretely was.                                                | maxLength: 10000, maxGraphemes: 1000 |
+| `startDate`               | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.  |                                      |
+| `endDate`                 | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe. |                                      |
+| `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created.                   |                                      |
+
+---
+
+### `org.hypercerts.claim.contributorInformation`
+
+**Description:** Contributor information including identifier, display name, and image.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property      | Type     | Required | Description                                                        | Comments       |
+| ------------- | -------- | -------- | ------------------------------------------------------------------ | -------------- |
+| `identifier`  | `string` | ❌       | DID or a URI to a social profile of the contributor.               |                |
+| `displayName` | `string` | ❌       | Display name of the contributor.                                   | maxLength: 100 |
+| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.      |                |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created. |                |
+
+---
+
 ### `org.hypercerts.claim.evaluation`
 
 **Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
@@ -121,37 +187,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.collection`
-
-**Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                                                                                                       | Comments                           |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                      |                                    |
-| `title`            | `string` | ✅       | The title of this collection                                                                                                                                      | maxLength: 800, maxGraphemes: 80   |
-| `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                                                                            | maxLength: 3000, maxGraphemes: 300 |
-| `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                    |
-| `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                    |
-| `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                    |
-| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                                                                          |                                    |
-| `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
-
-#### Defs
-
-##### item
-
-| Property         | Type     | Required | Description                                                                                                                                                                                     |
-| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).                             |
-| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
-
----
-
 ### `org.hypercerts.claim.rights`
 
 **Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
@@ -167,6 +202,22 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                        |                |
 | `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document. |                |
 | `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created  |                |
+
+---
+
+### `org.hypercerts.defs`
+
+**Description:** Common type definitions used across all certified protocols.
+
+#### Defs
+
+| Def          | Type     | Description                               | Comments                                |
+| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
+| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
+| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
+| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
+| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
+| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
 
 ---
 
@@ -191,6 +242,27 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
+
+---
+
+### `org.hypercerts.helper.workScopeTag`
+
+**Description:** A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property            | Type     | Required | Description                                                                                      | Comments                             |
+| ------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                |                                      |
+| `key`               | `string` | ✅       | Lowercase, hyphenated machine-readable key for this scope (e.g., 'ipfs', 'go-lang', 'filecoin'). | maxLength: 120                       |
+| `label`             | `string` | ✅       | Human-readable label for this scope.                                                             | maxLength: 200                       |
+| `kind`              | `string` | ❌       | Category type of this scope. Recommended values: topic, language, domain, method, tag.           | maxLength: 50                        |
+| `description`       | `string` | ❌       | Optional longer description of this scope.                                                       | maxLength: 10000, maxGraphemes: 1000 |
+| `parent`            | `ref`    | ❌       | Optional strong reference to a parent scope record for taxonomy/hierarchy support.               |                                      |
+| `aliases`           | `string` | ❌       | Optional array of alternative names or identifiers for this scope.                               | maxLength: 50                        |
+| `externalReference` | `union`  | ❌       | Optional external reference for this scope as a URI or blob.                                     |                                      |
 
 ---
 
