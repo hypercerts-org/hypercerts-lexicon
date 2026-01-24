@@ -1,5 +1,78 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.12
+
+### Minor Changes
+
+- [#120](https://github.com/hypercerts-org/hypercerts-lexicon/pull/120) [`b2f7b68`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/b2f7b683ac17f07a891a59ee8289d26717197ba3) Thanks [@holkexyz](https://github.com/holkexyz)! - Refactor measurement lexicon schema: add unit field, date ranges, and locations array
+
+  **Breaking Changes:**
+  - **Measurement lexicon (`org.hypercerts.claim.measurement`):**
+    - Changed required fields: removed `measurers` from required, added `unit` as required
+    - Added `unit` field (required, string, maxLength: 50): The unit of the measured value (e.g. kg CO₂e, hectares, %, index score)
+    - Added `startDate` field (optional, datetime): The start date and time when the measurement began
+    - Added `endDate` field (optional, datetime): The end date and time when the measurement ended
+    - Changed `location` (single strongRef) to `locations` (array of strongRefs, maxLength: 100)
+    - Moved `measurers` from required to optional field
+    - Added `comment` field (optional, string): Short comment suitable for previews and list views
+    - Added `commentFacets` field (optional, array): Rich text annotations for `comment` (mentions, URLs, hashtags, etc.)
+    - Updated field descriptions for `metric` and `value` with more detailed examples
+
+  **Migration:**
+
+  **Required fields:** Update measurement records to include the new required `unit` field:
+
+  ```json
+  // Before
+  {
+    "$type": "org.hypercerts.claim.measurement",
+    "measurers": [...],
+    "metric": "CO₂ sequestered",
+    "value": "1000",
+    "createdAt": "..."
+  }
+
+  // After
+  {
+    "$type": "org.hypercerts.claim.measurement",
+    "metric": "CO₂ sequestered",
+    "unit": "kg CO₂e",
+    "value": "1000",
+    "measurers": [...],  // Now optional
+    "createdAt": "..."
+  }
+  ```
+
+  **Location field:** Convert from single location to locations array:
+
+  ```json
+  // Before
+  {
+    "location": { "uri": "...", "cid": "..." }
+  }
+
+  // After
+  {
+    "locations": [{ "uri": "...", "cid": "..." }]
+  }
+  ```
+
+  **Date ranges:** Optionally add `startDate` and `endDate` to specify when measurements were taken.
+
+- [#125](https://github.com/hypercerts-org/hypercerts-lexicon/pull/125) [`771d142`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/771d14269ced86ea686cb6dac3414a7a283c482a) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Simplify workScope to union of strongRef and string
+
+  **Breaking Changes:**
+  - The `workScope` field in `org.hypercerts.claim.activity` is now a union of:
+    - `com.atproto.repo.strongRef`: A reference to a work-scope logic record for structured, nested work scope definitions
+    - `org.hypercerts.claim.activity#workScopeString`: A free-form string for simple or legacy scopes
+  - **Removed** from `org.hypercerts.defs`:
+    - `workScopeAll` (logical AND operator)
+    - `workScopeAny` (logical OR operator)
+    - `workScopeNot` (logical NOT operator)
+    - `workScopeAtom` (atomic scope reference)
+
+  This simplification allows work scope complexity to be managed via referenced records while still supporting simple string-based scopes for straightforward use cases.
+
 ## 0.10.0-beta.11
 
 ### Minor Changes
