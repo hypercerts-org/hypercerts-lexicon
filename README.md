@@ -126,8 +126,8 @@ const locationRecord = {
 The `location` field accepts three formats:
 
 1. **URI reference**: `{ uri: "https://..." }` - Link to external location data
-2. **Small blob**: Embedded location data (up to 5MB)
-3. **Location string**: Direct inline string containing coordinates or GeoJSON
+2. **Small blob**: Embedded location data (up to 10MB)
+3. **Location string**: Inline string wrapped in an object, containing coordinates or GeoJSON
 
 ```typescript
 // Example with embedded blob
@@ -137,10 +137,14 @@ const locationWithBlob = {
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "geojson-point",
   location: {
-    $type: "blob",
-    mimeType: "application/geo+json",
-    size: 123,
-    // blob data...
+    blob: {
+      $type: "blob",
+      ref: {
+        $link: "bafyrei...", // CID of the uploaded blob
+      },
+      mimeType: "application/geo+json",
+      size: 123,
+    },
   },
   name: "Amazon Research Station",
   createdAt: new Date().toISOString(),
