@@ -89,6 +89,91 @@ await agent.api.com.atproto.repo.createRecord({
 });
 ```
 
+### Creating Location Records
+
+Location records (`app.certified.location`) specify where work was performed
+using geographic coordinates or other location formats. They can be referenced
+by activities, collections, attachments, measurements, and evaluations.
+
+```typescript
+import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+
+const locationRecord = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0", // Location Protocol version
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84", // Spatial Reference System
+  locationType: "coordinate-decimal", // or "geojson-point"
+  location: {
+    uri: "https://example.com/location-data.geojson",
+  },
+  // Optional fields
+  name: "Project Site A",
+  description: "Primary research facility in the Amazon rainforest",
+  createdAt: new Date().toISOString(),
+};
+```
+
+- `lpVersion` (required): Version of the Location Protocol specification
+- `srs` (required): Spatial Reference System URI defining the coordinate system
+- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point")
+- `location` (required): Location data as URI, blob, or string
+- `name` (optional): Human-readable name for the location
+- `description` (optional): Additional context about the location
+- `createdAt` (required): Timestamp when the record was created
+
+**Location data formats:**
+
+The `location` field accepts three formats:
+
+1. **URI reference**: `{ uri: "https://..." }` - Link to external location data
+2. **Small blob**: Embedded location data (up to 5MB)
+3. **Location string**: Direct inline string containing coordinates or GeoJSON
+
+```typescript
+// Example with embedded blob
+const locationWithBlob = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    $type: "blob",
+    mimeType: "application/geo+json",
+    size: 123,
+    // blob data...
+  },
+  name: "Amazon Research Station",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline string (coordinates)
+const locationWithCoordinates = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "coordinate-decimal",
+  location: {
+    string: "-3.4653, -62.2159", // lat, lon
+  },
+  name: "Amazon Research Site",
+  description: "Field station coordinates",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline GeoJSON string
+const locationWithGeoJSON = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    string: '{"type":"Point","coordinates":[-62.2159,-3.4653]}',
+  },
+  name: "Research Station Alpha",
+  createdAt: new Date().toISOString(),
+};
+```
+
 ### Accessing NSIDs (Lexicon IDs)
 
 **Recommended**: Use individual NSID constants for cleaner, more readable code:

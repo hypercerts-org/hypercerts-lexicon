@@ -37,9 +37,10 @@
             "type": "union",
             "refs": [
               "org.hypercerts.defs#uri",
-              "org.hypercerts.defs#smallBlob"
+              "org.hypercerts.defs#smallBlob",
+              "#string"
             ],
-            "description": "The location of where the work was performed as a URI or blob."
+            "description": "The location of where the work was performed as a URI, blob, or inline string."
           },
           "name": {
             "type": "string",
@@ -58,6 +59,19 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
+        }
+      }
+    },
+    "string": {
+      "type": "object",
+      "required": ["string"],
+      "description": "A location represented as a string, e.g. coordinates or a small GeoJSON string.",
+      "properties": {
+        "string": {
+          "type": "string",
+          "description": "The location string value",
+          "maxLength": 10000,
+          "maxGraphemes": 1000
         }
       }
     }

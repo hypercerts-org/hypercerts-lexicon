@@ -270,10 +270,18 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                      | maxLength: 10                                                      |
 | `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system. | maxLength: 100                                                     |
 | `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)                               | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point` |
-| `location`     | `union`  | ✅       | The location of where the work was performed as a URI or blob.                                                            |                                                                    |
+| `location`     | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                            |                                                                    |
 | `name`         | `string` | ❌       | Optional name for this location                                                                                           | maxLength: 1000, maxGraphemes: 100                                 |
 | `description`  | `string` | ❌       | Optional description for this location                                                                                    | maxLength: 2000, maxGraphemes: 500                                 |
 | `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |                                                                    |
+
+#### Defs
+
+##### `app.certified.location#string`
+
+| Property | Type     | Required | Description               |
+| -------- | -------- | -------- | ------------------------- |
+| `string` | `string` | ✅       | The location string value |
 
 ---
 
