@@ -1,5 +1,98 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.13
+
+### Minor Changes
+
+- [#131](https://github.com/hypercerts-org/hypercerts-lexicon/pull/131) [`7f42fad`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/7f42fad517e191dad6db22fc67ec8346ec167f5c) Thanks [@aspiers](https://github.com/aspiers)! - Add inline string format to app.certified.location schema with documentation and examples
+
+- [#118](https://github.com/hypercerts-org/hypercerts-lexicon/pull/118) [`8427780`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8427780888759ee749a683528f49e6b0da2b97c2) Thanks [@holkexyz](https://github.com/holkexyz)! - Rename evidence lexicon to attachment and refactor schema structure
+
+  **Breaking Changes:**
+  - **Lexicon ID change:**
+    - `org.hypercerts.claim.evidence` → `org.hypercerts.claim.attachment`
+    - All existing evidence records must be migrated to use the new lexicon ID
+  - **Schema structure changes (`org.hypercerts.claim.attachment`):**
+    - Changed `subject` (single strongRef) to `subjects` (array of strongRefs, maxLength: 100)
+    - Changed `content` from single union (uri/blob) to array of unions (maxLength: 100)
+    - Added `contentType` field (string, maxLength: 64) to specify attachment type
+    - Removed `relationType` field (previously used to indicate supports/challenges/clarifies)
+    - Removed `contributors` field
+    - Removed `locations` field
+    - Added rich text support: `shortDescriptionFacets` and `descriptionFacets` (arrays of `app.bsky.richtext.facet`)
+    - Updated required fields: `["title", "content", "createdAt"]` (content is now required)
+  - **Common definitions (`org.hypercerts.defs`):**
+    - Added `weightedContributor` def for contributor references with optional weights
+    - Added `contributorIdentity` def for string-based contributor identification
+
+  **Migration:**
+
+  **Lexicon ID:** Update all references from `org.hypercerts.claim.evidence` to `org.hypercerts.claim.attachment`.
+
+  **Schema migration:**
+
+  ```json
+  // Before (org.hypercerts.claim.evidence)
+  {
+    "$type": "org.hypercerts.claim.evidence",
+    "subject": { "uri": "...", "cid": "..." },
+    "content": { "uri": "https://..." },
+    "title": "Evidence Title",
+    "relationType": "supports",
+    "createdAt": "..."
+  }
+
+  // After (org.hypercerts.claim.attachment)
+  {
+    "$type": "org.hypercerts.claim.attachment",
+    "subjects": [{ "uri": "...", "cid": "..." }],
+    "content": [{ "uri": "https://..." }],
+    "contentType": "evidence",
+    "title": "Evidence Title",
+    "createdAt": "..."
+  }
+  ```
+
+  **Field mapping:**
+  - `subject` → `subjects` (wrap in array)
+  - `content` (single) → `content` (array, wrap existing value)
+  - `relationType` → remove (no direct replacement)
+  - `contributors` → remove (no direct replacement)
+  - `locations` → remove (no direct replacement)
+
+### Patch Changes
+
+- [#118](https://github.com/hypercerts-org/hypercerts-lexicon/pull/118) [`8427780`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8427780888759ee749a683528f49e6b0da2b97c2) Thanks [@holkexyz](https://github.com/holkexyz)! - Add location property to attachment schema
+
+  **New Feature:**
+  - **`location` field** (`org.hypercerts.claim.attachment`):
+    - Added optional `location` property as a strong reference (`com.atproto.repo.strongRef`)
+    - Allows attachments to associate location metadata directly without using the sidecar pattern
+    - The referenced record must conform to the `app.certified.location` lexicon
+
+  **Usage:**
+
+  ```json
+  {
+    "$type": "org.hypercerts.claim.attachment",
+    "subjects": [
+      {
+        "uri": "at://did:plc:.../org.hypercerts.claim.activity/...",
+        "cid": "..."
+      }
+    ],
+    "content": [{ "uri": "https://..." }],
+    "title": "Field Report",
+    "location": {
+      "uri": "at://did:plc:.../app.certified.location/abc123",
+      "cid": "..."
+    },
+    "createdAt": "..."
+  }
+  ```
+
+  This change aligns with the location property addition to collections (PR #123), providing a consistent pattern for associating location metadata across record types.
+
 ## 0.10.0-beta.12
 
 ### Minor Changes
