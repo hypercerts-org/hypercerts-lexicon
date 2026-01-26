@@ -98,6 +98,16 @@ class StyleChecker {
       const content = fs.readFileSync(filePath, "utf-8");
       const lexicon = JSON.parse(content);
 
+      // Skip style checks for third-party and standard ATProto lexicons
+      if (
+        lexicon.id &&
+        (lexicon.id.startsWith("pub.leaflet.") ||
+          lexicon.id.startsWith("app.bsky.") ||
+          lexicon.id.startsWith("com.atproto."))
+      ) {
+        return;
+      }
+
       // Run all checks
       this.checkLexiconId(lexicon, fileResult);
       this.checkLexiconDescription(lexicon, fileResult);
@@ -201,14 +211,14 @@ class StyleChecker {
     }
 
     for (const [defName, def] of Object.entries(lexicon.defs)) {
-      this.checkDefinition(def, `defs.${defName}`, fileResult);
+      this.checkDefinition(def, `defs.${defName}`, fileResult, lexicon);
     }
   }
 
   /**
    * Check a single definition
    */
-  checkDefinition(def, path, fileResult) {
+  checkDefinition(def, path, fileResult, lexicon) {
     // Check for description
     if (!def.description) {
       fileResult.issues.push({
@@ -221,11 +231,11 @@ class StyleChecker {
 
     // Check based on type
     if (def.type === "record") {
-      this.checkRecordDefinition(def, path, fileResult);
+      this.checkRecordDefinition(def, path, fileResult, lexicon);
     } else if (def.type === "object") {
-      this.checkObjectDefinition(def, path, fileResult);
+      this.checkObjectDefinition(def, path, fileResult, lexicon);
     } else if (def.type === "array") {
-      this.checkArrayDefinition(def, path, fileResult);
+      this.checkArrayDefinition(def, path, fileResult, lexicon);
     } else if (def.type === "string") {
       this.checkStringDefinition(def, path, fileResult);
     } else if (def.type === "blob") {
@@ -236,7 +246,7 @@ class StyleChecker {
   /**
    * Check record definition
    */
-  checkRecordDefinition(def, path, fileResult) {
+  checkRecordDefinition(def, path, fileResult, lexicon) {
     // Check key type
     if (!def.key) {
       fileResult.issues.push({
@@ -256,14 +266,19 @@ class StyleChecker {
 
     // Check record schema
     if (def.record) {
-      this.checkObjectDefinition(def.record, `${path}.record`, fileResult);
+      this.checkObjectDefinition(
+        def.record,
+        `${path}.record`,
+        fileResult,
+        lexicon,
+      );
     }
   }
 
   /**
    * Check object definition
    */
-  checkObjectDefinition(obj, path, fileResult) {
+  checkObjectDefinition(obj, path, fileResult, lexicon) {
     if (!obj.properties) {
       return;
     }
@@ -291,7 +306,12 @@ class StyleChecker {
       }
 
       // Check property type-specific rules
-      this.checkProperty(prop, `${path}.properties.${propName}`, fileResult);
+      this.checkProperty(
+        prop,
+        `${path}.properties.${propName}`,
+        fileResult,
+        lexicon,
+      );
     }
 
     // Check for createdAt in main records
@@ -313,17 +333,17 @@ class StyleChecker {
   /**
    * Check property-specific rules
    */
-  checkProperty(prop, path, fileResult) {
+  checkProperty(prop, path, fileResult, lexicon) {
     if (prop.type === "string") {
       this.checkStringProperty(prop, path, fileResult);
     } else if (prop.type === "blob") {
       this.checkBlobProperty(prop, path, fileResult);
     } else if (prop.type === "array") {
-      this.checkArrayProperty(prop, path, fileResult);
+      this.checkArrayProperty(prop, path, fileResult, lexicon);
     } else if (prop.type === "ref") {
       this.checkRefProperty(prop, path, fileResult);
     } else if (prop.type === "union") {
-      this.checkUnionProperty(prop, path, fileResult);
+      this.checkUnionProperty(prop, path, fileResult, lexicon);
     }
   }
 
@@ -405,7 +425,7 @@ class StyleChecker {
   /**
    * Check array property
    */
-  checkArrayProperty(prop, path, fileResult) {
+  checkArrayProperty(prop, path, fileResult, lexicon) {
     if (!prop.items) {
       fileResult.issues.push({
         severity: SEVERITY.ERROR,
@@ -428,7 +448,7 @@ class StyleChecker {
 
     // Check items
     if (prop.items.type) {
-      this.checkProperty(prop.items, `${path}.items`, fileResult);
+      this.checkProperty(prop.items, `${path}.items`, fileResult, lexicon);
     }
   }
 
@@ -464,9 +484,72 @@ class StyleChecker {
   }
 
   /**
+   * Resolve a local ref (starting with #) to its definition
+   */
+  resolveLocalRef(ref, lexicon) {
+    if (typeof ref !== "string" || !ref.startsWith("#")) {
+      return null;
+    }
+
+    const defName = ref.substring(1); // Remove the '#'
+    if (lexicon.defs && lexicon.defs[defName]) {
+      return lexicon.defs[defName];
+    }
+
+    return null;
+  }
+
+  /**
+   * Check if a union ref points to a valid type (must be object or record)
+   */
+  checkUnionRefForPrimitiveType(ref, index, path, fileResult, lexicon) {
+    const validUnionTypes = ["object", "record"];
+
+    // Check if this is an inline type definition
+    if (typeof ref === "object" && ref.type) {
+      if (!validUnionTypes.includes(ref.type)) {
+        fileResult.issues.push({
+          severity: SEVERITY.ERROR,
+          rule: "union-invalid-type",
+          message: `Union variants must be object or record types. Inline type "${ref.type}" is not allowed in unions by ATProto spec`,
+          location: `${path}.refs[${index}]`,
+        });
+      }
+      return;
+    }
+
+    // Check if this is a local ref that we can resolve
+    if (typeof ref === "string" && ref.startsWith("#")) {
+      const resolvedDef = this.resolveLocalRef(ref, lexicon);
+      if (resolvedDef) {
+        if (!resolvedDef.type) {
+          fileResult.issues.push({
+            severity: SEVERITY.WARNING,
+            rule: "union-invalid-type",
+            message: `Union variant local ref "${ref}" resolves to a definition without a type field`,
+            location: `${path}.refs[${index}]`,
+          });
+        } else if (!validUnionTypes.includes(resolvedDef.type)) {
+          fileResult.issues.push({
+            severity: SEVERITY.ERROR,
+            rule: "union-invalid-type",
+            message: `Union variants must be object or record types. Local ref "${ref}" resolves to type "${resolvedDef.type}" which is not allowed in unions by ATProto spec`,
+            location: `${path}.refs[${index}]`,
+          });
+        }
+      }
+      return;
+    }
+
+    // For external refs (e.g., "com.atproto.repo.strongRef" or "org.hypercerts.defs#uri"),
+    // we cannot validate without loading external lexicons, so we skip validation.
+    // These should be validated by the ATProto lexicon validator at build/runtime.
+  }
+
+  /**
    * Check union property
    */
-  checkUnionProperty(prop, path, fileResult) {
+  checkUnionProperty(prop, path, fileResult, lexicon) {
     if (!prop.refs || prop.refs.length === 0) {
       fileResult.issues.push({
         severity: SEVERITY.ERROR,
@@ -474,9 +557,10 @@ class StyleChecker {
         message: "Union property must have refs array",
         location: `${path}.refs`,
       });
+      return;
     }
 
-    if (prop.refs && prop.refs.length < 2) {
+    if (prop.refs.length < 2) {
       fileResult.issues.push({
         severity: SEVERITY.INFO,
         rule: "union-multiple-types",
@@ -484,6 +568,12 @@ class StyleChecker {
         location: `${path}.refs`,
       });
     }
+
+    // Check that all refs point to object or record types
+    // Primitive types (string, integer, boolean) are not allowed in unions
+    prop.refs.forEach((ref, index) => {
+      this.checkUnionRefForPrimitiveType(ref, index, path, fileResult, lexicon);
+    });
   }
 
   /**
@@ -503,8 +593,8 @@ class StyleChecker {
   /**
    * Check array definition
    */
-  checkArrayDefinition(def, path, fileResult) {
-    this.checkArrayProperty(def, path, fileResult);
+  checkArrayDefinition(def, path, fileResult, lexicon) {
+    this.checkArrayProperty(def, path, fileResult, lexicon);
   }
 
   /**
