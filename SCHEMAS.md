@@ -360,6 +360,14 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 **Description:** Common type definitions used across certified protocols.
 
+#### Defs
+
+##### `app.certified.defs#did`
+
+| Property | Type     | Required | Description           |
+| -------- | -------- | -------- | --------------------- |
+| `did`    | `string` | ✅       | The DID string value. |
+
 ---
 
 ## Type Definitions
