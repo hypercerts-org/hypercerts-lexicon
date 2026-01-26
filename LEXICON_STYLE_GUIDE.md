@@ -183,6 +183,7 @@ The `style:check` script checks for:
 8. ✅ Required fields are properly marked
 9. ✅ StrongRef usage is documented
 10. ✅ Lexicon IDs follow naming conventions
+11. ✅ Union types only contain object or record types (no primitives)
 
 ## Running the Checker
 

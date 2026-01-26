@@ -41,6 +41,24 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 | `contributionDetails` | `union`  | ❌       | Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record.                                                                                                                        |
 
+##### `org.hypercerts.claim.activity#contributorIdentity`
+
+| Property   | Type     | Required | Description                                          |
+| ---------- | -------- | -------- | ---------------------------------------------------- |
+| `identity` | `string` | ✅       | The contributor identity string (DID or identifier). |
+
+##### `org.hypercerts.claim.activity#contributorRole`
+
+| Property | Type     | Required | Description                       |
+| -------- | -------- | -------- | --------------------------------- |
+| `role`   | `string` | ✅       | The contribution role or details. |
+
+##### `org.hypercerts.claim.activity#workScopeString`
+
+| Property | Type     | Required | Description                        |
+| -------- | -------- | -------- | ---------------------------------- |
+| `scope`  | `string` | ✅       | The work scope description string. |
+
 ---
 
 ### `org.hypercerts.claim.attachment`
@@ -341,6 +359,14 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 ### `app.certified.defs`
 
 **Description:** Common type definitions used across certified protocols.
+
+#### Defs
+
+##### `app.certified.defs#did`
+
+| Property | Type     | Required | Description           |
+| -------- | -------- | -------- | --------------------- |
+| `did`    | `string` | ✅       | The DID string value. |
 
 ---
 
