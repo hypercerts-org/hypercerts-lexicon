@@ -46,12 +46,35 @@ class StyleChecker {
       warningCount: 0,
       infoCount: 0,
     };
+    this.lexiconIndex = new Map(); // Map of lexicon ID to parsed lexicon
+  }
+
+  /**
+   * Load all lexicons into an index for ref resolution
+   */
+  buildLexiconIndex(dir) {
+    const files = this.findLexiconFiles(dir);
+
+    for (const file of files) {
+      try {
+        const content = fs.readFileSync(file, "utf-8");
+        const lexicon = JSON.parse(content);
+        if (lexicon.id) {
+          this.lexiconIndex.set(lexicon.id, lexicon);
+        }
+      } catch (error) {
+        // Skip files that can't be parsed - they'll be caught in checkFile
+      }
+    }
   }
 
   /**
    * Check all lexicon files in a directory
    */
   async checkDirectory(dir) {
+    // First, build an index of all lexicons
+    this.buildLexiconIndex(dir);
+
     const files = this.findLexiconFiles(dir);
 
     for (const file of files) {
@@ -500,6 +523,27 @@ class StyleChecker {
   }
 
   /**
+   * Resolve an external ref (e.g., "org.hypercerts.defs#uri") to its definition
+   */
+  resolveExternalRef(ref) {
+    if (typeof ref !== "string" || ref.startsWith("#")) {
+      return null;
+    }
+
+    // Parse the ref: "lexicon.id#defName" or just "lexicon.id"
+    const parts = ref.split("#");
+    const lexiconId = parts[0];
+    const defName = parts[1] || "main";
+
+    const targetLexicon = this.lexiconIndex.get(lexiconId);
+    if (!targetLexicon || !targetLexicon.defs) {
+      return null;
+    }
+
+    return targetLexicon.defs[defName] || null;
+  }
+
+  /**
    * Check if a union ref points to a valid type (must be object or record)
    */
   checkUnionRefForPrimitiveType(ref, index, path, fileResult, lexicon) {
@@ -548,9 +592,36 @@ class StyleChecker {
       return;
     }
 
-    // For external refs (e.g., "com.atproto.repo.strongRef" or "org.hypercerts.defs#uri"),
-    // we cannot validate without loading external lexicons, so we skip validation.
-    // These should be validated by the ATProto lexicon validator at build/runtime.
+    // Check if this is an external ref (e.g., "com.atproto.repo.strongRef" or "org.hypercerts.defs#uri")
+    if (typeof ref === "string" && !ref.startsWith("#")) {
+      const resolvedDef = this.resolveExternalRef(ref);
+      if (resolvedDef) {
+        if (!resolvedDef.type) {
+          fileResult.issues.push({
+            severity: SEVERITY.WARNING,
+            rule: "union-invalid-type",
+            message: `Union variant external ref "${ref}" resolves to a definition without a type field`,
+            location: `${path}.refs[${index}]`,
+          });
+        } else if (!validUnionTypes.includes(resolvedDef.type)) {
+          fileResult.issues.push({
+            severity: SEVERITY.ERROR,
+            rule: "union-invalid-type",
+            message: `Union variants must be object or record types. External ref "${ref}" resolves to type "${resolvedDef.type}" which is not allowed in unions by ATProto spec`,
+            location: `${path}.refs[${index}]`,
+          });
+        }
+      } else {
+        // Could not resolve the external ref - might be a typo or the lexicon might not be loaded
+        fileResult.issues.push({
+          severity: SEVERITY.ERROR,
+          rule: "union-unresolved-ref",
+          message: `Union variant external ref "${ref}" cannot be resolved (possible typo or missing lexicon)`,
+          location: `${path}.refs[${index}]`,
+        });
+      }
+      return;
+    }
   }
 
   /**
