@@ -537,6 +537,13 @@ class StyleChecker {
             location: `${path}.refs[${index}]`,
           });
         }
+      } else {
+        fileResult.issues.push({
+          severity: SEVERITY.WARNING,
+          rule: "union-unresolved-local-ref",
+          message: `Union variant local ref "${ref}" does not resolve to any definition in this lexicon (possible typo or missing definition)`,
+          location: `${path}.refs[${index}]`,
+        });
       }
       return;
     }
