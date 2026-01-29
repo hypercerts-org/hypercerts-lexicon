@@ -1,0 +1,51 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.profile",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A declaration of a Hypercert account profile.",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxGraphemes": 64,
+            "maxLength": 640
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-form profile description text.",
+            "maxGraphemes": 256,
+            "maxLength": 2560
+          },
+          "pronouns": {
+            "type": "string",
+            "description": "Free-form pronouns text.",
+            "maxGraphemes": 20,
+            "maxLength": 200
+          },
+          "website": { "type": "string", "format": "uri" },
+          "avatar": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "Small image to be displayed next to posts from account. AKA, 'profile picture'"
+          },
+          "banner": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#largeImage"
+            ],
+            "description": "Larger horizontal image to display behind profile view."
+          },
+          "createdAt": { "type": "string", "format": "datetime" }
+        }
+      }
+    }
+  }
+}
