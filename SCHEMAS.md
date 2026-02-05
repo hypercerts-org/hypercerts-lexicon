@@ -370,6 +370,26 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
+### `app.certified.profile`
+
+**Description:** A declaration of a Hypercert account profile.
+
+**Key:** `literal:self`
+
+#### Properties
+
+| Property      | Type     | Required | Description                                                                    | Comments                           |
+| ------------- | -------- | -------- | ------------------------------------------------------------------------------ | ---------------------------------- |
+| `displayName` | `string` | ❌       |                                                                                | maxLength: 640, maxGraphemes: 64   |
+| `description` | `string` | ❌       | Free-form profile description text.                                            | maxLength: 2560, maxGraphemes: 256 |
+| `pronouns`    | `string` | ❌       | Free-form pronouns text.                                                       | maxLength: 200, maxGraphemes: 20   |
+| `website`     | `string` | ❌       |                                                                                |                                    |
+| `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
+| `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
+| `createdAt`   | `string` | ❌       |                                                                                |                                    |
+
+---
+
 ## Type Definitions
 
 Common type definitions used across all protocols.
