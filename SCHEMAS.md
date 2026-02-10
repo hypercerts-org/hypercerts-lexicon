@@ -356,21 +356,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
-### `app.certified.defs`
-
-**Description:** Common type definitions used across certified protocols.
-
-#### Defs
-
-##### `app.certified.defs#did`
-
-| Property | Type     | Required | Description           |
-| -------- | -------- | -------- | --------------------- |
-| `did`    | `string` | ✅       | The DID string value. |
-
----
-
-### `app.certified.profile`
+### `app.certified.actor.profile`
 
 **Description:** A declaration of a Hypercert account profile.
 
@@ -387,6 +373,20 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
 | `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
 | `createdAt`   | `string` | ❌       |                                                                                |                                    |
+
+---
+
+### `app.certified.defs`
+
+**Description:** Common type definitions used across certified protocols.
+
+#### Defs
+
+##### `app.certified.defs#did`
+
+| Property | Type     | Required | Description           |
+| -------- | -------- | -------- | --------------------- |
+| `did`    | `string` | ✅       | The DID string value. |
 
 ---
 
