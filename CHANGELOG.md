@@ -1,5 +1,48 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.14
+
+### Minor Changes
+
+- [#133](https://github.com/hypercerts-org/hypercerts-lexicon/pull/133) [`6752cad`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/6752cad3c9e58b9a8e1a3ca17f2ea7a4a68dba81) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Add profile lexicon for Hypercert account profiles with support for display name, description, pronouns, website, avatar, banner.
+
+- [#132](https://github.com/hypercerts-org/hypercerts-lexicon/pull/132) [`da481e0`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/da481e09f5bd1a8e62e388f2c6001896d76b1fbf) Thanks [@aspiers](https://github.com/aspiers)! - Convert app.certified.defs#did to object type
+
+  The did definition in app.certified.defs has been converted from a primitive
+  string type to an object type to comply with the ATProto specification
+  requirement that all union variants must be object or record types.
+
+  This change was necessary because app.certified.badge.award uses this
+  definition in a union for the subject property.
+
+  Breaking changes:
+  - `app.certified.defs#did`: Now an object with `did` string property (maxLength 256)
+  - Code using this type must now access the `.did` property instead of using the value directly
+
+- [#132](https://github.com/hypercerts-org/hypercerts-lexicon/pull/132) [`e134b26`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/e134b26c43a70c0a9ae04cc12b8a3bd05990c470) Thanks [@aspiers](https://github.com/aspiers)! - Convert union string definitions to object types in activity lexicon
+
+  The contributorIdentity, contributorRole, and workScopeString definitions
+  in org.hypercerts.claim.activity have been converted from primitive string
+  types to object types to comply with the ATProto specification requirement
+  that all union variants must be object or record types.
+
+  Additionally, maximum length constraints have been reduced to more reasonable
+  values:
+  - `contributorIdentity.identity`: maxLength 1000, maxGraphemes 100 (previously no limits)
+  - `contributorRole.role`: maxLength 1000, maxGraphemes 100 (previously maxLength 10000, maxGraphemes 1000)
+  - `workScopeString.scope`: maxLength 1000, maxGraphemes 100 (previously maxLength 10000, maxGraphemes 1000)
+
+  Breaking changes:
+  - `contributorIdentity`: Now an object with `identity` string property
+  - `contributorRole`: Now an object with `role` string property
+  - `workScopeString`: Now an object with `scope` string property
+  - Reduced maximum lengths may affect existing records with longer values
+
+  This requires updating code that uses these union types to access the nested
+  property instead of using the value directly.
+
+- [#135](https://github.com/hypercerts-org/hypercerts-lexicon/pull/135) [`806cfbc`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/806cfbca7cbcd3674a5f8e97a6b6dd87ba806c08) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Move profile lexicon from app.certified.profile to app.certified.actor.profile namespace, requiring migration of existing profile records
+
 ## 0.10.0-beta.13
 
 ### Minor Changes
