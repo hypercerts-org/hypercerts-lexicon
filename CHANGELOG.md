@@ -1,5 +1,13 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.15
+
+### Minor Changes
+
+- [#76](https://github.com/hypercerts-org/hypercerts-lexicon/pull/76) [`3044e22`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/3044e22c1345b3cd5764e3c6c3714b21e6911663) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Add org.hypercerts.acknowledgement lexicon for bidirectional inclusion links between records across PDS repos
+
+- [#136](https://github.com/hypercerts-org/hypercerts-lexicon/pull/136) [`062fbde`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/062fbde905dbd939f75c366760be1c02bb8a0412) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Expand locationType knownValues to include geojson, h3, geohash, wkt, address, and scaledCoordinates from the [Location Protocol spec](https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry)
+
 ## 0.10.0-beta.14
 
 ### Minor Changes
