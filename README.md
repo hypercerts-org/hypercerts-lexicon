@@ -102,7 +102,7 @@ const locationRecord = {
   $type: LOCATION_NSID,
   lpVersion: "1.0", // Location Protocol version
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84", // Spatial Reference System
-  locationType: "coordinate-decimal", // or "geojson-point"
+  locationType: "coordinate-decimal", // or "geojson-point", "geojson", "h3", "geohash", "wkt", "address", etc.
   location: {
     uri: "https://example.com/location-data.geojson",
   },
@@ -115,7 +115,7 @@ const locationRecord = {
 
 - `lpVersion` (required): Version of the Location Protocol specification
 - `srs` (required): Spatial Reference System URI defining the coordinate system
-- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point")
+- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point", "geojson", "h3", "geohash", "wkt", "address", "scaledCoordinates")
 - `location` (required): Location data as URI, blob, or string
 - `name` (optional): Human-readable name for the location
 - `description` (optional): Additional context about the location

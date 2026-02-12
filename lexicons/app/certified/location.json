@@ -30,7 +30,16 @@
           "locationType": {
             "type": "string",
             "description": "An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)",
-            "knownValues": ["coordinate-decimal", "geojson-point"],
+            "knownValues": [
+              "coordinate-decimal",
+              "geojson-point",
+              "geojson",
+              "h3",
+              "geohash",
+              "wkt",
+              "address",
+              "scaledCoordinates"
+            ],
             "maxLength": 20
           },
           "location": {
