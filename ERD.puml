@@ -200,6 +200,17 @@ dataclass collection {
     !endif
 }
 
+' org.hypercerts.acknowledgement
+dataclass acknowledgement {
+    !if (SHOW_FIELDS == "true")
+    subject
+    context
+    acknowledged
+    comment?
+    createdAt
+    !endif
+}
+
 'together {
 
 ' Funders are represented by DIDs or human-readable strings
@@ -295,6 +306,11 @@ measurement --> location
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection::location --> location
+
+acknowledgement::subject --> activity
+acknowledgement::subject --> contributorInformation
+acknowledgement::context --> collection
+acknowledgement::context --> activity
 
 activity::contributors -l--> contributorInformation
 activity::contributors --> contributionDetails

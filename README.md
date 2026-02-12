@@ -373,6 +373,73 @@ const collectionRecord = {
 are optional and support either embedded image blobs or URI references to
 external images.
 
+### Acknowledging Inclusion
+
+The `org.hypercerts.acknowledgement` record enables bidirectional
+linking between records that live in different PDS repositories. When
+one user includes another user's record (e.g. adding an activity to a
+collection), the owner of the included record can create an
+acknowledgement to confirm or reject the inclusion. This forms a
+two-way link that an AppView can verify.
+
+Each acknowledgement uses `com.atproto.repo.strongRef` fields to
+reference both the **subject** (the record being included) and the
+**context** (the record it's being included in).
+
+See [SCHEMAS.md](SCHEMAS.md) for the full property reference.
+
+#### Use Case: Activity Included in a Collection
+
+A project organizer (Alice) creates a collection and adds Bob's
+activity to it via a `strongRef` in the collection's `items[]` array.
+Bob then creates an acknowledgement in his own repo to confirm:
+
+```typescript
+import { ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+
+// Bob acknowledges that his activity is included in Alice's collection
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  context: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.collection/7x9def",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  createdAt: new Date().toISOString(),
+};
+```
+
+#### Use Case: Contributor Included in an Activity
+
+Alice creates an activity that lists Bob as a contributor. Bob creates
+an acknowledgement in his own repo to confirm his participation:
+
+```typescript
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    // Bob's contributor information record
+    uri: "at://did:plc:bob/org.hypercerts.claim.contributorInformation/abc123",
+    cid: "bafy...",
+  },
+  context: {
+    // Alice's activity that lists Bob as contributor
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  comment: "Confirming my contribution to this reforestation project",
+  createdAt: new Date().toISOString(),
+};
+```
+
+Setting `acknowledged: false` explicitly rejects inclusion, which an
+AppView can use to flag disputed associations.
+
 ### Adding Locations to Activities
 
 The `locations` field in activity records is an array of strong references
