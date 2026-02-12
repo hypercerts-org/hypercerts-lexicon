@@ -115,7 +115,7 @@ const locationRecord = {
 
 - `lpVersion` (required): Version of the Location Protocol specification
 - `srs` (required): Spatial Reference System URI defining the coordinate system
-- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point", "geojson", "h3", "geohash", "wkt", "address", "scaledCoordinates")
+- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point", "geojson", "h3", "geohash", "wkt", "address", "scaledCoordinates"). See the [Location Protocol spec](https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry) for the full registry.
 - `location` (required): Location data as URI, blob, or string
 - `name` (optional): Human-readable name for the location
 - `description` (optional): Additional context about the location

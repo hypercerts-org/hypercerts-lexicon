@@ -29,7 +29,7 @@
           },
           "locationType": {
             "type": "string",
-            "description": "An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)",
+            "description": "An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry",
             "knownValues": [
               "coordinate-decimal",
               "geojson-point",
