@@ -17,19 +17,19 @@
           },
           "contributionDescription": {
             "type": "string",
-            "description": "What the contribution concretely was.",
+            "description": "Description of what the contribution concretely involved.",
             "maxLength": 10000,
             "maxGraphemes": 1000
           },
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
+            "description": "When this contribution started. Should fall within the parent hypercert's timeframe."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished. This should be a subset of the hypercert timeframe."
+            "description": "When this contribution finished. Should fall within the parent hypercert's timeframe."
           },
           "createdAt": {
             "type": "string",

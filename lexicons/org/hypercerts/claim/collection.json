@@ -17,7 +17,7 @@
           },
           "title": {
             "type": "string",
-            "description": "The title of this collection",
+            "description": "Display name for this collection (e.g. 'Q1 2025 Impact Projects')",
             "maxLength": 800,
             "maxGraphemes": 80
           },

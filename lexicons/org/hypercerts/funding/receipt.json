@@ -22,7 +22,7 @@
           },
           "amount": {
             "type": "string",
-            "description": "Amount of funding received.",
+            "description": "Amount of funding received as a numeric string (e.g. '1000.50').",
             "maxLength": 50
           },
           "currency": {

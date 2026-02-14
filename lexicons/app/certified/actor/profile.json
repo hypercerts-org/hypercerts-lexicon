@@ -11,6 +11,7 @@
         "properties": {
           "displayName": {
             "type": "string",
+            "description": "Display name for the account",
             "maxGraphemes": 64,
             "maxLength": 640
           },
@@ -26,7 +27,11 @@
             "maxGraphemes": 20,
             "maxLength": 200
           },
-          "website": { "type": "string", "format": "uri" },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Account website URL"
+          },
           "avatar": {
             "type": "union",
             "refs": [
@@ -43,7 +48,11 @@
             ],
             "description": "Larger horizontal image to display behind profile view."
           },
-          "createdAt": { "type": "string", "format": "datetime" }
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
         }
       }
     }

@@ -12,7 +12,7 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "Title of the hypercert.",
+            "description": "Display title summarizing the impact work (e.g. 'Reforestation in Amazon Basin 2024')",
             "maxLength": 256
           },
           "shortDescription": {

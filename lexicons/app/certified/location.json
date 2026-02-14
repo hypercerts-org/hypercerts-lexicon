@@ -53,13 +53,13 @@
           },
           "name": {
             "type": "string",
-            "description": "Optional name for this location",
+            "description": "Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')",
             "maxLength": 1000,
             "maxGraphemes": 100
           },
           "description": {
             "type": "string",
-            "description": "Optional description for this location",
+            "description": "Additional context about this location, such as its significance to the work or specific boundaries",
             "maxLength": 2000,
             "maxGraphemes": 500
           },

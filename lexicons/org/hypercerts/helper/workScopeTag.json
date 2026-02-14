@@ -22,7 +22,7 @@
           },
           "label": {
             "type": "string",
-            "description": "Human-readable label for this scope.",
+            "description": "Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')",
             "maxLength": 200
           },
           "kind": {

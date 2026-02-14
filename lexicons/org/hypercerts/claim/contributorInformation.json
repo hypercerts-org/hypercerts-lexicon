@@ -12,12 +12,12 @@
         "properties": {
           "identifier": {
             "type": "string",
-            "description": "DID or a URI to a social profile of the contributor.",
+            "description": "DID (did:plc:...) or URI to a social profile of the contributor.",
             "maxLength": 2048
           },
           "displayName": {
             "type": "string",
-            "description": "Display name of the contributor.",
+            "description": "Human-readable name for the contributor as it should appear in UI.",
             "maxLength": 100
           },
           "image": {
