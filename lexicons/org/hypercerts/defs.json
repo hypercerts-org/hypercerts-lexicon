@@ -10,7 +10,6 @@
         "uri": {
           "type": "string",
           "format": "uri",
-          "maxGraphemes": 1024,
           "description": "URI to external data"
         }
       }

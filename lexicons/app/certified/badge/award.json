@@ -22,7 +22,8 @@
           },
           "note": {
             "type": "string",
-            "description": "Optional statement explaining the reason for this badge award."
+            "description": "Optional statement explaining the reason for this badge award.",
+            "maxLength": 500
           },
           "createdAt": {
             "type": "string",

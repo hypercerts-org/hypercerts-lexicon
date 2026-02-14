@@ -234,13 +234,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property            | Type     | Required | Description                                                        | Comments       |
-| ------------------- | -------- | -------- | ------------------------------------------------------------------ | -------------- |
-| `rightsName`        | `string` | ✅       | Full name of the rights                                            | maxLength: 100 |
-| `rightsType`        | `string` | ✅       | Short rights identifier for easier search                          | maxLength: 10  |
-| `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                        |                |
-| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document. |                |
-| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created  |                |
+| Property            | Type     | Required | Description                                                        | Comments                            |
+| ------------------- | -------- | -------- | ------------------------------------------------------------------ | ----------------------------------- |
+| `rightsName`        | `string` | ✅       | Full name of the rights                                            | maxLength: 100                      |
+| `rightsType`        | `string` | ✅       | Short rights identifier for easier search                          | maxLength: 10                       |
+| `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                        | maxLength: 5000, maxGraphemes: 1000 |
+| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document. |                                     |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created  |                                     |
 
 ---
 
@@ -255,12 +255,12 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | Property         | Type     | Required | Description                                                                                                                                                                             | Comments       |
 | ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `from`           | `ref`    | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                                                                             |                |
-| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              |                |
-| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                                                                             |                |
-| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           |                |
-| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              |                |
-| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 |                |
-| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. |                |
+| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              | maxLength: 256 |
+| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                                                                             | maxLength: 50  |
+| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10  |
+| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50  |
+| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50  |
+| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256 |
 | `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                                                                                   |                |
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
@@ -331,10 +331,10 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 | Property         | Type     | Required | Description                                                                              | Comments                                                                    |
 | ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `badgeType`      | `string` | ✅       | Category of the badge (e.g. endorsement, participation, affiliation).                    |                                                                             |
-| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       |                                                                             |
+| `badgeType`      | `string` | ✅       | Category of the badge (e.g. endorsement, participation, affiliation).                    | maxLength: 100                                                              |
+| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                              |
 | `icon`           | `blob`   | ✅       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml |
-| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           |                                                                             |
+| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 1000                                                             |
 | `allowedIssuers` | `ref`    | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. |                                                                             |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                             |
 
@@ -348,12 +348,12 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                     |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |
-| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |
-| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |
+| Property    | Type     | Required | Description                                                                                                                                     | Comments       |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                |
+| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                |
+| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500 |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                |
 
 ---
 
@@ -365,12 +365,12 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                              |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------ |
-| `badgeAward` | `ref`    | ✅       | Reference to the badge award.                                            |
-| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           |
-| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |
+| Property     | Type     | Required | Description                                                              | Comments                             |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| `badgeAward` | `ref`    | ✅       | Reference to the badge award.                                            |                                      |
+| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           | Known values: `accepted`, `rejected` |
+| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. | maxLength: 50                        |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |                                      |
 
 ---
 

@@ -27,7 +27,9 @@
           },
           "rightsDescription": {
             "type": "string",
-            "description": "Description of the rights of this hypercert"
+            "description": "Description of the rights of this hypercert",
+            "maxLength": 5000,
+            "maxGraphemes": 1000
           },
           "attachment": {
             "type": "union",
