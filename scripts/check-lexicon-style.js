@@ -375,7 +375,13 @@ class StyleChecker {
    */
   checkStringProperty(prop, path, fileResult) {
     // Check for maxLength
-    if (!prop.maxLength && !prop.maxGraphemes) {
+    if (
+      !prop.maxLength &&
+      !prop.maxGraphemes &&
+      !prop.format &&
+      !prop.enum &&
+      !prop.knownValues
+    ) {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,
         rule: "string-max-length",

@@ -69,6 +69,7 @@
           "contributors": {
             "type": "array",
             "description": "An array of contributor objects, each containing contributor information, weight, and contribution details.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "#contributor"
@@ -82,6 +83,7 @@
           "locations": {
             "type": "array",
             "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
@@ -106,7 +108,8 @@
         },
         "contributionWeight": {
           "type": "string",
-          "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
+          "description": "The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 100
         },
         "contributionDetails": {
           "type": "union",

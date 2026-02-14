@@ -28,7 +28,7 @@
           "rightsDescription": {
             "type": "string",
             "description": "Description of the rights of this hypercert",
-            "maxLength": 5000,
+            "maxLength": 10000,
             "maxGraphemes": 1000
           },
           "attachment": {

@@ -44,9 +44,9 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `workScope`              | `union`  | ❌       | Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon. |                                      |
 | `startDate`              | `string` | ❌       | When the work began                                                                                                                                                                                                                           |                                      |
 | `endDate`                | `string` | ❌       | When the work ended                                                                                                                                                                                                                           |                                      |
-| `contributors`           | `ref`    | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                                                                                                                   |                                      |
+| `contributors`           | `ref`    | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                                                                                                                   | maxLength: 1000                      |
 | `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.                                                                                                    |                                      |
-| `locations`              | `ref`    | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                                                                                       |                                      |
+| `locations`              | `ref`    | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                                                                                       | maxLength: 1000                      |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                             |                                      |
 
 #### Defs
@@ -112,13 +112,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 | Property           | Type     | Required | Description                                                                                                                                                       | Comments                           |
 | ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                      |                                    |
+| `type`             | `string` | ❌       | The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.                                                      | maxLength: 64                      |
 | `title`            | `string` | ✅       | The title of this collection                                                                                                                                      | maxLength: 800, maxGraphemes: 80   |
 | `shortDescription` | `string` | ❌       | Short summary of this collection, suitable for previews and list views                                                                                            | maxLength: 3000, maxGraphemes: 300 |
 | `description`      | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                    |
 | `avatar`           | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                    |
 | `banner`           | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                    |
-| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                                                                          |                                    |
+| `items`            | `ref`    | ✅       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                    |
 | `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
 
@@ -159,12 +159,12 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                        | Comments       |
-| ------------- | -------- | -------- | ------------------------------------------------------------------ | -------------- |
-| `identifier`  | `string` | ❌       | DID or a URI to a social profile of the contributor.               |                |
-| `displayName` | `string` | ❌       | Display name of the contributor.                                   | maxLength: 100 |
-| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.      |                |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created. |                |
+| Property      | Type     | Required | Description                                                        | Comments        |
+| ------------- | -------- | -------- | ------------------------------------------------------------------ | --------------- |
+| `identifier`  | `string` | ❌       | DID or a URI to a social profile of the contributor.               | maxLength: 2048 |
+| `displayName` | `string` | ❌       | Display name of the contributor.                                   | maxLength: 100  |
+| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.      |                 |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created. |                 |
 
 ---
 
@@ -234,13 +234,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property            | Type     | Required | Description                                                        | Comments                            |
-| ------------------- | -------- | -------- | ------------------------------------------------------------------ | ----------------------------------- |
-| `rightsName`        | `string` | ✅       | Full name of the rights                                            | maxLength: 100                      |
-| `rightsType`        | `string` | ✅       | Short rights identifier for easier search                          | maxLength: 10                       |
-| `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                        | maxLength: 5000, maxGraphemes: 1000 |
-| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document. |                                     |
-| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created  |                                     |
+| Property            | Type     | Required | Description                                                        | Comments                             |
+| ------------------- | -------- | -------- | ------------------------------------------------------------------ | ------------------------------------ |
+| `rightsName`        | `string` | ✅       | Full name of the rights                                            | maxLength: 100                       |
+| `rightsType`        | `string` | ✅       | Short rights identifier for easier search                          | maxLength: 10                        |
+| `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                        | maxLength: 10000, maxGraphemes: 1000 |
+| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document. |                                      |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created  |                                      |
 
 ---
 
@@ -252,19 +252,19 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                                                                                                                             | Comments       |
-| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `from`           | `ref`    | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                                                                             |                |
-| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              | maxLength: 256 |
-| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                                                                             | maxLength: 50  |
-| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10  |
-| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50  |
-| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50  |
-| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256 |
-| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                                                                                   |                |
-| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
-| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
+| Property         | Type     | Required | Description                                                                                                                                                                             | Comments        |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `from`           | `ref`    | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                                                                             |                 |
+| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              | maxLength: 2048 |
+| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                                                                             | maxLength: 50   |
+| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10   |
+| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50   |
+| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50   |
+| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256  |
+| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                                                                                   |                 |
+| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500  |
+| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                 |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                 |
 
 ---
 
@@ -334,8 +334,8 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `badgeType`      | `string` | ✅       | Category of the badge (e.g. endorsement, participation, affiliation).                    | maxLength: 100                                                              |
 | `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                              |
 | `icon`           | `blob`   | ✅       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml |
-| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 1000                                                             |
-| `allowedIssuers` | `ref`    | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. |                                                                             |
+| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                          |
+| `allowedIssuers` | `ref`    | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                              |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                             |
 
 ---
@@ -394,6 +394,10 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
+## Type Definitions
+
+Common type definitions used across all protocols.
+
 ### `app.certified.defs`
 
 **Description:** Common type definitions used across certified protocols.
@@ -408,11 +412,9 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
-## Type Definitions
-
-Common type definitions used across all protocols.
-
 ### `org.hypercerts.defs`
+
+**Description:** Common type definitions used across all Hypercerts protocols.
 
 #### Defs
 

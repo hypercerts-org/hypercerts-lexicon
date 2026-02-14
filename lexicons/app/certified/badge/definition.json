@@ -34,11 +34,13 @@
           "description": {
             "type": "string",
             "description": "Optional short statement describing what the badge represents.",
-            "maxLength": 1000
+            "maxLength": 5000,
+            "maxGraphemes": 500
           },
           "allowedIssuers": {
             "type": "array",
             "description": "Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it.",
+            "maxLength": 100,
             "items": {
               "type": "ref",
               "ref": "app.certified.defs#did"

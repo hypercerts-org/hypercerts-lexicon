@@ -12,7 +12,8 @@
         "properties": {
           "identifier": {
             "type": "string",
-            "description": "DID or a URI to a social profile of the contributor."
+            "description": "DID or a URI to a social profile of the contributor.",
+            "maxLength": 2048
           },
           "displayName": {
             "type": "string",

@@ -1,6 +1,7 @@
 {
   "lexicon": 1,
   "id": "org.hypercerts.defs",
+  "description": "Common type definitions used across all Hypercerts protocols.",
   "defs": {
     "uri": {
       "type": "object",
