@@ -278,11 +278,11 @@ Examples: op='all' (AND), op='any' (OR), op='not' (NOT; typically unary).
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                                 | Comments       |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `op`        | `string` | ✅       | Operator identifier. Semantics are defined by the evaluating application. Examples: 'all', 'any', 'not'.                                                                                                    | maxLength: 64  |
-| `args`      | `ref`    | ✅       | Arguments. Each strongRef should point to either org.hypercerts.helper.workScopeTag (leaf) or org.hypercerts.helper.ops (nested). For op='not', args SHOULD have exactly one element (enforced by clients). | maxLength: 100 |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                           |                |
+| Property    | Type     | Required | Description                                                                                                                                                                                                 | Comments                                         |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `op`        | `string` | ✅       | Operator identifier. Semantics are defined by the evaluating application. Examples: 'all' (AND), 'any' (OR), 'not' (NOT).                                                                                   | maxLength: 64, Known values: `all`, `any`, `not` |
+| `args`      | `ref`    | ✅       | Arguments. Each strongRef should point to either org.hypercerts.helper.workScopeTag (leaf) or org.hypercerts.helper.ops (nested). For op='not', args SHOULD have exactly one element (enforced by clients). | maxLength: 100                                   |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                           |                                                  |
 
 ---
 
