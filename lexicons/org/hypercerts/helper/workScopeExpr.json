@@ -8,10 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": [
-          "version",
-          "createdAt"
-        ],
+        "required": ["version", "createdAt"],
         "properties": {
           "version": {
             "type": "integer",
