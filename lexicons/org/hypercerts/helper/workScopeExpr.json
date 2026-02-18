@@ -1,0 +1,67 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.helper.workScopeExpr",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A reusable work-scope boolean expression (simple flat form): (ALL allOf) AND (ANY anyOf, if present) AND (NONE noneOf). Designed to cover the vast majority of practical work-scope definitions (include, require, exclude) without recursion. For full nested boolean logic or complex conditional expressions, use org.hypercerts.helper.ops.\n\nAn empty work-scope expression represents an unconstrained scope. If `allOf`, `anyOf`, and `noneOf` are all absent or empty, the expression imposes no filtering constraints. In this case, all work is considered in scope by default.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "version",
+          "createdAt"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Schema version for this expression. Start with 1. Enables forward-compatible evolution of evaluation semantics."
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 140,
+            "description": "Optional short human-readable label for UI display (e.g., 'OSS docs/code — no marketing')."
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "Optional longer explanation of the scope intent, interpretation guidance, or edge-case clarifications."
+          },
+          "allOf": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100,
+            "description": "All referenced tags must match for something to be considered in-scope. Typically refs to org.hypercerts.helper.workScopeTag."
+          },
+          "anyOf": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100,
+            "description": "At least one referenced tag must match (if anyOf is present and non-empty). Typically refs to org.hypercerts.helper.workScopeTag."
+          },
+          "noneOf": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100,
+            "description": "None of the referenced tags may match. If any excluded tag matches, the contribution or activity is considered out-of-scope."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Timestamp when this work-scope expression was created."
+          }
+        }
+      }
+    }
+  }
+}

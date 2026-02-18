@@ -54,7 +54,7 @@
           "workScope": {
             "type": "union",
             "refs": ["com.atproto.repo.strongRef", "#workScopeString"],
-            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon."
+            "description": "Defines the scope of work covered by this activity claim. May be a string, a structured scope expression (via org.hypercerts.helper.workScopeExpr), or an advanced logic tree (via org.hypercerts.helper.ops). If no inclusion or exclusion constraints are defined, the scope is treated as unconstrained and all work is considered in scope."
           },
           "startDate": {
             "type": "string",
