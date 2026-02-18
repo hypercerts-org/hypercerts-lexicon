@@ -160,6 +160,19 @@ dataclass workScopeTag {
     !endif
 }
 
+' org.hypercerts.helper.workScopeExpr
+dataclass workScopeExpr {
+    !if (SHOW_FIELDS == "true")
+    version
+    label?
+    description?
+    allOf[]?
+    anyOf[]?
+    noneOf[]?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.helper.ops
 dataclass ops {
     !if (SHOW_FIELDS == "true")
@@ -340,7 +353,12 @@ activity::contributors --> contributionDetails
 activity::rights --> rights
 activity::locations --> location
 activity::workScope --> workScopeTag
+activity::workScope --> workScopeExpr
 activity::workScope --> ops
+
+workScopeExpr::allOf --> workScopeTag
+workScopeExpr::anyOf --> workScopeTag
+workScopeExpr::noneOf --> workScopeTag
 
 ops::args --> workScopeTag
 ops::args --> ops : "recursive\nnesting"

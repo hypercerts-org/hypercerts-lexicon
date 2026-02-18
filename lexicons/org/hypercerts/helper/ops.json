@@ -13,7 +13,8 @@
           "op": {
             "type": "string",
             "maxLength": 64,
-            "description": "Operator identifier. Semantics are defined by the evaluating application. Examples: 'all', 'any', 'not'."
+            "knownValues": ["all", "any", "not"],
+            "description": "Operator identifier. Semantics are defined by the evaluating application. Examples: 'all' (AND), 'any' (OR), 'not' (NOT)."
           },
           "args": {
             "type": "array",
