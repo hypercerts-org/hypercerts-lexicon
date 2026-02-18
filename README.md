@@ -89,6 +89,95 @@ await agent.api.com.atproto.repo.createRecord({
 });
 ```
 
+### Creating Location Records
+
+Location records (`app.certified.location`) specify where work was performed
+using geographic coordinates or other location formats. They can be referenced
+by activities, collections, attachments, measurements, and evaluations.
+
+```typescript
+import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+
+const locationRecord = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0", // Location Protocol version
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84", // Spatial Reference System
+  locationType: "coordinate-decimal", // or "geojson-point", "geojson", "h3", "geohash", "wkt", "address", etc.
+  location: {
+    uri: "https://example.com/location-data.geojson",
+  },
+  // Optional fields
+  name: "Project Site A",
+  description: "Primary research facility in the Amazon rainforest",
+  createdAt: new Date().toISOString(),
+};
+```
+
+- `lpVersion` (required): Version of the Location Protocol specification
+- `srs` (required): Spatial Reference System URI defining the coordinate system
+- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point", "geojson", "h3", "geohash", "wkt", "address", "scaledCoordinates"). See the [Location Protocol spec](https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry) for the full registry.
+- `location` (required): Location data as URI, blob, or string
+- `name` (optional): Human-readable name for the location
+- `description` (optional): Additional context about the location
+- `createdAt` (required): Timestamp when the record was created
+
+**Location data formats:**
+
+The `location` field accepts three formats:
+
+1. **URI reference**: `{ uri: "https://..." }` - Link to external location data
+2. **Small blob**: Embedded location data (up to 10MB)
+3. **Location string**: Inline string wrapped in an object, containing coordinates or GeoJSON
+
+```typescript
+// Example with embedded blob
+const locationWithBlob = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    blob: {
+      $type: "blob",
+      ref: {
+        $link: "bafyrei...", // CID of the uploaded blob
+      },
+      mimeType: "application/geo+json",
+      size: 123,
+    },
+  },
+  name: "Amazon Research Station",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline string (coordinates)
+const locationWithCoordinates = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "coordinate-decimal",
+  location: {
+    string: "-3.4653, -62.2159", // lat, lon
+  },
+  name: "Amazon Research Site",
+  description: "Field station coordinates",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline GeoJSON string
+const locationWithGeoJSON = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    string: '{"type":"Point","coordinates":[-62.2159,-3.4653]}',
+  },
+  name: "Research Station Alpha",
+  createdAt: new Date().toISOString(),
+};
+```
+
 ### Accessing NSIDs (Lexicon IDs)
 
 **Recommended**: Use individual NSID constants for cleaner, more readable code:
@@ -284,6 +373,73 @@ const collectionRecord = {
 are optional and support either embedded image blobs or URI references to
 external images.
 
+### Acknowledging Inclusion
+
+The `org.hypercerts.acknowledgement` record enables bidirectional
+linking between records that live in different PDS repositories. When
+one user includes another user's record (e.g. adding an activity to a
+collection), the owner of the included record can create an
+acknowledgement to confirm or reject the inclusion. This forms a
+two-way link that an AppView can verify.
+
+Each acknowledgement uses `com.atproto.repo.strongRef` fields to
+reference both the **subject** (the record being included) and the
+**context** (the record it's being included in).
+
+See [SCHEMAS.md](SCHEMAS.md) for the full property reference.
+
+#### Use Case: Activity Included in a Collection
+
+A project organizer (Alice) creates a collection and adds Bob's
+activity to it via a `strongRef` in the collection's `items[]` array.
+Bob then creates an acknowledgement in his own repo to confirm:
+
+```typescript
+import { ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+
+// Bob acknowledges that his activity is included in Alice's collection
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  context: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.collection/7x9def",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  createdAt: new Date().toISOString(),
+};
+```
+
+#### Use Case: Contributor Included in an Activity
+
+Alice creates an activity that lists Bob as a contributor. Bob creates
+an acknowledgement in his own repo to confirm his participation:
+
+```typescript
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    // Bob's contributor information record
+    uri: "at://did:plc:bob/org.hypercerts.claim.contributorInformation/abc123",
+    cid: "bafy...",
+  },
+  context: {
+    // Alice's activity that lists Bob as contributor
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  comment: "Confirming my contribution to this reforestation project",
+  createdAt: new Date().toISOString(),
+};
+```
+
+Setting `acknowledged: false` explicitly rejects inclusion, which an
+AppView can use to flag disputed associations.
+
 ### Adding Locations to Activities
 
 The `locations` field in activity records is an array of strong references
@@ -322,3 +478,56 @@ const collectionRecord = {
 ```
 
 The `location` field is a strong reference to an `app.certified.location` record containing the same `uri` and `cid` fields as described above for activities.
+
+### Creating Attachments
+
+Attachments provide commentary, context, evidence, or documentary material
+related to hypercert records. They can be linked to activities, evaluations,
+measurements, or even other attachments:
+
+```typescript
+import { ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+
+const attachmentRecord = {
+  $type: ATTACHMENT_NSID,
+  title: "Field Survey Report",
+  subjects: [
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+      cid: "...",
+    },
+  ],
+  contentType: "report",
+  content: [
+    { uri: "https://example.com/reports/survey-2024.pdf" },
+    { uri: "ipfs://Qm..." },
+  ],
+  shortDescription: "Quarterly field survey documenting project progress",
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Key fields:**
+
+- `title` (required): String title for the attachment
+- `shortDescription`/`description`: Support rich text via facet annotations
+- `subjects` (optional): Array of strong references to records this attachment relates to
+- `contentType` (optional): Type descriptor (e.g., "report", "audit", "evidence", "testimonial")
+- `content` (required): Array of URIs or blobs containing the attachment files
+- `location` (optional): Strong reference to an `app.certified.location` record
+- `createdAt` (required): Timestamp when the attachment was created
+
+**Adding Location to Attachments:**
+
+```typescript
+const attachmentWithLocation = {
+  $type: ATTACHMENT_NSID,
+  title: "Site Inspection Photos",
+  content: [{ uri: "https://..." }],
+  location: {
+    uri: "at://did:plc:alice/app.certified.location/loc123",
+    cid: "...",
+  },
+  createdAt: new Date().toISOString(),
+};
+```

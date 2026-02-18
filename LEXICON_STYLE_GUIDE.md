@@ -52,7 +52,7 @@ This document summarizes the ATProto Lexicon Style Guide rules that are checked 
 - **Primitives**: Use appropriate primitive types (string, integer, boolean)
 - **Formats**: Apply format constraints (datetime, uri, cid, did, etc.)
 - **Refs**: Use refs for reusable types and relationships
-- **Unions**: Use unions when a property can be one of several types
+- **Unions**: Use unions when a property can be one of several types. All variants in a union must be object or record types (strings/numbers are not allowed directly in unions by ATProto spec).
 
 #### Constraints
 
@@ -183,6 +183,7 @@ The `style:check` script checks for:
 8. ✅ Required fields are properly marked
 9. ✅ StrongRef usage is documented
 10. ✅ Lexicon IDs follow naming conventions
+11. ✅ Union types only contain object or record types (no primitives)
 
 ## Running the Checker
 

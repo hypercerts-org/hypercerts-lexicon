@@ -7,6 +7,24 @@
 
 Hypercerts-specific lexicons for tracking impact work and claims.
 
+### `org.hypercerts.acknowledgement`
+
+**Description:** Acknowledges the inclusion of one record (subject) within another (context). Typically created in the subject owner's repo to form a bidirectional link. For example, a contributor acknowledging inclusion in an activity, or an activity owner acknowledging inclusion in a collection.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property       | Type      | Required | Description                                                                                                                             | Comments        |
+| -------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`      | `ref`     | ✅       | The record whose inclusion is being acknowledged (e.g. an activity, a contributor information record).                                  |                 |
+| `context`      | `ref`     | ✅       | The record that includes the subject (e.g. a collection/project that includes an activity, or an activity that includes a contributor). |                 |
+| `acknowledged` | `boolean` | ✅       | Whether inclusion is acknowledged (true) or rejected (false).                                                                           |                 |
+| `comment`      | `string`  | ❌       | Optional comment providing additional context or reasoning.                                                                             | maxLength: 1000 |
+| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                      |                 |
+
+---
+
 ### `org.hypercerts.claim.activity`
 
 **Description:** A hypercert record tracking impact work.
@@ -33,7 +51,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Defs
 
-##### contributor
+##### `org.hypercerts.claim.activity#contributor`
 
 | Property              | Type     | Required | Description                                                                                                                                                                                                                                                        |
 | --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -41,78 +59,46 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
 | `contributionDetails` | `union`  | ❌       | Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record.                                                                                                                        |
 
+##### `org.hypercerts.claim.activity#contributorIdentity`
+
+| Property   | Type     | Required | Description                                          |
+| ---------- | -------- | -------- | ---------------------------------------------------- |
+| `identity` | `string` | ✅       | The contributor identity string (DID or identifier). |
+
+##### `org.hypercerts.claim.activity#contributorRole`
+
+| Property | Type     | Required | Description                       |
+| -------- | -------- | -------- | --------------------------------- |
+| `role`   | `string` | ✅       | The contribution role or details. |
+
+##### `org.hypercerts.claim.activity#workScopeString`
+
+| Property | Type     | Required | Description                        |
+| -------- | -------- | -------- | ---------------------------------- |
+| `scope`  | `string` | ✅       | The work scope description string. |
+
 ---
 
-### `org.hypercerts.claim.evaluation`
+### `org.hypercerts.claim.attachment`
 
-**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
+**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation).
 
 **Key:** `tid`
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                                                                          | Comments                            |
-| -------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)                                                                       |                                     |
-| `evaluators`   | `ref`    | ✅       | DIDs of the evaluators                                                                                                                                               | maxLength: 1000                     |
-| `content`      | `union`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                           | maxLength: 100                      |
-| `measurements` | `ref`    | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement | maxLength: 100                      |
-| `summary`      | `string` | ✅       | Brief evaluation summary                                                                                                                                             | maxLength: 5000, maxGraphemes: 1000 |
-| `score`        | `ref`    | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                  |                                     |
-| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                     |                                     |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                    |                                     |
-
-#### Defs
-
-##### score
-
-| Property | Type      | Required | Description                                  |
-| -------- | --------- | -------- | -------------------------------------------- |
-| `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
-| `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
-| `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
-
----
-
-### `org.hypercerts.claim.evidence`
-
-**Description:** A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                                                               | Comments                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| `subject`          | `ref`    | ❌       | A strong reference to the record this evidence relates to (e.g. an activity, project, claim, or evaluation).              |                                                     |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blob) related to the subject record; it may support, clarify, or challenge a hypercert claim. |                                                     |
-| `title`            | `string` | ✅       | Title to describe the nature of the evidence.                                                                             | maxLength: 256                                      |
-| `shortDescription` | `string` | ❌       | Short description explaining what this evidence shows.                                                                    | maxLength: 3000, maxGraphemes: 300                  |
-| `description`      | `string` | ❌       | Longer description describing the evidence in more detail.                                                                | maxLength: 30000, maxGraphemes: 3000                |
-| `relationType`     | `string` | ❌       | How this evidence relates to the subject.                                                                                 | Known values: `supports`, `challenges`, `clarifies` |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |                                                     |
-
----
-
-### `org.hypercerts.claim.measurement`
-
-**Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property      | Type     | Required | Description                                                                                                                                    | Comments       |
-| ------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `subject`     | `ref`    | ❌       | A strong reference to the record this measurement refers to (e.g. an activity, project, or claim).                                             |                |
-| `measurers`   | `ref`    | ✅       | DIDs of the entity (or entities) that measured this data                                                                                       | maxLength: 100 |
-| `metric`      | `string` | ✅       | The metric being measured                                                                                                                      | maxLength: 500 |
-| `value`       | `string` | ✅       | The measured value                                                                                                                             | maxLength: 500 |
-| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                                                                                               | maxLength: 30  |
-| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure                                                                  |                |
-| `evidenceURI` | `string` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)                                       | maxLength: 50  |
-| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken. The record referenced must conform with the lexicon app.certified.location |                |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                              |                |
+| Property                 | Type     | Required | Description                                                                                                                                                                                                                               | Comments                             |
+| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subjects`               | `ref`    | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                       |
+| `contentType`            | `string` | ❌       | The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc.                                                                                                                                                      | maxLength: 64                        |
+| `content`                | `union`  | ✅       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                       |
+| `title`                  | `string` | ✅       | Title of this attachment.                                                                                                                                                                                                                 | maxLength: 256                       |
+| `shortDescription`       | `string` | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300   |
+| `shortDescriptionFacets` | `ref`    | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                      |
+| `description`            | `string` | ❌       | Optional longer description of this attachment, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.                                                                                       | maxLength: 30000, maxGraphemes: 3000 |
+| `descriptionFacets`      | `ref`    | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                                                                                                  |                                      |
+| `location`               | `ref`    | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                      |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                      |
 
 ---
 
@@ -138,12 +124,105 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Defs
 
-##### item
+##### `org.hypercerts.claim.collection#item`
 
 | Property         | Type     | Required | Description                                                                                                                                                                                     |
 | ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection).                             |
 | `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
+
+---
+
+### `org.hypercerts.claim.contributionDetails`
+
+**Description:** Details about a specific contribution including role, description, and timeframe.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property                  | Type     | Required | Description                                                                          | Comments                             |
+| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------------ | ------------------------------------ |
+| `role`                    | `string` | ❌       | Role or title of the contributor.                                                    | maxLength: 100                       |
+| `contributionDescription` | `string` | ❌       | What the contribution concretely was.                                                | maxLength: 10000, maxGraphemes: 1000 |
+| `startDate`               | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.  |                                      |
+| `endDate`                 | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe. |                                      |
+| `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created.                   |                                      |
+
+---
+
+### `org.hypercerts.claim.contributorInformation`
+
+**Description:** Contributor information including identifier, display name, and image.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property      | Type     | Required | Description                                                        | Comments       |
+| ------------- | -------- | -------- | ------------------------------------------------------------------ | -------------- |
+| `identifier`  | `string` | ❌       | DID or a URI to a social profile of the contributor.               |                |
+| `displayName` | `string` | ❌       | Display name of the contributor.                                   | maxLength: 100 |
+| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.      |                |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created. |                |
+
+---
+
+### `org.hypercerts.claim.evaluation`
+
+**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property       | Type     | Required | Description                                                                                                                                                          | Comments                            |
+| -------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)                                                                       |                                     |
+| `evaluators`   | `ref`    | ✅       | DIDs of the evaluators                                                                                                                                               | maxLength: 1000                     |
+| `content`      | `union`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                           | maxLength: 100                      |
+| `measurements` | `ref`    | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement | maxLength: 100                      |
+| `summary`      | `string` | ✅       | Brief evaluation summary                                                                                                                                             | maxLength: 5000, maxGraphemes: 1000 |
+| `score`        | `ref`    | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                  |                                     |
+| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                     |                                     |
+| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                    |                                     |
+
+#### Defs
+
+##### `org.hypercerts.claim.evaluation#score`
+
+| Property | Type      | Required | Description                                  |
+| -------- | --------- | -------- | -------------------------------------------- |
+| `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
+| `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
+| `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
+
+---
+
+### `org.hypercerts.claim.measurement`
+
+**Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property        | Type     | Required | Description                                                                                                                                             | Comments                           |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `subject`       | `ref`    | ❌       | A strong reference to the record this measurement refers to (e.g. an activity, project, or claim).                                                      |                                    |
+| `metric`        | `string` | ✅       | The metric being measured, e.g. forest area restored, number of users, etc.                                                                             | maxLength: 500                     |
+| `unit`          | `string` | ✅       | The unit of the measured value (e.g. kg CO₂e, hectares, %, index score).                                                                                | maxLength: 50                      |
+| `value`         | `string` | ✅       | The measured numeric value.                                                                                                                             | maxLength: 500                     |
+| `startDate`     | `string` | ❌       | The start date and time when the measurement began.                                                                                                     |                                    |
+| `endDate`       | `string` | ❌       | The end date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate.                       |                                    |
+| `locations`     | `ref`    | ❌       | Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon. | maxLength: 100                     |
+| `methodType`    | `string` | ❌       | Short identifier for the measurement methodology                                                                                                        | maxLength: 30                      |
+| `methodURI`     | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure                                                                           |                                    |
+| `evidenceURI`   | `string` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)                                                | maxLength: 50                      |
+| `measurers`     | `ref`    | ❌       | DIDs of the entity (or entities) that measured this data                                                                                                | maxLength: 100                     |
+| `comment`       | `string` | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
+| `commentFacets` | `ref`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
 
 ---
 
@@ -189,25 +268,70 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.helper.ops`
+
+**Description:** Operator node for work scope logic. Nesting is achieved by having args strongRefs point to either workScopeTag records (leaf atoms) or other ops records (nested expressions). Operator semantics are defined by consuming applications.
+
+Examples: op='all' (AND), op='any' (OR), op='not' (NOT; typically unary).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                                                                                                                                                 | Comments       |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `op`        | `string` | ✅       | Operator identifier. Semantics are defined by the evaluating application. Examples: 'all', 'any', 'not'.                                                                                                    | maxLength: 64  |
+| `args`      | `ref`    | ✅       | Arguments. Each strongRef should point to either org.hypercerts.helper.workScopeTag (leaf) or org.hypercerts.helper.ops (nested). For op='not', args SHOULD have exactly one element (enforced by clients). | maxLength: 100 |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                           |                |
+
+---
+
+### `org.hypercerts.helper.workScopeExpr`
+
+**Description:** A reusable work-scope boolean expression (simple flat form): (ALL allOf) AND (ANY anyOf, if present) AND (NONE noneOf). Designed to cover the vast majority of practical work-scope definitions (include, require, exclude) without recursion. For full nested boolean logic or complex conditional expressions, use org.hypercerts.helper.ops.
+
+An empty work-scope expression represents an unconstrained scope. If `allOf`, `anyOf`, and `noneOf` are all absent or empty, the expression imposes no filtering constraints. In this case, all work is considered in scope by default.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property      | Type      | Required | Description                                                                                                                       | Comments        |
+| ------------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `version`     | `integer` | ✅       | Schema version for this expression. Start with 1. Enables forward-compatible evolution of evaluation semantics.                   |                 |
+| `label`       | `string`  | ❌       | Optional short human-readable label for UI display (e.g., 'OSS docs/code — no marketing').                                        | maxLength: 140  |
+| `description` | `string`  | ❌       | Optional longer explanation of the scope intent, interpretation guidance, or edge-case clarifications.                            | maxLength: 4000 |
+| `allOf`       | `ref`     | ❌       | All referenced tags must match for something to be considered in-scope. Typically refs to org.hypercerts.helper.workScopeTag.     | maxLength: 100  |
+| `anyOf`       | `ref`     | ❌       | At least one referenced tag must match (if anyOf is present and non-empty). Typically refs to org.hypercerts.helper.workScopeTag. | maxLength: 100  |
+| `noneOf`      | `ref`     | ❌       | None of the referenced tags may match. If any excluded tag matches, the contribution or activity is considered out-of-scope.      | maxLength: 100  |
+| `createdAt`   | `string`  | ✅       | Timestamp when this work-scope expression was created.                                                                            |                 |
+
+---
+
+### `org.hypercerts.helper.workScopeTag`
+
+**Description:** A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property            | Type     | Required | Description                                                                                      | Comments                             |
+| ------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                |                                      |
+| `key`               | `string` | ✅       | Lowercase, hyphenated machine-readable key for this scope (e.g., 'ipfs', 'go-lang', 'filecoin'). | maxLength: 120                       |
+| `label`             | `string` | ✅       | Human-readable label for this scope.                                                             | maxLength: 200                       |
+| `kind`              | `string` | ❌       | Category type of this scope. Recommended values: topic, language, domain, method, tag.           | maxLength: 50                        |
+| `description`       | `string` | ❌       | Optional longer description of this scope.                                                       | maxLength: 10000, maxGraphemes: 1000 |
+| `parent`            | `ref`    | ❌       | Optional strong reference to a parent scope record for taxonomy/hierarchy support.               |                                      |
+| `aliases`           | `string` | ❌       | Optional array of alternative names or identifiers for this scope.                               | maxLength: 50                        |
+| `externalReference` | `union`  | ❌       | Optional external reference for this scope as a URI or blob.                                     |                                      |
+
+---
+
 ## Certified Lexicons
 
 Certified lexicons are common/shared lexicons that can be used across multiple protocols.
-
-### `org.hypercerts.defs`
-
-**Description:** Common type definitions used across all certified protocols.
-
-#### Defs
-
-| Def          | Type     | Description                               | Comments                                |
-| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
-| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
-| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
-| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
-| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
-| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
-
----
 
 ### `app.certified.location`
 
@@ -217,15 +341,23 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                               | Comments                                                           |
-| -------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                      | maxLength: 10                                                      |
-| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system. | maxLength: 100                                                     |
-| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)                               | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point` |
-| `location`     | `union`  | ✅       | The location of where the work was performed as a URI or blob.                                                            |                                                                    |
-| `name`         | `string` | ❌       | Optional name for this location                                                                                           | maxLength: 1000, maxGraphemes: 100                                 |
-| `description`  | `string` | ❌       | Optional description for this location                                                                                    | maxLength: 2000, maxGraphemes: 500                                 |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |                                                                    |
+| Property       | Type     | Required | Description                                                                                                                                                                                                                               | Comments                                                                                                                              |
+| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                                                                                                                                      | maxLength: 10                                                                                                                         |
+| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system.                                                                                                                 | maxLength: 100                                                                                                                        |
+| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point`, `geojson`, `h3`, `geohash`, `wkt`, `address`, `scaledCoordinates` |
+| `location`     | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                                                                                                                                            |                                                                                                                                       |
+| `name`         | `string` | ❌       | Optional name for this location                                                                                                                                                                                                           | maxLength: 1000, maxGraphemes: 100                                                                                                    |
+| `description`  | `string` | ❌       | Optional description for this location                                                                                                                                                                                                    | maxLength: 2000, maxGraphemes: 500                                                                                                    |
+| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                         |                                                                                                                                       |
+
+#### Defs
+
+##### `app.certified.location#string`
+
+| Property | Type     | Required | Description               |
+| -------- | -------- | -------- | ------------------------- |
+| `string` | `string` | ✅       | The location string value |
 
 ---
 
@@ -279,6 +411,90 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           |
 | `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |
+
+---
+
+### `app.certified.actor.profile`
+
+**Description:** A declaration of a Hypercert account profile.
+
+**Key:** `literal:self`
+
+#### Properties
+
+| Property      | Type     | Required | Description                                                                    | Comments                           |
+| ------------- | -------- | -------- | ------------------------------------------------------------------------------ | ---------------------------------- |
+| `displayName` | `string` | ❌       |                                                                                | maxLength: 640, maxGraphemes: 64   |
+| `description` | `string` | ❌       | Free-form profile description text.                                            | maxLength: 2560, maxGraphemes: 256 |
+| `pronouns`    | `string` | ❌       | Free-form pronouns text.                                                       | maxLength: 200, maxGraphemes: 20   |
+| `website`     | `string` | ❌       |                                                                                |                                    |
+| `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
+| `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
+| `createdAt`   | `string` | ❌       |                                                                                |                                    |
+
+---
+
+### `app.certified.defs`
+
+**Description:** Common type definitions used across certified protocols.
+
+#### Defs
+
+##### `app.certified.defs#did`
+
+| Property | Type     | Required | Description           |
+| -------- | -------- | -------- | --------------------- |
+| `did`    | `string` | ✅       | The DID string value. |
+
+---
+
+## Type Definitions
+
+Common type definitions used across all protocols.
+
+### `org.hypercerts.defs`
+
+#### Defs
+
+##### `org.hypercerts.defs#uri`
+
+| Property | Type     | Required | Description          |
+| -------- | -------- | -------- | -------------------- |
+| `uri`    | `string` | ✅       | URI to external data |
+
+##### `org.hypercerts.defs#smallBlob`
+
+| Property | Type   | Required | Description                        |
+| -------- | ------ | -------- | ---------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 10MB) |
+
+##### `org.hypercerts.defs#largeBlob`
+
+| Property | Type   | Required | Description                         |
+| -------- | ------ | -------- | ----------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 100MB) |
+
+##### `org.hypercerts.defs#smallImage`
+
+| Property | Type   | Required | Description       |
+| -------- | ------ | -------- | ----------------- |
+| `image`  | `blob` | ✅       | Image (up to 5MB) |
+
+##### `org.hypercerts.defs#largeImage`
+
+| Property | Type   | Required | Description        |
+| -------- | ------ | -------- | ------------------ |
+| `image`  | `blob` | ✅       | Image (up to 10MB) |
+
+---
+
+## External Lexicons
+
+External lexicons from other protocols and systems.
+
+### `com.atproto.repo.strongRef`
+
+**Key:** `tid`
 
 ---
 

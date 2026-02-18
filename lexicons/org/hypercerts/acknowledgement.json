@@ -1,0 +1,41 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.acknowledgement",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Acknowledges the inclusion of one record (subject) within another (context). Typically created in the subject owner's repo to form a bidirectional link. For example, a contributor acknowledging inclusion in an activity, or an activity owner acknowledging inclusion in a collection.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "context", "acknowledged", "createdAt"],
+        "properties": {
+          "subject": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "The record whose inclusion is being acknowledged (e.g. an activity, a contributor information record)."
+          },
+          "context": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "The record that includes the subject (e.g. a collection/project that includes an activity, or an activity that includes a contributor)."
+          },
+          "acknowledged": {
+            "type": "boolean",
+            "description": "Whether inclusion is acknowledged (true) or rejected (false)."
+          },
+          "comment": {
+            "type": "string",
+            "description": "Optional comment providing additional context or reasoning.",
+            "maxLength": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}

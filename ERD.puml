@@ -69,15 +69,16 @@ dataclass activity <<largeBold>> #B4E5D0 {
     !endif
 }
 
-' org.hypercerts.claim.evidence
-dataclass evidence {
+' org.hypercerts.claim.attachment
+dataclass attachment {
     !if (SHOW_FIELDS == "true")
-    subject?
-    content
+    subjects[]?
+    contentType?
+    content[]
     title
     shortDescription?
     description?
-    relationType?
+    location?
     createdAt
     !endif
 }
@@ -222,6 +223,17 @@ dataclass collection {
     !endif
 }
 
+' org.hypercerts.acknowledgement
+dataclass acknowledgement {
+    !if (SHOW_FIELDS == "true")
+    subject
+    context
+    acknowledged
+    comment?
+    createdAt
+    !endif
+}
+
 'together {
 
 ' Funders are represented by DIDs or human-readable strings
@@ -261,12 +273,12 @@ protocol token <<largeBold>> #FFB6C1 {
 }
 
 ' layout hints
-'evaluation --d[hidden]-> evidence
+'evaluation --d[hidden]-> attachment
 'evaluation --d[hidden]-> measurement
 'measurement -d[hidden]-> activity
-'evidence -r[hidden]-> measurement
+'attachment -r[hidden]-> measurement
 'activity -r[hidden]-> token
-'evidence -d[hidden]-> activity
+'attachment -d[hidden]-> activity
 'collection -d[hidden]-> activity
 'activity -u[hidden]-> contributor
 'activity -u[hidden]-> location
@@ -274,7 +286,7 @@ protocol token <<largeBold>> #FFB6C1 {
 'contribution -r[hidden]-> contributor
 'fundingReceipt -[hidden]-> contributor
 
-evaluation::subject --> evidence
+evaluation::subject --> attachment
 evaluation::measurements --> measurement
 evaluation::subject --> activity
 
@@ -298,7 +310,8 @@ hiddenLocation1 -[hidden]-> activity
 'evaluation -d[norank]--> location
 !endif
 
-evidence::subject --> activity
+attachment::subjects --> activity
+attachment::location --> location
 
 measurement::subject --> activity
 
@@ -316,6 +329,11 @@ measurement --> location
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection::location --> location
+
+acknowledgement::subject --> activity
+acknowledgement::subject --> contributorInformation
+acknowledgement::context --> collection
+acknowledgement::context --> activity
 
 activity::contributors -l--> contributorInformation
 activity::contributors --> contributionDetails

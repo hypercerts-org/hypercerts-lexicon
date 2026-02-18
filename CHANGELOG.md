@@ -1,5 +1,222 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.15
+
+### Minor Changes
+
+- [#76](https://github.com/hypercerts-org/hypercerts-lexicon/pull/76) [`3044e22`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/3044e22c1345b3cd5764e3c6c3714b21e6911663) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Add org.hypercerts.acknowledgement lexicon for bidirectional inclusion links between records across PDS repos
+
+- [#136](https://github.com/hypercerts-org/hypercerts-lexicon/pull/136) [`062fbde`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/062fbde905dbd939f75c366760be1c02bb8a0412) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Expand locationType knownValues to include geojson, h3, geohash, wkt, address, and scaledCoordinates from the [Location Protocol spec](https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry)
+
+## 0.10.0-beta.14
+
+### Minor Changes
+
+- [#133](https://github.com/hypercerts-org/hypercerts-lexicon/pull/133) [`6752cad`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/6752cad3c9e58b9a8e1a3ca17f2ea7a4a68dba81) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Add profile lexicon for Hypercert account profiles with support for display name, description, pronouns, website, avatar, banner.
+
+- [#132](https://github.com/hypercerts-org/hypercerts-lexicon/pull/132) [`da481e0`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/da481e09f5bd1a8e62e388f2c6001896d76b1fbf) Thanks [@aspiers](https://github.com/aspiers)! - Convert app.certified.defs#did to object type
+
+  The did definition in app.certified.defs has been converted from a primitive
+  string type to an object type to comply with the ATProto specification
+  requirement that all union variants must be object or record types.
+
+  This change was necessary because app.certified.badge.award uses this
+  definition in a union for the subject property.
+
+  Breaking changes:
+  - `app.certified.defs#did`: Now an object with `did` string property (maxLength 256)
+  - Code using this type must now access the `.did` property instead of using the value directly
+
+- [#132](https://github.com/hypercerts-org/hypercerts-lexicon/pull/132) [`e134b26`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/e134b26c43a70c0a9ae04cc12b8a3bd05990c470) Thanks [@aspiers](https://github.com/aspiers)! - Convert union string definitions to object types in activity lexicon
+
+  The contributorIdentity, contributorRole, and workScopeString definitions
+  in org.hypercerts.claim.activity have been converted from primitive string
+  types to object types to comply with the ATProto specification requirement
+  that all union variants must be object or record types.
+
+  Additionally, maximum length constraints have been reduced to more reasonable
+  values:
+  - `contributorIdentity.identity`: maxLength 1000, maxGraphemes 100 (previously no limits)
+  - `contributorRole.role`: maxLength 1000, maxGraphemes 100 (previously maxLength 10000, maxGraphemes 1000)
+  - `workScopeString.scope`: maxLength 1000, maxGraphemes 100 (previously maxLength 10000, maxGraphemes 1000)
+
+  Breaking changes:
+  - `contributorIdentity`: Now an object with `identity` string property
+  - `contributorRole`: Now an object with `role` string property
+  - `workScopeString`: Now an object with `scope` string property
+  - Reduced maximum lengths may affect existing records with longer values
+
+  This requires updating code that uses these union types to access the nested
+  property instead of using the value directly.
+
+- [#135](https://github.com/hypercerts-org/hypercerts-lexicon/pull/135) [`806cfbc`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/806cfbca7cbcd3674a5f8e97a6b6dd87ba806c08) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Move profile lexicon from app.certified.profile to app.certified.actor.profile namespace, requiring migration of existing profile records
+
+## 0.10.0-beta.13
+
+### Minor Changes
+
+- [#131](https://github.com/hypercerts-org/hypercerts-lexicon/pull/131) [`7f42fad`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/7f42fad517e191dad6db22fc67ec8346ec167f5c) Thanks [@aspiers](https://github.com/aspiers)! - Add inline string format to app.certified.location schema with documentation and examples
+
+- [#118](https://github.com/hypercerts-org/hypercerts-lexicon/pull/118) [`8427780`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8427780888759ee749a683528f49e6b0da2b97c2) Thanks [@holkexyz](https://github.com/holkexyz)! - Rename evidence lexicon to attachment and refactor schema structure
+
+  **Breaking Changes:**
+  - **Lexicon ID change:**
+    - `org.hypercerts.claim.evidence` → `org.hypercerts.claim.attachment`
+    - All existing evidence records must be migrated to use the new lexicon ID
+  - **Schema structure changes (`org.hypercerts.claim.attachment`):**
+    - Changed `subject` (single strongRef) to `subjects` (array of strongRefs, maxLength: 100)
+    - Changed `content` from single union (uri/blob) to array of unions (maxLength: 100)
+    - Added `contentType` field (string, maxLength: 64) to specify attachment type
+    - Removed `relationType` field (previously used to indicate supports/challenges/clarifies)
+    - Removed `contributors` field
+    - Removed `locations` field
+    - Added rich text support: `shortDescriptionFacets` and `descriptionFacets` (arrays of `app.bsky.richtext.facet`)
+    - Updated required fields: `["title", "content", "createdAt"]` (content is now required)
+  - **Common definitions (`org.hypercerts.defs`):**
+    - Added `weightedContributor` def for contributor references with optional weights
+    - Added `contributorIdentity` def for string-based contributor identification
+
+  **Migration:**
+
+  **Lexicon ID:** Update all references from `org.hypercerts.claim.evidence` to `org.hypercerts.claim.attachment`.
+
+  **Schema migration:**
+
+  ```json
+  // Before (org.hypercerts.claim.evidence)
+  {
+    "$type": "org.hypercerts.claim.evidence",
+    "subject": { "uri": "...", "cid": "..." },
+    "content": { "uri": "https://..." },
+    "title": "Evidence Title",
+    "relationType": "supports",
+    "createdAt": "..."
+  }
+
+  // After (org.hypercerts.claim.attachment)
+  {
+    "$type": "org.hypercerts.claim.attachment",
+    "subjects": [{ "uri": "...", "cid": "..." }],
+    "content": [{ "uri": "https://..." }],
+    "contentType": "evidence",
+    "title": "Evidence Title",
+    "createdAt": "..."
+  }
+  ```
+
+  **Field mapping:**
+  - `subject` → `subjects` (wrap in array)
+  - `content` (single) → `content` (array, wrap existing value)
+  - `relationType` → remove (no direct replacement)
+  - `contributors` → remove (no direct replacement)
+  - `locations` → remove (no direct replacement)
+
+### Patch Changes
+
+- [#118](https://github.com/hypercerts-org/hypercerts-lexicon/pull/118) [`8427780`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8427780888759ee749a683528f49e6b0da2b97c2) Thanks [@holkexyz](https://github.com/holkexyz)! - Add location property to attachment schema
+
+  **New Feature:**
+  - **`location` field** (`org.hypercerts.claim.attachment`):
+    - Added optional `location` property as a strong reference (`com.atproto.repo.strongRef`)
+    - Allows attachments to associate location metadata directly without using the sidecar pattern
+    - The referenced record must conform to the `app.certified.location` lexicon
+
+  **Usage:**
+
+  ```json
+  {
+    "$type": "org.hypercerts.claim.attachment",
+    "subjects": [
+      {
+        "uri": "at://did:plc:.../org.hypercerts.claim.activity/...",
+        "cid": "..."
+      }
+    ],
+    "content": [{ "uri": "https://..." }],
+    "title": "Field Report",
+    "location": {
+      "uri": "at://did:plc:.../app.certified.location/abc123",
+      "cid": "..."
+    },
+    "createdAt": "..."
+  }
+  ```
+
+  This change aligns with the location property addition to collections (PR #123), providing a consistent pattern for associating location metadata across record types.
+
+## 0.10.0-beta.12
+
+### Minor Changes
+
+- [#120](https://github.com/hypercerts-org/hypercerts-lexicon/pull/120) [`b2f7b68`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/b2f7b683ac17f07a891a59ee8289d26717197ba3) Thanks [@holkexyz](https://github.com/holkexyz)! - Refactor measurement lexicon schema: add unit field, date ranges, and locations array
+
+  **Breaking Changes:**
+  - **Measurement lexicon (`org.hypercerts.claim.measurement`):**
+    - Changed required fields: removed `measurers` from required, added `unit` as required
+    - Added `unit` field (required, string, maxLength: 50): The unit of the measured value (e.g. kg CO₂e, hectares, %, index score)
+    - Added `startDate` field (optional, datetime): The start date and time when the measurement began
+    - Added `endDate` field (optional, datetime): The end date and time when the measurement ended
+    - Changed `location` (single strongRef) to `locations` (array of strongRefs, maxLength: 100)
+    - Moved `measurers` from required to optional field
+    - Added `comment` field (optional, string): Short comment suitable for previews and list views
+    - Added `commentFacets` field (optional, array): Rich text annotations for `comment` (mentions, URLs, hashtags, etc.)
+    - Updated field descriptions for `metric` and `value` with more detailed examples
+
+  **Migration:**
+
+  **Required fields:** Update measurement records to include the new required `unit` field:
+
+  ```json
+  // Before
+  {
+    "$type": "org.hypercerts.claim.measurement",
+    "measurers": [...],
+    "metric": "CO₂ sequestered",
+    "value": "1000",
+    "createdAt": "..."
+  }
+
+  // After
+  {
+    "$type": "org.hypercerts.claim.measurement",
+    "metric": "CO₂ sequestered",
+    "unit": "kg CO₂e",
+    "value": "1000",
+    "measurers": [...],  // Now optional
+    "createdAt": "..."
+  }
+  ```
+
+  **Location field:** Convert from single location to locations array:
+
+  ```json
+  // Before
+  {
+    "location": { "uri": "...", "cid": "..." }
+  }
+
+  // After
+  {
+    "locations": [{ "uri": "...", "cid": "..." }]
+  }
+  ```
+
+  **Date ranges:** Optionally add `startDate` and `endDate` to specify when measurements were taken.
+
+- [#125](https://github.com/hypercerts-org/hypercerts-lexicon/pull/125) [`771d142`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/771d14269ced86ea686cb6dac3414a7a283c482a) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Simplify workScope to union of strongRef and string
+
+  **Breaking Changes:**
+  - The `workScope` field in `org.hypercerts.claim.activity` is now a union of:
+    - `com.atproto.repo.strongRef`: A reference to a work-scope logic record for structured, nested work scope definitions
+    - `org.hypercerts.claim.activity#workScopeString`: A free-form string for simple or legacy scopes
+  - **Removed** from `org.hypercerts.defs`:
+    - `workScopeAll` (logical AND operator)
+    - `workScopeAny` (logical OR operator)
+    - `workScopeNot` (logical NOT operator)
+    - `workScopeAtom` (atomic scope reference)
+
+  This simplification allows work scope complexity to be managed via referenced records while still supporting simple string-based scopes for straightforward use cases.
+
 ## 0.10.0-beta.11
 
 ### Minor Changes
