@@ -95,6 +95,36 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.claim.post`
+
+**Description:** Record containing a hypercerts post, e.g. an update, a report, a comment.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property      | Type       | Required | Description                                                                                                             | Comments                             |
+| ------------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `text`        | `string`   | ✅       | The primary post content. May be an empty string, if there are embeds.                                                  | maxLength: 50000, maxGraphemes: 5000 |
+| `facets`      | `ref[]`    | ❌       | Annotations of text (mentions, URLs, hashtags, etc)                                                                     |                                      |
+| `replies`     | `ref[]`    | ❌       | The subjects that this post is in reply to. Each entry identifies a thread root and the direct parent being replied to. | maxLength: 10                        |
+| `embed`       | `union`    | ❌       |                                                                                                                         |                                      |
+| `labels`      | `union`    | ❌       | Self-label values for this post. Effectively content warnings.                                                          |                                      |
+| `tags`        | `string[]` | ❌       | Additional hashtags, in addition to any included in post text and facets.                                               | maxLength: 8                         |
+| `attachments` | `union[]`  | ❌       | The files, documents, or external references attached to this post.                                                     | maxLength: 100                       |
+| `createdAt`   | `string`   | ✅       | Client-declared timestamp when this post was originally created.                                                        |                                      |
+
+#### Defs
+
+##### `org.hypercerts.claim.post#replyRef`
+
+| Property | Type  | Required | Description |
+| -------- | ----- | -------- | ----------- |
+| `root`   | `ref` | ✅       |             |
+| `parent` | `ref` | ✅       |             |
+
+---
+
 ### `org.hypercerts.claim.rights`
 
 **Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
