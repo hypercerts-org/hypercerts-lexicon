@@ -65,12 +65,18 @@ const activityRecord = {
   $type: ACTIVITY_NSID,
   title: "My Impact Work",
   shortDescription: "Description here",
-  // workScope can be a strongRef to a work-scope record:
+  // workScope can be a CEL expression (structured, machine-evaluable):
   workScope: {
-    uri: "at://did:plc:alice/org.hypercerts.helper.workScopeTag/abc123",
-    cid: "...",
+    $type: "org.hypercerts.helper.celExpression",
+    expression:
+      "scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'",
+    labels: ["mangrove_restoration", "environmental_education"],
+    version: "v1",
+    createdAt: new Date().toISOString(),
   },
-  // OR a simple string: workScope: "Environmental conservation",
+  // OR a strongRef to a single work scope tag:
+  // workScope: { uri: "at://did:plc:alice/org.hypercerts.helper.workScopeTag/abc123", cid: "..." },
+  // OR a simple string: workScope: { $type: "...#workScopeString", scope: "Environmental conservation" },
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
   createdAt: new Date().toISOString(),

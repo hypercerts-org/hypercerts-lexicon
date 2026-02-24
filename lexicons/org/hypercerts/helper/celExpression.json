@@ -1,0 +1,38 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.helper.celExpression",
+  "defs": {
+    "main": {
+      "type": "object",
+      "description": "A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.helper.workScopeTag keys. See https://github.com/google/cel-spec",
+      "required": ["expression", "labels", "version", "createdAt"],
+      "properties": {
+        "expression": {
+          "type": "string",
+          "maxLength": 10000,
+          "maxGraphemes": 5000,
+          "description": "A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "maxLength": 100,
+          "description": "Flat list of org.hypercerts.helper.workScopeTag keys referenced in the expression. Enables fast indexing and basic filtering without CEL evaluation."
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 16,
+          "description": "CEL context schema version. Currently 'v1'."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "datetime",
+          "description": "Client-declared timestamp when this expression was originally created."
+        }
+      }
+    }
+  }
+}

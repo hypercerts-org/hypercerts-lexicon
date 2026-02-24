@@ -4,20 +4,15 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels.",
+      "description": "A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels. Tags are composed into structured expressions via CEL (Common Expression Language) on activity records.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["createdAt", "key", "label"],
+        "required": ["key", "label", "createdAt"],
         "properties": {
-          "createdAt": {
-            "type": "string",
-            "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
-          },
           "key": {
             "type": "string",
-            "description": "Lowercase, hyphenated machine-readable key for this scope (e.g., 'ipfs', 'go-lang', 'filecoin').",
+            "description": "Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.",
             "maxLength": 120
           },
           "label": {
@@ -25,9 +20,10 @@
             "description": "Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')",
             "maxLength": 200
           },
-          "kind": {
+          "type": {
             "type": "string",
-            "description": "Category type of this scope. Recommended values: topic, language, domain, method, tag.",
+            "description": "Category type of this scope.",
+            "knownValues": ["topic", "language", "domain", "method", "tag"],
             "maxLength": 50
           },
           "description": {
@@ -39,7 +35,18 @@
           "parent": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Optional strong reference to a parent scope record for taxonomy/hierarchy support."
+            "description": "Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.helper.workScopeTag."
+          },
+          "status": {
+            "type": "string",
+            "description": "Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.",
+            "knownValues": ["proposed", "accepted", "deprecated"],
+            "maxLength": 20
+          },
+          "supersededBy": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.helper.workScopeTag."
           },
           "aliases": {
             "type": "array",
@@ -50,6 +57,16 @@
             "maxLength": 50,
             "description": "Optional array of alternative names or identifiers for this scope."
           },
+          "sameAs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 2048
+            },
+            "maxLength": 20,
+            "description": "Links to equivalent concepts in external ontologies (e.g., Wikidata QIDs, ENVO terms, SDG targets)."
+          },
           "externalReference": {
             "type": "union",
             "refs": [
@@ -57,6 +74,11 @@
               "org.hypercerts.defs#smallBlob"
             ],
             "description": "Optional external reference for this scope as a URI or blob."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

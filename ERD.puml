@@ -191,6 +191,33 @@ dataclass badgeResponse {
     !endif
 }
 
+' org.hypercerts.helper.celExpression
+dataclass celExpression {
+    !if (SHOW_FIELDS == "true")
+    expression
+    labels[]
+    version
+    createdAt
+    !endif
+}
+
+' org.hypercerts.helper.workScopeTag
+dataclass workScopeTag {
+    !if (SHOW_FIELDS == "true")
+    key
+    label
+    type?
+    description?
+    parent?
+    status?
+    supersededBy?
+    aliases[]?
+    sameAs[]?
+    externalReference?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.claim.rights
 dataclass rights {
     !if (SHOW_FIELDS == "true")
@@ -327,10 +354,16 @@ acknowledgement::subject --> contributorInformation
 acknowledgement::context --> collection
 acknowledgement::context --> activity
 
+activity::workScope --> celExpression
 activity::contributors -l--> contributorInformation
 activity::contributors --> contribution
 activity::rights --> rights
 activity::locations --> location
+
+celExpression::labels --> workScopeTag : "references"
+
+workScopeTag::parent --> workScopeTag : "hierarchy"
+workScopeTag::supersededBy --> workScopeTag : "deprecation"
 
 contributorInformation::identifier --> contributorEntity : identifies
 
