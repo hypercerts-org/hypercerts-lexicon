@@ -18,7 +18,7 @@
           },
           "facets": {
             "type": "array",
-            "description": "Annotations of text (mentions, URLs, hashtags, etc)",
+            "description": "Annotations of text (mentions, URLs, hashtags, etc.)",
             "items": { "type": "ref", "ref": "app.bsky.richtext.facet" }
           },
           "replies": {
@@ -29,6 +29,7 @@
           },
           "embed": {
             "type": "union",
+            "description": "The primary featured media for this post (images, video, external link, or quoted record).",
             "refs": [
               "app.bsky.embed.images",
               "app.bsky.embed.video",
@@ -70,10 +71,19 @@
     },
     "replyRef": {
       "type": "object",
+      "description": "Identifies the thread root and direct parent that this post is replying to.",
       "required": ["root", "parent"],
       "properties": {
-        "root": { "type": "ref", "ref": "com.atproto.repo.strongRef" },
-        "parent": { "type": "ref", "ref": "com.atproto.repo.strongRef" }
+        "root": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "The root record of the thread being replied to."
+        },
+        "parent": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "The direct parent record being replied to (may be the same as root for top-level replies)."
+        }
       }
     }
   }
