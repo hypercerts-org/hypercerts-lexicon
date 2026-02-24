@@ -28,6 +28,7 @@ mkdir -p ./generated/types/app/bsky/embed
 cat >./generated/types/app/bsky/embed/images.ts <<'EOF'
 // Type shim for app.bsky.embed.images lexicon
 import type { AppBskyEmbedImages } from '@atcute/bluesky';
+export type { AppBskyEmbedImages };
 export type Main = AppBskyEmbedImages.Main;
 export type Image = AppBskyEmbedImages.Image;
 export type View = AppBskyEmbedImages.View;
@@ -37,6 +38,7 @@ EOF
 cat >./generated/types/app/bsky/embed/video.ts <<'EOF'
 // Type shim for app.bsky.embed.video lexicon
 import type { AppBskyEmbedVideo } from '@atcute/bluesky';
+export type { AppBskyEmbedVideo };
 export type Main = AppBskyEmbedVideo.Main;
 export type Caption = AppBskyEmbedVideo.Caption;
 export type View = AppBskyEmbedVideo.View;
@@ -45,6 +47,7 @@ EOF
 cat >./generated/types/app/bsky/embed/external.ts <<'EOF'
 // Type shim for app.bsky.embed.external lexicon
 import type { AppBskyEmbedExternal } from '@atcute/bluesky';
+export type { AppBskyEmbedExternal };
 export type Main = AppBskyEmbedExternal.Main;
 export type External = AppBskyEmbedExternal.External;
 export type View = AppBskyEmbedExternal.View;
@@ -54,6 +57,7 @@ EOF
 cat >./generated/types/app/bsky/embed/record.ts <<'EOF'
 // Type shim for app.bsky.embed.record lexicon
 import type { AppBskyEmbedRecord } from '@atcute/bluesky';
+export type { AppBskyEmbedRecord };
 export type Main = AppBskyEmbedRecord.Main;
 export type View = AppBskyEmbedRecord.View;
 export type ViewBlocked = AppBskyEmbedRecord.ViewBlocked;
@@ -65,6 +69,7 @@ EOF
 cat >./generated/types/app/bsky/embed/recordWithMedia.ts <<'EOF'
 // Type shim for app.bsky.embed.recordWithMedia lexicon
 import type { AppBskyEmbedRecordWithMedia } from '@atcute/bluesky';
+export type { AppBskyEmbedRecordWithMedia };
 export type Main = AppBskyEmbedRecordWithMedia.Main;
 export type View = AppBskyEmbedRecordWithMedia.View;
 EOF
@@ -74,6 +79,7 @@ mkdir -p ./generated/types/com/atproto/label
 cat >./generated/types/com/atproto/label/defs.ts <<'EOF'
 // Type shim for com.atproto.label.defs lexicon
 import type { ComAtprotoLabelDefs } from '@atcute/atproto';
+export type { ComAtprotoLabelDefs };
 export type SelfLabels = ComAtprotoLabelDefs.SelfLabels;
 export type SelfLabel = ComAtprotoLabelDefs.SelfLabel;
 export type Label = ComAtprotoLabelDefs.Label;
