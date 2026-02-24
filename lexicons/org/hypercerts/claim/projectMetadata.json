@@ -1,0 +1,62 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.claim.projectMetadata",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Extended metadata sidecar for a project collection. Created with the same TID as its parent collection to link them together, allowing metadata updates without changing the collection's CID.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "tags": {
+            "type": "array",
+            "description": "Categorization tags for project discoverability.",
+            "items": { "type": "string", "maxLength": 640, "maxGraphemes": 64 },
+            "maxLength": 50
+          },
+          "startDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the project is planned to start or started."
+          },
+          "endDate": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the project is planned to end or ended."
+          },
+          "videoUrl": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 10000,
+            "maxGraphemes": 2048,
+            "description": "URL to a project overview or impact video (YouTube, Vimeo, etc.)."
+          },
+          "urls": {
+            "type": "array",
+            "description": "Additional reference URLs related to the project (websites, reports, datasets, etc.).",
+            "items": {
+              "type": "string",
+              "format": "uri",
+              "maxLength": 10000,
+              "maxGraphemes": 2048
+            },
+            "maxLength": 20
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 50000,
+            "maxGraphemes": 5000,
+            "description": "Free-form additional context about the project."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}

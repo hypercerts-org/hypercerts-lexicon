@@ -200,6 +200,19 @@ dataclass collection {
     !endif
 }
 
+' org.hypercerts.claim.projectMetadata (sidecar for collection)
+dataclass projectMetadata {
+    !if (SHOW_FIELDS == "true")
+    tags[]?
+    startDate?
+    endDate?
+    videoUrl?
+    urls[]?
+    context?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.acknowledgement
 dataclass acknowledgement {
     !if (SHOW_FIELDS == "true")
@@ -306,6 +319,8 @@ measurement --> location
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection::location --> location
+
+projectMetadata --> collection : "sidecar\n(same TID)"
 
 acknowledgement::subject --> activity
 acknowledgement::subject --> contributorInformation

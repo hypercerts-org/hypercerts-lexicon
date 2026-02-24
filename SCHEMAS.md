@@ -226,6 +226,26 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.claim.projectMetadata`
+
+**Description:** Extended metadata sidecar for a project collection. Created with the same TID as its parent collection to link them together, allowing metadata updates without changing the collection's CID.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                           | Comments                             |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------- | ------------------------------------ |
+| `tags`      | `string` | ❌       | Categorization tags for project discoverability.                                      | maxLength: 50                        |
+| `startDate` | `string` | ❌       | When the project is planned to start or started.                                      |                                      |
+| `endDate`   | `string` | ❌       | When the project is planned to end or ended.                                          |                                      |
+| `videoUrl`  | `string` | ❌       | URL to a project overview or impact video (YouTube, Vimeo, etc.).                     | maxLength: 10000, maxGraphemes: 2048 |
+| `urls`      | `string` | ❌       | Additional reference URLs related to the project (websites, reports, datasets, etc.). | maxLength: 20                        |
+| `context`   | `string` | ❌       | Free-form additional context about the project.                                       | maxLength: 50000, maxGraphemes: 5000 |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                    |                                      |
+
+---
+
 ### `org.hypercerts.claim.rights`
 
 **Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
