@@ -268,9 +268,16 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.helper.celExpression`
 
-**Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.helper.workScopeTag keys. See https://github.com/google/cel-spec
+**Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.helper.workScopeTag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.
 
-**Key:** `tid`
+#### Properties
+
+| Property     | Type       | Required | Description                                                                                                                                                 | Comments                             |
+| ------------ | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `expression` | `string`   | ✅       | A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE' | maxLength: 10000, maxGraphemes: 5000 |
+| `labels`     | `string[]` | ✅       | Flat list of org.hypercerts.helper.workScopeTag keys referenced in the expression. Enables fast indexing and basic filtering without CEL evaluation.        | maxLength: 100                       |
+| `version`    | `string`   | ✅       | CEL context schema version. Currently 'v1'.                                                                                                                 | maxLength: 16                        |
+| `createdAt`  | `string`   | ✅       | Client-declared timestamp when this expression was originally created.                                                                                      |                                      |
 
 ---
 
@@ -493,7 +500,12 @@ External lexicons from other protocols and systems.
 
 ### `com.atproto.repo.strongRef`
 
-**Key:** `tid`
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `uri`    | `string` | ✅       |             |
+| `cid`    | `string` | ✅       |             |
 
 ---
 

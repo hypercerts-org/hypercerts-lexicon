@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "object",
-      "description": "A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.helper.workScopeTag keys. See https://github.com/google/cel-spec",
+      "description": "A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.helper.workScopeTag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.",
       "required": ["expression", "labels", "version", "createdAt"],
       "properties": {
         "expression": {
