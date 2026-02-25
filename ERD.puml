@@ -206,7 +206,7 @@ dataclass workScopeTag {
     !if (SHOW_FIELDS == "true")
     key
     label
-    type?
+    kind?
     description?
     parent?
     status?
