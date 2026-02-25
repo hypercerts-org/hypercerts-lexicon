@@ -194,7 +194,7 @@ dataclass collection {
     title
     shortDescription?
     description? (Leaflet ref)
-    items[]
+    items[]?
     location?
     createdAt
     !endif
