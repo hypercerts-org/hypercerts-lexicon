@@ -22,7 +22,7 @@
           },
           "urls": {
             "type": "array",
-            "description": "Additional reference URLs (social media profiles, contact pages, donation links, etc.).",
+            "description": "Additional reference URLs (social media profiles, contact pages, donation links, etc.) with a display label for each URL.",
             "items": {
               "type": "ref",
               "ref": "#urlItem"
@@ -61,7 +61,7 @@
         },
         "label": {
           "type": "string",
-          "description": "Optional human-readable label for this URL (e.g. 'Twitter', 'Donation page').",
+          "description": "Optional human-readable label for this URL (e.g. 'Support page', 'Donation page').",
           "maxLength": 640,
           "maxGraphemes": 64
         }
