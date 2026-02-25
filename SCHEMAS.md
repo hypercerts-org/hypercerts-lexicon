@@ -375,22 +375,30 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
-### `app.certified.actor.orgMetadata`
+### `app.certified.actor.organization`
 
-**Description:** Extended metadata for an organization actor. Complements the base actor profile with organization-specific fields like legal structure, contact info, and reference links.
+**Description:** Extended metadata for an organization actor. Complements the base actor profile with organization-specific fields like legal structure and reference links.
 
 **Key:** `literal:self`
 
 #### Properties
 
-| Property           | Type     | Required | Description                                                                                                                                     | Comments                             |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `organizationType` | `string` | ❌       | Legal or operational structure of the organization (e.g. 'nonprofit', 'ngo', 'government', 'social-enterprise', 'cooperative').                 | maxLength: 1000, maxGraphemes: 100   |
-| `urls`             | `string` | ❌       | Additional reference URLs (social media profiles, contact pages, donation links, etc.).                                                         | maxLength: 20                        |
-| `context`          | `string` | ❌       | Free-form additional context about the organization.                                                                                            | maxLength: 50000, maxGraphemes: 5000 |
-| `location`         | `ref`    | ❌       | A strong reference to the location where the organization is based. The record referenced must conform with the lexicon app.certified.location. |                                      |
-| `foundedDate`      | `string` | ❌       | When the organization was established.                                                                                                          |                                      |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                              |                                      |
+| Property           | Type     | Required | Description                                                                                                                                     | Comments      |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `organizationType` | `string` | ❌       | Legal or operational structures of the organization (e.g. 'nonprofit', 'ngo', 'government', 'social-enterprise', 'cooperative').                | maxLength: 10 |
+| `urls`             | `ref`    | ❌       | Additional reference URLs (social media profiles, contact pages, donation links, etc.).                                                         | maxLength: 20 |
+| `location`         | `ref`    | ❌       | A strong reference to the location where the organization is based. The record referenced must conform with the lexicon app.certified.location. |               |
+| `foundedDate`      | `string` | ❌       | When the organization was established.                                                                                                          |               |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                              |               |
+
+#### Defs
+
+##### `app.certified.actor.organization#urlItem`
+
+| Property | Type     | Required | Description                                                                   |
+| -------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `url`    | `string` | ✅       | The URL.                                                                      |
+| `label`  | `string` | ❌       | Optional human-readable label for this URL (e.g. 'Twitter', 'Donation page'). |
 
 ---
 

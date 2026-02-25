@@ -43,12 +43,11 @@ classDiagram {
 }
 </style>
 
-' app.certified.actor.orgMetadata
-dataclass orgMetadata {
+' app.certified.actor.organization
+dataclass organization {
     !if (SHOW_FIELDS == "true")
-    organizationType?
+    organizationType[]?
     urls[]?
-    context?
     location?
     foundedDate?
     createdAt
@@ -331,7 +330,7 @@ activity::locations --> location
 
 contributorInformation::identifier --> contributorEntity : identifies
 
-orgMetadata::location --> location
+organization::location --> location
 
 ' These ones are not described by any lexicon, but are added to
 ' the diagram for clarity
