@@ -105,7 +105,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 | Property      | Type       | Required | Description                                                                                                             | Comments                             |
 | ------------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `text`        | `string`   | ✅       | The primary post content. May be an empty string, if there are embeds.                                                  | maxLength: 50000, maxGraphemes: 5000 |
+| `text`        | `string`   | ❌       | The primary post content. May be an empty string, if there are embeds.                                                  | maxLength: 50000, maxGraphemes: 5000 |
 | `facets`      | `ref[]`    | ❌       | Annotations of text (mentions, URLs, hashtags, etc.)                                                                    |                                      |
 | `replies`     | `ref[]`    | ❌       | The subjects that this post is in reply to. Each entry identifies a thread root and the direct parent being replied to. | maxLength: 10                        |
 | `embed`       | `union`    | ❌       | The primary featured media for this post (images, video, external link, or quoted record).                              |                                      |
