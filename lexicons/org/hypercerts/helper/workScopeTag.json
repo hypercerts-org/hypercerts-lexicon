@@ -20,7 +20,7 @@
             "description": "Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')",
             "maxLength": 200
           },
-          "type": {
+          "kind": {
             "type": "string",
             "description": "Category type of this scope.",
             "knownValues": ["topic", "language", "domain", "method", "tag"],
