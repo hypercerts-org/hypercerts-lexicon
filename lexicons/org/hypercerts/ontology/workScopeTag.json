@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.helper.workScopeTag",
+  "id": "org.hypercerts.ontology.workScopeTag",
   "defs": {
     "main": {
       "type": "record",

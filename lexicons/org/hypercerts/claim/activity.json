@@ -54,7 +54,7 @@
           "workScope": {
             "type": "union",
             "refs": ["com.atproto.repo.strongRef", "#workScopeString"],
-            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon."
+            "description": "Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.ontology.workScopeTag lexicon."
           },
           "startDate": {
             "type": "string",
@@ -81,7 +81,7 @@
           },
           "locations": {
             "type": "array",
-            "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.",
+            "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.geo.location.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"

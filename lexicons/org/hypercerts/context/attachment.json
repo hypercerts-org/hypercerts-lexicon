@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.attachment",
+  "id": "org.hypercerts.context.attachment",
   "defs": {
     "main": {
       "type": "record",
@@ -72,7 +72,7 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location."
+            "description": "A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.geo.location."
           },
           "createdAt": {
             "type": "string",

@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.measurement",
+  "id": "org.hypercerts.context.measurement",
   "defs": {
     "main": {
       "type": "record",
@@ -42,7 +42,7 @@
           },
           "locations": {
             "type": "array",
-            "description": "Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon.",
+            "description": "Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.geo.location lexicon.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"

@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.acknowledgement",
+  "id": "org.hypercerts.graph.acknowledgement",
   "defs": {
     "main": {
       "type": "record",

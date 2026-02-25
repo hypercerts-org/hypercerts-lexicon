@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.collection",
+  "id": "org.hypercerts.curation.collection",
   "defs": {
     "main": {
       "type": "record",
@@ -58,7 +58,7 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
+            "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.geo.location."
           },
           "createdAt": {
             "type": "string",
@@ -75,7 +75,7 @@
         "itemIdentifier": {
           "type": "ref",
           "ref": "com.atproto.repo.strongRef",
-          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.claim.collection)."
+          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.curation.collection)."
         },
         "itemWeight": {
           "type": "string",

@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "app.certified.location",
+  "id": "app.certified.geo.location",
   "defs": {
     "main": {
       "type": "record",

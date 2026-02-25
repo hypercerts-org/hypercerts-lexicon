@@ -69,7 +69,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     !endif
 }
 
-' org.hypercerts.claim.attachment
+' org.hypercerts.context.attachment
 dataclass attachment {
     !if (SHOW_FIELDS == "true")
     subjects[]?
@@ -83,7 +83,7 @@ dataclass attachment {
     !endif
 }
 
-' org.hypercerts.claim.measurement
+' org.hypercerts.context.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
     subject?
@@ -98,7 +98,7 @@ dataclass measurement {
     !endif
 }
 
-' org.hypercerts.claim.evaluation
+' org.hypercerts.context.evaluation
 dataclass evaluation {
     !if (SHOW_FIELDS == "true")
     subject?
@@ -133,7 +133,7 @@ dataclass contributionDetails {
     !endif
 }
 
-' app.certified.location
+' app.certified.geo.location
 dataclass location {
     !if (SHOW_FIELDS == "true")
     lpVersion
@@ -187,7 +187,7 @@ dataclass rights {
     !endif
 }
 
-' org.hypercerts.claim.collection
+' org.hypercerts.curation.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     type?
@@ -200,7 +200,7 @@ dataclass collection {
     !endif
 }
 
-' org.hypercerts.acknowledgement
+' org.hypercerts.graph.acknowledgement
 dataclass acknowledgement {
     !if (SHOW_FIELDS == "true")
     subject

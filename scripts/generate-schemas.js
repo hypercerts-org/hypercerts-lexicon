@@ -182,7 +182,7 @@ function categorizeLexicons(lexicons) {
       lexicons: [],
       ordering: (lex) => {
         const order = [
-          "app.certified.location",
+          "app.certified.geo.location",
           "app.certified.badge.definition",
           "app.certified.badge.award",
           "app.certified.badge.response",
