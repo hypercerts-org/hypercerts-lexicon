@@ -301,7 +301,7 @@ hiddenLocation1 -[hidden]-> activity
 attachment::subjects --> activity
 attachment::location --> location
 
-measurement::subject --> activity
+measurement::subjects --> activity
 
 ' Somewhat similarly for measurement --> location
 !if (SHOW_FIELDS == "true")

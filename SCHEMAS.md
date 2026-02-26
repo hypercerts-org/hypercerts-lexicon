@@ -147,7 +147,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.claim.measurement`
 
-**Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
+**Description:** Measurement data related to one or more hypercert records (e.g. activities).
 
 **Key:** `tid`
 
@@ -155,7 +155,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 | Property        | Type       | Required | Description                                                                                                                                             | Comments                           |
 | --------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `subject`       | `ref`      | ❌       | A strong reference to the record this measurement refers to (e.g. an activity, project, or claim).                                                      |                                    |
+| `subjects`      | `ref[]`    | ❌       | Strong references to the records this measurement refers to (e.g. activities, projects, or claims).                                                     | maxLength: 100                     |
 | `metric`        | `string`   | ✅       | The metric being measured, e.g. forest area restored, number of users, etc.                                                                             | maxLength: 500                     |
 | `unit`          | `string`   | ✅       | The unit of the measured value (e.g. kg CO₂e, hectares, %, index score).                                                                                | maxLength: 50                      |
 | `value`         | `string`   | ✅       | The measured value as a numeric string (e.g. '1234.56')                                                                                                 | maxLength: 500                     |
