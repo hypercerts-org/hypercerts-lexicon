@@ -27,7 +27,7 @@
           },
           "value": {
             "type": "string",
-            "description": "The measured numeric value.",
+            "description": "The measured value as a numeric string (e.g. '1234.56')",
             "maxLength": 500
           },
           "startDate": {
@@ -38,7 +38,7 @@
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "The end date and time when the measurement ended. If it was a one time measurement, the endDate should be equal to the startDate."
+            "description": "The end date and time when the measurement ended. For one-time measurements, this should equal the start date."
           },
           "locations": {
             "type": "array",
@@ -70,7 +70,7 @@
           },
           "measurers": {
             "type": "array",
-            "description": "DIDs of the entity (or entities) that measured this data",
+            "description": "DIDs of the entities that performed this measurement",
             "items": {
               "type": "ref",
               "ref": "app.certified.defs#did"

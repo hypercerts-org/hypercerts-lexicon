@@ -39,7 +39,7 @@
           "title": {
             "type": "string",
             "maxLength": 256,
-            "description": "Title of this attachment."
+            "description": "Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')"
           },
           "shortDescription": {
             "type": "string",

@@ -1,3 +1,17 @@
-npm run gen-schemas-md
-npm run format
+#!/usr/bin/env sh
+
+# Validate SCHEMAS.md is up-to-date without leaving mutations behind.
+# Regenerate in place, check for differences, and restore if stale.
+npm run gen-schemas-md --silent
+if ! git diff --quiet -- SCHEMAS.md; then
+  git checkout -- SCHEMAS.md
+  echo "ERROR: SCHEMAS.md is out of date. Run 'npm run gen-schemas-md', stage it, and re-commit."
+  exit 1
+fi
+
+# Full check pipeline: gen-api, lint (includes prettier --check), typecheck,
+# build, test.  This hook must ONLY validate, never mutate files (no
+# "prettier --write" or similar), because writes aren't re-staged and
+# silently produce commits with unformatted content.  If prettier fails,
+# run "npm run format" yourself and re-commit.
 npm run check

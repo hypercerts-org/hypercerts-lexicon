@@ -17,12 +17,13 @@
           },
           "response": {
             "type": "string",
-            "enum": ["accepted", "rejected"],
+            "knownValues": ["accepted", "rejected"],
             "description": "The recipient’s response for the badge (accepted or rejected)."
           },
           "weight": {
             "type": "string",
-            "description": "Optional relative weight for accepted badges, assigned by the recipient."
+            "description": "Optional relative weight for accepted badges, assigned by the recipient.",
+            "maxLength": 50
           },
           "createdAt": {
             "type": "string",

@@ -56,7 +56,7 @@ This document summarizes the ATProto Lexicon Style Guide rules that are checked 
 
 #### Constraints
 
-- **String lengths**: Always set maxLength for strings
+- **String lengths**: Always set maxLength for strings (except format-typed fields like `datetime`, `uri`, `at-uri`, `did`)
 - **maxGraphemes**: Consider using maxGraphemes for user-visible text
 - **Array constraints**: Consider maxLength for arrays
 - **Required fields**: Mark truly required fields, keep optional what can be optional
@@ -112,7 +112,7 @@ This document summarizes the ATProto Lexicon Style Guide rules that are checked 
 
 #### String Validation
 
-- **maxLength**: Always set for strings (prevents abuse)
+- **maxLength**: Always set for strings without a `format`, `enum`, or `knownValues` (prevents abuse)
 - **maxGraphemes**: Use for user-facing text (better UX for internationalization)
 - **Patterns**: Use regex patterns when format validation is needed
 
@@ -176,7 +176,7 @@ The `style:check` script checks for:
 1. ✅ All lexicons have descriptions
 2. ✅ All properties have descriptions
 3. ✅ All definitions have descriptions
-4. ✅ String properties have maxLength constraints
+4. ✅ String properties have maxLength constraints (skipped for format/enum/knownValues fields)
 5. ✅ Blob properties have maxSize and accept properties
 6. ✅ DateTime fields use the correct format
 7. ✅ Property names use camelCase

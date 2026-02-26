@@ -201,7 +201,7 @@ function categorizeLexicons(lexicons) {
 
   for (const lex of lexicons) {
     const id = lex.data.id;
-    if (id === "org.hypercerts.defs") {
+    if (id === "org.hypercerts.defs" || id === "app.certified.defs") {
       categories.defs.lexicons.push(lex);
     } else if (id.startsWith("app.certified.")) {
       categories.certified.lexicons.push(lex);

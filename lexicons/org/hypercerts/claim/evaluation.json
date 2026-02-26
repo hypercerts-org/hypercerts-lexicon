@@ -32,7 +32,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)"
+            "description": "A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)"
           },
           "evaluators": {
             "type": "array",

@@ -12,11 +12,12 @@
         "properties": {
           "type": {
             "type": "string",
-            "description": "The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection."
+            "description": "The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.",
+            "maxLength": 64
           },
           "title": {
             "type": "string",
-            "description": "The title of this collection",
+            "description": "Display name for this collection (e.g. 'Q1 2025 Impact Projects')",
             "maxLength": 800,
             "maxGraphemes": 80
           },
@@ -50,6 +51,7 @@
           "items": {
             "type": "array",
             "description": "Array of items in this collection with optional weights.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "#item"
@@ -79,7 +81,8 @@
         },
         "itemWeight": {
           "type": "string",
-          "description": "Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed."
+          "description": "Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 100
         }
       }
     }

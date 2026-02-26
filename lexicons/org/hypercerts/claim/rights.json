@@ -17,17 +17,19 @@
         "properties": {
           "rightsName": {
             "type": "string",
-            "description": "Full name of the rights",
+            "description": "Human-readable name for these rights (e.g. 'All Rights Reserved', 'CC BY-SA 4.0')",
             "maxLength": 100
           },
           "rightsType": {
             "type": "string",
-            "description": "Short rights identifier for easier search",
+            "description": "Short identifier code for this rights type (e.g. 'ARR', 'CC-BY-SA') to facilitate filtering and search",
             "maxLength": 10
           },
           "rightsDescription": {
             "type": "string",
-            "description": "Description of the rights of this hypercert"
+            "description": "Detailed explanation of the rights holders' permissions, restrictions, and conditions",
+            "maxLength": 10000,
+            "maxGraphemes": 1000
           },
           "attachment": {
             "type": "union",

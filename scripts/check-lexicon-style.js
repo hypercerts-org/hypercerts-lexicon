@@ -36,6 +36,14 @@ const SEVERITY = {
   INFO: "info",
 };
 
+const SEVERITY_ICONS = {
+  [SEVERITY.ERROR]: "❌",
+  [SEVERITY.WARNING]: "⚠️",
+  [SEVERITY.INFO]: "ℹ️",
+};
+
+const SEPARATOR = "═══════════════════════════════════════════════════════\n";
+
 class StyleChecker {
   constructor(options = {}) {
     this.options = options;
@@ -375,7 +383,13 @@ class StyleChecker {
    */
   checkStringProperty(prop, path, fileResult) {
     // Check for maxLength
-    if (!prop.maxLength && !prop.maxGraphemes) {
+    if (
+      !prop.maxLength &&
+      !prop.maxGraphemes &&
+      !prop.format &&
+      !prop.enum &&
+      !prop.knownValues
+    ) {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,
         rule: "string-max-length",
@@ -683,27 +697,35 @@ class StyleChecker {
       return JSON.stringify(this.results, null, 2);
     }
 
-    let output = "";
+    return [
+      this.formatHeader(),
+      this.formatSummary(),
+      this.formatFileDetails(),
+      this.formatRuleBreakdown(),
+      this.formatFooter(),
+    ].join("");
+  }
 
-    // Header
-    output += "\n";
-    output += "═══════════════════════════════════════════════════════\n";
-    output += "  Lexicon Style Guide Checker\n";
-    output += "═══════════════════════════════════════════════════════\n";
-    output += "\n";
+  formatHeader() {
+    return `\n${SEPARATOR}  Lexicon Style Guide Checker\n${SEPARATOR}\n`;
+  }
 
-    // Summary
+  formatSummary() {
     const filesWithIssues = this.results.files.filter(
       (f) => f.issues.length > 0,
     );
-    output += `Checked ${this.results.files.length} lexicon files\n`;
-    output += `Found ${this.results.totalIssues} issues in ${filesWithIssues.length} files\n`;
-    output += `  Errors: ${this.results.errorCount}\n`;
-    output += `  Warnings: ${this.results.warningCount}\n`;
-    output += `  Info: ${this.results.infoCount}\n`;
-    output += "\n";
+    return (
+      `Checked ${this.results.files.length} lexicon files\n` +
+      `Found ${this.results.totalIssues} issues in ${filesWithIssues.length} files\n` +
+      `  Errors: ${this.results.errorCount}\n` +
+      `  Warnings: ${this.results.warningCount}\n` +
+      `  Info: ${this.results.infoCount}\n\n`
+    );
+  }
 
-    // File details
+  formatFileDetails() {
+    let output = "";
+
     for (const file of this.results.files) {
       if (file.issues.length === 0 && !this.options.verbose) {
         continue;
@@ -722,35 +744,60 @@ class StyleChecker {
       output += `${icon} ${relativePath} (${file.issues.length} issues)\n`;
 
       for (const issue of file.issues) {
-        const severityIcon = {
-          [SEVERITY.ERROR]: "  ❌",
-          [SEVERITY.WARNING]: "  ⚠️",
-          [SEVERITY.INFO]: "  ℹ️",
-        }[issue.severity];
-
-        output += `${severityIcon} [${issue.rule}] ${issue.message}\n`;
+        output += `  ${SEVERITY_ICONS[issue.severity]} [${issue.rule}] ${issue.message}\n`;
         output += `     Location: ${issue.location}\n`;
       }
 
       output += "\n";
     }
 
-    // Footer
-    if (this.results.errorCount > 0) {
-      output += "═══════════════════════════════════════════════════════\n";
-      output += `❌ Style check FAILED with ${this.results.errorCount} errors\n`;
-      output += "═══════════════════════════════════════════════════════\n";
-    } else if (this.results.warningCount > 0) {
-      output += "═══════════════════════════════════════════════════════\n";
-      output += `⚠️  Style check passed with ${this.results.warningCount} warnings\n`;
-      output += "═══════════════════════════════════════════════════════\n";
-    } else {
-      output += "═══════════════════════════════════════════════════════\n";
-      output += "✅ All lexicons pass style checks!\n";
-      output += "═══════════════════════════════════════════════════════\n";
+    return output;
+  }
+
+  /**
+   * Aggregate issue counts by rule, sorted by severity then count
+   */
+  formatRuleBreakdown() {
+    if (this.results.totalIssues === 0) {
+      return "";
     }
 
-    return output;
+    const ruleCounts = new Map();
+    for (const file of this.results.files) {
+      for (const issue of file.issues) {
+        const key = `${issue.severity}:${issue.rule}`;
+        ruleCounts.set(key, (ruleCounts.get(key) || 0) + 1);
+      }
+    }
+
+    const severityOrder = {
+      [SEVERITY.ERROR]: 0,
+      [SEVERITY.WARNING]: 1,
+      [SEVERITY.INFO]: 2,
+    };
+    const sorted = [...ruleCounts.entries()].sort((a, b) => {
+      const [sevA] = a[0].split(":");
+      const [sevB] = b[0].split(":");
+      const orderDiff = severityOrder[sevA] - severityOrder[sevB];
+      if (orderDiff !== 0) return orderDiff;
+      return b[1] - a[1];
+    });
+
+    let output = "Issues by rule:\n";
+    for (const [key, count] of sorted) {
+      const [severity, rule] = key.split(":");
+      output += `  ${SEVERITY_ICONS[severity]} ${rule}: ${count}\n`;
+    }
+    return output + "\n";
+  }
+
+  formatFooter() {
+    if (this.results.errorCount > 0) {
+      return `${SEPARATOR}❌ Style check FAILED with ${this.results.errorCount} errors\n${SEPARATOR}`;
+    } else if (this.results.warningCount > 0) {
+      return `${SEPARATOR}⚠️  Style check passed with ${this.results.warningCount} warnings\n${SEPARATOR}`;
+    }
+    return `${SEPARATOR}✅ All lexicons pass style checks!\n${SEPARATOR}`;
   }
 }
 
