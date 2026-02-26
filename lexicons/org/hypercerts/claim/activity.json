@@ -54,7 +54,7 @@
           "workScope": {
             "type": "union",
             "refs": [
-              "org.hypercerts.helper.celExpression",
+              "org.hypercerts.ontology.celExpression",
               "com.atproto.repo.strongRef",
               "#workScopeString"
             ],

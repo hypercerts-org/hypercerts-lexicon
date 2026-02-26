@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.helper.workScopeTag",
+  "id": "org.hypercerts.ontology.workScopeTag",
   "defs": {
     "main": {
       "type": "record",
@@ -35,7 +35,7 @@
           "parent": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.helper.workScopeTag."
+            "description": "Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag."
           },
           "status": {
             "type": "string",
@@ -46,7 +46,7 @@
           "supersededBy": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.helper.workScopeTag."
+            "description": "When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag."
           },
           "aliases": {
             "type": "array",
