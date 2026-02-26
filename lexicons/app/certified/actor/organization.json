@@ -15,7 +15,7 @@
             "description": "Legal or operational structures of the organization (e.g. 'nonprofit', 'ngo', 'government', 'social-enterprise', 'cooperative').",
             "items": {
               "type": "string",
-              "maxLength": 1000,
+              "maxLength": 128,
               "maxGraphemes": 100
             },
             "maxLength": 10
@@ -26,8 +26,7 @@
             "items": {
               "type": "ref",
               "ref": "#urlItem"
-            },
-            "maxLength": 20
+            }
           },
           "location": {
             "type": "ref",
@@ -37,7 +36,7 @@
           "foundedDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When the organization was established."
+            "description": "When the organization was established. Stored as datetime per ATProto conventions (no date-only format exists). Clients should use midnight UTC (e.g., '2005-01-01T00:00:00.000Z'); consumers should treat only the date portion as canonical."
           },
           "createdAt": {
             "type": "string",
