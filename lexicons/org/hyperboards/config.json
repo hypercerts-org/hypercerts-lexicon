@@ -1,10 +1,10 @@
 {
   "lexicon": 1,
-  "id": "org.hyperboards.board",
+  "id": "org.hyperboards.config",
   "defs": {
     "main": {
       "type": "record",
-      "description": "A hyperboard record that wraps an underlying activity or collection with visual presentation configuration. One board per hyperboard, stored in the creator's PDS.",
+      "description": "Configuration record for a hyperboard, wrapping an underlying activity or collection with visual presentation settings. Stored in the creator's PDS.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -48,10 +48,9 @@
           "maxLength": 10
         },
         "backgroundImage": {
-          "type": "string",
-          "format": "uri",
-          "description": "URI of the background image.",
-          "maxLength": 2048
+          "type": "union",
+          "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
+          "description": "Background image as a URI or image blob."
         },
         "backgroundIframeUrl": {
           "type": "string",
@@ -64,9 +63,10 @@
           "description": "Whether the background is rendered in grayscale. Default: true."
         },
         "backgroundOpacity": {
-          "type": "string",
-          "description": "Background opacity as a decimal string from '0' to '1'.",
-          "maxLength": 10
+          "type": "integer",
+          "description": "Background opacity as a percentage (0–100).",
+          "minimum": 0,
+          "maximum": 100
         },
         "backgroundColor": {
           "type": "string",
@@ -82,6 +82,12 @@
           "type": "boolean",
           "description": "Whether contributor images are rendered in grayscale. Default: false."
         },
+        "imageShape": {
+          "type": "string",
+          "description": "Shape used to crop contributor images on this board.",
+          "knownValues": ["circular", "square"],
+          "maxLength": 20
+        },
         "aspectRatio": {
           "type": "string",
           "description": "Display aspect ratio of the board.",
@@ -96,9 +102,12 @@
       "required": ["itemRef"],
       "properties": {
         "itemRef": {
-          "type": "ref",
-          "ref": "com.atproto.repo.strongRef",
-          "description": "Reference to the contributor record (org.hypercerts.claim.contributorInformation) being styled."
+          "type": "union",
+          "refs": [
+            "com.atproto.repo.strongRef",
+            "org.hypercerts.claim.activity#contributorIdentity"
+          ],
+          "description": "Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record."
         },
         "displayName": {
           "type": "string",
@@ -107,10 +116,9 @@
           "maxGraphemes": 64
         },
         "image": {
-          "type": "string",
-          "format": "uri",
-          "description": "Avatar or face image override URI for this contributor on this board.",
-          "maxLength": 2048
+          "type": "union",
+          "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
+          "description": "Avatar or face image override for this contributor on this board, as a URI or image blob."
         },
         "videoUrl": {
           "type": "string",
@@ -118,21 +126,16 @@
           "description": "Video URL (direct or embed) displayed for this contributor.",
           "maxLength": 2048
         },
-        "hoverImageUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "Image overlay shown when hovering over this contributor.",
-          "maxLength": 2048
+        "hoverImage": {
+          "type": "union",
+          "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
+          "description": "Image overlay shown when hovering over this contributor, as a URI or image blob."
         },
         "hoverIframeUrl": {
           "type": "string",
           "format": "uri",
           "description": "Iframe overlay shown when hovering over this contributor.",
           "maxLength": 2048
-        },
-        "circularImage": {
-          "type": "boolean",
-          "description": "Whether to crop the contributor image to a circle. Default: true."
         },
         "url": {
           "type": "string",

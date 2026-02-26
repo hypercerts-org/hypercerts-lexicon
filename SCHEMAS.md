@@ -486,9 +486,9 @@ External lexicons from other protocols and systems.
 
 ---
 
-### `org.hyperboards.board`
+### `org.hyperboards.config`
 
-**Description:** A hyperboard record that wraps an underlying activity or collection with visual presentation configuration. One board per hyperboard, stored in the creator's PDS.
+**Description:** Configuration record for a hyperboard, wrapping an underlying activity or collection with visual presentation settings. Stored in the creator's PDS.
 
 **Key:** `tid`
 
@@ -503,53 +503,52 @@ External lexicons from other protocols and systems.
 
 #### Defs
 
-##### `org.hyperboards.board#boardConfig`
+##### `org.hyperboards.config#boardConfig`
 
 | Property              | Type      | Required | Description                                                           |
 | --------------------- | --------- | -------- | --------------------------------------------------------------------- |
 | `backgroundType`      | `string`  | ❌       | Type of background content.                                           |
-| `backgroundImage`     | `string`  | ❌       | URI of the background image.                                          |
+| `backgroundImage`     | `union`   | ❌       | Background image as a URI or image blob.                              |
 | `backgroundIframeUrl` | `string`  | ❌       | URI of the background iframe.                                         |
 | `backgroundGrayscale` | `boolean` | ❌       | Whether the background is rendered in grayscale. Default: true.       |
-| `backgroundOpacity`   | `string`  | ❌       | Background opacity as a decimal string from '0' to '1'.               |
+| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           |
 | `backgroundColor`     | `string`  | ❌       | Background color as a hex string (e.g. '#ffffff').                    |
 | `borderColor`         | `string`  | ❌       | Border color as a hex string (e.g. '#000000').                        |
 | `grayscaleImages`     | `boolean` | ❌       | Whether contributor images are rendered in grayscale. Default: false. |
+| `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  |
 | `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
 
-##### `org.hyperboards.board#boardItem`
+##### `org.hyperboards.config#boardItem`
 
-| Property         | Type      | Required | Description                                                                                     |
-| ---------------- | --------- | -------- | ----------------------------------------------------------------------------------------------- |
-| `itemRef`        | `ref`     | ✅       | Reference to the contributor record (org.hypercerts.claim.contributorInformation) being styled. |
-| `displayName`    | `string`  | ❌       | Display name override for this contributor on this board.                                       |
-| `image`          | `string`  | ❌       | Avatar or face image override URI for this contributor on this board.                           |
-| `videoUrl`       | `string`  | ❌       | Video URL (direct or embed) displayed for this contributor.                                     |
-| `hoverImageUrl`  | `string`  | ❌       | Image overlay shown when hovering over this contributor.                                        |
-| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                       |
-| `circularImage`  | `boolean` | ❌       | Whether to crop the contributor image to a circle. Default: true.                               |
-| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                    |
-| `isBlueprint`    | `boolean` | ❌       | Whether this item is a blueprint placeholder (not a real contributor).                          |
+| Property         | Type      | Required | Description                                                                                                                                                                                                            |
+| ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `itemRef`        | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
+| `displayName`    | `string`  | ❌       | Display name override for this contributor on this board.                                                                                                                                                              |
+| `image`          | `union`   | ❌       | Avatar or face image override for this contributor on this board, as a URI or image blob.                                                                                                                              |
+| `videoUrl`       | `string`  | ❌       | Video URL (direct or embed) displayed for this contributor.                                                                                                                                                            |
+| `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
+| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
+| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
+| `isBlueprint`    | `boolean` | ❌       | Whether this item is a blueprint placeholder (not a real contributor).                                                                                                                                                 |
 
 ---
 
-### `org.hyperboards.contributor`
+### `org.hyperboards.displayProfile`
 
-**Description:** Contributor presentation defaults reusable across multiple boards. Extends an org.hypercerts.claim.contributorInformation record with visual and interactive properties.
+**Description:** User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards. Extends an org.hypercerts.claim.contributorInformation record with visual and interactive properties.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property         | Type      | Required | Description                                                                       | Comments        |
-| ---------------- | --------- | -------- | --------------------------------------------------------------------------------- | --------------- |
-| `contributorRef` | `ref`     | ✅       | Reference to the org.hypercerts.claim.contributorInformation record this extends. |                 |
-| `videoUrl`       | `string`  | ❌       | Default video URL for this contributor across boards.                             | maxLength: 2048 |
-| `hoverImageUrl`  | `string`  | ❌       | Default hover image URL for this contributor across boards.                       | maxLength: 2048 |
-| `hoverIframeUrl` | `string`  | ❌       | Default hover iframe URL for this contributor across boards.                      | maxLength: 2048 |
-| `circularImage`  | `boolean` | ❌       | Default circular image crop setting for this contributor. Default: true.          |                 |
-| `url`            | `string`  | ❌       | Default click-through link URL for this contributor across boards.                | maxLength: 2048 |
-| `createdAt`      | `string`  | ✅       | Client-declared timestamp when this record was originally created.                |                 |
+| Property         | Type     | Required | Description                                                                       | Comments        |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------- | --------------- |
+| `contributorRef` | `ref`    | ✅       | Reference to the org.hypercerts.claim.contributorInformation record this extends. |                 |
+| `videoUrl`       | `string` | ❌       | Default video URL for this contributor across boards.                             | maxLength: 2048 |
+| `hoverImage`     | `union`  | ❌       | Default hover image for this contributor across boards, as a URI or image blob.   |                 |
+| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this contributor across boards.                      | maxLength: 2048 |
+| `url`            | `string` | ❌       | Default click-through link URL for this contributor across boards.                | maxLength: 2048 |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                |                 |
 
 ---
 
