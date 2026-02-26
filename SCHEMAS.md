@@ -438,6 +438,41 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
+### `app.certified.link.evm`
+
+**Description:** A verifiable link between an ATProto DID and an EVM wallet address, proven via a cryptographic signature. Currently supports EOA wallets via EIP-712 typed data signatures; the proof field is an open union to allow future signature methods.
+
+**Key:** `any`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                                                                                                                                   | Comments      |
+| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `address`   | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                           | maxLength: 42 |
+| `proof`     | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format. |               |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                            |               |
+
+#### Defs
+
+##### `app.certified.link.evm#eip712Proof`
+
+| Property    | Type     | Required | Description                                                                                                                                     |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `signature` | `string` | ✅       | ECDSA signature over the EIP-712 hash (hex-encoded with 0x prefix, 64 or 65 bytes).                                                             |
+| `message`   | `ref`    | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain. |
+
+##### `app.certified.link.evm#eip712Message`
+
+| Property     | Type     | Required | Description                                                                                                                                                          |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `did`        | `string` | ✅       | The ATProto DID being linked to the EVM address.                                                                                                                     |
+| `evmAddress` | `string` | ✅       | The EVM wallet address (must match the top-level address field).                                                                                                     |
+| `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. |
+| `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 |
+| `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         |
+
+---
+
 ## Type Definitions
 
 Common type definitions used across all protocols.
