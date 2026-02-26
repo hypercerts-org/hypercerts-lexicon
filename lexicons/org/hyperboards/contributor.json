@@ -1,0 +1,55 @@
+{
+  "lexicon": 1,
+  "id": "org.hyperboards.contributor",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Contributor presentation defaults reusable across multiple boards. Extends an org.hypercerts.claim.contributorInformation record with visual and interactive properties.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["contributorRef", "createdAt"],
+        "properties": {
+          "contributorRef": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Reference to the org.hypercerts.claim.contributorInformation record this extends."
+          },
+          "videoUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Default video URL for this contributor across boards.",
+            "maxLength": 2048
+          },
+          "hoverImageUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Default hover image URL for this contributor across boards.",
+            "maxLength": 2048
+          },
+          "hoverIframeUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Default hover iframe URL for this contributor across boards.",
+            "maxLength": 2048
+          },
+          "circularImage": {
+            "type": "boolean",
+            "description": "Default circular image crop setting for this contributor. Default: true."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Default click-through link URL for this contributor across boards.",
+            "maxLength": 2048
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}
