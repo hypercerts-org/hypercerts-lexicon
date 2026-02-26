@@ -535,20 +535,21 @@ External lexicons from other protocols and systems.
 
 ### `org.hyperboards.displayProfile`
 
-**Description:** User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards. Extends an org.hypercerts.claim.contributorInformation record with visual and interactive properties.
+**Description:** User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards.
 
-**Key:** `tid`
+**Key:** `literal:self`
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                       | Comments        |
-| ---------------- | -------- | -------- | --------------------------------------------------------------------------------- | --------------- |
-| `contributorRef` | `ref`    | ✅       | Reference to the org.hypercerts.claim.contributorInformation record this extends. |                 |
-| `videoUrl`       | `string` | ❌       | Default video URL for this contributor across boards.                             | maxLength: 2048 |
-| `hoverImage`     | `union`  | ❌       | Default hover image for this contributor across boards, as a URI or image blob.   |                 |
-| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this contributor across boards.                      | maxLength: 2048 |
-| `url`            | `string` | ❌       | Default click-through link URL for this contributor across boards.                | maxLength: 2048 |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                |                 |
+| Property         | Type     | Required | Description                                                                         | Comments                         |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------- | -------------------------------- |
+| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                 | maxLength: 640, maxGraphemes: 64 |
+| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob. |                                  |
+| `videoUrl`       | `string` | ❌       | Default video URL for this user across boards.                                      | maxLength: 2048                  |
+| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.            |                                  |
+| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                               | maxLength: 2048                  |
+| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                         | maxLength: 2048                  |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                  |                                  |
 
 ---
 

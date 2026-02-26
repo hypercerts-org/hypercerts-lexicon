@@ -4,21 +4,30 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards. Extends an org.hypercerts.claim.contributorInformation record with visual and interactive properties.",
-      "key": "tid",
+      "description": "User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards.",
+      "key": "literal:self",
       "record": {
         "type": "object",
-        "required": ["contributorRef", "createdAt"],
+        "required": ["createdAt"],
         "properties": {
-          "contributorRef": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "Reference to the org.hypercerts.claim.contributorInformation record this extends."
+          "displayName": {
+            "type": "string",
+            "description": "Display name override for this user on hyperboards.",
+            "maxLength": 640,
+            "maxGraphemes": 64
+          },
+          "image": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "Avatar or face image override for this user on hyperboards, as a URI or image blob."
           },
           "videoUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Default video URL for this contributor across boards.",
+            "description": "Default video URL for this user across boards.",
             "maxLength": 2048
           },
           "hoverImage": {
@@ -27,18 +36,18 @@
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#smallImage"
             ],
-            "description": "Default hover image for this contributor across boards, as a URI or image blob."
+            "description": "Default hover image for this user across boards, as a URI or image blob."
           },
           "hoverIframeUrl": {
             "type": "string",
             "format": "uri",
-            "description": "Default hover iframe URL for this contributor across boards.",
+            "description": "Default hover iframe URL for this user across boards.",
             "maxLength": 2048
           },
           "url": {
             "type": "string",
             "format": "uri",
-            "description": "Default click-through link URL for this contributor across boards.",
+            "description": "Default click-through link URL for this user across boards.",
             "maxLength": 2048
           },
           "createdAt": {
