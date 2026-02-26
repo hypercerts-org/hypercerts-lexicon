@@ -438,6 +438,37 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ---
 
+### `app.certified.link.evm`
+
+**Description:** A verifiable link between an ATProto DID and an EVM wallet address, proven via an EIP-712 typed data signature. Designed for cross-chain identity linking with support for EOA wallets.
+
+**Key:** `any`
+
+#### Properties
+
+| Property        | Type      | Required | Description                                                                                                                                                                                                                                                                                                   | Comments                           |
+| --------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `address`       | `string`  | ✅       | EVM wallet address (0x-prefixed, checksummed).                                                                                                                                                                                                                                                                | maxLength: 42                      |
+| `chainId`       | `integer` | ✅       | EVM chain ID that was used for the signature (e.g. 1 for Ethereum mainnet, 8453 for Base). This does not restrict the scope of the identity link to that chain; the identity applies across all EVM-compatible chains, since the signature proves ownership of the EOA which can be used on all those chains. |                                    |
+| `signature`     | `string`  | ✅       | EIP-712 typed data signature produced by the wallet (hex-encoded).                                                                                                                                                                                                                                            | maxLength: 1000                    |
+| `message`       | `ref`     | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain.                                                                                                                                                               |                                    |
+| `signatureType` | `string`  | ✅       | Signature verification method. Determines how a verifier should check the signature.                                                                                                                                                                                                                          | maxLength: 10, Known values: `EOA` |
+| `createdAt`     | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                            |                                    |
+
+#### Defs
+
+##### `app.certified.link.evm#eip712Message`
+
+| Property     | Type     | Required | Description                                                          |
+| ------------ | -------- | -------- | -------------------------------------------------------------------- |
+| `did`        | `string` | ✅       | The ATProto DID being linked to the EVM address.                     |
+| `evmAddress` | `string` | ✅       | The EVM wallet address (must match the top-level address field).     |
+| `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized).                          |
+| `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized). |
+| `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                         |
+
+---
+
 ## Type Definitions
 
 Common type definitions used across all protocols.
