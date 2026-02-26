@@ -40,7 +40,9 @@ function readLexicon(filePath) {
 function getTypeString(prop) {
   if (!prop.type) return "unknown";
   if (prop.type === "array") {
-    return prop.items?.type === "ref" ? "ref" : prop.items?.type || "array";
+    const itemType =
+      prop.items?.type === "ref" ? "ref" : prop.items?.type || "unknown";
+    return `${itemType}[]`;
   }
   return prop.type;
 }
@@ -284,19 +286,21 @@ function generateMainSection(mainDef, lexicon) {
 
   output.push(...generateDescription(mainDef.description));
 
-  // Determine key type
-  const keyType = mainDef.key || "tid";
-  output.push(`**Key:** \`${keyType}\``, "");
+  // Object types (e.g., celExpression) have no record key
+  if (mainDef.type === "record") {
+    const keyType = mainDef.key || "tid";
+    output.push(`**Key:** \`${keyType}\``, "");
+  }
 
-  // Standard properties table
-  if (mainDef.record) {
+  // Determine where properties live: record types nest under main.record,
+  // object types have properties directly on main
+  const propsSource = mainDef.record || mainDef;
+  const hasProperties = propsSource.properties !== undefined;
+
+  if (hasProperties) {
     output.push("#### Properties", "");
-    const required = mainDef.record.required || [];
-    const rows = extractPropertyRows(
-      mainDef.record,
-      required,
-      lexicon.data.defs,
-    );
+    const required = propsSource.required || [];
+    const rows = extractPropertyRows(propsSource, required, lexicon.data.defs);
 
     if (rows.length > 0) {
       const hasComments = rows.some((r) => r.comments);
@@ -304,7 +308,7 @@ function generateMainSection(mainDef, lexicon) {
     }
   }
 
-  return { output, hasProperties: mainDef.record?.properties !== undefined };
+  return { output, hasProperties };
 }
 
 function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
