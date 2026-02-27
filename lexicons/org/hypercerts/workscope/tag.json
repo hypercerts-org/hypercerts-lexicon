@@ -55,7 +55,7 @@
               "maxLength": 200
             },
             "maxLength": 50,
-            "description": "Optional array of alternative names or identifiers for this scope."
+            "description": "Alternative human-readable names for this scope (e.g., translations, abbreviations, or common synonyms). Unlike sameAs, these are plain-text labels, not links to external ontologies."
           },
           "sameAs": {
             "type": "array",
