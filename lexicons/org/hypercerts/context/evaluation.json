@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.evaluation",
+  "id": "org.hypercerts.context.evaluation",
   "defs": {
     "score": {
       "type": "object",

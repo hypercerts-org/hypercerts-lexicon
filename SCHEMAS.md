@@ -79,29 +79,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.attachment`
-
-**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property                 | Type     | Required | Description                                                                                                                                                                                                                               | Comments                             |
-| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `subjects`               | `ref`    | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                       |
-| `contentType`            | `string` | ❌       | The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc.                                                                                                                                                      | maxLength: 64                        |
-| `content`                | `union`  | ✅       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                       |
-| `title`                  | `string` | ✅       | Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')                                                                                                                                                     | maxLength: 256                       |
-| `shortDescription`       | `string` | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300   |
-| `shortDescriptionFacets` | `ref`    | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                      |
-| `description`            | `string` | ❌       | Optional longer description of this attachment, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.                                                                                       | maxLength: 30000, maxGraphemes: 3000 |
-| `descriptionFacets`      | `ref`    | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                                                                                                  |                                      |
-| `location`               | `ref`    | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                      |
-| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                      |
-
----
-
 ### `org.hypercerts.claim.collection`
 
 **Description:** A collection/group of items (activities and/or other collections). Collections support recursive nesting.
@@ -168,37 +145,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.evaluation`
-
-**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property       | Type     | Required | Description                                                                                                                                                          | Comments                            |
-| -------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                       |                                     |
-| `evaluators`   | `ref`    | ✅       | DIDs of the evaluators                                                                                                                                               | maxLength: 1000                     |
-| `content`      | `union`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                           | maxLength: 100                      |
-| `measurements` | `ref`    | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement | maxLength: 100                      |
-| `summary`      | `string` | ✅       | Brief evaluation summary                                                                                                                                             | maxLength: 5000, maxGraphemes: 1000 |
-| `score`        | `ref`    | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                  |                                     |
-| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                     |                                     |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                    |                                     |
-
-#### Defs
-
-##### `org.hypercerts.claim.evaluation#score`
-
-| Property | Type      | Required | Description                                  |
-| -------- | --------- | -------- | -------------------------------------------- |
-| `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
-| `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
-| `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
-
----
-
 ### `org.hypercerts.claim.measurement`
 
 **Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
@@ -241,6 +187,60 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `rightsDescription` | `string` | ✅       | Detailed explanation of the rights holders' permissions, restrictions, and conditions                  | maxLength: 10000, maxGraphemes: 1000 |
 | `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document.                                     |                                      |
 | `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                      |                                      |
+
+---
+
+### `org.hypercerts.context.attachment`
+
+**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property                 | Type     | Required | Description                                                                                                                                                                                                                               | Comments                             |
+| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subjects`               | `ref`    | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                       |
+| `contentType`            | `string` | ❌       | The type of attachment, e.g. report, audit, evidence, testimonial, methodology, etc.                                                                                                                                                      | maxLength: 64                        |
+| `content`                | `union`  | ✅       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                       |
+| `title`                  | `string` | ✅       | Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')                                                                                                                                                     | maxLength: 256                       |
+| `shortDescription`       | `string` | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300   |
+| `shortDescriptionFacets` | `ref`    | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                      |
+| `description`            | `string` | ❌       | Optional longer description of this attachment, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.                                                                                       | maxLength: 30000, maxGraphemes: 3000 |
+| `descriptionFacets`      | `ref`    | ❌       | Rich text annotations for `description` (mentions, URLs, hashtags, etc).                                                                                                                                                                  |                                      |
+| `location`               | `ref`    | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                      |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                      |
+
+---
+
+### `org.hypercerts.context.evaluation`
+
+**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property       | Type     | Required | Description                                                                                                                                                          | Comments                            |
+| -------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                       |                                     |
+| `evaluators`   | `ref`    | ✅       | DIDs of the evaluators                                                                                                                                               | maxLength: 1000                     |
+| `content`      | `union`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                           | maxLength: 100                      |
+| `measurements` | `ref`    | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement | maxLength: 100                      |
+| `summary`      | `string` | ✅       | Brief evaluation summary                                                                                                                                             | maxLength: 5000, maxGraphemes: 1000 |
+| `score`        | `ref`    | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                  |                                     |
+| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                     |                                     |
+| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                    |                                     |
+
+#### Defs
+
+##### `org.hypercerts.context.evaluation#score`
+
+| Property | Type      | Required | Description                                  |
+| -------- | --------- | -------- | -------------------------------------------- |
+| `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
+| `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
+| `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
 
 ---
 
