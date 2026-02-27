@@ -53,12 +53,8 @@
           },
           "workScope": {
             "type": "union",
-            "refs": [
-              "org.hypercerts.workscope.cel",
-              "com.atproto.repo.strongRef",
-              "#workScopeString"
-            ],
-            "description": "Work scope definition. A CEL expression for structured, machine-evaluable scopes; a strongRef for future extensibility; or a free-form string for simple and legacy scopes."
+            "refs": ["org.hypercerts.workscope.cel", "#workScopeString"],
+            "description": "Work scope definition. A CEL expression for structured, machine-evaluable scopes or a free-form string for simple and legacy scopes."
           },
           "startDate": {
             "type": "string",
