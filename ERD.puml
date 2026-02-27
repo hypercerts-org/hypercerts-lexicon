@@ -122,8 +122,8 @@ dataclass contributorInformation {
     !endif
 }
 
-' org.hypercerts.claim.contributionDetails
-dataclass contributionDetails {
+' org.hypercerts.claim.contribution
+dataclass contribution {
     !if (SHOW_FIELDS == "true")
     role?
     contributionDescription?
@@ -313,7 +313,7 @@ acknowledgement::context --> collection
 acknowledgement::context --> activity
 
 activity::contributors -l--> contributorInformation
-activity::contributors --> contributionDetails
+activity::contributors --> contribution
 activity::rights --> rights
 activity::locations --> location
 
