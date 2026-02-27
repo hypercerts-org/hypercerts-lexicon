@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.measurement",
+  "id": "org.hypercerts.context.measurement",
   "defs": {
     "main": {
       "type": "record",

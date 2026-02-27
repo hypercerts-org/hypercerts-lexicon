@@ -94,7 +94,7 @@ dataclass attachment {
     !endif
 }
 
-' org.hypercerts.claim.measurement
+' org.hypercerts.context.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
     subject?

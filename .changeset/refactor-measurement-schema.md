@@ -6,7 +6,7 @@ Refactor measurement lexicon schema: convert subject to subjects array, add unit
 
 **Breaking Changes:**
 
-- **Measurement lexicon (`org.hypercerts.claim.measurement`):**
+- **Measurement lexicon (`org.hypercerts.context.measurement`):**
   - Changed `subject` (single strongRef) to `subjects` (array of strongRefs, maxLength: 100)
   - Changed required fields: removed `measurers` from required, added `unit` as required
   - Added `unit` field (required, string, maxLength: 50): The unit of the measured value (e.g. kg CO₂e, hectares, %, index score)

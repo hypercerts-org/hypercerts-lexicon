@@ -145,33 +145,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.measurement`
-
-**Description:** Measurement data related to one or more records (e.g. activities, projects, etc.).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property        | Type       | Required | Description                                                                                                                                             | Comments                           |
-| --------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `subjects`      | `ref[]`    | ❌       | Strong references to the records this measurement refers to (e.g. activities, projects, or claims).                                                     | maxLength: 100                     |
-| `metric`        | `string`   | ✅       | The metric being measured, e.g. forest area restored, number of users, etc.                                                                             | maxLength: 500                     |
-| `unit`          | `string`   | ✅       | The unit of the measured value (e.g. kg CO₂e, hectares, %, index score).                                                                                | maxLength: 50                      |
-| `value`         | `string`   | ✅       | The measured value as a numeric string (e.g. '1234.56')                                                                                                 | maxLength: 500                     |
-| `startDate`     | `string`   | ❌       | The start date and time when the measurement began.                                                                                                     |                                    |
-| `endDate`       | `string`   | ❌       | The end date and time when the measurement ended. For one-time measurements, this should equal the start date.                                          |                                    |
-| `locations`     | `ref[]`    | ❌       | Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon. | maxLength: 100                     |
-| `methodType`    | `string`   | ❌       | Short identifier for the measurement methodology                                                                                                        | maxLength: 30                      |
-| `methodURI`     | `string`   | ❌       | URI to methodology documentation, standard protocol, or measurement procedure                                                                           |                                    |
-| `evidenceURI`   | `string[]` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)                                                | maxLength: 50                      |
-| `measurers`     | `ref[]`    | ❌       | DIDs of the entities that performed this measurement                                                                                                    | maxLength: 100                     |
-| `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
-| `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
-| `createdAt`     | `string`   | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
-
----
-
 ### `org.hypercerts.claim.rights`
 
 **Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
@@ -221,16 +194,16 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type      | Required | Description                                                                                                                                                          | Comments                            |
-| -------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `subject`      | `ref`     | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                       |                                     |
-| `evaluators`   | `ref[]`   | ✅       | DIDs of the evaluators                                                                                                                                               | maxLength: 1000                     |
-| `content`      | `union[]` | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                           | maxLength: 100                      |
-| `measurements` | `ref[]`   | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement | maxLength: 100                      |
-| `summary`      | `string`  | ✅       | Brief evaluation summary                                                                                                                                             | maxLength: 5000, maxGraphemes: 1000 |
-| `score`        | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                  |                                     |
-| `location`     | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                     |                                     |
-| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                    |                                     |
+| Property       | Type      | Required | Description                                                                                                                                                            | Comments                            |
+| -------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `subject`      | `ref`     | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                         |                                     |
+| `evaluators`   | `ref[]`   | ✅       | DIDs of the evaluators                                                                                                                                                 | maxLength: 1000                     |
+| `content`      | `union[]` | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                             | maxLength: 100                      |
+| `measurements` | `ref[]`   | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.context.measurement | maxLength: 100                      |
+| `summary`      | `string`  | ✅       | Brief evaluation summary                                                                                                                                               | maxLength: 5000, maxGraphemes: 1000 |
+| `score`        | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                    |                                     |
+| `location`     | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                       |                                     |
+| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                      |                                     |
 
 #### Defs
 
@@ -241,6 +214,33 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
 | `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
 | `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
+
+---
+
+### `org.hypercerts.context.measurement`
+
+**Description:** Measurement data related to one or more records (e.g. activities, projects, etc.).
+
+**Key:** `tid`
+
+#### Properties
+
+| Property        | Type       | Required | Description                                                                                                                                             | Comments                           |
+| --------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `subjects`      | `ref[]`    | ❌       | Strong references to the records this measurement refers to (e.g. activities, projects, or claims).                                                     | maxLength: 100                     |
+| `metric`        | `string`   | ✅       | The metric being measured, e.g. forest area restored, number of users, etc.                                                                             | maxLength: 500                     |
+| `unit`          | `string`   | ✅       | The unit of the measured value (e.g. kg CO₂e, hectares, %, index score).                                                                                | maxLength: 50                      |
+| `value`         | `string`   | ✅       | The measured value as a numeric string (e.g. '1234.56')                                                                                                 | maxLength: 500                     |
+| `startDate`     | `string`   | ❌       | The start date and time when the measurement began.                                                                                                     |                                    |
+| `endDate`       | `string`   | ❌       | The end date and time when the measurement ended. For one-time measurements, this should equal the start date.                                          |                                    |
+| `locations`     | `ref[]`    | ❌       | Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon. | maxLength: 100                     |
+| `methodType`    | `string`   | ❌       | Short identifier for the measurement methodology                                                                                                        | maxLength: 30                      |
+| `methodURI`     | `string`   | ❌       | URI to methodology documentation, standard protocol, or measurement procedure                                                                           |                                    |
+| `evidenceURI`   | `string[]` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)                                                | maxLength: 50                      |
+| `measurers`     | `ref[]`    | ❌       | DIDs of the entities that performed this measurement                                                                                                    | maxLength: 100                     |
+| `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
+| `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
+| `createdAt`     | `string`   | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
 
 ---
 
