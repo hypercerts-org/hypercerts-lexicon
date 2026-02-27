@@ -147,7 +147,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.claim.measurement`
 
-**Description:** Measurement data related to one or more hypercert records (e.g. activities).
+**Description:** Measurement data related to one or more records (e.g. activities, projects, etc.).
 
 **Key:** `tid`
 

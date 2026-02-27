@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Measurement data related to one or more hypercert records (e.g. activities).",
+      "description": "Measurement data related to one or more records (e.g. activities, projects, etc.).",
       "key": "tid",
       "record": {
         "type": "object",
