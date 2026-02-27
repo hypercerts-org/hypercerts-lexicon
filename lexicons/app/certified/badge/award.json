@@ -25,6 +25,12 @@
             "description": "Optional statement explaining the reason for this badge award.",
             "maxLength": 500
           },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional URL the badge award links to.",
+            "maxLength": 2048
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

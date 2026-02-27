@@ -348,12 +348,13 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                     | Comments       |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                |
-| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                |
-| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500 |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                |
+| Property    | Type     | Required | Description                                                                                                                                     | Comments        |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                 |
+| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                 |
+| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500  |
+| `url`       | `string` | ❌       | Optional URL the badge award links to.                                                                                                          | maxLength: 2048 |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                 |
 
 ---
 
