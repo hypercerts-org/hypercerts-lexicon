@@ -526,16 +526,15 @@ External lexicons from other protocols and systems.
 
 ##### `org.hyperboards.board#contributorOverride`
 
-| Property         | Type      | Required | Description                                                                                                                                                                                                            |
-| ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
-| `displayName`    | `string`  | ❌       | Display name override for this contributor on this board.                                                                                                                                                              |
-| `image`          | `union`   | ❌       | Avatar or face image override for this contributor on this board, as a URI or image blob.                                                                                                                              |
-| `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |
-| `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
-| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
-| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
-| `isBlueprint`    | `boolean` | ❌       | Whether this item is a blueprint placeholder (not a real contributor).                                                                                                                                                 |
+| Property         | Type     | Required | Description                                                                                                                                                                                                            |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contributor`    | `union`  | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
+| `displayName`    | `string` | ❌       | Display name override for this contributor on this board.                                                                                                                                                              |
+| `image`          | `union`  | ❌       | Avatar or face image override for this contributor on this board, as a URI or image blob.                                                                                                                              |
+| `video`          | `union`  | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |
+| `hoverImage`     | `union`  | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
+| `hoverIframeUrl` | `string` | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
+| `url`            | `string` | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
 
 ---
 

@@ -141,10 +141,6 @@
           "format": "uri",
           "description": "Click-through link URL for this contributor.",
           "maxLength": 2048
-        },
-        "isBlueprint": {
-          "type": "boolean",
-          "description": "Whether this item is a blueprint placeholder (not a real contributor)."
         }
       }
     }
