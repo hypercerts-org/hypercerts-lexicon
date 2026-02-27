@@ -2,25 +2,6 @@
   "lexicon": 1,
   "id": "org.hypercerts.context.evaluation",
   "defs": {
-    "score": {
-      "type": "object",
-      "description": "Overall score for an evaluation on a numeric scale.",
-      "required": ["min", "max", "value"],
-      "properties": {
-        "min": {
-          "type": "integer",
-          "description": "Minimum value of the scale, e.g. 0 or 1."
-        },
-        "max": {
-          "type": "integer",
-          "description": "Maximum value of the scale, e.g. 5 or 10."
-        },
-        "value": {
-          "type": "integer",
-          "description": "Score within the inclusive range [min, max]."
-        }
-      }
-    },
     "main": {
       "type": "record",
       "description": "An evaluation of a hypercert record (e.g. an activity and its impact).",
@@ -85,6 +66,25 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
+        }
+      }
+    },
+    "score": {
+      "type": "object",
+      "description": "Overall score for an evaluation on a numeric scale.",
+      "required": ["min", "max", "value"],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "description": "Minimum value of the scale, e.g. 0 or 1."
+        },
+        "max": {
+          "type": "integer",
+          "description": "Maximum value of the scale, e.g. 5 or 10."
+        },
+        "value": {
+          "type": "integer",
+          "description": "Score within the inclusive range [min, max]."
         }
       }
     }
