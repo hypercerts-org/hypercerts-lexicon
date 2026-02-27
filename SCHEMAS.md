@@ -468,6 +468,12 @@ Common type definitions used across all protocols.
 | -------- | ------ | -------- | ----------------- |
 | `image`  | `blob` | ✅       | Image (up to 5MB) |
 
+##### `org.hypercerts.defs#smallVideo`
+
+| Property | Type   | Required | Description        |
+| -------- | ------ | -------- | ------------------ |
+| `video`  | `blob` | ✅       | Video (up to 20MB) |
+
 ##### `org.hypercerts.defs#largeImage`
 
 | Property | Type   | Required | Description        |
@@ -525,7 +531,7 @@ External lexicons from other protocols and systems.
 | `itemRef`        | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
 | `displayName`    | `string`  | ❌       | Display name override for this contributor on this board.                                                                                                                                                              |
 | `image`          | `union`   | ❌       | Avatar or face image override for this contributor on this board, as a URI or image blob.                                                                                                                              |
-| `videoUrl`       | `string`  | ❌       | Video URL (direct or embed) displayed for this contributor.                                                                                                                                                            |
+| `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |
 | `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
 | `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
 | `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
@@ -541,15 +547,15 @@ External lexicons from other protocols and systems.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                         | Comments                         |
-| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------- | -------------------------------- |
-| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                 | maxLength: 640, maxGraphemes: 64 |
-| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob. |                                  |
-| `videoUrl`       | `string` | ❌       | Default video URL for this user across boards.                                      | maxLength: 2048                  |
-| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.            |                                  |
-| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                               | maxLength: 2048                  |
-| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                         | maxLength: 2048                  |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                  |                                  |
+| Property         | Type     | Required | Description                                                                                     | Comments                         |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- | -------------------------------- |
+| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                             | maxLength: 640, maxGraphemes: 64 |
+| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob.             |                                  |
+| `video`          | `union`  | ❌       | Default video for this user across boards, as a URI (embed/direct link) or uploaded video blob. |                                  |
+| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.                        |                                  |
+| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                           | maxLength: 2048                  |
+| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                     | maxLength: 2048                  |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                              |                                  |
 
 ---
 

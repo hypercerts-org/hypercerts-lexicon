@@ -24,11 +24,13 @@
             ],
             "description": "Avatar or face image override for this user on hyperboards, as a URI or image blob."
           },
-          "videoUrl": {
-            "type": "string",
-            "format": "uri",
-            "description": "Default video URL for this user across boards.",
-            "maxLength": 2048
+          "video": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallVideo"
+            ],
+            "description": "Default video for this user across boards, as a URI (embed/direct link) or uploaded video blob."
           },
           "hoverImage": {
             "type": "union",

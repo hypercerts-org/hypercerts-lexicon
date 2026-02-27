@@ -120,11 +120,10 @@
           "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
           "description": "Avatar or face image override for this contributor on this board, as a URI or image blob."
         },
-        "videoUrl": {
-          "type": "string",
-          "format": "uri",
-          "description": "Video URL (direct or embed) displayed for this contributor.",
-          "maxLength": 2048
+        "video": {
+          "type": "union",
+          "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallVideo"],
+          "description": "Video for this contributor, as a URI (embed/direct link) or uploaded video blob."
         },
         "hoverImage": {
           "type": "union",
