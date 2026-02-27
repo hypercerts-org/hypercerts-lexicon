@@ -375,7 +375,7 @@ external images.
 
 ### Acknowledging Inclusion
 
-The `org.hypercerts.acknowledgement` record enables bidirectional
+The `org.hypercerts.context.acknowledgement` record enables bidirectional
 linking between records that live in different PDS repositories. When
 one user includes another user's record (e.g. adding an activity to a
 collection), the owner of the included record can create an

@@ -7,24 +7,6 @@
 
 Hypercerts-specific lexicons for tracking impact work and claims.
 
-### `org.hypercerts.acknowledgement`
-
-**Description:** Acknowledges a record (subject) or its relationship in a context. Created in the acknowledging actor's repo to form a bidirectional link. Examples: a contributor acknowledging inclusion in an activity, an activity owner acknowledging inclusion in a collection, or a record owner acknowledging an evaluation.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property       | Type      | Required | Description                                                                                                                   | Comments                             |
-| -------------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `subject`      | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                            |                                      |
-| `context`      | `ref`     | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). |                                      |
-| `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                          |                                      |
-| `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                        | maxLength: 10000, maxGraphemes: 1000 |
-| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                            |                                      |
-
----
-
 ### `org.hypercerts.claim.activity`
 
 **Description:** A hypercert record tracking impact work.
@@ -159,6 +141,24 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `rightsDescription` | `string` | ✅       | Detailed explanation of the rights holders' permissions, restrictions, and conditions                  | maxLength: 10000, maxGraphemes: 1000 |
 | `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document.                                     |                                      |
 | `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                      |                                      |
+
+---
+
+### `org.hypercerts.context.acknowledgement`
+
+**Description:** Acknowledges a record (subject) or its relationship in a context. Created in the acknowledging actor's repo to form a bidirectional link. Examples: a contributor acknowledging inclusion in an activity, an activity owner acknowledging inclusion in a collection, or a record owner acknowledging an evaluation.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property       | Type      | Required | Description                                                                                                                   | Comments                             |
+| -------------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subject`      | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                            |                                      |
+| `context`      | `ref`     | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). |                                      |
+| `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                          |                                      |
+| `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                        | maxLength: 10000, maxGraphemes: 1000 |
+| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                            |                                      |
 
 ---
 
