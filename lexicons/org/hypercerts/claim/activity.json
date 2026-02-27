@@ -30,18 +30,9 @@
             }
           },
           "description": {
-            "type": "string",
-            "description": "Optional longer description of this activity claim, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.",
-            "maxLength": 30000,
-            "maxGraphemes": 3000
-          },
-          "descriptionFacets": {
-            "type": "array",
-            "description": "Rich text annotations for `description` (mentions, URLs, hashtags, etc).",
-            "items": {
-              "type": "ref",
-              "ref": "app.bsky.richtext.facet"
-            }
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description, represented as a Leaflet linear document."
           },
           "image": {
             "type": "union",
