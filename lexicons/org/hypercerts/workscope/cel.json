@@ -1,10 +1,10 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.ontology.celExpression",
+  "id": "org.hypercerts.workscope.cel",
   "defs": {
     "main": {
       "type": "object",
-      "description": "A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.ontology.workScopeTag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.",
+      "description": "A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.workscope.tag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.",
       "required": ["expression", "usedTags", "version", "createdAt"],
       "properties": {
         "expression": {
@@ -20,7 +20,7 @@
             "ref": "com.atproto.repo.strongRef"
           },
           "maxLength": 100,
-          "description": "Strong references to org.hypercerts.ontology.workScopeTag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records."
+          "description": "Strong references to org.hypercerts.workscope.tag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records."
         },
         "version": {
           "type": "string",

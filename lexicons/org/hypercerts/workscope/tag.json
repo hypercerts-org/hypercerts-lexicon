@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.ontology.workScopeTag",
+  "id": "org.hypercerts.workscope.tag",
   "defs": {
     "main": {
       "type": "record",
@@ -8,22 +8,22 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["key", "label", "createdAt"],
+        "required": ["key", "name", "createdAt"],
         "properties": {
           "key": {
             "type": "string",
             "description": "Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.",
             "maxLength": 120
           },
-          "label": {
+          "name": {
             "type": "string",
-            "description": "Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')",
+            "description": "Human-readable name for this scope.",
             "maxLength": 200
           },
-          "kind": {
+          "category": {
             "type": "string",
             "description": "Category type of this scope.",
-            "knownValues": ["topic", "language", "domain", "method", "tag"],
+            "knownValues": ["topic", "language", "domain", "method"],
             "maxLength": 50
           },
           "description": {
@@ -35,7 +35,7 @@
           "parent": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag."
+            "description": "Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.workscope.tag."
           },
           "status": {
             "type": "string",
@@ -46,7 +46,7 @@
           "supersededBy": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag."
+            "description": "When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.workscope.tag."
           },
           "aliases": {
             "type": "array",
@@ -65,15 +65,15 @@
               "maxLength": 2048
             },
             "maxLength": 20,
-            "description": "Links to equivalent concepts in external ontologies (e.g., Wikidata QIDs, ENVO terms, SDG targets)."
+            "description": "URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation."
           },
-          "externalReference": {
+          "referenceDocument": {
             "type": "union",
             "refs": [
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#smallBlob"
             ],
-            "description": "Optional external reference for this scope as a URI or blob."
+            "description": "Link to a governance or reference document where this work scope tag is defined and further explained."
           },
           "createdAt": {
             "type": "string",

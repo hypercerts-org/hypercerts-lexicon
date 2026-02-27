@@ -266,22 +266,22 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.ontology.celExpression`
+### `org.hypercerts.workscope.cel`
 
-**Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.ontology.workScopeTag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.
+**Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.workscope.tag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                                                                                                                                                 | Comments                             |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `expression` | `string` | ✅       | A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'                                 | maxLength: 10000, maxGraphemes: 5000 |
-| `usedTags`   | `ref[]`  | ✅       | Strong references to org.hypercerts.ontology.workScopeTag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records. | maxLength: 100                       |
-| `version`    | `string` | ✅       | CEL context schema version.                                                                                                                                                                 | maxLength: 16, Known values: `v1`    |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this expression was originally created.                                                                                                                      |                                      |
+| Property     | Type     | Required | Description                                                                                                                                                                         | Comments                             |
+| ------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `expression` | `string` | ✅       | A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'                         | maxLength: 10000, maxGraphemes: 5000 |
+| `usedTags`   | `ref[]`  | ✅       | Strong references to org.hypercerts.workscope.tag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records. | maxLength: 100                       |
+| `version`    | `string` | ✅       | CEL context schema version.                                                                                                                                                         | maxLength: 16, Known values: `v1`    |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this expression was originally created.                                                                                                              |                                      |
 
 ---
 
-### `org.hypercerts.ontology.workScopeTag`
+### `org.hypercerts.workscope.tag`
 
 **Description:** A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels. Tags are composed into structured expressions via CEL (Common Expression Language) on activity records.
 
@@ -289,19 +289,19 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property            | Type       | Required | Description                                                                                                                                                                           | Comments                                                                    |
-| ------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `key`               | `string`   | ✅       | Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.   | maxLength: 120                                                              |
-| `label`             | `string`   | ✅       | Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')                                                                                         | maxLength: 200                                                              |
-| `kind`              | `string`   | ❌       | Category type of this scope.                                                                                                                                                          | maxLength: 50, Known values: `topic`, `language`, `domain`, `method`, `tag` |
-| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                                                                                                            | maxLength: 10000, maxGraphemes: 1000                                        |
-| `parent`            | `ref`      | ❌       | Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag. |                                                                             |
-| `status`            | `string`   | ❌       | Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.                                                 | maxLength: 20, Known values: `proposed`, `accepted`, `deprecated`           |
-| `supersededBy`      | `ref`      | ❌       | When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.ontology.workScopeTag.               |                                                                             |
-| `aliases`           | `string[]` | ❌       | Optional array of alternative names or identifiers for this scope.                                                                                                                    | maxLength: 50                                                               |
-| `sameAs`            | `string[]` | ❌       | Links to equivalent concepts in external ontologies (e.g., Wikidata QIDs, ENVO terms, SDG targets).                                                                                   | maxLength: 20                                                               |
-| `externalReference` | `union`    | ❌       | Optional external reference for this scope as a URI or blob.                                                                                                                          |                                                                             |
-| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                    |                                                                             |
+| Property            | Type       | Required | Description                                                                                                                                                                         | Comments                                                             |
+| ------------------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `key`               | `string`   | ✅       | Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions. | maxLength: 120                                                       |
+| `name`              | `string`   | ✅       | Human-readable name for this scope.                                                                                                                                                 | maxLength: 200                                                       |
+| `category`          | `string`   | ❌       | Category type of this scope.                                                                                                                                                        | maxLength: 50, Known values: `topic`, `language`, `domain`, `method` |
+| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                                                                                                          | maxLength: 10000, maxGraphemes: 1000                                 |
+| `parent`            | `ref`      | ❌       | Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.       |                                                                      |
+| `status`            | `string`   | ❌       | Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.                                               | maxLength: 20, Known values: `proposed`, `accepted`, `deprecated`    |
+| `supersededBy`      | `ref`      | ❌       | When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.                     |                                                                      |
+| `aliases`           | `string[]` | ❌       | Optional array of alternative names or identifiers for this scope.                                                                                                                  | maxLength: 50                                                        |
+| `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.      | maxLength: 20                                                        |
+| `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                              |                                                                      |
+| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                  |                                                                      |
 
 ---
 

@@ -67,16 +67,16 @@ const activityRecord = {
   shortDescription: "Description here",
   // workScope can be a CEL expression (structured, machine-evaluable):
   workScope: {
-    $type: "org.hypercerts.ontology.celExpression",
+    $type: "org.hypercerts.workscope.cel",
     expression:
       "scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'",
     usedTags: [
       {
-        uri: "at://did:plc:alice/org.hypercerts.ontology.workScopeTag/3k2abc",
+        uri: "at://did:plc:alice/org.hypercerts.workscope.tag/3k2abc",
         cid: "...",
       },
       {
-        uri: "at://did:plc:alice/org.hypercerts.ontology.workScopeTag/7x9def",
+        uri: "at://did:plc:alice/org.hypercerts.workscope.tag/7x9def",
         cid: "...",
       },
     ],
@@ -84,7 +84,7 @@ const activityRecord = {
     createdAt: new Date().toISOString(),
   },
   // OR a strongRef to a single work scope tag:
-  // workScope: { uri: "at://did:plc:alice/org.hypercerts.ontology.workScopeTag/abc123", cid: "..." },
+  // workScope: { uri: "at://did:plc:alice/org.hypercerts.workscope.tag/abc123", cid: "..." },
   // OR a simple string: workScope: { $type: "...#workScopeString", scope: "Environmental conservation" },
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
