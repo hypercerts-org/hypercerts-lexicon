@@ -492,7 +492,7 @@ External lexicons from other protocols and systems.
 
 ---
 
-### `org.hyperboards.config`
+### `org.hyperboards.board`
 
 **Description:** Configuration record for a hyperboard, wrapping an underlying activity or collection with visual presentation settings. Stored in the creator's PDS.
 
@@ -500,16 +500,16 @@ External lexicons from other protocols and systems.
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                              | Comments        |
-| ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------- | --------------- |
-| `subject`   | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes. |                 |
-| `config`    | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
-| `items`     | `ref[]`  | ❌       | Per-contributor presentation overrides for this board.                                                   | maxLength: 1000 |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
+| Property               | Type     | Required | Description                                                                                              | Comments        |
+| ---------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`              | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes. |                 |
+| `config`               | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
+| `contributorOverrides` | `ref[]`  | ❌       | Per-contributor visual presentation overrides for this board.                                            | maxLength: 1000 |
+| `createdAt`            | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
 
 #### Defs
 
-##### `org.hyperboards.config#boardConfig`
+##### `org.hyperboards.board#boardConfig`
 
 | Property              | Type      | Required | Description                                                           |
 | --------------------- | --------- | -------- | --------------------------------------------------------------------- |
@@ -524,11 +524,11 @@ External lexicons from other protocols and systems.
 | `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  |
 | `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
 
-##### `org.hyperboards.config#boardItem`
+##### `org.hyperboards.board#contributorOverride`
 
 | Property         | Type      | Required | Description                                                                                                                                                                                                            |
 | ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `itemRef`        | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
+| `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
 | `displayName`    | `string`  | ❌       | Display name override for this contributor on this board.                                                                                                                                                              |
 | `image`          | `union`   | ❌       | Avatar or face image override for this contributor on this board, as a URI or image blob.                                                                                                                              |
 | `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |

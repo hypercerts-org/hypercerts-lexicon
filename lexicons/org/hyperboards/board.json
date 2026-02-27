@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hyperboards.config",
+  "id": "org.hyperboards.board",
   "defs": {
     "main": {
       "type": "record",
@@ -20,13 +20,13 @@
             "ref": "#boardConfig",
             "description": "Board-level visual configuration (background, colors, aspect ratio)."
           },
-          "items": {
+          "contributorOverrides": {
             "type": "array",
-            "description": "Per-contributor presentation overrides for this board.",
+            "description": "Per-contributor visual presentation overrides for this board.",
             "maxLength": 1000,
             "items": {
               "type": "ref",
-              "ref": "#boardItem"
+              "ref": "#contributorOverride"
             }
           },
           "createdAt": {
@@ -96,12 +96,12 @@
         }
       }
     },
-    "boardItem": {
+    "contributorOverride": {
       "type": "object",
-      "description": "Per-contributor presentation override within a specific board.",
-      "required": ["itemRef"],
+      "description": "Visual presentation override for a specific contributor within a board.",
+      "required": ["contributor"],
       "properties": {
-        "itemRef": {
+        "contributor": {
           "type": "union",
           "refs": [
             "com.atproto.repo.strongRef",

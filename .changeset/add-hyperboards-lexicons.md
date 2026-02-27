@@ -2,4 +2,4 @@
 "@hypercerts-org/lexicon": minor
 ---
 
-Add `org.hyperboards.config` and `org.hyperboards.displayProfile` lexicons for hyperboard visual presentation records.
+Add `org.hyperboards.board` and `org.hyperboards.displayProfile` lexicons for hyperboard visual presentation records.
