@@ -9,3 +9,7 @@ pnpm-lock.yaml
 generated/
 tmp/
 .changeset/pre.json
+.opencode/
+.claude/
+.codex/
+.gemini/
