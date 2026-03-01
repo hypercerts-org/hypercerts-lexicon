@@ -133,7 +133,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.claim.contributionDetails`
+### `org.hypercerts.claim.contribution`
 
 **Description:** Details about a specific contribution including role, description, and timeframe.
 
