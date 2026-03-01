@@ -97,14 +97,18 @@ dataclass attachment {
 ' org.hypercerts.context.measurement
 dataclass measurement {
     !if (SHOW_FIELDS == "true")
-    subject?
-    measurers[]
+    subjects[]?
+    measurers[]?
     metric
+    unit
     value
+    startDate?
+    endDate?
     methodType?
     methodURI?
     evidenceURI[]?
-    location?
+    locations[]?
+    comment?
     createdAt
     !endif
 }
@@ -307,7 +311,7 @@ measurement::subjects --> activity
 !if (SHOW_FIELDS == "true")
 class " " as hiddenLocation2 <<Ghost>>
 hide hiddenLocation2 circle
-measurement::location --> hiddenLocation2
+measurement::locations --> hiddenLocation2
 ' Also ensure the hidden class is somewhere "en route" to location
 hiddenLocation2 -[hidden]-> location
 !else
