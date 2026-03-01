@@ -4,10 +4,11 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A declaration of a Hypercert account profile.",
+      "description": "A declaration of a Certified account profile.",
       "key": "literal:self",
       "record": {
         "type": "object",
+        "required": ["createdAt"],
         "properties": {
           "displayName": {
             "type": "string",
