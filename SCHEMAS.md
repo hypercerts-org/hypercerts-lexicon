@@ -377,7 +377,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ### `app.certified.actor.profile`
 
-**Description:** A declaration of a Hypercert account profile.
+**Description:** A declaration of a Certified account profile.
 
 **Key:** `literal:self`
 
@@ -391,7 +391,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `website`     | `string` | ❌       | Account website URL                                                            |                                    |
 | `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
 | `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
-| `createdAt`   | `string` | ❌       | Client-declared timestamp when this record was originally created              |                                    |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created              |                                    |
 
 ---
 
