@@ -219,7 +219,7 @@ dataclass collection {
 dataclass acknowledgement {
     !if (SHOW_FIELDS == "true")
     subject
-    context
+    context?
     acknowledged
     comment?
     createdAt
