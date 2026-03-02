@@ -500,12 +500,12 @@ External lexicons from other protocols and systems.
 
 #### Properties
 
-| Property              | Type     | Required | Description                                                                                                                                                                                                                                    | Comments        |
-| --------------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `subject`             | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes.                                                                                                                                       |                 |
-| `config`              | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                                                                                                                                                        |                 |
-| `contributorDefaults` | `ref[]`  | ❌       | Per-contributor default visual settings for this board. Each entry provides fallback values for a contributor's appearance, unless the entry's override flag forces the board's values to take precedence over the contributor's own settings. | maxLength: 1000 |
-| `createdAt`           | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                             |                 |
+| Property                 | Type     | Required | Description                                                                                                                                                                  | Comments        |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`                | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes.                                                                     |                 |
+| `config`                 | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                                                                                      |                 |
+| `contributorAppearances` | `ref[]`  | ❌       | Per-contributor appearance settings for this board. Each entry configures how a specific contributor is visually presented, such as display name, avatar, and hover effects. | maxLength: 1000 |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                           |                 |
 
 #### Defs
 
@@ -524,12 +524,12 @@ External lexicons from other protocols and systems.
 | `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  |
 | `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
 
-##### `org.hyperboards.board#contributorDefault`
+##### `org.hyperboards.board#contributorAppearance`
 
 | Property         | Type      | Required | Description                                                                                                                                                                                                            |
 | ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
-| `override`       | `boolean` | ❌       | When true, these values take precedence over the contributor's own profile and display settings. When false or omitted, they are only used as fallbacks if the contributor has not set their own settings.             |
+| `enforced`       | `boolean` | ❌       | When true, these appearance settings take precedence over the contributor's own display profile. When false or omitted, they serve as fallbacks.                                                                       |
 | `displayName`    | `string`  | ❌       | Default display name for this contributor on this board.                                                                                                                                                               |
 | `image`          | `union`   | ❌       | Default avatar or face image for this contributor on this board, as a URI or image blob.                                                                                                                               |
 | `video`          | `union`   | ❌       | Default video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                               |
