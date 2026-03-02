@@ -1,5 +1,33 @@
 # @hypercerts-org/lexicon
 
+## 0.10.0-beta.16
+
+### Minor Changes
+
+- [#141](https://github.com/hypercerts-org/hypercerts-lexicon/pull/141) [`06fb6b5`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/06fb6b54542fe6311d55cb26a1c468c1374b0ab1) Thanks [@holkexyz](https://github.com/holkexyz)! - Add CEL expression support for structured work scopes (`org.hypercerts.workscope.cel`, `org.hypercerts.workscope.tag`)
+
+- [#149](https://github.com/hypercerts-org/hypercerts-lexicon/pull/149) [`9f124eb`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/9f124eb404e30a30ac90a6c4be934ece84556c08) Thanks [@daviddao](https://github.com/daviddao)! - Add `org.hyperboards.board` and `org.hyperboards.displayProfile` lexicons for hyperboard visual presentation records.
+
+- [#140](https://github.com/hypercerts-org/hypercerts-lexicon/pull/140) [`20eb414`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/20eb414bd75cb100bebe16cfb41286377c18d5e7) Thanks [@holkexyz](https://github.com/holkexyz)! - Add app.certified.actor.organization sidecar record for organization actor profiles with fields for organization type, labeled URLs, location (strongRef), and founded date
+
+- [#144](https://github.com/hypercerts-org/hypercerts-lexicon/pull/144) [`fb90134`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/fb90134e5df32e955e5f9fba748f4ca46d00e90e) Thanks [@holkexyz](https://github.com/holkexyz)! - Make items optional in collection schema to allow creating empty collections
+
+- [#151](https://github.com/hypercerts-org/hypercerts-lexicon/pull/151) [`4d5f42f`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/4d5f42fa4f9ae2c74a6703f3af50e9acfd09ae95) Thanks [@holkexyz](https://github.com/holkexyz)! - Add optional `url` field to `app.certified.badge.award` for linking to an external page associated with the badge
+
+- [#152](https://github.com/hypercerts-org/hypercerts-lexicon/pull/152) [`2afb6ed`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/2afb6edb89ffd186f2e0cf015bcc3557e13a7a6d) Thanks [@holkexyz](https://github.com/holkexyz)! - Use Leaflet linear documents for rich-text descriptions in activity and attachment lexicons, and make attachment content optional.
+
+- [#153](https://github.com/hypercerts-org/hypercerts-lexicon/pull/153) [`57dc44c`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/57dc44c163a6d62e4256e3de41ccf14617eb07e8) Thanks [@holkexyz](https://github.com/holkexyz)! - Improve acknowledgement schema: move to org.hypercerts.context.acknowledgement, generalize descriptions, make context optional, add maxGraphemes to comment.
+
+- [#158](https://github.com/hypercerts-org/hypercerts-lexicon/pull/158) [`7743aa6`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/7743aa6014faa35714d3e146cfa45b0e67501992) Thanks [@holkexyz](https://github.com/holkexyz)! - Move collection lexicon from `org.hypercerts.claim.collection` to `org.hypercerts.collection` to reflect that collections can contain more than just claims.
+
+- [#154](https://github.com/hypercerts-org/hypercerts-lexicon/pull/154) [`4c52b2c`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/4c52b2c9b2d449cbeb74eea9efa0a9eb2a0a39b7) Thanks [@holkexyz](https://github.com/holkexyz)! - Move evaluation and attachment lexicons to org.hypercerts.context namespace.
+
+- [#155](https://github.com/hypercerts-org/hypercerts-lexicon/pull/155) [`a59e541`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/a59e5418e242a2f6b2868cc46f5481d75a7bf0ca) Thanks [@holkexyz](https://github.com/holkexyz)! - Rename contributionDetails to contribution (org.hypercerts.claim.contribution).
+
+- [#156](https://github.com/hypercerts-org/hypercerts-lexicon/pull/156) [`86f252d`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/86f252da1f755bac6e323142a2ed11a8c6e37cba) Thanks [@holkexyz](https://github.com/holkexyz)! - Require createdAt in app.certified.actor.profile schema
+
+- [#103](https://github.com/hypercerts-org/hypercerts-lexicon/pull/103) [`b5d79da`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/b5d79da303ff7726c7a84b7568b18ee055ac0e81) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Align all lexicons with the ATProto Lexicon Style Guide: change badge response `enum` to `knownValues`, add `maxLength`/`maxGraphemes` to unconstrained string and array fields, fix style checker to skip format-typed fields.
+
 ## 0.10.0-beta.15
 
 ### Minor Changes
