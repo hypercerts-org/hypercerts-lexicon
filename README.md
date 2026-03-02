@@ -225,7 +225,7 @@ import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon";
 
 // Access via type namespace names
 const activityId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
-const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimCollection;
+const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsCollection;
 ```
 
 **Lightweight Bundle**: Import from `/lexicons` for runtime validation without TypeScript types (smaller bundle size):
@@ -303,7 +303,7 @@ property tables, see [SCHEMAS.md](SCHEMAS.md).
 import { TID } from "@atproto/common";
 
 const collectionRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   title: "Climate Action Projects",
   shortDescription:
     "A collection of climate-related activities and sub-collections",
@@ -320,7 +320,7 @@ const collectionRecord = {
     },
     // Reference to another collection (recursive!)
     {
-      uri: "at://did:plc:carol/org.hypercerts.claim.collection/4m5ghi",
+      uri: "at://did:plc:carol/org.hypercerts.collection/4m5ghi",
       cid: "...",
     },
   ],
@@ -335,7 +335,7 @@ include rich-text descriptions:
 
 ```typescript
 const projectRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "A project focused on carbon reduction and reforestation",
@@ -420,7 +420,7 @@ const ack = {
     cid: "bafy...",
   },
   context: {
-    uri: "at://did:plc:alice/org.hypercerts.claim.collection/7x9def",
+    uri: "at://did:plc:alice/org.hypercerts.collection/7x9def",
     cid: "bafy...",
   },
   acknowledged: true,
@@ -478,7 +478,7 @@ Collections can include an optional `location` field to specify where the collec
 
 ```typescript
 const collectionRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   title: "Climate Action Projects",
   shortDescription: "A collection of climate-related activities",
   location: {
