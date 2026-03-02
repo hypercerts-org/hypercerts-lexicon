@@ -95,7 +95,7 @@
         "contributorIdentity": {
           "type": "union",
           "refs": ["#contributorIdentity", "com.atproto.repo.strongRef"],
-          "description": "Contributor identity as a string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record."
+          "description": "Inline contributor identity object with an identity string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record. The record referenced must conform with the lexicon org.hypercerts.claim.contributorInformation."
         },
         "contributionWeight": {
           "type": "string",
@@ -105,7 +105,7 @@
         "contributionDetails": {
           "type": "union",
           "refs": ["#contributorRole", "com.atproto.repo.strongRef"],
-          "description": "Contribution details as a string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record."
+          "description": "Inline contribution role object with a role string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record. The record referenced must conform with the lexicon org.hypercerts.claim.contribution."
         }
       }
     },
