@@ -297,7 +297,30 @@ property tables, see [SCHEMAS.md](SCHEMAS.md).
 
 ## Examples
 
-### Creating a Collection with Nested Items
+### Collections
+
+Collections (`org.hypercerts.collection`) are named sets of references to
+other records, for any purpose the creator chooses. They live at the
+top-level namespace (not under `claim`) because they can contain more than
+just claims.
+
+#### Use Cases
+
+- Defining which activity claims belong to a project
+- Collections of projects
+- Favourites lists
+- Items associated with a particular funding round or funder
+- Portfolios of work by a contributor or organization
+- Thematic groupings (by work scope/topic)
+- Curated showcases for display (e.g. a hyperboard)
+- Milestone groupings (activities in a sprint/cycle)
+- Geographic groupings (projects or locations in a region)
+- Collections for reporting (e.g. all claims in a grant report)
+
+**Note**: Hyperboards are a separate concern — they are visualisations
+built on top of collections, not collections themselves.
+
+#### Creating a Collection with Nested Items
 
 ```typescript
 import { TID } from "@atproto/common";
