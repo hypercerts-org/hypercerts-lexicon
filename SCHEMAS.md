@@ -486,6 +486,12 @@ Common type definitions used across all protocols.
 | -------- | ------ | -------- | ----------------- |
 | `image`  | `blob` | ✅       | Image (up to 5MB) |
 
+##### `org.hypercerts.defs#smallVideo`
+
+| Property | Type   | Required | Description        |
+| -------- | ------ | -------- | ------------------ |
+| `video`  | `blob` | ✅       | Video (up to 20MB) |
+
 ##### `org.hypercerts.defs#largeImage`
 
 | Property | Type   | Required | Description        |
@@ -506,6 +512,73 @@ External lexicons from other protocols and systems.
 | -------- | -------- | -------- | ----------- |
 | `uri`    | `string` | ✅       |             |
 | `cid`    | `string` | ✅       |             |
+
+---
+
+### `org.hyperboards.board`
+
+**Description:** Configuration record for a hyperboard, wrapping an underlying activity or collection with visual presentation settings. Stored in the creator's PDS.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property             | Type     | Required | Description                                                                                              | Comments        |
+| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes. |                 |
+| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
+| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                                    | maxLength: 1000 |
+| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
+
+#### Defs
+
+##### `org.hyperboards.board#boardConfig`
+
+| Property              | Type      | Required | Description                                                           |
+| --------------------- | --------- | -------- | --------------------------------------------------------------------- |
+| `backgroundType`      | `string`  | ❌       | Type of background content.                                           |
+| `backgroundImage`     | `union`   | ❌       | Background image as a URI or image blob.                              |
+| `backgroundIframeUrl` | `string`  | ❌       | URI of the background iframe.                                         |
+| `backgroundGrayscale` | `boolean` | ❌       | Whether the background is rendered in grayscale. Default: true.       |
+| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           |
+| `backgroundColor`     | `string`  | ❌       | Background color as a hex string (e.g. '#ffffff').                    |
+| `borderColor`         | `string`  | ❌       | Border color as a hex string (e.g. '#000000').                        |
+| `grayscaleImages`     | `boolean` | ❌       | Whether contributor images are rendered in grayscale. Default: false. |
+| `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  |
+| `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
+
+##### `org.hyperboards.board#contributorConfig`
+
+| Property         | Type      | Required | Description                                                                                                                                                                                                            |
+| ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
+| `override`       | `boolean` | ❌       | When true, these values take precedence over the contributor's own profile and display settings. When false or omitted, they are only used as fallbacks if the contributor has not set their own settings.             |
+| `displayName`    | `string`  | ❌       | Display name for this contributor on this board.                                                                                                                                                                       |
+| `image`          | `union`   | ❌       | Avatar or face image for this contributor on this board, as a URI or image blob.                                                                                                                                       |
+| `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |
+| `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
+| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
+| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
+
+---
+
+### `org.hyperboards.displayProfile`
+
+**Description:** User-declared visual presentation defaults for how a contributor appears on hyperboards. Stored in the contributor's own PDS and reusable across multiple boards.
+
+**Key:** `literal:self`
+
+#### Properties
+
+| Property         | Type     | Required | Description                                                                                     | Comments                         |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- | -------------------------------- |
+| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                             | maxLength: 640, maxGraphemes: 64 |
+| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob.             |                                  |
+| `video`          | `union`  | ❌       | Default video for this user across boards, as a URI (embed/direct link) or uploaded video blob. |                                  |
+| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.                        |                                  |
+| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                           | maxLength: 2048                  |
+| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                     | maxLength: 2048                  |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                              |                                  |
 
 ---
 

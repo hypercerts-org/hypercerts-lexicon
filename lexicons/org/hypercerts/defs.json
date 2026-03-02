@@ -54,6 +54,19 @@
         }
       }
     },
+    "smallVideo": {
+      "type": "object",
+      "required": ["video"],
+      "description": "Object containing a small video",
+      "properties": {
+        "video": {
+          "type": "blob",
+          "accept": ["video/mp4", "video/webm"],
+          "maxSize": 20971520,
+          "description": "Video (up to 20MB)"
+        }
+      }
+    },
     "largeImage": {
       "type": "object",
       "required": ["image"],
