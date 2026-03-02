@@ -53,7 +53,7 @@ When both are used, the style guide recommends a **10–20:1 ratio** for `maxLen
 | `rightsType`        | maxLength only | 10        | —            | Machine-oriented short code; never displayed as prose | 10 bytes; covers all known type codes                                                 |
 | `rightsDescription` | both           | 10000     | 1000         | Human-readable rich text description displayed in UI  | 1000 graphemes × 10:1 ratio = 10000 bytes. Longest observed: 151 bytes (66× headroom) |
 
-## Collection (`org.hypercerts.claim.collection`)
+## Collection (`org.hypercerts.collection`)
 
 | Field              | Constraint      | maxLength | maxGraphemes | Why this constraint type                                  | Why this value                                            |
 | ------------------ | --------------- | --------- | ------------ | --------------------------------------------------------- | --------------------------------------------------------- |

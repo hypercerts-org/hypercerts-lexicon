@@ -229,7 +229,7 @@ dataclass rights {
     !endif
 }
 
-' org.hypercerts.claim.collection
+' org.hypercerts.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
     type?

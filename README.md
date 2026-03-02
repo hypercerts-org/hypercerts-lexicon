@@ -225,7 +225,7 @@ import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon";
 
 // Access via type namespace names
 const activityId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
-const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimCollection;
+const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsCollection;
 ```
 
 **Lightweight Bundle**: Import from `/lexicons` for runtime validation without TypeScript types (smaller bundle size):
@@ -297,13 +297,36 @@ property tables, see [SCHEMAS.md](SCHEMAS.md).
 
 ## Examples
 
-### Creating a Collection with Nested Items
+### Collections
+
+Collections (`org.hypercerts.collection`) are named sets of references to
+other records, for any purpose the creator chooses. They live at the
+top-level namespace (not under `claim`) because they can contain more than
+just claims.
+
+#### Use Cases
+
+- Defining which activity claims belong to a project
+- Collections of projects
+- Favourites lists
+- Items associated with a particular funding round or funder
+- Portfolios of work by a contributor or organization
+- Thematic groupings (by work scope/topic)
+- Curated showcases for display (e.g. a hyperboard)
+- Milestone groupings (activities in a sprint/cycle)
+- Geographic groupings (projects or locations in a region)
+- Collections for reporting (e.g. all claims in a grant report)
+
+**Note**: Hyperboards are a separate concern — they are visualisations
+built on top of collections, not collections themselves.
+
+#### Creating a Collection with Nested Items
 
 ```typescript
 import { TID } from "@atproto/common";
 
 const collectionRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   title: "Climate Action Projects",
   shortDescription:
     "A collection of climate-related activities and sub-collections",
@@ -320,7 +343,7 @@ const collectionRecord = {
     },
     // Reference to another collection (recursive!)
     {
-      uri: "at://did:plc:carol/org.hypercerts.claim.collection/4m5ghi",
+      uri: "at://did:plc:carol/org.hypercerts.collection/4m5ghi",
       cid: "...",
     },
   ],
@@ -335,7 +358,7 @@ include rich-text descriptions:
 
 ```typescript
 const projectRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "A project focused on carbon reduction and reforestation",
@@ -420,7 +443,7 @@ const ack = {
     cid: "bafy...",
   },
   context: {
-    uri: "at://did:plc:alice/org.hypercerts.claim.collection/7x9def",
+    uri: "at://did:plc:alice/org.hypercerts.collection/7x9def",
     cid: "bafy...",
   },
   acknowledged: true,
@@ -478,7 +501,7 @@ Collections can include an optional `location` field to specify where the collec
 
 ```typescript
 const collectionRecord = {
-  $type: "org.hypercerts.claim.collection",
+  $type: "org.hypercerts.collection",
   title: "Climate Action Projects",
   shortDescription: "A collection of climate-related activities",
   location: {
