@@ -191,7 +191,7 @@ dataclass badgeResponse {
     !endif
 }
 
-' org.hypercerts.ontology.celExpression
+' org.hypercerts.workscope.cel
 dataclass celExpression {
     !if (SHOW_FIELDS == "true")
     expression
@@ -201,19 +201,19 @@ dataclass celExpression {
     !endif
 }
 
-' org.hypercerts.ontology.workScopeTag
+' org.hypercerts.workscope.tag
 dataclass workScopeTag {
     !if (SHOW_FIELDS == "true")
     key
-    label
-    kind?
+    name
+    category?
     description?
     parent?
     status?
     supersededBy?
     aliases[]?
     sameAs[]?
-    externalReference?
+    referenceDocument?
     createdAt
     !endif
 }

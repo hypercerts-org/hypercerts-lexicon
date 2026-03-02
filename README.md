@@ -85,7 +85,7 @@ const activityRecord = {
   },
   // OR a strongRef to a single work scope tag:
   // workScope: { uri: "at://did:plc:alice/org.hypercerts.workscope.tag/abc123", cid: "..." },
-  // OR a simple string: workScope: { $type: "...#workScopeString", scope: "Environmental conservation" },
+  // OR a simple string: workScope: { $type: "org.hypercerts.claim.activity#workScopeString", scope: "Environmental conservation" },
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
   createdAt: new Date().toISOString(),
