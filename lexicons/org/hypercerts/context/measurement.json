@@ -1,19 +1,23 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.measurement",
+  "id": "org.hypercerts.context.measurement",
   "defs": {
     "main": {
       "type": "record",
-      "description": "Measurement data related to a hypercert record (e.g. an activity and its impact).",
+      "description": "Measurement data related to one or more records (e.g. activities, projects, etc.).",
       "key": "tid",
       "record": {
         "type": "object",
         "required": ["metric", "unit", "value", "createdAt"],
         "properties": {
-          "subject": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the record this measurement refers to (e.g. an activity, project, or claim)."
+          "subjects": {
+            "type": "array",
+            "description": "Strong references to the records this measurement refers to (e.g. activities, projects, or claims).",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 100
           },
           "metric": {
             "type": "string",
