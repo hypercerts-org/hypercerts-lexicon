@@ -30,18 +30,9 @@
             }
           },
           "description": {
-            "type": "string",
-            "description": "Optional longer description of this activity claim, including context or interpretation. Rich text annotations may be provided via `descriptionFacets`.",
-            "maxLength": 30000,
-            "maxGraphemes": 3000
-          },
-          "descriptionFacets": {
-            "type": "array",
-            "description": "Rich text annotations for `description` (mentions, URLs, hashtags, etc).",
-            "items": {
-              "type": "ref",
-              "ref": "app.bsky.richtext.facet"
-            }
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description, represented as a Leaflet linear document."
           },
           "image": {
             "type": "union",
@@ -50,6 +41,15 @@
               "org.hypercerts.defs#smallImage"
             ],
             "description": "The hypercert visual representation as a URI or image blob."
+          },
+          "contributors": {
+            "type": "array",
+            "description": "An array of contributor objects, each containing contributor information, weight, and contribution details.",
+            "maxLength": 1000,
+            "items": {
+              "type": "ref",
+              "ref": "#contributor"
+            }
           },
           "workScope": {
             "type": "union",
@@ -66,20 +66,6 @@
             "format": "datetime",
             "description": "When the work ended"
           },
-          "contributors": {
-            "type": "array",
-            "description": "An array of contributor objects, each containing contributor information, weight, and contribution details.",
-            "maxLength": 1000,
-            "items": {
-              "type": "ref",
-              "ref": "#contributor"
-            }
-          },
-          "rights": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights."
-          },
           "locations": {
             "type": "array",
             "description": "An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.",
@@ -88,6 +74,11 @@
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
             }
+          },
+          "rights": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights."
           },
           "createdAt": {
             "type": "string",
