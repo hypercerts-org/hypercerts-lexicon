@@ -15,20 +15,20 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property                 | Type     | Required | Description                                                                                                                                                                                                                                   | Comments                           |
-| ------------------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `title`                  | `string` | ✅       | Display title summarizing the impact work (e.g. 'Reforestation in Amazon Basin 2024')                                                                                                                                                         | maxLength: 256                     |
-| `shortDescription`       | `string` | ✅       | Short summary of this activity claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300 |
-| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                                 |                                    |
-| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                              |                                    |
-| `image`                  | `union`  | ❌       | The hypercert visual representation as a URI or image blob.                                                                                                                                                                                   |                                    |
-| `contributors`           | `ref[]`  | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                                                                                                                   | maxLength: 1000                    |
-| `workScope`              | `union`  | ❌       | Work scope definition. Either a strongRef to a work-scope logic record (structured, nested logic), or a free-form string for simple or legacy scopes. The work scope record should conform to the org.hypercerts.helper.workScopeTag lexicon. |                                    |
-| `startDate`              | `string` | ❌       | When the work began                                                                                                                                                                                                                           |                                    |
-| `endDate`                | `string` | ❌       | When the work ended                                                                                                                                                                                                                           |                                    |
-| `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                                                                                       | maxLength: 1000                    |
-| `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.                                                                                                    |                                    |
-| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                             |                                    |
+| Property                 | Type     | Required | Description                                                                                                                                             | Comments                           |
+| ------------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `title`                  | `string` | ✅       | Display title summarizing the impact work (e.g. 'Reforestation in Amazon Basin 2024')                                                                   | maxLength: 256                     |
+| `shortDescription`       | `string` | ✅       | Short summary of this activity claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.         | maxLength: 3000, maxGraphemes: 300 |
+| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                           |                                    |
+| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                        |                                    |
+| `image`                  | `union`  | ❌       | The hypercert visual representation as a URI or image blob.                                                                                             |                                    |
+| `contributors`           | `ref[]`  | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                             | maxLength: 1000                    |
+| `workScope`              | `union`  | ❌       | Work scope definition. A CEL expression for structured, machine-evaluable scopes or a free-form string for simple and legacy scopes.                    |                                    |
+| `startDate`              | `string` | ❌       | When the work began                                                                                                                                     |                                    |
+| `endDate`                | `string` | ❌       | When the work ended                                                                                                                                     |                                    |
+| `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. | maxLength: 1000                    |
+| `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                    |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
 
 #### Defs
 
@@ -266,24 +266,42 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
-### `org.hypercerts.helper.workScopeTag`
+### `org.hypercerts.workscope.cel`
 
-**Description:** A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels.
+**Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.workscope.tag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.
+
+#### Properties
+
+| Property     | Type     | Required | Description                                                                                                                                                                         | Comments                             |
+| ------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `expression` | `string` | ✅       | A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'                         | maxLength: 10000, maxGraphemes: 5000 |
+| `usedTags`   | `ref[]`  | ✅       | Strong references to org.hypercerts.workscope.tag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records. | maxLength: 100                       |
+| `version`    | `string` | ✅       | CEL context schema version.                                                                                                                                                         | maxLength: 16, Known values: `v1`    |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this expression was originally created.                                                                                                              |                                      |
+
+---
+
+### `org.hypercerts.workscope.tag`
+
+**Description:** A reusable scope atom for work scope logic expressions. Scopes can represent topics, languages, domains, deliverables, methods, regions, tags, or other categorical labels. Tags are composed into structured expressions via CEL (Common Expression Language) on activity records.
 
 **Key:** `tid`
 
 #### Properties
 
-| Property            | Type       | Required | Description                                                                                      | Comments                             |
-| ------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created                                |                                      |
-| `key`               | `string`   | ✅       | Lowercase, hyphenated machine-readable key for this scope (e.g., 'ipfs', 'go-lang', 'filecoin'). | maxLength: 120                       |
-| `label`             | `string`   | ✅       | Human-readable display label for this scope (e.g. 'IPFS', 'Go Programming', 'Climate Action')    | maxLength: 200                       |
-| `kind`              | `string`   | ❌       | Category type of this scope. Recommended values: topic, language, domain, method, tag.           | maxLength: 50                        |
-| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                       | maxLength: 10000, maxGraphemes: 1000 |
-| `parent`            | `ref`      | ❌       | Optional strong reference to a parent scope record for taxonomy/hierarchy support.               |                                      |
-| `aliases`           | `string[]` | ❌       | Optional array of alternative names or identifiers for this scope.                               | maxLength: 50                        |
-| `externalReference` | `union`    | ❌       | Optional external reference for this scope as a URI or blob.                                     |                                      |
+| Property            | Type       | Required | Description                                                                                                                                                                            | Comments                                                             |
+| ------------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `key`               | `string`   | ✅       | Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.    | maxLength: 120                                                       |
+| `name`              | `string`   | ✅       | Human-readable name for this scope.                                                                                                                                                    | maxLength: 200                                                       |
+| `category`          | `string`   | ❌       | Category type of this scope.                                                                                                                                                           | maxLength: 50, Known values: `topic`, `language`, `domain`, `method` |
+| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                                                                                                             | maxLength: 10000, maxGraphemes: 1000                                 |
+| `parent`            | `ref`      | ❌       | Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.          |                                                                      |
+| `status`            | `string`   | ❌       | Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.                                                  | maxLength: 20, Known values: `proposed`, `accepted`, `deprecated`    |
+| `supersededBy`      | `ref`      | ❌       | When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.                        |                                                                      |
+| `aliases`           | `string[]` | ❌       | Alternative human-readable names for this scope (e.g., translations, abbreviations, or common synonyms). Unlike sameAs, these are plain-text labels, not links to external ontologies. | maxLength: 50                                                        |
+| `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.         | maxLength: 20                                                        |
+| `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                                 |                                                                      |
+| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                     |                                                                      |
 
 ---
 
@@ -482,7 +500,12 @@ External lexicons from other protocols and systems.
 
 ### `com.atproto.repo.strongRef`
 
-**Key:** `tid`
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `uri`    | `string` | ✅       |             |
+| `cid`    | `string` | ✅       |             |
 
 ---
 
