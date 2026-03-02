@@ -16,9 +16,9 @@
             "description": "The record being acknowledged (e.g. an activity, a contributor information record, an evaluation)."
           },
           "context": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor)."
+            "type": "union",
+            "refs": ["org.hypercerts.defs#uri", "com.atproto.repo.strongRef"],
+            "description": "Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). A URI for a lightweight reference or a strong reference for content-hash verification."
           },
           "acknowledged": {
             "type": "boolean",

@@ -152,13 +152,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type      | Required | Description                                                                                                                   | Comments                             |
-| -------------- | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `subject`      | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                            |                                      |
-| `context`      | `ref`     | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). |                                      |
-| `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                          |                                      |
-| `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                        | maxLength: 10000, maxGraphemes: 1000 |
-| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                            |                                      |
+| Property       | Type      | Required | Description                                                                                                                                                                                                          | Comments                             |
+| -------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subject`      | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                                                                                                                   |                                      |
+| `context`      | `union`   | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). A URI for a lightweight reference or a strong reference for content-hash verification. |                                      |
+| `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                                                                                                                 |                                      |
+| `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                                                                                                               | maxLength: 10000, maxGraphemes: 1000 |
+| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                   |                                      |
 
 ---
 
