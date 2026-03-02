@@ -215,11 +215,11 @@ dataclass collection {
     !endif
 }
 
-' org.hypercerts.acknowledgement
+' org.hypercerts.context.acknowledgement
 dataclass acknowledgement {
     !if (SHOW_FIELDS == "true")
     subject
-    context
+    context?
     acknowledged
     comment?
     createdAt
