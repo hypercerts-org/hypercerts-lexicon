@@ -40,7 +40,9 @@ function readLexicon(filePath) {
 function getTypeString(prop) {
   if (!prop.type) return "unknown";
   if (prop.type === "array") {
-    return prop.items?.type === "ref" ? "ref" : prop.items?.type || "array";
+    const itemType =
+      prop.items?.type === "ref" ? "ref" : prop.items?.type || "unknown";
+    return `${itemType}[]`;
   }
   return prop.type;
 }

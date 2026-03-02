@@ -43,6 +43,17 @@ classDiagram {
 }
 </style>
 
+' app.certified.actor.organization
+dataclass organization {
+    !if (SHOW_FIELDS == "true")
+    organizationType[]?
+    urls[]?
+    location?
+    foundedDate?
+    createdAt
+    !endif
+}
+
 ' Contributors are represented by DIDs or human-readable strings
 ' therefore do not require modelling via a lexicon.
 entity "contributor (DID/profile)" as contributorEntity #FFD4A3 {
@@ -318,6 +329,8 @@ activity::rights --> rights
 activity::locations --> location
 
 contributorInformation::identifier --> contributorEntity : identifies
+
+organization::location --> location
 
 ' These ones are not described by any lexicon, but are added to
 ' the diagram for clarity
