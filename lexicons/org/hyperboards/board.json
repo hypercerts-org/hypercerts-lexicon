@@ -20,13 +20,13 @@
             "ref": "#boardConfig",
             "description": "Board-level visual configuration (background, colors, aspect ratio)."
           },
-          "contributorDefaults": {
+          "contributorConfigs": {
             "type": "array",
-            "description": "Per-contributor default visual settings for this board. Each entry provides fallback values for a contributor's appearance, unless the entry's override flag forces the board's values to take precedence over the contributor's own settings.",
+            "description": "Per-contributor configuration entries for this board.",
             "maxLength": 1000,
             "items": {
               "type": "ref",
-              "ref": "#contributorDefault"
+              "ref": "#contributorConfig"
             }
           },
           "createdAt": {
@@ -96,9 +96,9 @@
         }
       }
     },
-    "contributorDefault": {
+    "contributorConfig": {
       "type": "object",
-      "description": "Default visual settings for a specific contributor within a board. Values serve as fallbacks when the contributor has not defined their own. When 'override' is true, these values take precedence over the contributor's own settings.",
+      "description": "Configuration for a specific contributor within a board. Values serve as fallbacks when the contributor has not defined them on their profile. It can also be used to override contributor settings on this board without changing their global profile.",
       "required": ["contributor"],
       "properties": {
         "contributor": {
@@ -115,35 +115,35 @@
         },
         "displayName": {
           "type": "string",
-          "description": "Default display name for this contributor on this board.",
+          "description": "Display name for this contributor on this board.",
           "maxLength": 640,
           "maxGraphemes": 64
         },
         "image": {
           "type": "union",
           "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
-          "description": "Default avatar or face image for this contributor on this board, as a URI or image blob."
+          "description": "Avatar or face image for this contributor on this board, as a URI or image blob."
         },
         "video": {
           "type": "union",
           "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallVideo"],
-          "description": "Default video for this contributor, as a URI (embed/direct link) or uploaded video blob."
+          "description": "Video for this contributor, as a URI (embed/direct link) or uploaded video blob."
         },
         "hoverImage": {
           "type": "union",
           "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallImage"],
-          "description": "Default image overlay shown when hovering over this contributor, as a URI or image blob."
+          "description": "Image overlay shown when hovering over this contributor, as a URI or image blob."
         },
         "hoverIframeUrl": {
           "type": "string",
           "format": "uri",
-          "description": "Default iframe overlay shown when hovering over this contributor.",
+          "description": "Iframe overlay shown when hovering over this contributor.",
           "maxLength": 2048
         },
         "url": {
           "type": "string",
           "format": "uri",
-          "description": "Default click-through link URL for this contributor.",
+          "description": "Click-through link URL for this contributor.",
           "maxLength": 2048
         }
       }
