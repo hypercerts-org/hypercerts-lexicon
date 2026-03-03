@@ -1,8 +1,8 @@
 ---
-"@hypercerts-org/lexicon": major
+"@hypercerts-org/lexicon": minor
 ---
 
-This major release represents the migration of the lexicon package from the SDK monorepo (`hypercerts-sdk/packages/lexicon`) to a dedicated standalone repository (`hypercerts-lexicon`). This separation allows for independent versioning and development of the lexicon definitions.
+This release represents the migration of the lexicon package from the SDK monorepo (`hypercerts-sdk/packages/lexicon`) to a dedicated standalone repository (`hypercerts-lexicon`). This separation allows for independent versioning and development of the lexicon definitions.
 
 Major architectural and feature updates compared to the SDK lexicon package include but are not limited to the following:
 

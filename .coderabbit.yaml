@@ -8,11 +8,15 @@ reviews:
 
           Pass/fail criteria:
           1. If any file in lexicons/**/*.json is added, modified, or deleted:
-             - README.md must be updated to reflect the lexicon changes (new lexicons documented, modified properties updated, removed lexicons removed from docs)
+             - If README.md already references that lexicon, it must be updated to reflect the lexicon changes (modified properties updated, removed lexicons removed from docs). If it doesn't already then it's *recommended* but *not mandatory* to add some docs to it for the lexicon in question.
+             - README.md may omit facet fields but must document all other properties
              - ERD.puml must be updated if entity relationships changed (new entities added, relationships modified, entities removed)
+             - ERD.puml should NOT include facet fields (cosmetic only, don't affect structure)
+             - SCHEMAS.md must be updated with any relevant changes (e.g. fields or lexicons added/changed/removed)
 
           2. If README.md is modified:
              - All documented lexicons must exist as JSON files in lexicons/
+             - All non-facet properties must be documented; only facet fields may be omitted
              - All properties documented in README.md must match the actual JSON schema definitions
              - No lexicon should be documented that doesn't have a corresponding JSON file
 
@@ -20,6 +24,7 @@ reviews:
              - All entities referenced in ERD.puml must correspond to lexicons defined in lexicons/**/*.json
              - All relationships shown in ERD.puml must be valid based on the JSON lexicon schemas
              - No entity should appear in ERD.puml without a corresponding lexicon JSON file
+             - Facet fields should NOT be included in ERD.puml
 
           4. If multiple files are changed together (lexicons + README.md + ERD.puml), verify they are consistent with each other.
 
@@ -31,3 +36,12 @@ reviews:
           Use the diff to identify which files changed and verify synchronization accordingly.
           Check that lexicon IDs in JSON files match what's documented in README.md.
           Verify that entity names in ERD.puml match lexicon IDs (e.g., "activity" entity should correspond to org.hypercerts.claim.activity lexicon).
+
+      - name: "Lexicons styleguide compliance"
+        mode: warning
+        instructions: |
+          Files in /lexicons should be reviewed on compliance against the lexicon styleguide as documented here: https://atproto.com/guides/lexicon-style-guide
+
+          The developers could deviate from the styleguide if they have a good reason to do so, but they must document their deviation in the lexicon JSON file.
+
+          When deviations are detected and undocumented provide guidance on how to make the changes compliant.

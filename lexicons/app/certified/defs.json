@@ -4,9 +4,17 @@
   "description": "Common type definitions used across certified protocols.",
   "defs": {
     "did": {
-      "type": "string",
-      "format": "did",
-      "description": "A Decentralized Identifier (DID) string."
+      "type": "object",
+      "description": "A Decentralized Identifier (DID) string.",
+      "required": ["did"],
+      "properties": {
+        "did": {
+          "type": "string",
+          "format": "did",
+          "description": "The DID string value.",
+          "maxLength": 256
+        }
+      }
     }
   }
 }

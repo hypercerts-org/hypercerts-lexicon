@@ -4,44 +4,37 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A contribution made toward a hypercert's impact.",
+      "description": "Details about a specific contribution including role, description, and timeframe.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["contributors", "createdAt"],
+        "required": ["createdAt"],
         "properties": {
           "role": {
             "type": "string",
-            "description": "Role or title of the contributor(s).",
+            "description": "Role or title of the contributor.",
             "maxLength": 100
           },
-          "contributors": {
-            "type": "array",
-            "description": "List of the contributors (names, pseudonyms, or DIDs). If multiple contributors are stored in the same hypercertContribution, then they would have the exact same role.",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
+          "contributionDescription": {
             "type": "string",
-            "description": "What the contribution concretely achieved",
-            "maxLength": 2000,
-            "maxGraphemes": 500
+            "description": "Description of what the contribution concretely involved.",
+            "maxLength": 10000,
+            "maxGraphemes": 1000
           },
           "startDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution started. This should be a subset of the hypercert timeframe."
+            "description": "When this contribution started. Should fall within the parent hypercert's timeframe."
           },
           "endDate": {
             "type": "string",
             "format": "datetime",
-            "description": "When this contribution finished.  This should be a subset of the hypercert timeframe."
+            "description": "When this contribution finished. Should fall within the parent hypercert's timeframe."
           },
           "createdAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Client-declared timestamp when this record was originally created"
+            "description": "Client-declared timestamp when this record was originally created."
           }
         }
       }

@@ -1,26 +1,7 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.claim.evaluation",
+  "id": "org.hypercerts.context.evaluation",
   "defs": {
-    "score": {
-      "type": "object",
-      "description": "Overall score for an evaluation on a numeric scale.",
-      "required": ["min", "max", "value"],
-      "properties": {
-        "min": {
-          "type": "integer",
-          "description": "Minimum value of the scale, e.g. 0 or 1."
-        },
-        "max": {
-          "type": "integer",
-          "description": "Maximum value of the scale, e.g. 5 or 10."
-        },
-        "value": {
-          "type": "integer",
-          "description": "Score within the inclusive range [min, max]."
-        }
-      }
-    },
     "main": {
       "type": "record",
       "description": "An evaluation of a hypercert record (e.g. an activity and its impact).",
@@ -32,7 +13,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to what is being evaluated. (e.g activity, measurement, contribution, etc.)"
+            "description": "A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)"
           },
           "evaluators": {
             "type": "array",
@@ -57,7 +38,7 @@
           },
           "measurements": {
             "type": "array",
-            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.claim.measurement ",
+            "description": "Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.context.measurement",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
@@ -85,6 +66,25 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
           }
+        }
+      }
+    },
+    "score": {
+      "type": "object",
+      "description": "Overall score for an evaluation on a numeric scale.",
+      "required": ["min", "max", "value"],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "description": "Minimum value of the scale, e.g. 0 or 1."
+        },
+        "max": {
+          "type": "integer",
+          "description": "Maximum value of the scale, e.g. 5 or 10."
+        },
+        "value": {
+          "type": "integer",
+          "description": "Score within the inclusive range [min, max]."
         }
       }
     }

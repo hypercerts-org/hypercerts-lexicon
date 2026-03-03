@@ -1,0 +1,90 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.collection",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A collection/group of items (activities and/or other collections). Collections support recursive nesting.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["title", "createdAt"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.",
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "description": "Display name for this collection (e.g. 'Q1 2025 Impact Projects')",
+            "maxLength": 800,
+            "maxGraphemes": 80
+          },
+          "shortDescription": {
+            "type": "string",
+            "maxLength": 3000,
+            "maxGraphemes": 300,
+            "description": "Short summary of this collection, suitable for previews and list views"
+          },
+          "description": {
+            "type": "ref",
+            "ref": "pub.leaflet.pages.linearDocument#main",
+            "description": "Rich-text description, represented as a Leaflet linear document."
+          },
+          "avatar": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "The collection's avatar/profile image as a URI or image blob."
+          },
+          "banner": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#largeImage"
+            ],
+            "description": "Larger horizontal image to display behind the collection view."
+          },
+          "items": {
+            "type": "array",
+            "description": "Array of items in this collection with optional weights.",
+            "maxLength": 1000,
+            "items": {
+              "type": "ref",
+              "ref": "#item"
+            }
+          },
+          "location": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created"
+          }
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": ["itemIdentifier"],
+      "properties": {
+        "itemIdentifier": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.collection)."
+        },
+        "itemWeight": {
+          "type": "string",
+          "description": "Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.",
+          "maxLength": 100
+        }
+      }
+    }
+  }
+}

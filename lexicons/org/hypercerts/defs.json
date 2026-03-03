@@ -1,6 +1,7 @@
 {
   "lexicon": 1,
   "id": "org.hypercerts.defs",
+  "description": "Common type definitions used across all Hypercerts protocols.",
   "defs": {
     "uri": {
       "type": "object",
@@ -10,7 +11,6 @@
         "uri": {
           "type": "string",
           "format": "uri",
-          "maxGraphemes": 1024,
           "description": "URI to external data"
         }
       }
@@ -51,6 +51,19 @@
           "accept": ["image/jpeg", "image/jpg", "image/png", "image/webp"],
           "maxSize": 5242880,
           "description": "Image (up to 5MB)"
+        }
+      }
+    },
+    "smallVideo": {
+      "type": "object",
+      "required": ["video"],
+      "description": "Object containing a small video",
+      "properties": {
+        "video": {
+          "type": "blob",
+          "accept": ["video/mp4", "video/webm"],
+          "maxSize": 20971520,
+          "description": "Video (up to 20MB)"
         }
       }
     },

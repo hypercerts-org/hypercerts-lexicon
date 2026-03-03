@@ -2,13 +2,13 @@ name: Test
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
 
     steps:
       - uses: actions/checkout@v6
@@ -25,6 +25,12 @@ jobs:
       - name: Patch lex-cli to fix validation exit code bug
         run: |
           sed -i 's|// skip|throw e;|g' node_modules/@atproto/lex-cli/dist/util.js
+
+      - name: Generate SCHEMAS.md
+        run: npm run gen-schemas-md
+
+      - name: Ensure SCHEMAS.md up to date / no diffs in worktree
+        run: git diff --exit-code
 
       - name: Run checks
         run: npm run check

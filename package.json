@@ -1,19 +1,29 @@
 {
   "name": "@hypercerts-org/lexicon",
-  "version": "0.9.0",
+  "version": "0.10.0-beta.16",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
-  "main": "./types/index.ts",
-  "types": "./types/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/exports.d.ts",
   "exports": {
     ".": {
-      "types": "./types/index.ts",
-      "import": "./types/index.ts"
-    }
+      "types": "./dist/exports.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./lexicons": {
+      "types": "./dist/lexicons.d.ts",
+      "import": "./dist/lexicons.mjs",
+      "require": "./dist/lexicons.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "types",
-    "lexicons"
+    "dist",
+    "lexicons",
+    "SCHEMAS.md",
+    "CHANGELOG.md"
   ],
   "keywords": [
     "hypercerts",
@@ -25,35 +35,63 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/hypercerts-org/hypercerts-lexicon.git"
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api",
-    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./types",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
+    "build": "rollup -c && npm run build:types",
+    "build:types": "tsc --project tsconfig.build.json",
+    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
-    "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > lexicons.ts",
+    "gen-schemas-md": "node ./scripts/generate-schemas.js",
+    "//gen-ts": "UNUSED - use gen-api instead",
+    "gen-ts": "find ./lexicons -name '*.json' | xargs lex gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
+    "gen-index": "node ./scripts/generate-exports.js",
     "lex": "lex",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "npm run format:check",
+    "lint": "npm run format:check && npm run eslint",
+    "eslint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist generated",
+    "style:check": "node ./scripts/check-lexicon-style.js",
     "prepublishOnly": "npm run check",
     "changeset": "changeset",
-    "version-packages": "changeset version",
-    "release": "npm run check && changeset publish"
+    "version-packages": "changeset version && npm install --package-lock-only",
+    "release": "npm run check && changeset publish",
+    "prepare": "husky && ./scripts/setup-merge-driver.sh"
   },
   "dependencies": {
-    "@atproto/lex-cli": "^0.9.5"
-  },
-  "peerDependencies": {
-    "@atproto/xrpc": "*",
-    "@atproto/lexicon": "*"
+    "@atcute/bluesky": "^3.2.15",
+    "@atcute/leaflet": "^1.0.15",
+    "@atproto/lexicon": "^0.6.0",
+    "multiformats": "^13.3.6"
   },
   "devDependencies": {
+    "@atproto/lex-cli": "^0.9.5",
     "@atproto/xrpc": "^0.7.5",
-    "@atproto/lexicon": "^0.5.1",
     "@changesets/changelog-github": "^0.5.2",
     "@changesets/cli": "^2.29.8",
-    "prettier": "^3.2.5"
+    "@eslint/js": "^9.39.2",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "eslint": "^9.39.2",
+    "globals": "^17.0.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.2.5",
+    "rollup": "^4.53.3",
+    "string-width": "^8.1.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.51.0",
+    "vitest": "^4.0.16"
+  },
+  "peerDependencies": {
+    "@atproto/xrpc": "*"
   }
 }

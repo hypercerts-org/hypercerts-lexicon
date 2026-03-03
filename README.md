@@ -38,351 +38,534 @@ following icons:
 ## Installation
 
 ```bash
-npm i @hypercerts-org/lexicon
+npm install @hypercerts-org/lexicon
 ```
 
 ## Usage
 
+### Basic Import
+
 ```typescript
-import { AtpBaseClient } from "@hypercerts-org/lexicon";
-import type { HypercertClaim } from "@hypercerts-org/lexicon";
+import {
+  HYPERCERTS_SCHEMAS,
+  ACTIVITY_NSID,
+  validate,
+} from "@hypercerts-org/lexicon";
 
-const client = new AtpBaseClient({
-  service: "https://bsky.social",
-  headers: { Authorization: `Bearer ${token}` },
-});
+// Use with AT Protocol Agent
+import { Agent } from "@atproto/api";
 
-const hypercert: HypercertClaim = {
-  $type: "org.hypercerts.claim.activity",
+const agent = new Agent({ service: "https://bsky.social" });
+
+// Register lexicons with the agent
+agent.api.lex.add(...HYPERCERTS_SCHEMAS);
+
+// Create a record
+const activityRecord = {
+  $type: ACTIVITY_NSID,
   title: "My Impact Work",
   shortDescription: "Description here",
-  workScope: "Scope of work",
+  // workScope can be a CEL expression (structured, machine-evaluable):
+  workScope: {
+    $type: "org.hypercerts.workscope.cel",
+    expression:
+      "scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'",
+    usedTags: [
+      {
+        uri: "at://did:plc:alice/org.hypercerts.workscope.tag/3k2abc",
+        cid: "...",
+      },
+      {
+        uri: "at://did:plc:alice/org.hypercerts.workscope.tag/7x9def",
+        cid: "...",
+      },
+    ],
+    version: "v1",
+    createdAt: new Date().toISOString(),
+  },
+  // OR a strongRef to a single work scope tag:
+  // workScope: { uri: "at://did:plc:alice/org.hypercerts.workscope.tag/abc123", cid: "..." },
+  // OR a simple string: workScope: { $type: "org.hypercerts.claim.activity#workScopeString", scope: "Environmental conservation" },
   startDate: "2023-01-01T00:00:00Z",
   endDate: "2023-12-31T23:59:59Z",
   createdAt: new Date().toISOString(),
 };
 
-await client.org.hypercerts.claim.activity.create(
-  { repo: "did:plc:example" },
-  hypercert,
-);
+// Validate before creating
+const validation = validate(ACTIVITY_NSID, activityRecord);
+if (!validation.valid) {
+  console.error("Validation failed:", validation.errors);
+}
+
+await agent.api.com.atproto.repo.createRecord({
+  repo: agent.session?.did,
+  collection: ACTIVITY_NSID,
+  record: activityRecord,
+});
 ```
 
-## Certified Lexicons
+### Creating Location Records
+
+Location records (`app.certified.location`) specify where work was performed
+using geographic coordinates or other location formats. They can be referenced
+by activities, collections, attachments, measurements, and evaluations.
+
+```typescript
+import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+
+const locationRecord = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0", // Location Protocol version
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84", // Spatial Reference System
+  locationType: "coordinate-decimal", // or "geojson-point", "geojson", "h3", "geohash", "wkt", "address", etc.
+  location: {
+    uri: "https://example.com/location-data.geojson",
+  },
+  // Optional fields
+  name: "Project Site A",
+  description: "Primary research facility in the Amazon rainforest",
+  createdAt: new Date().toISOString(),
+};
+```
+
+- `lpVersion` (required): Version of the Location Protocol specification
+- `srs` (required): Spatial Reference System URI defining the coordinate system
+- `locationType` (required): Format identifier (e.g., "coordinate-decimal", "geojson-point", "geojson", "h3", "geohash", "wkt", "address", "scaledCoordinates"). See the [Location Protocol spec](https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry) for the full registry.
+- `location` (required): Location data as URI, blob, or string
+- `name` (optional): Human-readable name for the location
+- `description` (optional): Additional context about the location
+- `createdAt` (required): Timestamp when the record was created
+
+**Location data formats:**
+
+The `location` field accepts three formats:
+
+1. **URI reference**: `{ uri: "https://..." }` - Link to external location data
+2. **Small blob**: Embedded location data (up to 10MB)
+3. **Location string**: Inline string wrapped in an object, containing coordinates or GeoJSON
+
+```typescript
+// Example with embedded blob
+const locationWithBlob = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    blob: {
+      $type: "blob",
+      ref: {
+        $link: "bafyrei...", // CID of the uploaded blob
+      },
+      mimeType: "application/geo+json",
+      size: 123,
+    },
+  },
+  name: "Amazon Research Station",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline string (coordinates)
+const locationWithCoordinates = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "coordinate-decimal",
+  location: {
+    string: "-3.4653, -62.2159", // lat, lon
+  },
+  name: "Amazon Research Site",
+  description: "Field station coordinates",
+  createdAt: new Date().toISOString(),
+};
+
+// Example with inline GeoJSON string
+const locationWithGeoJSON = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "geojson-point",
+  location: {
+    string: '{"type":"Point","coordinates":[-62.2159,-3.4653]}',
+  },
+  name: "Research Station Alpha",
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Accessing NSIDs (Lexicon IDs)
+
+**Recommended**: Use individual NSID constants for cleaner, more readable code:
+
+```typescript
+import { ACTIVITY_NSID, COLLECTION_NSID } from "@hypercerts-org/lexicon";
+
+// Clean and explicit
+const record = {
+  $type: ACTIVITY_NSID,
+  // ...
+};
+```
 
-Certified lexicons are common/shared lexicons that can be used across multiple protocols.
+**Alternative**: Use the semantic NSID object when you need multiple NSIDs:
 
-### Common Definitions
+```typescript
+import { HYPERCERTS_NSIDS } from "@hypercerts-org/lexicon";
 
-**Lexicon ID:** `org.hypercerts.defs`
+// Access via semantic keys
+const activityId = HYPERCERTS_NSIDS.ACTIVITY;
+const collectionId = HYPERCERTS_NSIDS.COLLECTION;
+const rightsId = HYPERCERTS_NSIDS.RIGHTS;
+```
 
-**Description:** Common type definitions used across all certified protocols.
+**Type-based mapping**: If you need to map TypeScript type namespaces to NSIDs:
 
-#### Defs
+```typescript
+import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon";
 
-| Def          | Type     | Description                               | Comments                                |
-| ------------ | -------- | ----------------------------------------- | --------------------------------------- |
-| `uri`        | `object` | Object containing a URI to external data  | Has `uri` property (string, format uri) |
-| `smallBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 10MB)  |
-| `largeBlob`  | `object` | Object containing a blob to external data | Has `blob` property (blob, up to 100MB) |
-| `smallImage` | `object` | Object containing a small image           | Has `image` property (blob, up to 5MB)  |
-| `largeImage` | `object` | Object containing a large image           | Has `image` property (blob, up to 10MB) |
+// Access via type namespace names
+const activityId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
+const collectionId = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsCollection;
+```
 
----
+**Lightweight Bundle**: Import from `/lexicons` for runtime validation without TypeScript types (smaller bundle size):
 
-### Location Lexicon
+```typescript
+import { schemas, validate, ids } from "@hypercerts-org/lexicon/lexicons";
 
-**Lexicon ID:** `app.certified.location`
+// Lighter bundle, type-based namespace access
+const result = validate(ids.OrgHypercertsClaimActivity, record);
+```
 
-**Description:** A location reference for use across certified protocols. For more information about
-
-**Key:** `tid`
-
-#### Properties
-
-| Property       | Type     | Required | Description                                                                                                               |
-| -------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                      |
-| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system. |
-| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point)                               |
-| `location`     | `union`  | ✅       | The location of where the work was performed as a URI or blob.                                                            |
-| `name`         | `string` | ❌       | Optional name for this location                                                                                           |
-| `description`  | `string` | ❌       | Optional description for this location                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                         |
-
-### Badges Lexicon
-
-**Lexicon IDs:** `app.certified.badge.definition`, `app.certified.badge.award`, `app.certified.badge.response`
-
-**Description:** Defines badge metadata, award records, and recipient responses for certified badges that can be used across protocols.
-
-#### Badge Definition
-
-**Lexicon ID:** `app.certified.badge.definition`
-
-**Key:** `tid`
-
-| Property         | Type     | Required | Description                                                            |
-| ---------------- | -------- | -------- | ---------------------------------------------------------------------- |
-| `badgeType`      | `string` | ✅       | Category of the badge (e.g., endorsement, participation, affiliation). |
-| `title`          | `string` | ✅       | Human-readable title of the badge.                                     |
-| `icon`           | `blob`   | ✅       | Icon representing the badge (accepted `image/*` types, maxSize 1MB).   |
-| `description`    | `string` | ❌       | Optional short statement describing the badge.                         |
-| `allowedIssuers` | `array`  | ❌       | Optional allowlist of DIDs allowed to issue this badge.                |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.     |
-
-#### Badge Award
-
-**Lexicon ID:** `app.certified.badge.award`
-
-**Key:** `tid`
-
-| Property    | Type     | Required | Description                                                                          |
-| ----------- | -------- | -------- | ------------------------------------------------------------------------------------ |
-| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award (`app.certified.badge.definition`). |
-| `subject`   | `union`  | ✅       | Entity the badge award is for (either a DID or a specific AT Protocol record).       |
-| `note`      | `string` | ❌       | Optional explanation for the award.                                                  |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                   |
-
-#### Badge Response
-
-**Lexicon ID:** `app.certified.badge.response`
-
-**Key:** `tid`
-
-| Property     | Type     | Required | Description                                                            |
-| ------------ | -------- | -------- | ---------------------------------------------------------------------- |
-| `badgeAward` | `ref`    | ✅       | Reference to the badge award (`app.certified.badge.award`).            |
-| `response`   | `string` | ✅       | Enum: `accepted` or `rejected`.                                        |
-| `weight`     | `string` | ❌       | Optional relative weight assigned by the recipient (stored as string). |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.     |
-
----
-
-## Hypercerts Lexicons
-
-Hypercerts-specific lexicons for tracking impact work and claims.
-
-### Hypercerts Activity Claim
-
-**Lexicon ID:** `org.hypercerts.claim.activity`
-
-**Description:** The main lexicon where everything is connected to. This is the hypercert record that tracks impact work.
-
-**Key:** `any`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                         | Comments                                                                  |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of the hypercert                                                              |                                                                           |
-| `shortDescription` | `string` | ✅       | Short blurb of the impact work done.                                                |                                                                           |
-| `description`      | `string` | ❌       | Optional longer description of the impact work done.                                |                                                                           |
-| `image`            | `union`  | ❌       | The hypercert visual representation as a URI or image blob                          |                                                                           |
-| `workScope`        | `object` | ❌       | Logical scope of the work using label-based conditions                              | Object with `withinAllOf`, `withinAnyOf`, `withinNoneOf` arrays of labels |
-| `startDate`        | `string` | ✅       | When the work began                                                                 |                                                                           |
-| `endDate`          | `string` | ✅       | When the work ended                                                                 |                                                                           |
-| `contributions`    | `array`  | ❌       | A strong reference to the contributions done to create the impact in the hypercerts | References must conform to `org.hypercerts.claim.contribution`            |
-| `rights`           | `ref`    | ❌       | A strong reference to the rights that this hypercert has                            | References must conform to `org.hypercerts.claim.rights`                  |
-| `location`         | `ref`    | ❌       | A strong reference to the location where the work for done hypercert was located    | References must conform to `app.certified.location`                       |
-| `project`          | `string` | ❌       | A reference (AT-URI) to the project record that this activity is part of            | References must conform to `org.hypercerts.claim.project`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                   |                                                                           |
-
-#### Defs
-
-##### activityWeight
-
-| Property   | Type     | Required | Description                                                                                                                                                                                                                                                                   |
-| ---------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `activity` | `ref`    | ✅       | A strong reference to a hypercert activity record. This activity must conform to the lexicon org.hypercerts.claim.activity                                                                                                                                                    |
-| `weight`   | `string` | ✅       | The relative weight/importance of this hypercert activity (stored as a string to avoid float precision issues). Weights can be any positive numeric values and do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
-
----
-
-### Hypercerts Contribution
-
-**Lexicon ID:** `org.hypercerts.claim.contribution`
-
-**Description:** A contribution made toward a hypercert's impact.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property       | Type     | Required | Description                                                                                                                                                             |
-| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `role`         | `string` | ❌       | Role or title of the contributor(s).                                                                                                                                    |
-| `contributors` | `array`  | ✅       | List of the contributors (names, pseudonyms, or DIDs). If multiple contributors are stored in the same hypercertContribution, then they would have the exact same role. |
-| `description`  | `string` | ❌       | What the contribution concretely achieved                                                                                                                               |
-| `startDate`    | `string` | ❌       | When this contribution started. This should be a subset of the hypercert timeframe.                                                                                     |
-| `endDate`      | `string` | ❌       | When this contribution finished. This should be a subset of the hypercert timeframe.                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                       |
-
----
-
-### Hypercerts Evaluation
-
-**Lexicon ID:** `org.hypercerts.claim.evaluation`
-
-**Description:** An evaluation of a hypercert record (e.g. an activity and its impact).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property       | Type     | Required | Description                                                                 | Comments                                                      |
-| -------------- | -------- | -------- | --------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| `subject`      | `ref`    | ❌       | A strong reference to what is being evaluated                               | (e.g activity, measurement, contribution, etc.)               |
-| `evaluators`   | `array`  | ✅       | DIDs of the evaluators                                                      |                                                               |
-| `content`      | `array`  | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology  |                                                               |
-| `measurements` | `array`  | ❌       | Optional references to the measurements that contributed to this evaluation | References must conform to `org.hypercerts.claim.measurement` |
-| `summary`      | `string` | ✅       | Brief evaluation summary                                                    |                                                               |
-| `score`        | `object` | ❌       | Optional overall score for this evaluation on a numeric scale               | Object with `min`, `max`, and `value` (integers)              |
-| `location`     | `ref`    | ❌       | An optional reference for georeferenced evaluations                         | References must conform to `app.certified.location`           |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created           |                                                               |
-
----
-
-### Hypercerts Evidence
-
-**Lexicon ID:** `org.hypercerts.claim.evidence`
-
-**Description:** A piece of evidence related to a hypercert record (e.g. an activity, project, claim, or evaluation). Evidence may support, clarify, or challenge the referenced subject.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                       | Comments                                             |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------- | ---------------------------------------------------- |
-| `subject`          | `ref`    | ❌       | A strong reference to the record this evidence relates to         | (e.g. an activity, project, claim, or evaluation)    |
-| `content`          | `union`  | ✅       | A piece of evidence (URI or blob) related to the subject record   | May support, clarify, or challenge a hypercert claim |
-| `title`            | `string` | ✅       | Title to describe the nature of the evidence                      |                                                      |
-| `shortDescription` | `string` | ❌       | Short description explaining what this evidence shows             |                                                      |
-| `description`      | `string` | ❌       | Longer description describing the evidence in more detail         |                                                      |
-| `relationType`     | `string` | ❌       | How this evidence relates to the subject                          | Known values: `supports`, `challenges`, `clarifies`  |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created |                                                      |
-
----
-
-### org.hypercerts.claim.measurement
-
-**Lexicon ID:** `org.hypercerts.claim.measurement`
-
-**Description:** Measurement data related to a hypercert record (e.g. an activity and its impact).
-
-**Key:** `tid`
-
-#### Properties
-
-| Property      | Type     | Required | Description                                                                   | Comments                                                     |
-| ------------- | -------- | -------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `subject`     | `ref`    | ❌       | A strong reference to the record this measurement refers to                   | (e.g. an activity, project, or claim)                        |
-| `measurers`   | `array`  | ✅       | DIDs of the entity (or entities) that measured this data                      |                                                              |
-| `metric`      | `string` | ✅       | The metric being measured                                                     |                                                              |
-| `value`       | `string` | ✅       | The measured value                                                            |                                                              |
-| `methodType`  | `string` | ❌       | Short identifier for the measurement methodology                              |                                                              |
-| `methodURI`   | `string` | ❌       | URI to methodology documentation, standard protocol, or measurement procedure |                                                              |
-| `evidenceURI` | `array`  | ❌       | URIs to related evidence or underlying data                                   | (e.g. org.hypercerts.claim.evidence records or raw datasets) |
-| `location`    | `ref`    | ❌       | A strong reference to the location where the measurement was taken            | References must conform to `app.certified.location`          |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created             |                                                              |
-
----
-
-### org.hypercerts.claim.collection
-
-**Lexicon ID:** `org.hypercerts.claim.collection`
-
-**Description:** A collection/group of hypercerts that have a specific property.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                             | Comments                                                            |
-| ------------------ | -------- | -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | The title of this collection                                            |                                                                     |
-| `shortDescription` | `string` | ❌       | A short description of this collection                                  |                                                                     |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this collection across apps and views | Typically a square image                                            |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this collection                                      |                                                                     |
-| `activities`       | `array`  | ✅       | Array of activities with their associated weights in this collection    | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created       |                                                                     |
-
----
-
-### org.hypercerts.claim.project
-
-**Lexicon ID:** `org.hypercerts.claim.project`
-
-**Description:** A project that can include multiple activities, each of which may be linked to at most one project.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property           | Type     | Required | Description                                                                     | Comments                                                            |
-| ------------------ | -------- | -------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `title`            | `string` | ✅       | Title of this project                                                           |                                                                     |
-| `shortDescription` | `string` | ✅       | Short summary of this project, suitable for previews and list views             |                                                                     |
-| `description`      | `ref`    | ❌       | Rich-text description of this project, represented as a Leaflet linear document | References must conform to `pub.leaflet.pages.linearDocument#main`  |
-| `avatar`           | `blob`   | ❌       | Primary avatar image representing this project across apps and views            | Typically a square logo or project identity image                   |
-| `coverPhoto`       | `blob`   | ❌       | The cover photo of this project                                                 |                                                                     |
-| `activities`       | `array`  | ❌       | Array of activities with their associated weights in this project               | Each item references `org.hypercerts.claim.activity#activityWeight` |
-| `location`         | `ref`    | ❌       | A strong reference to a location record describing where the work took place    | References must conform to `app.certified.location`                 |
-| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created               |                                                                     |
-
----
-
-### org.hypercerts.claim.rights
-
-**Lexicon ID:** `org.hypercerts.claim.rights`
-
-**Description:** Describes the rights that a contributor and/or an owner has, such as whether the hypercert can be sold, transferred, and under what conditions.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property            | Type     | Required | Description                                                       | Comments    |
-| ------------------- | -------- | -------- | ----------------------------------------------------------------- | ----------- |
-| `rightsName`        | `string` | ✅       | Full name of the rights                                           |             |
-| `rightsType`        | `string` | ✅       | Short rights identifier for easier search                         |             |
-| `rightsDescription` | `string` | ✅       | Description of the rights of this hypercert                       |             |
-| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document | URI or blob |
-| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created |             |
-
----
-
-### org.hypercerts.funding.receipt
-
-**Lexicon ID:** `org.hypercerts.funding.receipt`
-
-**Description:** Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.
-
-**Key:** `tid`
-
-#### Properties
-
-| Property         | Type     | Required | Description                                                                                                                 | Comments                                                    |
-| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `from`           | `string` | ✅       | DID of the sender who transferred the funds. If sender wants to stay anonymous, mark this explicitly.                       | Format: did                                                 |
-| `to`             | `string` | ✅       | The recipient of the funds, who can be identified by DID or a clear-text name.                                              |                                                             |
-| `amount`         | `string` | ✅       | Amount of funding received.                                                                                                 |                                                             |
-| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                               |                                                             |
-| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                  |                                                             |
-| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                     |                                                             |
-| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). | Use paymentNetwork to specify the network where applicable. |
-| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                       | Format: at-uri                                              |
-| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                              | maxLength: 500                                              |
-| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                        | Format: datetime                                            |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                             | Format: datetime                                            |
-
----
-
-## Notes
-
-- All timestamps use the `datetime` format (ISO 8601)
-- Strong references (`com.atproto.repo.strongRef`) include both the URI and CID of the referenced record
-- Union types allow multiple possible formats (e.g., URI or blob)
-- Array items may have constraints like `maxLength` to limit the number of elements
-- String fields may have both `maxLength` (bytes) and `maxGraphemes` (Unicode grapheme clusters) constraints
+**Note**: Individual constants (e.g., `ACTIVITY_NSID`) are the recommended approach for most use cases as they provide the best developer experience with clear, concise naming.
+
+### TypeScript Types
+
+All lexicon types are exported as namespaces:
+
+```typescript
+import { OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon";
+
+// Use the Main type
+const activity: OrgHypercertsClaimActivity.Main = {
+  $type: "org.hypercerts.claim.activity",
+  title: "My Impact Work",
+  // ... other fields
+};
+```
+
+### Individual Lexicon Imports
+
+Each lexicon is available in two forms as individual constants:
+
+```typescript
+import {
+  // Raw JSON (untyped) - direct import from JSON files
+  ACTIVITY_LEXICON_JSON,
+  RIGHTS_LEXICON_JSON,
+
+  // Typed LexiconDoc - from lexicons.get() at module initialization
+  ACTIVITY_LEXICON_DOC,
+  RIGHTS_LEXICON_DOC,
+} from "@hypercerts-org/lexicon";
+```
+
+| Suffix  | Type                 | Source                    | Use Case                       |
+| ------- | -------------------- | ------------------------- | ------------------------------ |
+| `_JSON` | Untyped JSON         | Direct JSON import        | Raw schema data                |
+| `_DOC`  | `LexiconDoc` (typed) | `lexicons.get()` instance | Type-safe lexicon manipulation |
+
+Or access all lexicons via semantic mapping objects:
+
+```typescript
+import {
+  HYPERCERTS_LEXICON_JSON,
+  HYPERCERTS_LEXICON_DOC,
+} from "@hypercerts-org/lexicon";
+
+// Access via semantic keys (same keys as HYPERCERTS_NSIDS)
+const activityJSON = HYPERCERTS_LEXICON_JSON.ACTIVITY;
+const activityDoc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
+const rightsJSON = HYPERCERTS_LEXICON_JSON.RIGHTS;
+const rightsDoc = HYPERCERTS_LEXICON_DOC.RIGHTS;
+```
+
+## Schema Documentation
+
+For complete schema documentation with all lexicon definitions and
+property tables, see [SCHEMAS.md](SCHEMAS.md).
+
+## Examples
+
+### Collections
+
+Collections (`org.hypercerts.collection`) are named sets of references to
+other records, for any purpose the creator chooses. They live at the
+top-level namespace (not under `claim`) because they can contain more than
+just claims.
+
+#### Use Cases
+
+- Defining which activity claims belong to a project
+- Collections of projects
+- Favourites lists
+- Items associated with a particular funding round or funder
+- Portfolios of work by a contributor or organization
+- Thematic groupings (by work scope/topic)
+- Curated showcases for display (e.g. a hyperboard)
+- Milestone groupings (activities in a sprint/cycle)
+- Geographic groupings (projects or locations in a region)
+- Collections for reporting (e.g. all claims in a grant report)
+
+**Note**: Hyperboards are a separate concern — they are visualisations
+built on top of collections, not collections themselves.
+
+#### Creating a Collection with Nested Items
+
+```typescript
+import { TID } from "@atproto/common";
+
+const collectionRecord = {
+  $type: "org.hypercerts.collection",
+  title: "Climate Action Projects",
+  shortDescription:
+    "A collection of climate-related activities and sub-collections",
+  items: [
+    // Reference to an activity
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+      cid: "...",
+    },
+    // Reference to another activity
+    {
+      uri: "at://did:plc:bob/org.hypercerts.claim.activity/7x9def",
+      cid: "...",
+    },
+    // Reference to another collection (recursive!)
+    {
+      uri: "at://did:plc:carol/org.hypercerts.collection/4m5ghi",
+      cid: "...",
+    },
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Creating a Project
+
+Projects are collections with a `type` field set to "project" and can
+include rich-text descriptions:
+
+```typescript
+const projectRecord = {
+  $type: "org.hypercerts.collection",
+  type: "project",
+  title: "Carbon Offset Initiative",
+  shortDescription: "A project focused on carbon reduction and reforestation",
+  description: {
+    uri: "at://did:plc:alice/pub.leaflet.pages.linearDocument/abc123",
+    cid: "...",
+  },
+  items: [
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+      cid: "...",
+    },
+    {
+      uri: "at://did:plc:bob/org.hypercerts.claim.activity/7x9def",
+      cid: "...",
+    },
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Note**: The `type` field is optional and can be set to "project",
+"favorites", or any other collection type. The `description` field
+supports rich-text via Leaflet linear documents.
+
+### Adding Visual Representation to Collections
+
+Collections can include `avatar` and `banner` fields for visual representation:
+
+```typescript
+import { COLLECTION_NSID } from "@hypercerts-org/lexicon";
+
+const collectionRecord = {
+  $type: COLLECTION_NSID,
+  title: "Climate Action Projects",
+  avatar: {
+    image: blobRef, // or { uri: "https://..." }
+  },
+  banner: {
+    image: largeBlobRef, // or { uri: "https://..." }
+  },
+  items: [
+    // ... collection items
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Note**: Both `avatar` (up to 5MB) and `banner` (up to 10MB) fields
+are optional and support either embedded image blobs or URI references to
+external images.
+
+### Acknowledging Inclusion
+
+The `org.hypercerts.context.acknowledgement` record enables bidirectional
+linking between records that live in different PDS repositories. When
+one user includes another user's record (e.g. adding an activity to a
+collection), the owner of the included record can create an
+acknowledgement to confirm or reject the inclusion. This forms a
+two-way link that an AppView can verify.
+
+Each acknowledgement uses `com.atproto.repo.strongRef` fields to
+reference both the **subject** (the record being included) and the
+**context** (the record it's being included in).
+
+See [SCHEMAS.md](SCHEMAS.md) for the full property reference.
+
+#### Use Case: Activity Included in a Collection
+
+A project organizer (Alice) creates a collection and adds Bob's
+activity to it via a `strongRef` in the collection's `items[]` array.
+Bob then creates an acknowledgement in his own repo to confirm:
+
+```typescript
+import { ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+
+// Bob acknowledges that his activity is included in Alice's collection
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  context: {
+    uri: "at://did:plc:alice/org.hypercerts.collection/7x9def",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  createdAt: new Date().toISOString(),
+};
+```
+
+#### Use Case: Contributor Included in an Activity
+
+Alice creates an activity that lists Bob as a contributor. Bob creates
+an acknowledgement in his own repo to confirm his participation:
+
+```typescript
+const ack = {
+  $type: ACKNOWLEDGEMENT_NSID,
+  subject: {
+    // Bob's contributor information record
+    uri: "at://did:plc:bob/org.hypercerts.claim.contributorInformation/abc123",
+    cid: "bafy...",
+  },
+  context: {
+    // Alice's activity that lists Bob as contributor
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+    cid: "bafy...",
+  },
+  acknowledged: true,
+  comment: "Confirming my contribution to this reforestation project",
+  createdAt: new Date().toISOString(),
+};
+```
+
+Setting `acknowledged: false` explicitly rejects inclusion, which an
+AppView can use to flag disputed associations.
+
+### Adding Locations to Activities
+
+The `locations` field in activity records is an array of strong references
+(`com.atproto.repo.strongRef`) pointing to `app.certified.location` records.
+Each strong reference contains two required fields:
+
+- `uri`: The ATProto URI of the location record (e.g., `at://did:plc:alice/app.certified.location/abc123`)
+- `cid`: The content identifier (CID) of the location record, ensuring referential integrity
+
+**Validation and Expectations**:
+
+- All location records referenced in the `locations` array must conform to the
+  `app.certified.location` lexicon schema
+- The `uri` field must be a valid ATProto URI pointing to an existing location record
+- The `cid` field must match the current CID of the referenced location record
+- The `locations` field is optional; activities can be created without location data
+
+### Adding Location to Collections
+
+Collections can include an optional `location` field to specify where the collection's activities were performed:
+
+```typescript
+const collectionRecord = {
+  $type: "org.hypercerts.collection",
+  title: "Climate Action Projects",
+  shortDescription: "A collection of climate-related activities",
+  location: {
+    uri: "at://did:plc:alice/app.certified.location/xyz789",
+    cid: "...",
+  },
+  items: [
+    // ... collection items
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+The `location` field is a strong reference to an `app.certified.location` record containing the same `uri` and `cid` fields as described above for activities.
+
+### Creating Attachments
+
+Attachments provide commentary, context, evidence, or documentary material
+related to hypercert records. They can be linked to activities, evaluations,
+measurements, or even other attachments:
+
+```typescript
+import { ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+
+const attachmentRecord = {
+  $type: ATTACHMENT_NSID,
+  title: "Field Survey Report",
+  subjects: [
+    {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+      cid: "...",
+    },
+  ],
+  contentType: "report",
+  content: [
+    { uri: "https://example.com/reports/survey-2024.pdf" },
+    { uri: "ipfs://Qm..." },
+  ],
+  shortDescription: "Quarterly field survey documenting project progress",
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Key fields:**
+
+- `title` (required): String title for the attachment
+- `shortDescription`/`description`: Support rich text via facet annotations
+- `subjects` (optional): Array of strong references to records this attachment relates to
+- `contentType` (optional): Type descriptor (e.g., "report", "audit", "evidence", "testimonial")
+- `content` (required): Array of URIs or blobs containing the attachment files
+- `location` (optional): Strong reference to an `app.certified.location` record
+- `createdAt` (required): Timestamp when the attachment was created
+
+**Adding Location to Attachments:**
+
+```typescript
+const attachmentWithLocation = {
+  $type: ATTACHMENT_NSID,
+  title: "Site Inspection Photos",
+  content: [{ uri: "https://..." }],
+  location: {
+    uri: "at://did:plc:alice/app.certified.location/loc123",
+    cid: "...",
+  },
+  createdAt: new Date().toISOString(),
+};
+```
