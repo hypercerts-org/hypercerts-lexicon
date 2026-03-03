@@ -54,7 +54,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "npm run format:check && npm run eslint",
-    "eslint": "eslint generated/exports.ts",
+    "eslint": "eslint .",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist generated",
     "style:check": "node ./scripts/check-lexicon-style.js",

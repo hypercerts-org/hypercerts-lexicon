@@ -50,16 +50,22 @@ export default [
     },
   },
   {
-    // Ignore generated files from lex-cli (except exports.ts which we lint)
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
       "**/.rollup.cache/**",
       "**/coverage/**",
-      "generated/types/**",
-      "generated/lexicons.ts",
-      "generated/util.ts",
-      "generated/index.ts",
+      "generated/**",
+      "tmp/**",
     ],
+  },
+  {
+    // Files not included in tsconfig.json need type-aware linting disabled
+    files: ["tests/**/*.ts", "vitest.config.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: null,
+      },
+    },
   },
 ];
