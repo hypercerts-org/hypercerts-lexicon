@@ -30,12 +30,13 @@ jobs:
       - name: Check prerelease mode
         run: |
           if [ -f .changeset/pre.json ]; then
-            if grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
+            mode=$(node -e "console.log(require('./.changeset/pre.json').mode)")
+            if [ "$mode" = "pre" ]; then
               echo "::error::Active prerelease mode must be exited before merging to main."
               echo "Run 'npx changeset pre exit' on the prerelease branch and commit the change."
               exit 1
             fi
-            echo "Prerelease mode is not active (exit intent or already exited)"
+            echo "Prerelease mode is not active (mode=$mode)"
           else
             echo "No prerelease mode detected"
           fi

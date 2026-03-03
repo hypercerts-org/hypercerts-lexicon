@@ -64,12 +64,13 @@ jobs:
         if: env.RELEASE_TYPE == 'stable'
         run: |
           if [ -f .changeset/pre.json ]; then
-            if grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
+            mode=$(node -e "console.log(require('./.changeset/pre.json').mode)")
+            if [ "$mode" = "pre" ]; then
               echo "::error::Active prerelease mode detected on main."
               echo "Prerelease mode must be exited before publishing a stable release."
               exit 1
             fi
-            echo "Prerelease mode is not active (exit intent set)"
+            echo "Prerelease mode is not active (mode=$mode)"
           else
             echo "No prerelease mode detected"
           fi
@@ -83,8 +84,9 @@ jobs:
             echo "Run 'npx changeset pre enter beta' and commit before running this workflow."
             exit 1
           fi
-          if ! grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
-            echo "::error::Prerelease mode has been exited."
+          mode=$(node -e "console.log(require('./.changeset/pre.json').mode)")
+          if [ "$mode" != "pre" ]; then
+            echo "::error::Prerelease mode has been exited (mode=$mode)."
             echo "Re-enter with 'npx changeset pre enter beta' or merge to main for a stable release."
             exit 1
           fi
