@@ -5,3 +5,7 @@ generated/
 pnpm-lock.yaml
 /tmp/
 lexicons.md
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
