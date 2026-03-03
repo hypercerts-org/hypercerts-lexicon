@@ -22,14 +22,14 @@ are made.
 │                                                                  │
 │  feature/* ──────────────────┐                                   │
 │       │                      │                                   │
-│       │  npm run changeset   │ PR                                │
+│       │  npx changeset       │ PR                                │
 │       │  (describe changes)  │                                   │
 │       ▼                      ▼                                   │
 │  ┌─────────┐  merge    ┌──────────┐                              │
 │  │ commit  │ ────────► │ develop  │ ──► Manual publish @beta     │
 │  │  + .md  │           └────┬─────┘     (0.9.0-beta.1)           │
 │  └─────────┘                │                                    │
-│                             │ PR (after: npm changeset pre exit) │
+│                             │ PR (after: npx changeset pre exit) │
 │                             ▼                                    │
 │                        ┌────────┐                                │
 │                        │  main  │ ──► Creates "Release PR"       │
@@ -73,7 +73,7 @@ Before publishing, you need to create changesets for any user-facing
 changes:
 
 ```bash
-npm run changeset
+npx changeset
 ```
 
 This will:
@@ -95,7 +95,7 @@ but it's not necessary.
 
 ```bash
 # On develop branch
-npm run changeset pre exit
+npx changeset pre exit
 git add .changeset/pre.json
 git commit -m "chore: exit prerelease mode"
 git push
@@ -108,7 +108,7 @@ This sets the exit intent in `pre.json`, which is required before merging to `ma
 To publish a stable release to npm:
 
 1. **If merging from `develop` → `main`:**
-   - Run `npm run changeset pre exit` on `develop` branch
+   - Run `npx changeset pre exit` on `develop` branch
    - Commit and push the change
    - Merge `develop` → `main` (the PR check will verify exit intent)
 
@@ -174,7 +174,7 @@ Versions are determined by Changesets:
 - **Major**: Breaking changes (0.9.0 → 1.0.0)
 
 You specify the version bump type when creating a changeset with
-`npm run changeset`.
+`npx changeset`.
 
 The `prepublishOnly` script ensures types are regenerated before
 publishing, so the published package always includes the latest
