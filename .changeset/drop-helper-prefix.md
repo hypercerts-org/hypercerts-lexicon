@@ -1,5 +1,0 @@
----
-"@hypercerts-org/lexicon": minor
----
-
-Drop HELPER\_ prefix from workScopeTag constants. `HELPER_WORK_SCOPE_TAG_NSID`, `HELPER_WORK_SCOPE_TAG_LEXICON_JSON`, and `HELPER_WORK_SCOPE_TAG_LEXICON_DOC` are now `WORK_SCOPE_TAG_NSID`, `WORK_SCOPE_TAG_LEXICON_JSON`, and `WORK_SCOPE_TAG_LEXICON_DOC`.
