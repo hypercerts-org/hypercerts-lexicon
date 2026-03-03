@@ -33,7 +33,7 @@ jobs:
             # For main branch: require that prerelease mode is exited
             if [ -f .changeset/pre.json ]; then
               # Check if prerelease mode has been exited (exit intent set)
-              if ! grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
+              if ! grep -q '"mode": "exit"' .changeset/pre.json 2>/dev/null; then
                 echo "::error::Prerelease mode must be exited before merging to main."
                 echo "Run 'npm run changeset pre exit' on the develop branch and commit the change."
                 echo "Then merge that commit into this PR branch."
@@ -51,7 +51,7 @@ jobs:
               exit 1
             fi
             # Check that prerelease mode has not been exited
-            if grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
+            if grep -q '"mode": "exit"' .changeset/pre.json 2>/dev/null; then
               echo "::error::Prerelease mode must not be exited on develop branch."
               echo "Remove the exit intent from .changeset/pre.json or run 'npm run changeset pre enter beta'."
               exit 1
