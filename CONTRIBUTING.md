@@ -53,7 +53,7 @@ details.
 
 ## Pull Request Process
 
-1. **Target the `develop` branch** (not `main`)
+1. **Target the `main` branch**
 2. **Ensure all checks pass**: `npm run check`
 3. **Include a changeset** if required
 4. **Write clear commit messages** using conventional commit format
@@ -95,8 +95,8 @@ directory layout and file organization.
 ## Release Process
 
 **Contributors only create changesets.** Releases are handled by
-maintainers via GitHub Actions on the `develop` (beta) and `main`
-(stable) branches.
+maintainers via GitHub Actions on the `main` branch. See
+[docs/PUBLISHING.md](docs/PUBLISHING.md) for details.
 
 ## License
 

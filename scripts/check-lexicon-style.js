@@ -70,7 +70,7 @@ class StyleChecker {
         if (lexicon.id) {
           this.lexiconIndex.set(lexicon.id, lexicon);
         }
-      } catch (error) {
+      } catch (_error) {
         // Skip files that can't be parsed - they'll be caught in checkFile
       }
     }

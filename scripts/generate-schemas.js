@@ -218,51 +218,6 @@ function categorizeLexicons(lexicons) {
 }
 
 // Section generators
-function generateDefsSection(lexicon) {
-  const defs = Object.entries(lexicon.data.defs)
-    .filter(([name]) => name !== "main")
-    .map(([name, def]) => ({
-      name,
-      type: def.type || "unknown",
-      description: def.description || "",
-    }));
-
-  if (defs.length === 0) return [];
-
-  const defComments = {
-    smallBlob: "Has `blob` property (blob, up to 10MB)",
-    largeBlob: "Has `blob` property (blob, up to 100MB)",
-    smallImage: "Has `image` property (blob, up to 5MB)",
-    largeImage: "Has `image` property (blob, up to 10MB)",
-    uri: "Has `uri` property (string, format uri)",
-  };
-
-  const headers = ["Def", "Type", "Description", "Comments"];
-  const rows = defs.map((d) => [
-    `\`${d.name}\``,
-    `\`${d.type}\``,
-    d.description,
-    defComments[d.name] || "",
-  ]);
-
-  const widths = headers.map((h, i) =>
-    Math.max(getVisualWidth(h), ...rows.map((r) => getVisualWidth(r[i]))),
-  );
-
-  const output = [
-    "#### Defs",
-    "",
-    formatRow(headers, widths),
-    formatSeparatorRow(headers, widths),
-  ];
-
-  for (const row of rows) {
-    output.push(formatRow(row, widths));
-  }
-
-  return output;
-}
-
 function generateLexiconHeader(lexicon, isFirst) {
   const output = [];
   const id = lexicon.data.id;
