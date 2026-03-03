@@ -2,44 +2,43 @@
 
 This document describes how to publish the `@hypercerts-org/lexicon`
 package to npm using GitHub Actions workflows with Changesets. The
-workflow uses separate branches for beta and stable releases, with all
-releases manually triggered to give you full control over when releases
-are made.
+workflow uses `main` as the sole release branch, with ephemeral
+prerelease branches for beta testing. All releases are manually
+triggered to give you full control over when releases are made.
 
 ## Branch Strategy
 
-- **`develop` branch**: Beta/prerelease versions
-- **`main` branch**: Stable releases
+- **`main` branch**: Stable releases (the only long-lived branch)
+- **`feature/*` branches**: Short-lived branches for development work,
+  merged to `main` via PR
+- **`prerelease/*` branches**: Ephemeral branches for beta/prerelease
+  versions (created from `main`, merged back when done)
 
-**Suggested Flow:** `feature` → `develop` (beta) → `main` (stable)
-
-**Note:** Direct development on `main` is also supported. The `develop` → `main` flow is suggested when you want to publish beta versions for testing before stable releases. If you work directly on `main`, you can skip the beta testing phase and go straight to stable releases.
+**Flow:** `feature/*` → `main` (stable), or
+`prerelease/beta` → `main` (beta cycle)
 
 ### Release Flow
 
 ```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  feature/* ──────────────────┐                                   │
-│       │                      │                                   │
-│       │  npx changeset       │ PR                                │
-│       │  (describe changes)  │                                   │
-│       ▼                      ▼                                   │
-│  ┌─────────┐  merge    ┌──────────┐                              │
-│  │ commit  │ ────────► │ develop  │ ──► Manual publish @beta     │
-│  │  + .md  │           └────┬─────┘     (0.9.0-beta.1)           │
-│  └─────────┘                │                                    │
-│                             │ PR (after: npx changeset pre exit) │
-│                             ▼                                    │
-│                        ┌────────┐                                │
-│                        │  main  │ ──► Creates "Release PR"       │
-│                        └────┬───┘                                │
-│                             │                                    │
-│                             │ merge Release PR                   │
-│                             ▼                                    │
-│                     ┌──────────────┐                             │
-│                     │ npm publish  │ ──► @latest (0.9.0)         │
-│                     └──────────────┘                             │
+│  Stable releases:                                                │
+│                                                                  │
+│  feature/* ───► main ───► Manual publish @latest (1.0.0)         │
+│                                                                  │
+│  Beta releases:                                                  │
+│                                                                  │
+│  prerelease/beta                                                 │
+│        │                                                         │
+│        │  npx changeset pre enter beta                           │
+│        ▼                                                         │
+│  prerelease/beta ──► Manual publish @beta                        │
+│        │              (1.0.0-beta.0, 1.0.0-beta.1)               │
+│        │                                                         │
+│        │  npx changeset pre exit                                 │
+│        │  (when ready for stable)                                │
+│        ▼                                                         │
+│   PR to main ──► Manual publish @latest (1.0.0)                  │
 │                                                                  │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -91,87 +90,112 @@ but it's not necessary.
 
 ## Publishing a Stable Release
 
-**If merging from `develop` → `main`:** Before merging, you must exit prerelease mode on the `develop` branch:
-
-```bash
-# On develop branch
-npx changeset pre exit
-git add .changeset/pre.json
-git commit -m "chore: exit prerelease mode"
-git push
-```
-
-This sets the exit intent in `pre.json`, which is required before merging to `main`. The PR check will verify this.
-
-**If working directly on `main`:** You can skip this step since `pre.json` won't exist.
-
 To publish a stable release to npm:
-
-1. **If merging from `develop` → `main`:**
-   - Run `npx changeset pre exit` on `develop` branch
-   - Commit and push the change
-   - Merge `develop` → `main` (the PR check will verify exit intent)
-
-   **If working directly on `main`:**
-   - Skip this step and proceed to step 2
-
-2. **Run the workflow:**
-   - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
-   - Click "Run workflow"
-   - Select the branch: **`main`** (the workflow automatically detects this is a stable release)
-   - Click "Run workflow" to start
-
-3. **What happens:**
-   - The workflow validates the code and regenerates TypeScript types
-   - If `pre.json` exists (from `develop`), verifies that prerelease mode has been exited
-   - If there are pending changesets, it creates a "Release Pull Request"
-   - The Release PR will remove prerelease tags (if any) and exit prerelease mode
-   - Merge the Release PR to publish to npm with the `latest` tag
-   - If no changesets exist, nothing is published
-
-## Publishing a Beta Release
-
-To publish a beta/prerelease version:
 
 1. **Run the workflow:**
    - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
    - Click "Run workflow"
-   - Select the branch: **`develop`** (the workflow automatically detects this is a beta release)
-   - Click "Run workflow"
+   - Select the branch: **`main`**
+   - Click "Run workflow" to start
 
 2. **What happens:**
    - The workflow validates the code and regenerates TypeScript types
-   - Enters beta prerelease mode (if not already) and commits `pre.json` to `develop`
-   - Versions packages based on pending changesets
-   - Publishes to npm with the `beta` tag
-   - Version format: `0.9.0-beta.1`, `0.9.0-beta.2`, etc.
-   - Commits and pushes version changes back to the `develop` branch
+   - If there are pending changesets, it creates a "Release Pull Request"
+   - Merge the Release PR to publish to npm with the `latest` tag
+   - If no changesets exist, nothing is published
 
-**Note:** Beta releases run on the `develop` branch, so no `RELEASE_PAT` is needed (unlike protected `main` branch).
+## Publishing Beta Releases
+
+Beta releases use ephemeral prerelease branches.
+
+### Starting a Beta Cycle
+
+1. **Create a prerelease branch from `main`:**
+
+   ```bash
+   git checkout main
+   git pull
+   git checkout -b prerelease/beta
+   ```
+
+2. **Enter prerelease mode:**
+
+   ```bash
+   npx changeset pre enter beta
+   git add .changeset/pre.json
+   git commit -m "chore: enter beta prerelease mode"
+   git push -u origin prerelease/beta
+   ```
+
+3. **Publish the first beta:**
+   - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
+   - Click "Run workflow"
+   - Select the branch: **`prerelease/beta`**
+   - Click "Run workflow"
+
+4. **What happens:**
+   - The workflow validates the code
+   - Versions packages based on pending changesets
+   - Commits and pushes version changes to the prerelease branch
+   - Publishes to npm with the `beta` tag
+   - Version format: `1.0.0-beta.0`, `1.0.0-beta.1`, etc.
+
+### Publishing Additional Betas
+
+To add changes and publish more betas:
+
+1. Create feature branches from `prerelease/beta` (or cherry-pick
+   from `main`)
+2. Add changesets as normal
+3. Merge to `prerelease/beta`
+4. Run the release workflow on `prerelease/beta`
+
+### Finishing a Beta Cycle
+
+When you're ready to promote to stable:
+
+1. **Exit prerelease mode on the prerelease branch:**
+
+   ```bash
+   git checkout prerelease/beta
+   npx changeset pre exit
+   git add .changeset/pre.json
+   git commit -m "chore: exit prerelease mode"
+   git push
+   ```
+
+2. **Open a PR from `prerelease/beta` → `main`**
+   - The PR check will verify prerelease mode is not active
+
+3. **Merge the PR to `main`**
+
+4. **Run the release workflow on `main`:**
+   - The workflow detects the exit intent in `pre.json`
+   - `changeset version` strips prerelease tags and removes `pre.json`
+   - A "Release Pull Request" is created with the stable versions
+   - Merge the Release PR to publish to npm with the `latest` tag
+
+5. **Delete the prerelease branch** (it's ephemeral)
 
 ## Validating Releases (PRs)
 
-When you open a pull request to `main`, the "PR Check" workflow automatically
-runs to:
+When you open a pull request to `main`, the "PR Check" workflow
+automatically runs to:
 
 - Check if package changes (lexicons, types, package.json) have
   corresponding changesets
 - Warn if changesets are missing
-- **Reject the PR if `pre.json` exists without exit intent** - This only applies
-  when merging from `develop` to `main`. It ensures prerelease mode has been
-  properly exited before merging. Direct work on `main` doesn't have `pre.json`,
-  so this check is skipped.
-
-This helps ensure all user-facing changes are properly documented and that
-prerelease mode is correctly managed when using the `develop` → `main` flow.
+- **Reject the PR if prerelease mode is still active** - This ensures
+  `npx changeset pre exit` has been run before merging a prerelease
+  branch to `main`
 
 ## Version Management
 
 Versions are determined by Changesets:
 
-- **Patch**: Bug fixes and minor updates (0.9.0 → 0.9.1)
-- **Minor**: New features (0.9.0 → 0.10.0)
-- **Major**: Breaking changes (0.9.0 → 1.0.0)
+- **Patch**: Bug fixes and minor updates (1.0.0 → 1.0.1)
+- **Minor**: New features (1.0.0 → 1.1.0)
+- **Major**: Breaking changes (1.0.0 → 2.0.0)
 
 You specify the version bump type when creating a changeset with
 `npx changeset`.
@@ -179,3 +203,17 @@ You specify the version bump type when creating a changeset with
 The `prepublishOnly` script ensures types are regenerated before
 publishing, so the published package always includes the latest
 generated TypeScript types.
+
+## Why Not a Long-Lived `develop` Branch?
+
+Changesets' prerelease mode (`pre.json`) is designed for a
+single-branch workflow. Using a long-lived `develop` branch in pre
+mode causes problems when merging between branches:
+
+- `pre.json` state conflicts on merge
+  ([changesets#239](https://github.com/changesets/changesets/issues/239))
+- Merging `main` back to `develop` (e.g. for CHANGELOG updates)
+  disrupts pre mode
+- No upstream solution exists for multi-branch prerelease workflows
+
+Ephemeral prerelease branches avoid these issues entirely.

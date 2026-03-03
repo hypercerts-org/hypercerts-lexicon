@@ -31,17 +31,18 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      # Branch validation: Only allow develop (beta) or main (stable)
+      # Branch validation: main for stable, prerelease/* for beta
       - name: Validate branch
         run: |
-          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
-            echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
-            echo "Detected beta release from develop branch"
-          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          BRANCH="${{ github.ref }}"
+          if [ "$BRANCH" == "refs/heads/main" ]; then
             echo "RELEASE_TYPE=stable" >> $GITHUB_ENV
             echo "Detected stable release from main branch"
+          elif [[ "$BRANCH" == refs/heads/prerelease/* ]]; then
+            echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
+            echo "Detected beta release from ${BRANCH#refs/heads/}"
           else
-            echo "Error: This workflow can only be run from 'develop' (beta) or 'main' (stable) branches"
+            echo "::error::This workflow can only be run from 'main' (stable) or 'prerelease/*' (beta) branches."
             exit 1
           fi
 
@@ -58,61 +59,42 @@ jobs:
       - run: npm ci
       - run: npm run check
 
-      # Stable release: Verify prerelease mode has been exited
-      # The exit intent should already be set on develop before merging to main
-      - name: Verify prerelease mode exit
+      # Stable release: verify prerelease mode is not active
+      - name: Verify no active prerelease mode
         if: env.RELEASE_TYPE == 'stable'
         run: |
           if [ -f .changeset/pre.json ]; then
-            # Check if prerelease mode has been exited (exit intent set)
-            if ! grep -q '"exit": true' .changeset/pre.json 2>/dev/null; then
-              echo "Error: Prerelease mode must be exited before merging to main."
-              echo "Run 'npm run changeset pre exit' on the develop branch and commit the change."
+            if grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
+              echo "::error::Active prerelease mode detected on main."
+              echo "Prerelease mode must be exited before publishing a stable release."
               exit 1
             fi
-            echo "Prerelease mode exit intent confirmed - changeset version will handle the exit"
+            echo "Prerelease mode is not active (exit intent set)"
           else
-            echo "No prerelease mode detected (pre.json not present)"
+            echo "No prerelease mode detected"
           fi
 
-      # Beta-specific: Enter prerelease mode (if not already)
-      - name: Enter prerelease mode (if not already)
+      # Beta: verify prerelease mode is active
+      - name: Verify prerelease mode
         if: env.RELEASE_TYPE == 'beta'
         run: |
           if [ ! -f .changeset/pre.json ]; then
-            npm run changeset pre enter beta
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add .changeset/pre.json
-            git commit -m "chore: enter beta prerelease mode"
-            git push
+            echo "::error::Prerelease mode is not active."
+            echo "Run 'npx changeset pre enter beta' and commit before running this workflow."
+            exit 1
           fi
-
-      # Beta-specific: Version packages manually
-      - name: Version packages
-        if: env.RELEASE_TYPE == 'beta'
-        # GITHUB_TOKEN is required for @changesets/changelog-github to fetch PR/commit
-        # information from GitHub API when generating changelog entries
-        run: npm run version-packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Beta-specific: Commit and push version changes (before publishing)
-      - name: Commit and push version changes
-        if: env.RELEASE_TYPE == 'beta'
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "Versioning to: $VERSION"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --staged --quiet || git commit -m "chore: version packages (beta) - $VERSION"
-          git push
+          if ! grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
+            echo "::error::Prerelease mode has been exited."
+            echo "Re-enter with 'npx changeset pre enter beta' or merge to main for a stable release."
+            exit 1
+          fi
+          echo "Prerelease mode is active"
 
       # No .npmrc creation needed - npm Trusted Publishers uses GitHub OIDC tokens
       # automatically via the id-token: write permission and registry-url configuration
 
-      # Stable release: Use changesets/action which handles versioning and publishing
+      # Stable release: changesets/action creates a Release PR with version
+      # bumps and changelogs. When merged, the next run publishes to npm.
       - name: Create Release Pull Request or Publish
         if: env.RELEASE_TYPE == 'stable'
         id: changesets
@@ -123,28 +105,44 @@ jobs:
           title: "chore: release package"
           commit: "chore: release package"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           NPM_CONFIG_PROVENANCE: true
 
-      # Beta-specific: Publish beta packages using changeset publish
+      # Beta release: version, commit, publish, and push in one step.
+      # changesets/action is not used here because it requires two workflow
+      # runs (one to create a version PR, another to publish after merging).
+      # For beta releases we want to publish immediately.
+      - name: Version packages (beta)
+        if: env.RELEASE_TYPE == 'beta'
+        # GITHUB_TOKEN is required for @changesets/changelog-github to fetch
+        # PR/commit information from GitHub API when generating changelog entries
+        run: npm run version-packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit and push version changes (beta)
+        if: env.RELEASE_TYPE == 'beta'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Versioning to: $VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "chore: version packages (beta) - $VERSION"
+          git push
+
       - name: Publish beta packages
         if: env.RELEASE_TYPE == 'beta'
-        # changeset publish will automatically use the beta tag when in
-        # prerelease mode and will create git tags for the release
+        # changeset publish automatically uses the beta tag when in
+        # prerelease mode and creates git tags for the release
         run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
-      # Push git tags created by changeset publish
-      - name: Push git tags
+      - name: Push git tags (beta)
         if: env.RELEASE_TYPE == 'beta'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git push origin --tags
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: git push origin --tags
 
       # Log published packages
       - name: Log published packages

@@ -27,34 +27,15 @@ jobs:
           else
             echo "No package changes detected"
           fi
-      - name: Check prerelease mode exit
+      - name: Check prerelease mode
         run: |
-          if [ "${{ github.base_ref }}" = "main" ]; then
-            # For main branch: require that prerelease mode is exited
-            if [ -f .changeset/pre.json ]; then
-              # Check if prerelease mode has been exited (exit intent set)
-              if ! grep -q '"mode": "exit"' .changeset/pre.json 2>/dev/null; then
-                echo "::error::Prerelease mode must be exited before merging to main."
-                echo "Run 'npm run changeset pre exit' on the develop branch and commit the change."
-                echo "Then merge that commit into this PR branch."
-                exit 1
-              fi
-              echo "Prerelease mode exit intent confirmed on main branch"
-            else
-              echo "No prerelease mode detected (pre.json not present)"
+          if [ -f .changeset/pre.json ]; then
+            if grep -q '"mode": "pre"' .changeset/pre.json 2>/dev/null; then
+              echo "::error::Active prerelease mode must be exited before merging to main."
+              echo "Run 'npx changeset pre exit' on the prerelease branch and commit the change."
+              exit 1
             fi
+            echo "Prerelease mode is not active (exit intent or already exited)"
           else
-            # For develop branch: require that prerelease mode is active
-            if [ ! -f .changeset/pre.json ]; then
-              echo "::error::Prerelease mode must be active on develop branch."
-              echo "Run 'npm run changeset pre enter beta' to enable prerelease mode."
-              exit 1
-            fi
-            # Check that prerelease mode has not been exited
-            if grep -q '"mode": "exit"' .changeset/pre.json 2>/dev/null; then
-              echo "::error::Prerelease mode must not be exited on develop branch."
-              echo "Remove the exit intent from .changeset/pre.json or run 'npm run changeset pre enter beta'."
-              exit 1
-            fi
-            echo "Prerelease mode is active on develop branch (as required)"
+            echo "No prerelease mode detected"
           fi
