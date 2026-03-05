@@ -1,0 +1,55 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.fraction.saleEvent",
+  "description": "An immutable event record representing the sale of a fraction of an activity claim. Multiple sale events are aggregated to compute the current funding state of a claim. This record is only to be trusted if created by a trusted verifier handle.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A single, immutable sale event for a fraction of an activity claim. Records the buyer, amount, and a reference to the funding receipt that proves the transaction.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "activityClaimUri",
+          "amount",
+          "currency",
+          "receipt",
+          "createdAt"
+        ],
+        "properties": {
+          "activityClaimUri": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "The AT-URI of the activity claim that this sale event is associated with."
+          },
+          "buyer": {
+            "type": "ref",
+            "ref": "app.certified.defs#did",
+            "description": "The DID of the buyer. Omit this field if the buyer wishes to remain anonymous."
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount paid for this fraction as a numeric string (e.g. '1000.50').",
+            "maxLength": 50
+          },
+          "currency": {
+            "type": "string",
+            "description": "The fiat currency of the payment (e.g. USD, EUR).",
+            "maxLength": 10,
+            "knownValues": ["USD", "EUR", "GBP", "CHF", "JPY"]
+          },
+          "receipt": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "The AT-URI of the org.hypercerts.funding.receipt record that proves this sale transaction."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}
