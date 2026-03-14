@@ -250,6 +250,52 @@ npm run lint
 npm run check
 ```
 
+### Writing Tests
+
+Tests live in `tests/` with one file per lexicon, named
+`validate-<lexicon-slug>.test.ts` (e.g. `validate-link-evm.test.ts`,
+`validate-rights.test.ts`).
+
+The generated code provides two ways to validate records:
+
+- **`validate()` from `generated/lexicons.js`** — generic, untyped.
+  The return type is `ValidationResult<{ $type?: string }>` so
+  `result.value` has no lexicon-specific fields. Use this for negative
+  tests (missing fields, bad types) where you don't need to inspect
+  the returned value.
+
+- **`validateMain()` from per-lexicon type modules** (e.g.
+  `generated/types/app/certified/link/evm.js`) — returns a properly
+  typed `ValidationResult` with all lexicon fields on `result.value`.
+  Use this for positive tests where you assert on specific field
+  values. Note: `validateMain` requires `$type` to be present on the
+  input record.
+
+Example:
+
+```typescript
+import { validate, ids } from "../generated/lexicons.js";
+import * as EvmLink from "../generated/types/app/certified/link/evm.js";
+
+// Positive test — typed result via validateMain
+const result = EvmLink.validateMain({
+  $type: ids.AppCertifiedLinkEvm,
+  ...record,
+});
+if (result.success) {
+  expect(result.value.address).toBe("0x..."); // ← type-safe
+}
+
+// Negative test — generic validate (no $type needed)
+const bad = validate(
+  { address: "0x..." }, // missing required fields
+  ids.AppCertifiedLinkEvm,
+  "main",
+  false,
+);
+expect(bad.success).toBe(false);
+```
+
 ## Important Notes
 
 - Lexicon JSON files should follow ATProto lexicon schema v1
