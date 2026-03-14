@@ -1,0 +1,83 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.fraction.transferEvent",
+  "description": "An immutable event record representing the transfer of a fraction of an activity claim between two parties. Multiple transfer events are aggregated to compute the current fractional ownership state of a claim. This record is only to be trusted if created by a trusted verifier handle.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A single, immutable transfer event for a fraction of an activity claim. Records the sender, recipient, amount, and cryptographic proof of the transfer.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "activityClaimUri",
+          "to",
+          "amount",
+          "currency",
+          "signedAt",
+          "signerEVMAddress",
+          "signature",
+          "createdAt"
+        ],
+        "properties": {
+          "activityClaimUri": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "The AT-URI of the activity claim that this transfer event is associated with."
+          },
+          "from": {
+            "type": "ref",
+            "ref": "app.certified.defs#did",
+            "description": "The DID of the sender. Omit this field if the sender wishes to remain anonymous."
+          },
+          "to": {
+            "type": "ref",
+            "ref": "app.certified.defs#did",
+            "description": "The DID of the recipient of the transfer."
+          },
+          "amount": {
+            "type": "string",
+            "description": "The amount transferred as a numeric string (e.g. '1000.50').",
+            "maxLength": 50
+          },
+          "currency": {
+            "type": "string",
+            "description": "The fiat currency of the transfer (e.g. USD, EUR).",
+            "maxLength": 10,
+            "knownValues": ["USD", "EUR", "GBP", "CHF", "JPY"]
+          },
+          "signedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "The timestamp embedded in the signed message payload. This value is part of the data that was cryptographically signed and must match the signing time used during signature generation."
+          },
+          "nonce": {
+            "type": "string",
+            "description": "The nonce included in the signed message, used to prevent replay attacks.",
+            "maxLength": 256
+          },
+          "chainId": {
+            "type": "string",
+            "description": "The EVM chain ID on which this transfer was signed (e.g. '1' for Ethereum mainnet, '42161' for Arbitrum).",
+            "maxLength": 256
+          },
+          "signerEVMAddress": {
+            "type": "string",
+            "description": "The EVM address of the signer, in checksummed hex format with a 0x prefix (e.g. 0xAbCd...1234). Required for signature verification.",
+            "maxLength": 42
+          },
+          "signature": {
+            "type": "string",
+            "description": "The cryptographic signature over the transfer message payload.",
+            "maxLength": 256
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}

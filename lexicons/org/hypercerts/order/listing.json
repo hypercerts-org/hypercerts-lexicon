@@ -1,0 +1,49 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.order.listing",
+  "description": "A record that represents an open listing for the sale of fractions of an activity claim.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A sale listing for an activity claim. The record key must match the rkey of the associated activity claim record, ensuring exactly one listing per claim and automatic invalidation when the claim is deleted.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["goal", "currency", "createdAt", "updatedAt"],
+        "properties": {
+          "goal": {
+            "type": "string",
+            "description": "The fundraising goal amount as a numeric string in the listing's currency (e.g. '1000.50'). Use '0' for an unlimited goal.",
+            "maxLength": 50
+          },
+          "currency": {
+            "type": "string",
+            "description": "The fiat currency in which fractions are priced (e.g. USD, EUR). Defaults to USD.",
+            "maxLength": 10,
+            "knownValues": ["USD", "EUR", "GBP", "CHF", "JPY"]
+          },
+          "allowOversell": {
+            "type": "boolean",
+            "description": "Whether sales are still accepted after the goal amount is reached. Defaults to true (overselling is allowed).",
+            "default": true
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the listing. Defaults to 'open'.",
+            "knownValues": ["open", "paused", "closed"]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was last updated."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          }
+        }
+      }
+    }
+  }
+}

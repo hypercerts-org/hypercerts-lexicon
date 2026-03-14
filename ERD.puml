@@ -282,6 +282,47 @@ dataclass fundingReceipt {
 
 '} ' end together
 
+' org.hypercerts.fraction.transferEvent
+dataclass transferEvent {
+    !if (SHOW_FIELDS == "true")
+    activityClaimUri
+    from?
+    to
+    amount
+    currency
+    signedAt?
+    nonce?
+    chainId?
+    signerEVMAddress?
+    signature?
+    createdAt
+    !endif
+}
+
+' org.hypercerts.fraction.saleEvent
+dataclass saleEvent {
+    !if (SHOW_FIELDS == "true")
+    activityClaimUri
+    buyer?
+    amount
+    currency
+    receipt
+    createdAt
+    !endif
+}
+
+' org.hypercerts.order.listing
+dataclass listing {
+    !if (SHOW_FIELDS == "true")
+    goal
+    currency
+    allowOversell?
+    status?
+    updatedAt
+    createdAt
+    !endif
+}
+
 ' NOTE: this is NOT a lexicon, but instead reflects an onchain
 ' tokenization of an activity record.  So it does not need
 ' a lexicon definition.
@@ -390,5 +431,15 @@ badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
+
+transferEvent::activityClaimUri --> activity
+transferEvent::from --> contributorEntity
+transferEvent::to --> contributorEntity
+
+saleEvent::activityClaimUri --> activity
+saleEvent::buyer --> contributorEntity
+saleEvent::receipt --> fundingReceipt
+
+listing ..> activity : "rkey matches\nclaim rkey"
 
 @enduml

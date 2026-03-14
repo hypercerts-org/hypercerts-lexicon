@@ -242,6 +242,49 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ---
 
+### `org.hypercerts.fraction.saleEvent`
+
+**Description:** A single, immutable sale event for a fraction of an activity claim. Records the buyer, amount, and a reference to the funding receipt that proves the transaction.
+
+**Key:** `any`
+
+#### Properties
+
+| Property           | Type     | Required | Description                                                                                | Comments                                                       |
+| ------------------ | -------- | -------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `activityClaimUri` | `string` | ✅       | The AT-URI of the activity claim that this sale event is associated with.                  |                                                                |
+| `buyer`            | `ref`    | ❌       | The DID of the buyer. Omit this field if the buyer wishes to remain anonymous.             |                                                                |
+| `amount`           | `string` | ✅       | The amount paid for this fraction as a numeric string (e.g. '1000.50').                    | maxLength: 50                                                  |
+| `currency`         | `string` | ✅       | The fiat currency of the payment (e.g. USD, EUR).                                          | maxLength: 10, Known values: `USD`, `EUR`, `GBP`, `CHF`, `JPY` |
+| `receipt`          | `string` | ✅       | The AT-URI of the org.hypercerts.funding.receipt record that proves this sale transaction. |                                                                |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created.                         |                                                                |
+
+---
+
+### `org.hypercerts.fraction.transferEvent`
+
+**Description:** A single, immutable transfer event for a fraction of an activity claim. Records the sender, recipient, amount, and cryptographic proof of the transfer.
+
+**Key:** `any`
+
+#### Properties
+
+| Property           | Type     | Required | Description                                                                                                                                                                              | Comments                                                       |
+| ------------------ | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `activityClaimUri` | `string` | ✅       | The AT-URI of the activity claim that this transfer event is associated with.                                                                                                            |                                                                |
+| `from`             | `ref`    | ❌       | The DID of the sender. Omit this field if the sender wishes to remain anonymous.                                                                                                         |                                                                |
+| `to`               | `ref`    | ✅       | The DID of the recipient of the transfer.                                                                                                                                                |                                                                |
+| `amount`           | `string` | ✅       | The amount transferred as a numeric string (e.g. '1000.50').                                                                                                                             | maxLength: 50                                                  |
+| `currency`         | `string` | ✅       | The fiat currency of the transfer (e.g. USD, EUR).                                                                                                                                       | maxLength: 10, Known values: `USD`, `EUR`, `GBP`, `CHF`, `JPY` |
+| `signedAt`         | `string` | ✅       | The timestamp embedded in the signed message payload. This value is part of the data that was cryptographically signed and must match the signing time used during signature generation. |                                                                |
+| `nonce`            | `string` | ❌       | The nonce included in the signed message, used to prevent replay attacks.                                                                                                                | maxLength: 256                                                 |
+| `chainId`          | `string` | ❌       | The EVM chain ID on which this transfer was signed (e.g. '1' for Ethereum mainnet, '42161' for Arbitrum).                                                                                | maxLength: 256                                                 |
+| `signerEVMAddress` | `string` | ✅       | The EVM address of the signer, in checksummed hex format with a 0x prefix (e.g. 0xAbCd...1234). Required for signature verification.                                                     | maxLength: 42                                                  |
+| `signature`        | `string` | ✅       | The cryptographic signature over the transfer message payload.                                                                                                                           | maxLength: 256                                                 |
+| `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                       |                                                                |
+
+---
+
 ### `org.hypercerts.funding.receipt`
 
 **Description:** Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.
@@ -263,6 +306,25 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500  |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                 |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                 |
+
+---
+
+### `org.hypercerts.order.listing`
+
+**Description:** A sale listing for an activity claim. The record key must match the rkey of the associated activity claim record, ensuring exactly one listing per claim and automatic invalidation when the claim is deleted.
+
+**Key:** `any`
+
+#### Properties
+
+| Property        | Type      | Required | Description                                                                                                                | Comments                                                       |
+| --------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `goal`          | `string`  | ✅       | The fundraising goal amount as a numeric string in the listing's currency (e.g. '1000.50'). Use '0' for an unlimited goal. | maxLength: 50                                                  |
+| `currency`      | `string`  | ✅       | The fiat currency in which fractions are priced (e.g. USD, EUR). Defaults to USD.                                          | maxLength: 10, Known values: `USD`, `EUR`, `GBP`, `CHF`, `JPY` |
+| `allowOversell` | `boolean` | ❌       | Whether sales are still accepted after the goal amount is reached. Defaults to true (overselling is allowed).              |                                                                |
+| `status`        | `string`  | ❌       | The current status of the listing. Defaults to 'open'.                                                                     | Known values: `open`, `paused`, `closed`                       |
+| `updatedAt`     | `string`  | ✅       | Client-declared timestamp when this record was last updated.                                                               |                                                                |
+| `createdAt`     | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                         |                                                                |
 
 ---
 
