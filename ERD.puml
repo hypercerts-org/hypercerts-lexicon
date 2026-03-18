@@ -229,6 +229,40 @@ dataclass rights {
     !endif
 }
 
+' app.certified.signature.inline
+dataclass signatureInline {
+    !if (SHOW_FIELDS == "true")
+    signatureType?
+    signature
+    key
+    !endif
+}
+
+' app.certified.signature.list
+dataclass signatureList {
+    !if (SHOW_FIELDS == "true")
+    signatures[]?
+    !endif
+}
+
+' app.certified.signature.proof
+dataclass signatureProof {
+    !if (SHOW_FIELDS == "true")
+    cid
+    note?
+    createdAt?
+    !endif
+}
+
+' app.certified.link.evm
+dataclass linkEvm {
+    !if (SHOW_FIELDS == "true")
+    address
+    proof
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
@@ -390,5 +424,28 @@ badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
+
+' Signature relationships
+signatureList::signatures --> signatureInline
+signatureList::signatures --> signatureProof : "strongRef"
+
+' signatureData relationships (all record lexicons reference signatureList)
+activity ..> signatureList : signatureData
+collection ..> signatureList : signatureData
+attachment ..> signatureList : signatureData
+measurement ..> signatureList : signatureData
+evaluation ..> signatureList : signatureData
+acknowledgement ..> signatureList : signatureData
+contribution ..> signatureList : signatureData
+contributorInformation ..> signatureList : signatureData
+rights ..> signatureList : signatureData
+fundingReceipt ..> signatureList : signatureData
+workScopeTag ..> signatureList : signatureData
+location ..> signatureList : signatureData
+badgeDefinition ..> signatureList : signatureData
+badgeAward ..> signatureList : signatureData
+badgeResponse ..> signatureList : signatureData
+organization ..> signatureList : signatureData
+linkEvm ..> signatureList : signatureData
 
 @enduml

@@ -29,6 +29,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. | maxLength: 1000                    |
 | `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                    |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
+| `signatureData`          | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                   |                                    |
 
 #### Defs
 
@@ -75,6 +76,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `startDate`               | `string` | ❌       | When this contribution started. Should fall within the parent hypercert's timeframe.  |                                      |
 | `endDate`                 | `string` | ❌       | When this contribution finished. Should fall within the parent hypercert's timeframe. |                                      |
 | `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created.                    |                                      |
+| `signatureData`           | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                 |                                      |
 
 ---
 
@@ -86,12 +88,13 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                        | Comments        |
-| ------------- | -------- | -------- | ------------------------------------------------------------------ | --------------- |
-| `identifier`  | `string` | ❌       | DID (did:plc:...) or URI to a social profile of the contributor.   | maxLength: 2048 |
-| `displayName` | `string` | ❌       | Human-readable name for the contributor as it should appear in UI. | maxLength: 100  |
-| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.      |                 |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created. |                 |
+| Property        | Type     | Required | Description                                                           | Comments        |
+| --------------- | -------- | -------- | --------------------------------------------------------------------- | --------------- |
+| `identifier`    | `string` | ❌       | DID (did:plc:...) or URI to a social profile of the contributor.      | maxLength: 2048 |
+| `displayName`   | `string` | ❌       | Human-readable name for the contributor as it should appear in UI.    | maxLength: 100  |
+| `image`         | `union`  | ❌       | The contributor visual representation as a URI or image blob.         |                 |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created.    |                 |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content. |                 |
 
 ---
 
@@ -110,6 +113,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `rightsDescription` | `string` | ✅       | Detailed explanation of the rights holders' permissions, restrictions, and conditions                  | maxLength: 10000, maxGraphemes: 1000 |
 | `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document.                                     |                                      |
 | `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                      |                                      |
+| `signatureData`     | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                  |                                      |
 
 ---
 
@@ -132,6 +136,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `items`            | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                    |
 | `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
+| `signatureData`    | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                             |                                    |
 
 #### Defs
 
@@ -152,13 +157,14 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type      | Required | Description                                                                                                                                                                                                          | Comments                             |
-| -------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `subject`      | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                                                                                                                   |                                      |
-| `context`      | `union`   | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). A URI for a lightweight reference or a strong reference for content-hash verification. |                                      |
-| `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                                                                                                                 |                                      |
-| `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                                                                                                               | maxLength: 10000, maxGraphemes: 1000 |
-| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                   |                                      |
+| Property        | Type      | Required | Description                                                                                                                                                                                                          | Comments                             |
+| --------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `subject`       | `ref`     | ✅       | The record being acknowledged (e.g. an activity, a contributor information record, an evaluation).                                                                                                                   |                                      |
+| `context`       | `union`   | ❌       | Context for the acknowledgement (e.g. the collection that includes an activity, or the activity that includes a contributor). A URI for a lightweight reference or a strong reference for content-hash verification. |                                      |
+| `acknowledged`  | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                                                                                                                 |                                      |
+| `comment`       | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                                                                                                               | maxLength: 10000, maxGraphemes: 1000 |
+| `createdAt`     | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                   |                                      |
+| `signatureData` | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                |                                      |
 
 ---
 
@@ -181,6 +187,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `description`            | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                          |                                    |
 | `location`               | `ref`     | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                    |
 | `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                    |
+| `signatureData`          | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                     |                                    |
 
 ---
 
@@ -192,16 +199,17 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property       | Type      | Required | Description                                                                                                                                                            | Comments                            |
-| -------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `subject`      | `ref`     | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                         |                                     |
-| `evaluators`   | `ref[]`   | ✅       | DIDs of the evaluators                                                                                                                                                 | maxLength: 1000                     |
-| `content`      | `union[]` | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                             | maxLength: 100                      |
-| `measurements` | `ref[]`   | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.context.measurement | maxLength: 100                      |
-| `summary`      | `string`  | ✅       | Brief evaluation summary                                                                                                                                               | maxLength: 5000, maxGraphemes: 1000 |
-| `score`        | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                    |                                     |
-| `location`     | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                       |                                     |
-| `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                      |                                     |
+| Property        | Type      | Required | Description                                                                                                                                                            | Comments                            |
+| --------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `subject`       | `ref`     | ❌       | A strong reference to what is being evaluated (e.g. activity, measurement, contribution, etc.)                                                                         |                                     |
+| `evaluators`    | `ref[]`   | ✅       | DIDs of the evaluators                                                                                                                                                 | maxLength: 1000                     |
+| `content`       | `union[]` | ❌       | Evaluation data (URIs or blobs) containing detailed reports or methodology                                                                                             | maxLength: 100                      |
+| `measurements`  | `ref[]`   | ❌       | Optional references to the measurements that contributed to this evaluation. The record(s) referenced must conform with the lexicon org.hypercerts.context.measurement | maxLength: 100                      |
+| `summary`       | `string`  | ✅       | Brief evaluation summary                                                                                                                                               | maxLength: 5000, maxGraphemes: 1000 |
+| `score`         | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                    |                                     |
+| `location`      | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                       |                                     |
+| `createdAt`     | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                      |                                     |
+| `signatureData` | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                  |                                     |
 
 #### Defs
 
@@ -239,6 +247,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
 | `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
 | `createdAt`     | `string`   | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
+| `signatureData` | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                   |                                    |
 
 ---
 
@@ -263,6 +272,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500  |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                 |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                 |
+| `signatureData`  | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                   |                 |
 
 ---
 
@@ -302,6 +312,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.         | maxLength: 20                                                        |
 | `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                                 |                                                                      |
 | `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                     |                                                                      |
+| `signatureData`     | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                  |                                                                      |
 
 ---
 
@@ -317,15 +328,16 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                                                                                                                                               | Comments                                                                                                                              |
-| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                                                                                                                                      | maxLength: 10                                                                                                                         |
-| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system.                                                                                                                 | maxLength: 100                                                                                                                        |
-| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point`, `geojson`, `h3`, `geohash`, `wkt`, `address`, `scaledCoordinates` |
-| `location`     | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                                                                                                                                            |                                                                                                                                       |
-| `name`         | `string` | ❌       | Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')                                                                                                                                                 | maxLength: 1000, maxGraphemes: 100                                                                                                    |
-| `description`  | `string` | ❌       | Additional context about this location, such as its significance to the work or specific boundaries                                                                                                                                       | maxLength: 2000, maxGraphemes: 500                                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                         |                                                                                                                                       |
+| Property        | Type     | Required | Description                                                                                                                                                                                                                               | Comments                                                                                                                              |
+| --------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `lpVersion`     | `string` | ✅       | The version of the Location Protocol                                                                                                                                                                                                      | maxLength: 10                                                                                                                         |
+| `srs`           | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system.                                                                                                                 | maxLength: 100                                                                                                                        |
+| `locationType`  | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point`, `geojson`, `h3`, `geohash`, `wkt`, `address`, `scaledCoordinates` |
+| `location`      | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                                                                                                                                            |                                                                                                                                       |
+| `name`          | `string` | ❌       | Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')                                                                                                                                                 | maxLength: 1000, maxGraphemes: 100                                                                                                    |
+| `description`   | `string` | ❌       | Additional context about this location, such as its significance to the work or specific boundaries                                                                                                                                       | maxLength: 2000, maxGraphemes: 500                                                                                                    |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                         |                                                                                                                                       |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                     |                                                                                                                                       |
 
 #### Defs
 
@@ -353,6 +365,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                          |
 | `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                              |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                             |
+| `signatureData`  | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                    |                                                                             |
 
 ---
 
@@ -364,13 +377,14 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                     | Comments        |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                 |
-| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                 |
-| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500  |
-| `url`       | `string` | ❌       | Optional URL the badge award links to.                                                                                                          | maxLength: 2048 |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                 |
+| Property        | Type     | Required | Description                                                                                                                                     | Comments        |
+| --------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `badge`         | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                 |
+| `subject`       | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                 |
+| `note`          | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500  |
+| `url`           | `string` | ❌       | Optional URL the badge award links to.                                                                                                          | maxLength: 2048 |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                 |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                           |                 |
 
 ---
 
@@ -382,12 +396,13 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                              | Comments                             |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| `badgeAward` | `ref`    | ✅       | Reference to the badge award.                                            |                                      |
-| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           | Known values: `accepted`, `rejected` |
-| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. | maxLength: 50                        |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |                                      |
+| Property        | Type     | Required | Description                                                              | Comments                             |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------ | ------------------------------------ |
+| `badgeAward`    | `ref`    | ✅       | Reference to the badge award.                                            |                                      |
+| `response`      | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           | Known values: `accepted`, `rejected` |
+| `weight`        | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. | maxLength: 50                        |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created        |                                      |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.    |                                      |
 
 ---
 
@@ -406,6 +421,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `location`         | `ref`      | ❌       | A strong reference to the location where the organization is based. The record referenced must conform with the lexicon app.certified.location.                                                                                                |               |
 | `foundedDate`      | `string`   | ❌       | When the organization was established. Stored as datetime per ATProto conventions (no date-only format exists). Clients should use midnight UTC (e.g., '2005-01-01T00:00:00.000Z'); consumers should treat only the date portion as canonical. |               |
 | `createdAt`        | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                             |               |
+| `signatureData`    | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                          |               |
 
 #### Defs
 
@@ -426,15 +442,16 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                                    | Comments                           |
-| ------------- | -------- | -------- | ------------------------------------------------------------------------------ | ---------------------------------- |
-| `displayName` | `string` | ❌       | Display name for the account                                                   | maxLength: 640, maxGraphemes: 64   |
-| `description` | `string` | ❌       | Free-form profile description text.                                            | maxLength: 2560, maxGraphemes: 256 |
-| `pronouns`    | `string` | ❌       | Free-form pronouns text.                                                       | maxLength: 200, maxGraphemes: 20   |
-| `website`     | `string` | ❌       | Account website URL                                                            |                                    |
-| `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
-| `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created              |                                    |
+| Property        | Type     | Required | Description                                                                    | Comments                           |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------ | ---------------------------------- |
+| `displayName`   | `string` | ❌       | Display name for the account                                                   | maxLength: 640, maxGraphemes: 64   |
+| `description`   | `string` | ❌       | Free-form profile description text.                                            | maxLength: 2560, maxGraphemes: 256 |
+| `pronouns`      | `string` | ❌       | Free-form pronouns text.                                                       | maxLength: 200, maxGraphemes: 20   |
+| `website`       | `string` | ❌       | Account website URL                                                            |                                    |
+| `avatar`        | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
+| `banner`        | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created              |                                    |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.          |                                    |
 
 ---
 
@@ -446,11 +463,12 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                   | Comments      |
-| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `address`   | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                           | maxLength: 42 |
-| `proof`     | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format. |               |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                            |               |
+| Property        | Type     | Required | Description                                                                                                                                                                                   | Comments      |
+| --------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `address`       | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                           | maxLength: 42 |
+| `proof`         | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format. |               |
+| `createdAt`     | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                            |               |
+| `signatureData` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                         |               |
 
 #### Defs
 
@@ -470,6 +488,48 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. |
 | `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 |
 | `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         |
+
+---
+
+### `app.certified.signature.inline`
+
+**Description:** Inline attestation signature embedded directly in a record.
+
+#### Properties
+
+| Property        | Type     | Required | Description                                                                                                                                                                                       | Comments                                                  |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `signatureType` | `string` | ❌       | The signature algorithm identifier (JOSE format). ES256K for secp256k1 (Ethereum/Bitcoin), ES256 for P-256 (NIST/WebCrypto), Ed25519 for EdDSA. Optional but recommended for explicit validation. | maxLength: 32, Known values: `ES256`, `ES256K`, `Ed25519` |
+| `signature`     | `bytes`  | ✅       | The cryptographic signature bytes over the CID. ECDSA signatures must use the low-S variant per BIP-0062.                                                                                         |                                                           |
+| `key`           | `string` | ✅       | Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and specific key used.                                                               | maxLength: 512                                            |
+
+---
+
+### `app.certified.signature.list`
+
+**Description:** Container object with a signatures array. Referenced by all record lexicons to provide optional cryptographic attestation support.
+
+#### Properties
+
+| Property     | Type      | Required | Description                                                                                                                                                   | Comments       |
+| ------------ | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `signatures` | `union[]` | ❌       | Array of cryptographic signatures attesting to record content. Uses an open union to support inline signatures and strong references to remote proof records. | maxLength: 100 |
+
+---
+
+### `app.certified.signature.proof`
+
+**Description:** Remote attestation proof containing the CID of the content being attested.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                                                    | Comments       |
+| ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------- | -------------- |
+| `cid`       | `string` | ✅       | CID of the attested content (record without signatureData field, with $sig metadata including repository DID). |                |
+| `note`      | `string` | ❌       | Optional note explaining the attestation purpose or context.                                                   | maxLength: 500 |
+| `createdAt` | `string` | ❌       | Client-declared timestamp when this proof was created.                                                         |                |
 
 ---
 
@@ -564,6 +624,7 @@ External lexicons from other protocols and systems.
 | `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
 | `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                                    | maxLength: 1000 |
 | `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
+| `signatureData`      | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                    |                 |
 
 #### Defs
 
@@ -614,6 +675,7 @@ External lexicons from other protocols and systems.
 | `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                           | maxLength: 2048                  |
 | `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                     | maxLength: 2048                  |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                              |                                  |
+| `signatureData`  | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                           |                                  |
 
 ---
 
