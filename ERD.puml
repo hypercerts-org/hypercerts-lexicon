@@ -267,7 +267,7 @@ entity funder #FFD4A3 {
 dataclass fundingReceipt {
     !if (SHOW_FIELDS == "true")
     to
-    from
+    from?
     for?
     amount
     currency
