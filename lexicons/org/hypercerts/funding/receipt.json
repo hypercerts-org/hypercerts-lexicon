@@ -8,12 +8,12 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["from", "to", "amount", "currency", "createdAt"],
+        "required": ["to", "amount", "currency", "createdAt"],
         "properties": {
           "from": {
             "type": "ref",
             "ref": "app.certified.defs#did",
-            "description": "DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous."
+            "description": "DID of the sender who transferred the funds. This field is optional, and can be left undefined to represent anonymity."
           },
           "to": {
             "type": "string",
