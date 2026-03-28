@@ -229,6 +229,33 @@ dataclass rights {
     !endif
 }
 
+' app.certified.signature.inline
+dataclass signatureInline {
+    !if (SHOW_FIELDS == "true")
+    signatureType?
+    signature
+    key
+    !endif
+}
+
+' app.certified.signature.proof
+dataclass signatureProof {
+    !if (SHOW_FIELDS == "true")
+    cid
+    note?
+    createdAt?
+    !endif
+}
+
+' app.certified.link.evm
+dataclass linkEvm {
+    !if (SHOW_FIELDS == "true")
+    address
+    proof
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
@@ -390,5 +417,14 @@ badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
+
+' Signature relationships
+' All record lexicons have an optional `signatures` array (ref to
+' app.certified.signature.list) containing a union of signatureInline
+' objects and strongRefs to signatureProof records. Only activity is
+' shown here to avoid cluttering the diagram; the pattern is identical
+' for all record lexicons.
+activity ..> signatureInline : signatures
+activity ..> signatureProof : "signatures (strongRef)"
 
 @enduml
