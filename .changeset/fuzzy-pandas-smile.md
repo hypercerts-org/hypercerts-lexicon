@@ -9,12 +9,12 @@ Adds optional cryptographic signature support to all record lexicons, enabling p
 **New lexicons:**
 
 - `app.certified.signature.inline` - Inline cryptographic signature object with JOSE algorithm identifiers (ES256, ES256K, Ed25519)
-- `app.certified.signature.list` - Container object with `signatures` array supporting both inline signatures and remote attestation references
+- `app.certified.signature.list` - Reusable array type (union of inline signatures and strongRefs to remote proofs)
 - `app.certified.signature.proof` - Remote attestation proof record containing the CID of attested content
 
 **Changes to existing lexicons:**
 
-All 20 record lexicons now include an optional `signatureData` property that references `app.certified.signature.list`:
+All 20 record lexicons now include an optional `signatures` property (a ref to `app.certified.signature.list`) placed directly on the record with no wrapper object:
 
 - `org.hypercerts.claim.activity`
 - `org.hypercerts.claim.contribution`

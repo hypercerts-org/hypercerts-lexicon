@@ -238,13 +238,6 @@ dataclass signatureInline {
     !endif
 }
 
-' app.certified.signature.list
-dataclass signatureList {
-    !if (SHOW_FIELDS == "true")
-    signatures[]?
-    !endif
-}
-
 ' app.certified.signature.proof
 dataclass signatureProof {
     !if (SHOW_FIELDS == "true")
@@ -426,26 +419,12 @@ badgeAward::subject --> activity
 'badgeAward::subject --[norank]-> collection
 
 ' Signature relationships
-signatureList::signatures --> signatureInline
-signatureList::signatures --> signatureProof : "strongRef"
-
-' signatureData relationships (all record lexicons reference signatureList)
-activity ..> signatureList : signatureData
-collection ..> signatureList : signatureData
-attachment ..> signatureList : signatureData
-measurement ..> signatureList : signatureData
-evaluation ..> signatureList : signatureData
-acknowledgement ..> signatureList : signatureData
-contribution ..> signatureList : signatureData
-contributorInformation ..> signatureList : signatureData
-rights ..> signatureList : signatureData
-fundingReceipt ..> signatureList : signatureData
-workScopeTag ..> signatureList : signatureData
-location ..> signatureList : signatureData
-badgeDefinition ..> signatureList : signatureData
-badgeAward ..> signatureList : signatureData
-badgeResponse ..> signatureList : signatureData
-organization ..> signatureList : signatureData
-linkEvm ..> signatureList : signatureData
+' All record lexicons have an optional `signatures` array (ref to
+' app.certified.signature.list) containing a union of signatureInline
+' objects and strongRefs to signatureProof records. Only activity is
+' shown here to avoid cluttering the diagram; the pattern is identical
+' for all record lexicons.
+activity ..> signatureInline : signatures
+activity ..> signatureProof : "signatures (strongRef)"
 
 @enduml

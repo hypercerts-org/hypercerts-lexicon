@@ -45,7 +45,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/organization        (org metadata)
   badge/definition ──► badge/award ──► badge/response
   signature/inline          (embedded cryptographic signature)
-  signature/list            (container for signatures array)
+  signature/list            (reusable signatures array type)
   signature/proof           (remote attestation proof record)
 ```
 
@@ -157,10 +157,10 @@ await agent.api.com.atproto.repo.createRecord({
 | Lexicon              | NSID                             | Description                                                                                                                                     |
 | -------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Inline Signature** | `app.certified.signature.inline` | An inline cryptographic signature for attesting to record content. Uses JOSE algorithm identifiers (ES256, ES256K, Ed25519).                    |
-| **Signature List**   | `app.certified.signature.list`   | Container object with a `signatures` array. Referenced by all record lexicons via `signatureData` property.                                     |
+| **Signature List**   | `app.certified.signature.list`   | Reusable array type (union of inline signatures and strongRefs). Referenced by all record lexicons via the `signatures` property.               |
 | **Proof**            | `app.certified.signature.proof`  | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef. |
 
-All record lexicons include an optional `signatureData` property that references `app.certified.signature.list`, enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
+All record lexicons include an optional `signatures` property (a ref to `app.certified.signature.list`) enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
@@ -383,7 +383,7 @@ const attachment = {
 
 ### Cryptographic Signatures
 
-All record lexicons support optional cryptographic signatures via the `signatureData` property. This enables platform attestation and verification that records were created through trusted services.
+All record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services.
 
 Signatures support two patterns:
 
@@ -399,25 +399,23 @@ const signedActivity = {
   title: "Verified Reforestation Project",
   shortDescription: "Planted 1,000 trees in partnership with local community",
   createdAt: new Date().toISOString(),
-  signatureData: {
-    signatures: [
-      // Inline signature (embedded)
-      {
-        $type: "app.certified.signature.inline",
-        signatureType: "ES256K", // JOSE algorithm: secp256k1
-        signature: new Uint8Array([
-          /* signature bytes */
-        ]),
-        key: "did:plc:platform123#signing", // DID verification method
-      },
-      // Remote attestation (reference to proof in another repo)
-      {
-        $type: "com.atproto.repo.strongRef",
-        uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-        cid: "bafy...",
-      },
-    ],
-  },
+  signatures: [
+    // Inline signature (embedded)
+    {
+      $type: "app.certified.signature.inline",
+      signatureType: "ES256K", // JOSE algorithm: secp256k1
+      signature: new Uint8Array([
+        /* signature bytes */
+      ]),
+      key: "did:plc:platform123#signing", // DID verification method
+    },
+    // Remote attestation (reference to proof in another repo)
+    {
+      $type: "com.atproto.repo.strongRef",
+      uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+      cid: "bafy...",
+    },
+  ],
 };
 ```
 

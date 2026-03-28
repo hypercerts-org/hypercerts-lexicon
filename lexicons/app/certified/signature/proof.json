@@ -1,7 +1,7 @@
 {
   "lexicon": 1,
   "id": "app.certified.signature.proof",
-  "description": "A remote attestation proof record containing the CID of attested content. This record lives in the attestor's repository and can be referenced via strongRef from the attested record's signatureData.signatures array.",
+  "description": "A remote attestation proof record containing the CID of attested content. This record lives in the attestor's repository and can be referenced via strongRef from the attested record's signatures array.",
   "defs": {
     "main": {
       "type": "record",
@@ -14,7 +14,7 @@
           "cid": {
             "type": "string",
             "format": "cid",
-            "description": "CID of the attested content (record without signatureData field, with $sig metadata including repository DID)."
+            "description": "CID of the attested content (record without signatures field, with $sig metadata including repository DID)."
           },
           "note": {
             "type": "string",
