@@ -22,7 +22,13 @@
           "contentType": {
             "type": "string",
             "description": "The type of attachment. Values beyond the known set are permitted.",
-            "knownValues": ["report", "audit", "evidence", "testimonial", "methodology"],
+            "knownValues": [
+              "report",
+              "audit",
+              "evidence",
+              "testimonial",
+              "methodology"
+            ],
             "maxLength": 64
           },
           "content": {
