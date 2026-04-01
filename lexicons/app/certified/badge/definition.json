@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["title", "badgeType", "icon", "createdAt"],
+        "required": ["title", "badgeType", "createdAt"],
         "properties": {
           "badgeType": {
             "type": "string",
