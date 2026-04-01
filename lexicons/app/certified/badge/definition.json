@@ -12,7 +12,15 @@
         "properties": {
           "badgeType": {
             "type": "string",
-            "description": "Category of the badge (e.g. endorsement, participation, affiliation).",
+            "description": "Category of the badge. Values beyond the known set are permitted.",
+            "knownValues": [
+              "endorsement",
+              "verification",
+              "participation",
+              "certification",
+              "affiliation",
+              "recognition"
+            ],
             "maxLength": 100
           },
           "title": {
