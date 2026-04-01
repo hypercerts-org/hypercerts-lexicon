@@ -77,6 +77,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     locations[]?
     rights?
     createdAt
+    updatedAt?
     !endif
 }
 
@@ -91,6 +92,7 @@ dataclass attachment {
     description?
     location?
     createdAt
+    updatedAt?
     !endif
 }
 
@@ -110,6 +112,7 @@ dataclass measurement {
     locations[]?
     comment?
     createdAt
+    updatedAt?
     !endif
 }
 
@@ -124,6 +127,7 @@ dataclass evaluation {
     score
     location?
     createdAt
+    updatedAt?
     !endif
 }
 
@@ -239,6 +243,7 @@ dataclass collection {
     items[]?
     location?
     createdAt
+    updatedAt?
     !endif
 }
 
