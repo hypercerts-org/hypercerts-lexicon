@@ -15,20 +15,20 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property                 | Type     | Required | Description                                                                                                                                             | Comments                           |
-| ------------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `title`                  | `string` | ✅       | Display title summarizing the impact work (e.g. 'Reforestation in Amazon Basin 2024')                                                                   | maxLength: 256                     |
-| `shortDescription`       | `string` | ✅       | Short summary of this activity claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.         | maxLength: 3000, maxGraphemes: 300 |
-| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                           |                                    |
-| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                        |                                    |
-| `image`                  | `union`  | ❌       | The hypercert visual representation as a URI or image blob.                                                                                             |                                    |
-| `contributors`           | `ref[]`  | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                             |                                    |
-| `workScope`              | `union`  | ❌       | Work scope definition. A CEL expression for structured, machine-evaluable scopes or a free-form string for simple and legacy scopes.                    |                                    |
-| `startDate`              | `string` | ❌       | When the work began                                                                                                                                     |                                    |
-| `endDate`                | `string` | ❌       | When the work ended                                                                                                                                     |                                    |
-| `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. | maxLength: 1000                    |
-| `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                    |
-| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
+| Property                 | Type     | Required | Description                                                                                                                                                                | Comments                           |
+| ------------------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `title`                  | `string` | ✅       | Display title summarizing the impact work (e.g. 'Reforestation in Amazon Basin 2024')                                                                                      | maxLength: 256                     |
+| `shortDescription`       | `string` | ✅       | Short summary of this activity claim, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                            | maxLength: 3000, maxGraphemes: 300 |
+| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                              |                                    |
+| `description`            | `union`  | ❌       | Long-form description of the activity. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document). |                                    |
+| `image`                  | `union`  | ❌       | The hypercert visual representation as a URI or image blob.                                                                                                                |                                    |
+| `contributors`           | `ref[]`  | ❌       | An array of contributor objects, each containing contributor information, weight, and contribution details.                                                                |                                    |
+| `workScope`              | `union`  | ❌       | Work scope definition. A CEL expression for structured, machine-evaluable scopes or a free-form string for simple and legacy scopes.                                       |                                    |
+| `startDate`              | `string` | ❌       | When the work began                                                                                                                                                        |                                    |
+| `endDate`                | `string` | ❌       | When the work ended                                                                                                                                                        |                                    |
+| `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                    | maxLength: 1000                    |
+| `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.                                 |                                    |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                          |                                    |
 
 #### Defs
 
@@ -129,18 +129,18 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 #### Properties
 
-| Property                 | Type     | Required | Description                                                                                                                                                       | Comments                                                                    |
-| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `type`                   | `string` | ❌       | The type of this collection. Values beyond the known set are permitted.                                                                                           | maxLength: 64, Known values: `favorites`, `project`, `portfolio`, `program` |
-| `title`                  | `string` | ✅       | Display name for this collection (e.g. 'Q1 2025 Impact Projects')                                                                                                 | maxLength: 800, maxGraphemes: 80                                            |
-| `shortDescription`       | `string` | ❌       | Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                       | maxLength: 3000, maxGraphemes: 300                                          |
-| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                     |                                                                             |
-| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                                                             |
-| `avatar`                 | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                                                             |
-| `banner`                 | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                                                             |
-| `items`                  | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                                                             |
-| `location`               | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                                                             |
-| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                                                             |
+| Property                 | Type     | Required | Description                                                                                                                                                                  | Comments                                                                    |
+| ------------------------ | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `type`                   | `string` | ❌       | The type of this collection. Values beyond the known set are permitted.                                                                                                      | maxLength: 64, Known values: `favorites`, `project`, `portfolio`, `program` |
+| `title`                  | `string` | ✅       | Display name for this collection (e.g. 'Q1 2025 Impact Projects')                                                                                                            | maxLength: 800, maxGraphemes: 80                                            |
+| `shortDescription`       | `string` | ❌       | Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                  | maxLength: 3000, maxGraphemes: 300                                          |
+| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                |                                                                             |
+| `description`            | `union`  | ❌       | Long-form description of the collection. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document). |                                                                             |
+| `avatar`                 | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                                |                                                                             |
+| `banner`                 | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                               |                                                                             |
+| `items`                  | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                                     | maxLength: 1000                                                             |
+| `location`               | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location.            |                                                                             |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                            |                                                                             |
 
 #### Defs
 
@@ -189,7 +189,7 @@ An item in a collection, with an identifier and optional weight.
 | `title`                  | `string`  | ✅       | Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')                                                                                                                                                     | maxLength: 256                                                                           |
 | `shortDescription`       | `string`  | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300                                                       |
 | `shortDescriptionFacets` | `ref[]`   | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                                                                          |
-| `description`            | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                          |                                                                                          |
+| `description`            | `union`   | ❌       | Long-form description of the attachment. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document).                                                              |                                                                                          |
 | `location`               | `ref`     | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                                                                          |
 | `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                                                                          |
 
@@ -529,6 +529,15 @@ A Decentralized Identifier (DID) string.
 **Description:** Common type definitions used across all Hypercerts protocols.
 
 #### Defs
+
+##### `org.hypercerts.defs#descriptionString`
+
+An inline long-form description as plain text or markdown, with optional rich-text annotations.
+
+| Property | Type     | Required | Description                                                                |
+| -------- | -------- | -------- | -------------------------------------------------------------------------- |
+| `value`  | `string` | ✅       | The description text (plain text or markdown).                             |
+| `facets` | `ref[]`  | ❌       | Rich text annotations for the description (mentions, URLs, hashtags, etc). |
 
 ##### `org.hypercerts.defs#uri`
 

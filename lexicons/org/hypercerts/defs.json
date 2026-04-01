@@ -3,6 +3,27 @@
   "id": "org.hypercerts.defs",
   "description": "Common type definitions used across all Hypercerts protocols.",
   "defs": {
+    "descriptionString": {
+      "type": "object",
+      "description": "An inline long-form description as plain text or markdown, with optional rich-text annotations.",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The description text (plain text or markdown).",
+          "maxLength": 250000,
+          "maxGraphemes": 25000
+        },
+        "facets": {
+          "type": "array",
+          "description": "Rich text annotations for the description (mentions, URLs, hashtags, etc).",
+          "items": {
+            "type": "ref",
+            "ref": "app.bsky.richtext.facet"
+          }
+        }
+      }
+    },
     "uri": {
       "type": "object",
       "required": ["uri"],
