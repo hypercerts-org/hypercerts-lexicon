@@ -89,7 +89,7 @@ dataclass attachment {
     title
     shortDescription?
     description?
-    location?
+    locations[]?
     createdAt
     !endif
 }
@@ -122,7 +122,7 @@ dataclass evaluation {
     content[]?
     measurements[]?
     score
-    location?
+    locations[]?
     createdAt
     !endif
 }
@@ -237,7 +237,7 @@ dataclass collection {
     shortDescription?
     description? (Leaflet ref)
     items[]?
-    location?
+    locations[]?
     createdAt
     !endif
 }
@@ -310,7 +310,7 @@ evaluation::measurements --> measurement
 evaluation::subject --> activity
 
 ' Impossible to get this one on without screwing up the layout
-'evaluation::location --[norank]-> location
+'evaluation::locations --[norank]-> location
 
 ' so instead make a dangling arrow using a hidden class
 skinparam class {
@@ -320,7 +320,7 @@ skinparam class {
 }
 class " " as hiddenLocation1 <<Ghost>>
 hide hiddenLocation1 circle
-evaluation::location --> hiddenLocation1
+evaluation::locations --> hiddenLocation1
 !if (SHOW_FIELDS == "true")
 ' Also ensure the hidden class is somewhere "en route" to location
 hiddenLocation1 -[hidden]-> activity
@@ -330,7 +330,7 @@ hiddenLocation1 -[hidden]-> activity
 !endif
 
 attachment::subjects --> activity
-attachment::location --> location
+attachment::locations --> location
 
 measurement::subjects --> activity
 
@@ -347,7 +347,7 @@ measurement --> location
 
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
-collection::location --> location
+collection::locations --> location
 
 acknowledgement::subject --> activity
 acknowledgement::subject --> contributorInformation
