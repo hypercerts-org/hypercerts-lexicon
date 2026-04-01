@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A hypercert record tracking impact work.",
+      "description": "A hypercert record tracking impact work. Record key must be a content-addressed identifier in the format 'hc2:{sha256}', where the SHA-256 hash is computed from the complete claim content.",
       "key": "any",
       "record": {
         "type": "object",

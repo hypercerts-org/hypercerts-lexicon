@@ -9,7 +9,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.claim.activity`
 
-**Description:** A hypercert record tracking impact work.
+**Description:** A hypercert record tracking impact work. Record key must be a content-addressed identifier in the format 'hc2:{sha256}', where the SHA-256 hash is computed from the complete claim content.
 
 **Key:** `any`
 
