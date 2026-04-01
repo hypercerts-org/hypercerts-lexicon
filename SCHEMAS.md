@@ -207,11 +207,11 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### `org.hypercerts.context.evaluation#score`
 
-| Property | Type      | Required | Description                                  |
-| -------- | --------- | -------- | -------------------------------------------- |
-| `min`    | `integer` | ✅       | Minimum value of the scale, e.g. 0 or 1.     |
-| `max`    | `integer` | ✅       | Maximum value of the scale, e.g. 5 or 10.    |
-| `value`  | `integer` | ✅       | Score within the inclusive range [min, max]. |
+| Property | Type     | Required | Description                                                                   |
+| -------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `min`    | `string` | ✅       | Minimum value of the scale as a numeric string (e.g. '0', '1').               |
+| `max`    | `string` | ✅       | Maximum value of the scale as a numeric string (e.g. '5', '10').              |
+| `value`  | `string` | ✅       | Score within the inclusive range [min, max] as a numeric string (e.g. '3.7'). |
 
 ---
 

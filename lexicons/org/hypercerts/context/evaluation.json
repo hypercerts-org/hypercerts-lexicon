@@ -75,16 +75,19 @@
       "required": ["min", "max", "value"],
       "properties": {
         "min": {
-          "type": "integer",
-          "description": "Minimum value of the scale, e.g. 0 or 1."
+          "type": "string",
+          "description": "Minimum value of the scale as a numeric string (e.g. '0', '1').",
+          "maxLength": 50
         },
         "max": {
-          "type": "integer",
-          "description": "Maximum value of the scale, e.g. 5 or 10."
+          "type": "string",
+          "description": "Maximum value of the scale as a numeric string (e.g. '5', '10').",
+          "maxLength": 50
         },
         "value": {
-          "type": "integer",
-          "description": "Score within the inclusive range [min, max]."
+          "type": "string",
+          "description": "Score within the inclusive range [min, max] as a numeric string (e.g. '3.7').",
+          "maxLength": 50
         }
       }
     }
