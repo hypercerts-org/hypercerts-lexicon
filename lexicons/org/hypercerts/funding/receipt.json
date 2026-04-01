@@ -58,7 +58,7 @@
           "occurredAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Timestamp when the payment occurred."
+            "description": "Timestamp when the payment occurred. Should be populated whenever the actual payment date is known, as createdAt only reflects when the record was created."
           },
           "createdAt": {
             "type": "string",
