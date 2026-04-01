@@ -28,9 +28,12 @@
             "description": "Short summary of this collection, suitable for previews and list views"
           },
           "description": {
-            "type": "ref",
-            "ref": "pub.leaflet.pages.linearDocument#main",
-            "description": "Rich-text description, represented as a Leaflet linear document."
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#descriptionString",
+              "com.atproto.repo.strongRef"
+            ],
+            "description": "Long-form description of the collection. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document)."
           },
           "avatar": {
             "type": "union",
