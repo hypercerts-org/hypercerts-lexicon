@@ -29,6 +29,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. | maxLength: 1000                    |
 | `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                    |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
+| `updatedAt`              | `string` | ❌       | Client-declared timestamp when this record was last updated.                                                                                            |                                    |
 
 #### Defs
 
@@ -132,6 +133,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `items`            | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                    |
 | `location`         | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
 | `createdAt`        | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
+| `updatedAt`        | `string` | ❌       | Client-declared timestamp when this record was last updated.                                                                                                      |                                    |
 
 #### Defs
 
@@ -181,6 +183,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `description`            | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                          |                                    |
 | `location`               | `ref`     | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                    |
 | `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                    |
+| `updatedAt`              | `string`  | ❌       | Client-declared timestamp when this record was last updated.                                                                                                                                                                              |                                    |
 
 ---
 
@@ -202,6 +205,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `score`        | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                    |                                     |
 | `location`     | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                       |                                     |
 | `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                      |                                     |
+| `updatedAt`    | `string`  | ❌       | Client-declared timestamp when this record was last updated.                                                                                                           |                                     |
 
 #### Defs
 
@@ -239,6 +243,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
 | `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
 | `createdAt`     | `string`   | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
+| `updatedAt`     | `string`   | ❌       | Client-declared timestamp when this record was last updated.                                                                                            |                                    |
 
 ---
 

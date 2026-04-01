@@ -65,6 +65,11 @@
             "type": "string",
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was last updated."
           }
         }
       }
