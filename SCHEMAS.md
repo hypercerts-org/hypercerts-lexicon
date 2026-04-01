@@ -405,7 +405,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `urls`             | `ref[]`    | ❌       | Additional reference URLs (social media profiles, contact pages, donation links, etc.) with a display label for each URL.                                                                                                                      |                                    |
 | `location`         | `ref`      | ❌       | A strong reference to the location where the organization is based. The record referenced must conform with the lexicon app.certified.location.                                                                                                |                                    |
 | `foundedDate`      | `string`   | ❌       | When the organization was established. Stored as datetime per ATProto conventions (no date-only format exists). Clients should use midnight UTC (e.g., '2005-01-01T00:00:00.000Z'); consumers should treat only the date portion as canonical. |                                    |
-| `page`             | `ref`      | ❌       | Rich long-form description of the organization, such as its mission, history, or detailed project narrative. Rendered as a Leaflet linear document.                                                                                            |                                    |
+| `longDescription`  | `union`    | ❌       | Long-form description of the organization, such as its mission, history, or detailed project narrative. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document).    |                                    |
 | `visibility`       | `string`   | ❌       | Controls whether the organization or project is publicly discoverable on platforms that honor this setting.                                                                                                                                    | Known values: `public`, `unlisted` |
 | `createdAt`        | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                             |                                    |
 
@@ -498,6 +498,13 @@ Common type definitions used across all protocols.
 **Description:** Common type definitions used across all Hypercerts protocols.
 
 #### Defs
+
+##### `org.hypercerts.defs#descriptionString`
+
+| Property | Type     | Required | Description                                                                |
+| -------- | -------- | -------- | -------------------------------------------------------------------------- |
+| `value`  | `string` | ✅       | The description text (plain text or markdown).                             |
+| `facets` | `ref[]`  | ❌       | Rich text annotations for the description (mentions, URLs, hashtags, etc). |
 
 ##### `org.hypercerts.defs#uri`
 

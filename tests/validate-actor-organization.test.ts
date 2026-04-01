@@ -35,12 +35,28 @@ describe("app.certified.actor.organization", () => {
     }
   });
 
+  it("should accept record with inline longDescription", () => {
+    const result = Organization.validateMain({
+      $type: ids.AppCertifiedActorOrganization,
+      longDescription: {
+        $type: "org.hypercerts.defs#descriptionString",
+        value: "Our mission is to restore mangrove ecosystems worldwide.",
+      },
+      createdAt: "2024-01-01T00:00:00.000Z",
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("should accept record with all optional fields populated", () => {
     const result = Organization.validateMain({
       $type: ids.AppCertifiedActorOrganization,
       organizationType: ["nonprofit", "ngo"],
       urls: [{ url: "https://example.org", label: "Website" }],
       foundedDate: "2010-01-01T00:00:00.000Z",
+      longDescription: {
+        $type: "org.hypercerts.defs#descriptionString",
+        value: "Full org description in markdown.",
+      },
       visibility: "public",
       createdAt: "2024-01-01T00:00:00.000Z",
     });

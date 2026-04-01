@@ -2,4 +2,4 @@
 "@hypercerts-org/lexicon": minor
 ---
 
-Add optional `page` and `visibility` fields to `app.certified.actor.organization` lexicon to support rich long-form org descriptions (Leaflet linear document) and discoverability control
+Add optional `longDescription` and `visibility` fields to `app.certified.actor.organization` lexicon. `longDescription` uses the description union pattern (inline text/markdown or strongRef to a rich-text document) for consistency with activity, collection, and attachment.
