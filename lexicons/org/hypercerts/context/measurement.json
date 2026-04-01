@@ -65,7 +65,7 @@
           },
           "evidenceURI": {
             "type": "array",
-            "description": "URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)",
+            "description": "URIs to related evidence or underlying data (e.g. org.hypercerts.context.attachment records or raw datasets)",
             "items": {
               "type": "string",
               "format": "uri"
