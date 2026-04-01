@@ -118,7 +118,7 @@ dataclass evaluation {
     !if (SHOW_FIELDS == "true")
     subject?
     summary
-    evaluators[]
+    evaluators[]?
     content[]?
     measurements[]?
     score
