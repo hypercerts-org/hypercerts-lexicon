@@ -234,7 +234,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `locations`     | `ref[]`    | ❌       | Optional geographic references related to where the measurement was taken. Each referenced record must conform with the app.certified.location lexicon. | maxLength: 100                     |
 | `methodType`    | `string`   | ❌       | Short identifier for the measurement methodology                                                                                                        | maxLength: 30                      |
 | `methodURI`     | `string`   | ❌       | URI to methodology documentation, standard protocol, or measurement procedure                                                                           |                                    |
-| `evidenceURI`   | `string[]` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.claim.evidence records or raw datasets)                                                | maxLength: 50                      |
+| `evidenceURI`   | `string[]` | ❌       | URIs to related evidence or underlying data (e.g. org.hypercerts.context.attachment records or raw datasets)                                            | maxLength: 50                      |
 | `measurers`     | `ref[]`    | ❌       | DIDs of the entities that performed this measurement                                                                                                    | maxLength: 100                     |
 | `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
 | `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
@@ -523,12 +523,12 @@ External lexicons from other protocols and systems.
 
 #### Properties
 
-| Property             | Type     | Required | Description                                                                                              | Comments        |
-| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------- | --------------- |
-| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes. |                 |
-| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
-| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                                    | maxLength: 1000 |
-| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
+| Property             | Type     | Required | Description                                                                                        | Comments        |
+| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.collection this board visualizes. |                 |
+| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                            |                 |
+| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                              | maxLength: 1000 |
+| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                 |                 |
 
 #### Defs
 
