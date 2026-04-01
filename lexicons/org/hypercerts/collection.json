@@ -57,10 +57,14 @@
               "ref": "#item"
             }
           },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
+          "locations": {
+            "type": "array",
+            "description": "Strong references to the locations where this collection's activities were performed. Each record referenced must conform with the lexicon app.certified.location.",
+            "maxLength": 1000,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
           },
           "createdAt": {
             "type": "string",

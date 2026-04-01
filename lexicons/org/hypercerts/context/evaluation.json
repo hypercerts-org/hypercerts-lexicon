@@ -56,10 +56,14 @@
             "ref": "#score",
             "description": "Optional overall score for this evaluation on a numeric scale."
           },
-          "location": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location."
+          "locations": {
+            "type": "array",
+            "description": "Optional geographic references for georeferenced evaluations. Each record referenced must conform with the lexicon app.certified.location.",
+            "maxLength": 1000,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
           },
           "createdAt": {
             "type": "string",
