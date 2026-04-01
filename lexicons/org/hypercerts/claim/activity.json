@@ -76,9 +76,12 @@
             }
           },
           "rights": {
-            "type": "ref",
-            "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights."
+            "type": "array",
+            "description": "Strong references to the rights associated with this hypercert. Each record referenced must conform with the lexicon org.hypercerts.claim.rights.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
           },
           "createdAt": {
             "type": "string",

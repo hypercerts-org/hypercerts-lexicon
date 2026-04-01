@@ -27,7 +27,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `startDate`              | `string` | ❌       | When the work began                                                                                                                                     |                                    |
 | `endDate`                | `string` | ❌       | When the work ended                                                                                                                                     |                                    |
 | `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location. | maxLength: 1000                    |
-| `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.              |                                    |
+| `rights`                 | `ref[]`  | ❌       | Strong references to the rights associated with this hypercert. Each record referenced must conform with the lexicon org.hypercerts.claim.rights.       |                                    |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
 
 #### Defs
