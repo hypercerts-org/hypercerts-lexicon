@@ -368,6 +368,14 @@ const attachment = {
 };
 ```
 
+## Contributing
+
+`main` is the only long-lived branch and the default branch on GitHub.
+Open all pull requests against `main`. There is no `develop` branch —
+it is a stale leftover from a previous workflow and is no longer used.
+
+See [docs/PUBLISHING.md](docs/PUBLISHING.md) for the full release workflow.
+
 ## Development
 
 ### Commands
