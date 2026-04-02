@@ -17,10 +17,10 @@ Use the `writing-changesets` skill. **DO NOT skip this step!**
 ## Branch Strategy
 
 **`main` is the only long-lived branch** and the default branch on GitHub.
-All pull requests must target `main`. There is no `develop` branch.
+All pull requests must target `main`.
 
 - `feature/*` — short-lived branches for development work, merged to `main` via PR
-- `prerelease/*` — ephemeral branches for beta releases only (see `docs/PUBLISHING.md`)
+- `prerelease/*` — ephemeral branches for beta releases only (see [docs/PUBLISHING.md](docs/PUBLISHING.md))
 
 > **Do not open PRs against `develop`** — it is a stale branch left over from
 > a previous workflow and is no longer used.
