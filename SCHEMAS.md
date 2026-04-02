@@ -34,6 +34,8 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### `org.hypercerts.claim.activity#contributor`
 
+A contributor to the activity, with identity, weight, and contribution details.
+
 | Property              | Type     | Required | Description                                                                                                                                                                                                                                                                                       |
 | --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `contributorIdentity` | `union`  | ✅       | Inline contributor identity object with an identity string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record. The record referenced must conform with the lexicon org.hypercerts.claim.contributorInformation. |
@@ -42,17 +44,23 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### `org.hypercerts.claim.activity#contributorIdentity`
 
+Contributor information as a string (DID or identifier).
+
 | Property   | Type     | Required | Description                                          |
 | ---------- | -------- | -------- | ---------------------------------------------------- |
 | `identity` | `string` | ✅       | The contributor identity string (DID or identifier). |
 
 ##### `org.hypercerts.claim.activity#contributorRole`
 
+Contribution details as a string.
+
 | Property | Type     | Required | Description                       |
 | -------- | -------- | -------- | --------------------------------- |
 | `role`   | `string` | ✅       | The contribution role or details. |
 
 ##### `org.hypercerts.claim.activity#workScopeString`
+
+A free-form string describing the work scope for simple or legacy scopes.
 
 | Property | Type     | Required | Description                        |
 | -------- | -------- | -------- | ---------------------------------- |
@@ -137,6 +145,8 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ##### `org.hypercerts.collection#item`
 
+An item in a collection, with an identifier and optional weight.
+
 | Property         | Type     | Required | Description                                                                                                                                                                                     |
 | ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.collection).                                   |
@@ -206,6 +216,8 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 #### Defs
 
 ##### `org.hypercerts.context.evaluation#score`
+
+Overall score for an evaluation on a numeric scale.
 
 | Property | Type     | Required | Description                                                                   |
 | -------- | -------- | -------- | ----------------------------------------------------------------------------- |
@@ -331,6 +343,8 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ##### `app.certified.location#string`
 
+A location represented as a string, e.g. coordinates or a small GeoJSON string.
+
 | Property | Type     | Required | Description               |
 | -------- | -------- | -------- | ------------------------- |
 | `string` | `string` | ✅       | The location string value |
@@ -411,6 +425,8 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ##### `app.certified.actor.organization#urlItem`
 
+A labeled URL reference.
+
 | Property | Type     | Required | Description                                                                        |
 | -------- | -------- | -------- | ---------------------------------------------------------------------------------- |
 | `url`    | `string` | ✅       | The URL.                                                                           |
@@ -456,12 +472,16 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 ##### `app.certified.link.evm#eip712Proof`
 
+EOA wallet ownership proof via EIP-712 typed data signature. Contains both the structured message that was signed and the resulting signature.
+
 | Property    | Type     | Required | Description                                                                                                                                     |
 | ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | `signature` | `string` | ✅       | ECDSA signature over the EIP-712 hash (hex-encoded with 0x prefix, 64 or 65 bytes).                                                             |
 | `message`   | `ref`    | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain. |
 
 ##### `app.certified.link.evm#eip712Message`
+
+The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain.
 
 | Property     | Type     | Required | Description                                                                                                                                                          |
 | ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -485,6 +505,8 @@ Common type definitions used across all protocols.
 
 ##### `app.certified.defs#did`
 
+A Decentralized Identifier (DID) string.
+
 | Property | Type     | Required | Description           |
 | -------- | -------- | -------- | --------------------- |
 | `did`    | `string` | ✅       | The DID string value. |
@@ -499,11 +521,15 @@ Common type definitions used across all protocols.
 
 ##### `org.hypercerts.defs#uri`
 
+Object containing a URI to external data
+
 | Property | Type     | Required | Description          |
 | -------- | -------- | -------- | -------------------- |
 | `uri`    | `string` | ✅       | URI to external data |
 
 ##### `org.hypercerts.defs#smallBlob`
+
+Object containing a blob to external data
 
 | Property | Type   | Required | Description                        |
 | -------- | ------ | -------- | ---------------------------------- |
@@ -511,11 +537,15 @@ Common type definitions used across all protocols.
 
 ##### `org.hypercerts.defs#largeBlob`
 
+Object containing a blob to external data
+
 | Property | Type   | Required | Description                         |
 | -------- | ------ | -------- | ----------------------------------- |
 | `blob`   | `blob` | ✅       | Blob to external data (up to 100MB) |
 
 ##### `org.hypercerts.defs#smallImage`
+
+Object containing a small image
 
 | Property | Type   | Required | Description       |
 | -------- | ------ | -------- | ----------------- |
@@ -523,11 +553,15 @@ Common type definitions used across all protocols.
 
 ##### `org.hypercerts.defs#smallVideo`
 
+Object containing a small video
+
 | Property | Type   | Required | Description        |
 | -------- | ------ | -------- | ------------------ |
 | `video`  | `blob` | ✅       | Video (up to 20MB) |
 
 ##### `org.hypercerts.defs#largeImage`
+
+Object containing a large image
 
 | Property | Type   | Required | Description        |
 | -------- | ------ | -------- | ------------------ |
@@ -569,6 +603,8 @@ External lexicons from other protocols and systems.
 
 ##### `org.hyperboards.board#boardConfig`
 
+Visual configuration for a hyperboard's background, colors, and layout.
+
 | Property              | Type      | Required | Description                                                           |
 | --------------------- | --------- | -------- | --------------------------------------------------------------------- |
 | `backgroundType`      | `string`  | ❌       | Type of background content.                                           |
@@ -583,6 +619,8 @@ External lexicons from other protocols and systems.
 | `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
 
 ##### `org.hyperboards.board#contributorConfig`
+
+Configuration for a specific contributor within a board. Values serve as fallbacks when the contributor has not defined them on their profile. It can also be used to override contributor settings on this board without changing their global profile.
 
 | Property         | Type      | Required | Description                                                                                                                                                                                                            |
 | ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
