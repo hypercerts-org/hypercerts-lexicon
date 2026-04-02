@@ -38,11 +38,11 @@ describe("org.hypercerts.funding.receipt", () => {
     const result = FundingReceipt.validateMain({
       $type: ids.OrgHypercertsFundingReceipt,
       ...validBase,
-      from: { did: "did:plc:abc123" },
+      from: "did:plc:abc123",
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.value.from).toMatchObject({ did: "did:plc:abc123" });
+      expect(result.value.from).toBe("did:plc:abc123");
     }
   });
 
@@ -50,11 +50,14 @@ describe("org.hypercerts.funding.receipt", () => {
     const result = FundingReceipt.validateMain({
       $type: ids.OrgHypercertsFundingReceipt,
       ...validBase,
-      from: { did: "did:plc:abc123" },
+      from: "did:plc:abc123",
       paymentRail: "onchain",
       paymentNetwork: "ethereum",
       transactionId: "0xabc123",
-      for: "at://did:plc:abc123/org.hypercerts.claim.activity/tid123",
+      for: {
+        uri: "at://did:plc:abc123/org.hypercerts.claim.activity/tid123",
+        cid: "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae",
+      },
       notes: "Quarterly donation",
       occurredAt: "2024-01-01T00:00:00Z",
     });
