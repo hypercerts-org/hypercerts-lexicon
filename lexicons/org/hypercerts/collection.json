@@ -26,7 +26,15 @@
             "type": "string",
             "maxLength": 3000,
             "maxGraphemes": 300,
-            "description": "Short summary of this collection, suitable for previews and list views"
+            "description": "Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`."
+          },
+          "shortDescriptionFacets": {
+            "type": "array",
+            "description": "Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
           },
           "description": {
             "type": "ref",
