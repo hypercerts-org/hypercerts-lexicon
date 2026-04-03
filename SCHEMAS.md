@@ -349,7 +349,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `badgeType`      | `string` | ✅       | Category of the badge (e.g. endorsement, participation, affiliation).                    | maxLength: 100                                                              |
 | `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                              |
-| `icon`           | `blob`   | ✅       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml |
+| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml |
 | `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                          |
 | `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                              |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                             |

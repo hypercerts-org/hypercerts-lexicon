@@ -166,7 +166,7 @@ dataclass badgeDefinition {
     !if (SHOW_FIELDS == "true")
     badgeType
     title
-    icon
+    icon?
     description?
     allowedIssuers[]?
     createdAt
