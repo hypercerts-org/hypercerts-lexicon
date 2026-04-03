@@ -2,20 +2,39 @@
 
 This document describes how to publish the `@hypercerts-org/lexicon`
 package to npm using GitHub Actions workflows with Changesets. The
-workflow uses `main` as the sole release branch, with ephemeral
-prerelease branches for beta testing. All releases are manually
-triggered to give you full control over when releases are made.
+workflow uses `main` as the branch from which normal releases are
+published, with ephemeral prerelease branches for beta testing.
+
+All releases are manually triggered to give you full control over when
+releases are made.
+
+## Maintenance and publishing releases
+
+Clearly stability and predictability for users and developers are
+essential.
+
+Unfortunately AT Protocol doesn't support any kind of native
+versioning or migrations which could support lexicon schema changes.
+Our strategy for dealing with this is documented in the ["Maintenance
+and publishing releases" section of
+`README.md`](../README.md#maintenance-and-publishing-releases).
 
 ## Branch Strategy
 
-- **`main` branch**: Stable releases (the only long-lived branch)
-- **`feature/*` branches**: Short-lived branches for development work,
-  merged to `main` via PR
+- **`main` branch**: Preparation for stable releases, which will be
+  tagged and published from this branch. This is the only evergreen
+  branch.
 - **`prerelease/*` branches**: Ephemeral branches for beta/prerelease
   versions (created from `main`, merged back when done)
+- **`feature/*` (or `fix/*`) branches**: Short-lived branches for
+  development work, targeting and merged to `main` or a
+  `prerelease/*` branch via PR depending on whether a beta or
+  prerelease is required.
 
-**Flow:** `feature/*` → `main` (stable), or
-`prerelease/beta` → `main` (beta cycle)
+**Flow:**
+
+- `feature/*` or `fix/*` → `main` or `prerelease/*`
+- `prerelease/*` → `main` (beta cycle)
 
 ### Release Flow
 

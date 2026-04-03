@@ -50,6 +50,116 @@ Every arrow (`►`) is a `strongRef` or union reference stored on the
 AT Protocol network. Full field-level documentation is in
 [SCHEMAS.md](SCHEMAS.md).
 
+## Consuming These Lexicons
+
+If you are building a downstream application on top of these lexicons,
+we strongly recommend **NOT** reading from `main` or other development
+branches of the repository, but instead via the following published
+releases:
+
+- **For TypeScript / JavaScript code** — use [the npm package
+  `@hypercerts-org/lexicon`](https://www.npmjs.com/package/@hypercerts-org/lexicon),
+  which includes generated types, validation helpers, and schema
+  constants.
+- **For other languages** — use the [tagged
+  releases](https://github.com/hypercerts-org/hypercerts-lexicon/releases)
+  published in this GitHub repository.
+
+Both npm releases and git tags follow [SemVer](https://semver.org/).
+For npm, you can depend on a version range to receive compatible
+updates automatically. For GitHub releases/tags, pin a specific tag
+or upgrade manually to a newer compatible SemVer release.
+
+The raw lexicons published on ATProto can also be used, but they are
+(unavoidably) missing useful context such as full documentation
+(including changelogs), TypeScript type definitions, SemVer
+guarantees, git history, and other tooling provided by the packaged
+releases.
+
+## Maintenance and publishing releases
+
+Clearly stability and predictability for users and developers are
+essential.
+
+Unfortunately AT Protocol doesn't support any kind of native
+versioning or migrations which could support lexicon schema changes.
+Instead, the AT Protocol community recommends minimising changes to
+lexicons in general, and to avoid breaking changes wherever possible:
+
+- https://atproto.com/guides/lexicon-style-guide
+- https://www.pfrazee.com/blog/lexicon-guidance
+
+This project intends to follow that guidance as much as possible
+whilst retaining a pragmatic approach. In practice that means:
+
+- Changes to other tooling within this repository which _do not touch
+  lexicons_ may be made at any time as long as they follow
+  [SemVer](https://semver.org/) to avoid negative impact on
+  developers.
+
+- Non-breaking changes to lexicons, such as adding an optional
+  property or updating a `description`, may be made sparingly. While
+  these changes are backwards-compatible at the protocol level, they
+  may still require consuming applications and indexers to update
+  their schemas for consistent UX.
+
+- Breaking changes to lexicons will only be made in exceptional
+  circumstances. Specifically, a breaking change will only proceed
+  **if and only if**:
+  - the broader community — not just the Hypercerts core team —
+    agrees that the benefits clearly outweigh the cost of the
+    breakage, **and**
+  - full consideration is given to all affected parties across the
+    community and wider ecosystem, not only those involved in the
+    decision, **and**
+  - no viable alternative exists, such as releasing a new `.v2`
+    version of the lexicon or introducing a `v2` field.
+
+  To date, breaking changes have only occurred during the early
+  stages of launching Hypercerts on AT Protocol, before external
+  consumers were building against the lexicons. We intend to keep
+  it that way.
+
+It is also worth noting that members of the ATProto community have
+been working on tooling to make these problems easier to deal with in
+future, e.g. see https://panproto.dev/
+
+## Use of branches
+
+`main` is the only evergreen branch and the default branch on GitHub.
+We aim to minimise deviations between `main` and versions published on
+npm and ATProto. However the publishing processes involve several
+moving parts (including third-party systems), and it is technically
+impossible to update all three at the same time. So **please do not
+assume they will always be perfectly in sync**.
+
+See [docs/PUBLISHING.md](docs/PUBLISHING.md) for the full release workflow.
+
+> If you see a `develop` branch, it is a stale leftover from a
+> previous workflow and is no longer used; do not open pull requests
+> against it.
+
+## Contributing / development
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+### Project Structure
+
+```text
+lexicons/               Source of truth (committed)
+  org/hypercerts/         Hypercerts protocol lexicons
+  org/hyperboards/        Hyperboards visual layer lexicons
+  app/certified/          Shared/certified lexicons
+  com/atproto/            ATProto external references
+
+generated/              Auto-generated TypeScript (gitignored)
+dist/                   Built bundles (gitignored)
+scripts/                Build and codegen scripts
+```
+
+> **Never edit `generated/` or `dist/` directly** — they are
+> regenerated from lexicon JSON files.
+
 ## Installation
 
 ```bash
@@ -368,15 +478,6 @@ const attachment = {
 };
 ```
 
-## Contributing
-
-`main` is the only long-lived branch and the default branch on GitHub.
-Open all pull requests against `main`. If you see a `develop` branch,
-it is a stale leftover from a previous workflow and is no longer used;
-do not open pull requests against it.
-
-See [docs/PUBLISHING.md](docs/PUBLISHING.md) for the full release workflow.
-
 ## Development
 
 ### Commands
@@ -431,34 +532,6 @@ const evmLinkRecord = {
   corresponding message format. Currently the only variant is
   `#eip712Proof` for EOA wallets.
 - `createdAt` (required): Timestamp when the record was created
-
-### Adding or Modifying a Lexicon
-
-1. Edit JSON files in `lexicons/` following the namespace structure
-2. `npm run gen-api` — regenerate TypeScript types
-3. Update `ERD.puml` if relationships changed
-4. Update this README if the lexicon reference table needs updating
-5. `npm run gen-schemas-md` — regenerate SCHEMAS.md
-6. `npm run format` — fix formatting
-7. `npm run check` — validate everything
-8. Create a changeset (required for all public API changes)
-
-### Project Structure
-
-```text
-lexicons/               Source of truth (committed)
-  org/hypercerts/         Hypercerts protocol lexicons
-  org/hyperboards/        Hyperboards visual layer lexicons
-  app/certified/          Shared/certified lexicons
-  com/atproto/            ATProto external references
-
-generated/              Auto-generated TypeScript (gitignored)
-dist/                   Built bundles (gitignored)
-scripts/                Build and codegen scripts
-```
-
-> **Never edit `generated/` or `dist/` directly** — they are
-> regenerated from lexicon JSON files.
 
 ## License
 
