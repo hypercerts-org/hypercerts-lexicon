@@ -11,14 +11,14 @@
         "required": ["to", "amount", "currency", "createdAt"],
         "properties": {
           "from": {
-            "type": "string",
-            "description": "The sender of the funds, as a DID or a name. Optional — omit to represent anonymity.",
-            "maxLength": 2048
+            "type": "union",
+            "description": "The sender of the funds (either an account DID or a strong reference to a record). Optional — omit to represent anonymity.",
+            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
           },
           "to": {
-            "type": "string",
-            "description": "The recipient of the funds, as a DID or a name.",
-            "maxLength": 2048
+            "type": "union",
+            "description": "The recipient of the funds (either an account DID or a strong reference to a record).",
+            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
           },
           "amount": {
             "type": "string",
