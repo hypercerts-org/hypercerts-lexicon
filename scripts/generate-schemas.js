@@ -283,7 +283,11 @@ function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
   output.push("#### Defs", "");
 
   additionalDefs.forEach(([defName, defData], index) => {
-    output.push(`##### \`${lexicon.data.id}#${defName}\``, "");
+    output.push(`##### \`${lexicon.data.id}#${defName}\``);
+    if (defData.description) {
+      output.push("", defData.description);
+    }
+    output.push("");
     const defRows = extractPropertyRows(
       defData,
       defData.required || [],

@@ -89,6 +89,7 @@
     },
     "contributor": {
       "type": "object",
+      "description": "A contributor to the activity, with identity, weight, and contribution details.",
       "required": ["contributorIdentity"],
       "properties": {
         "contributorIdentity": {

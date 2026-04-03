@@ -73,6 +73,7 @@
     },
     "item": {
       "type": "object",
+      "description": "An item in a collection, with an identifier and optional weight.",
       "required": ["itemIdentifier"],
       "properties": {
         "itemIdentifier": {
