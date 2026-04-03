@@ -12,8 +12,8 @@
         "properties": {
           "badge": {
             "type": "ref",
-            "ref": "app.certified.badge.definition",
-            "description": "Reference to the badge definition for this award."
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Strong reference to the badge definition at the time of award. The record referenced must conform with the lexicon app.certified.badge.definition."
           },
           "subject": {
             "type": "union",
