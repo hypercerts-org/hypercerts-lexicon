@@ -12,7 +12,8 @@
         "properties": {
           "type": {
             "type": "string",
-            "description": "The type of this collection. Possible fields can be 'favorites', 'project', or any other type of collection.",
+            "description": "The type of this collection. Values beyond the known set are permitted.",
+            "knownValues": ["favorites", "project", "portfolio", "program"],
             "maxLength": 64
           },
           "title": {
