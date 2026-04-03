@@ -334,7 +334,9 @@ See `ERD.puml` for the entity relationship diagram. Key relationships:
 
 ## Issue Tracking with bd (beads)
 
-**IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
+**IMPORTANT**: Developers of this project sometimes use **bd
+(beads)**, but _not_ for _all_ issue tracking. At the time of writing,
+the GitHub issue tracker is also used.
 
 ### Why bd?
 
