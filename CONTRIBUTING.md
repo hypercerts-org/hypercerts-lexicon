@@ -53,7 +53,9 @@ details.
 
 ## Pull Request Process
 
-1. **Target the `main` branch**
+1. **Target the `main` branch** unless there is a specific need
+   to use a `prerelease/*` branch. Consult the maintainers / community
+   if unsure.
 2. **Ensure all checks pass**: `npm run check`
 3. **Include a changeset** if required
 4. **Write clear commit messages** using conventional commit format

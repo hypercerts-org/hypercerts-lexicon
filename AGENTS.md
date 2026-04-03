@@ -1,7 +1,10 @@
 # AGENTS.md
 
-This file provides guidance to AI coding assistants when working with
-code in this repository.
+This file provides guidance to AI coding assistants which are
+modifying code in this repository.
+
+If however you are building on _top_ of this repository rather than
+_in_ it, then instead see the [`README.md`](README.md).
 
 ## ⚠️ CRITICAL REMINDER FOR AI AGENTS
 
@@ -16,14 +19,24 @@ Use the `writing-changesets` skill. **DO NOT skip this step!**
 
 ## Branch Strategy
 
-**`main` is the only long-lived branch** and the default branch on GitHub.
-All pull requests must target `main`.
+**`main` is the only evergreen branch** and the default branch on
+GitHub. Normal releases are published from `main`. Note that `main`,
+the latest npm package release, and the lexicons published on ATProto
+may not always be perfectly in sync due to the multiple moving parts
+in the publishing process.
 
-- `feature/*` — short-lived branches for development work, merged to `main` via PR
-- `prerelease/*` — ephemeral branches for beta releases only (see [docs/PUBLISHING.md](docs/PUBLISHING.md))
+- **`main` branch**: Preparation for stable releases, which will be
+  tagged and published from this branch.
+- **`prerelease/*` branches**: Ephemeral branches for beta/prerelease
+  versions (created from `main`, merged back when done; see
+  [docs/PUBLISHING.md](docs/PUBLISHING.md))
+- **`feature/*` (or `fix/*`) branches**: Short-lived branches for
+  development work, targeting and merged to `main` or a
+  `prerelease/*` branch via PR depending on whether a beta or
+  prerelease is required.
 
-> **Do not open PRs against `develop`** — it is a stale branch left over from
-> a previous workflow and is no longer used.
+> **Do not open PRs against `develop`** — it is a stale branch left
+> over from a previous workflow and is no longer used.
 
 ## Overview
 
@@ -39,6 +52,35 @@ The codebase consists of:
   (gitignored, do not edit manually)
 - **Built output**: Compiled bundles in `dist/` directory (gitignored)
 - **Documentation**: Markdown files including README.md and ERD.md.
+
+## Guidance for development of downstream applications
+
+As already mentioned above, downstream applications should _not_
+depend on this document for guidance, which is intended for usage when
+modifying this repository.
+
+However for the sake of clarity, consume these lexicons **NOT** by
+reading from `main` or other development branches of the repository,
+but instead via the following published releases:
+
+- **For TypeScript / JavaScript code** — use [the npm package
+  `@hypercerts-org/lexicon`](https://www.npmjs.com/package/@hypercerts-org/lexicon),
+  which includes generated types, validation helpers, and schema
+  constants.
+- **For other languages** — use the [tagged
+  releases](https://github.com/hypercerts-org/hypercerts-lexicon/releases)
+  published in this GitHub repository.
+
+Both npm releases and git tags follow [SemVer](https://semver.org/).
+For npm, you can depend on a version range to receive compatible
+updates automatically. For GitHub releases/tags, pin a specific tag
+or upgrade manually to a newer compatible SemVer release.
+
+The raw lexicons published on ATProto can also be used, but they are
+(unavoidably) missing useful context such as full documentation
+(including changelogs), TypeScript type definitions, SemVer
+guarantees, git history, and other tooling provided by the packaged
+releases.
 
 ## Critical Build System Detail
 
@@ -68,7 +110,10 @@ and type declaration files in `dist/`.
 
 ## Development Commands
 
-**⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts (e.g., `npm run gen-schemas-md`) rather than executing Node.js files directly (e.g., `node scripts/generate-schemas.js`). This ensures proper environment setup and consistency with the project's workflow.
+**⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts
+(e.g., `npm run gen-schemas-md`) rather than executing Node.js files
+directly (e.g., `node scripts/generate-schemas.js`). This ensures
+proper environment setup and consistency with the project's workflow.
 
 ### Code Generation
 
@@ -162,47 +207,19 @@ Changes should be made to the lexicon JSON files, then regenerated.
 ### Project Structure
 
 ```text
-lexicons/               # Source of truth (committed)
-  app/certified/
-    badge/
-      award.json
-      definition.json
-      response.json
-    defs.json
-    location.json
-  com/atproto/repo/strongRef.json
-  org/hypercerts/
-    claim/
-      activity.json
-      collection.json
-      contribution.json
-      evaluation.json
-      evidence.json
-      measurement.json
-      project.json
-      rights.json
-    defs.json
-    funding/
-      receipt.json
+lexicons/               Source of truth (committed)
+  org/hypercerts/         Hypercerts protocol lexicons
+  org/hyperboards/        Hyperboards visual layer lexicons
+  app/certified/          Shared/certified lexicons
+  com/atproto/            ATProto external references
 
-scripts/                # Build scripts (committed)
-  create-shims.sh       # Generate type shims for external lexicons
-  generate-exports.js   # Auto-generate generated/exports.ts
-  generate-schemas.js   # Auto-generate SCHEMAS.md from lexicons
-
-generated/              # Auto-generated (gitignored)
-  index.ts              # Generated client (not exposed)
-  exports.ts            # Clean exports (entry point)
-  lexicons.ts           # Schema definitions and validation
-  types/                # Type definitions for each lexicon
-  util.ts               # Utility types
-
-dist/                   # Built output (gitignored)
-  index.mjs             # ESM bundle
-  index.cjs             # CommonJS bundle
-  index.d.ts            # TypeScript declarations
-  *.map                 # Source maps
+generated/              Auto-generated TypeScript (gitignored)
+dist/                   Built bundles (gitignored)
+scripts/                Build and codegen scripts
 ```
+
+> **Never edit `generated/` or `dist/` directly** — they are
+> regenerated from lexicon JSON files.
 
 ## Common Patterns
 
@@ -331,7 +348,9 @@ See `ERD.puml` for the entity relationship diagram. Key relationships:
 
 ## Issue Tracking with bd (beads)
 
-**IMPORTANT**: This project uses **bd (beads)** for ALL issue tracking. Do NOT use markdown TODOs, task lists, or other tracking methods.
+**IMPORTANT**: Developers of this project sometimes use **bd
+(beads)**, but _not_ for _all_ issue tracking. At the time of writing,
+the GitHub issue tracker is also used.
 
 ### Why bd?
 
