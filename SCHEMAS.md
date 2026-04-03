@@ -359,14 +359,14 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                              | Comments                                                                    |
-| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `badgeType`      | `string` | ✅       | Category of the badge (e.g. endorsement, participation, affiliation).                    | maxLength: 100                                                              |
-| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                              |
-| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml |
-| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                          |
-| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                              |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                             |
+| Property         | Type     | Required | Description                                                                              | Comments                                                                                                                    |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `badgeType`      | `string` | ✅       | Category of the badge. Values beyond the known set are permitted.                        | maxLength: 100, Known values: `endorsement`, `verification`, `participation`, `certification`, `affiliation`, `recognition` |
+| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                                                                              |
+| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml                                                 |
+| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                                                                          |
+| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                                                                              |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                                                                             |
 
 ---
 
@@ -378,13 +378,13 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                     | Comments        |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `badge`     | `ref`    | ✅       | Reference to the badge definition for this award.                                                                                               |                 |
-| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim. |                 |
-| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                  | maxLength: 500  |
-| `url`       | `string` | ❌       | Optional URL the badge award links to.                                                                                                          | maxLength: 2048 |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                               |                 |
+| Property    | Type     | Required | Description                                                                                                                                        | Comments        |
+| ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `badge`     | `ref`    | ✅       | Strong reference to the badge definition at the time of award. The record referenced must conform with the lexicon app.certified.badge.definition. |                 |
+| `subject`   | `union`  | ✅       | Entity the badge award is for (either an account DID or any specific AT Protocol record), e.g. a user, a project, or a specific activity claim.    |                 |
+| `note`      | `string` | ❌       | Optional statement explaining the reason for this badge award.                                                                                     | maxLength: 500  |
+| `url`       | `string` | ❌       | Optional URL the badge award links to.                                                                                                             | maxLength: 2048 |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                  |                 |
 
 ---
 
@@ -396,12 +396,12 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                              | Comments                             |
-| ------------ | -------- | -------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| `badgeAward` | `ref`    | ✅       | Reference to the badge award.                                            |                                      |
-| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).           | Known values: `accepted`, `rejected` |
-| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient. | maxLength: 50                        |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created        |                                      |
+| Property     | Type     | Required | Description                                                                                                                            | Comments                             |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `badgeAward` | `ref`    | ✅       | Strong reference to the badge award being responded to. The record referenced must conform with the lexicon app.certified.badge.award. |                                      |
+| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).                                                                         | Known values: `accepted`, `rejected` |
+| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient.                                                               | maxLength: 50                        |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                      |                                      |
 
 ---
 
