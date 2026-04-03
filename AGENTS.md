@@ -68,7 +68,10 @@ and type declaration files in `dist/`.
 
 ## Development Commands
 
-**⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts (e.g., `npm run gen-schemas-md`) rather than executing Node.js files directly (e.g., `node scripts/generate-schemas.js`). This ensures proper environment setup and consistency with the project's workflow.
+**⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts
+(e.g., `npm run gen-schemas-md`) rather than executing Node.js files
+directly (e.g., `node scripts/generate-schemas.js`). This ensures
+proper environment setup and consistency with the project's workflow.
 
 ### Code Generation
 
