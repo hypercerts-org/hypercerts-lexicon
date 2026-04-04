@@ -150,6 +150,7 @@ function collectMappingAccesses(blocks: string[]): DottedAccess[] {
     "g",
   );
   for (const block of blocks) {
+    pattern.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = pattern.exec(block)) !== null) {
       const key = `${m[1]}.${m[2]}`;
@@ -182,6 +183,7 @@ function collectRuntimeNamespaceAccesses(blocks: string[]): DottedAccess[] {
   // First collect all type-position accesses so we can exclude them
   const typePositions = new Set<string>();
   for (const block of blocks) {
+    typeContextPattern.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = typeContextPattern.exec(block)) !== null) {
       typePositions.add(`${m[1]}.${m[2]}`);
@@ -189,6 +191,7 @@ function collectRuntimeNamespaceAccesses(blocks: string[]): DottedAccess[] {
   }
 
   for (const block of blocks) {
+    pattern.lastIndex = 0;
     let m: RegExpExecArray | null;
     while ((m = pattern.exec(block)) !== null) {
       const key = `${m[1]}.${m[2]}`;
