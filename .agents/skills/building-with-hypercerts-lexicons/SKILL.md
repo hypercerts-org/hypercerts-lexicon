@@ -446,16 +446,13 @@ import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
-  subject: {
-    uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
-    cid: "...",
-  },
   to: "did:plc:recipient",
   amount: "1000.00",
   currency: "USD",
   paymentRail: "ethereum",
   transactionId: "0xabc...",
-  paidAt: new Date().toISOString(),
+  for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+  occurredAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
 };
 ```

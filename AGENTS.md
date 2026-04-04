@@ -239,17 +239,24 @@ scripts/                Build and codegen scripts
    - **Include all fields except facet fields** (they're cosmetic and
      don't affect structure)
 
-4. Update `README.md` as appropriate:
-   - If README.md already references that lexicon, it must be updated
+4. Update `README.md` and `SKILL.md` as appropriate:
+   - If `README.md` or
+     `.agents/skills/building-with-hypercerts-lexicons/SKILL.md`
+     already references that lexicon, **both files must be updated**
      to reflect the lexicon changes (modified properties updated,
-     removed lexicons removed from docs). If it doesn't already then
-     it's _recommended_ but _not mandatory_ to add some docs to it for
-     the lexicon in question.
+     removed lexicons removed from docs, code examples corrected).
+     If neither file already references the lexicon then it's
+     _recommended_ but _not mandatory_ to add docs for it.
 
    - Document new lexicons or changes to existing ones
 
    - Document all properties **except facet fields** (facets may be
      omitted)
+
+   - `npm run test` runs `tests/validate-doc-snippets.test.ts` which
+     auto-checks that all TypeScript code blocks in both files use
+     valid export names, `$type` strings, and API call signatures.
+     This will catch many (but not all) documentation errors.
 
 5. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
 
