@@ -6,7 +6,16 @@ import * as Attachment from "../generated/types/org/hypercerts/context/attachmen
 import * as Measurement from "../generated/types/org/hypercerts/context/measurement.js";
 
 /**
- * Minimal valid Leaflet linearDocument (a single text block).
+ * Minimal valid Leaflet richtext facet (bold annotation).
+ * Exercises pub.leaflet.richtext.facet at runtime.
+ */
+const leafletFacet = {
+  index: { byteStart: 0, byteEnd: 9 },
+  features: [{ $type: "pub.leaflet.richtext.facet#bold" as const }],
+};
+
+/**
+ * Minimal valid Leaflet linearDocument (a single text block with a facet).
  */
 const leafletDescription = {
   $type: "pub.leaflet.pages.linearDocument" as const,
@@ -16,7 +25,7 @@ const leafletDescription = {
       block: {
         $type: "pub.leaflet.blocks.text" as const,
         plaintext: "A rich-text description for testing.",
-        facets: [],
+        facets: [leafletFacet],
       },
     },
   ],
