@@ -4,7 +4,9 @@ This file provides guidance to AI coding assistants which are
 modifying code in this repository.
 
 If however you are building on _top_ of this repository rather than
-_in_ it, then instead see the [`README.md`](README.md).
+_in_ it, then instead see
+[`building-with-hypercerts-lexicons/SKILL.md`](.agents/skills/building-with-hypercerts-lexicons/SKILL.md)
+and the [`README.md`](README.md).
 
 ## ⚠️ CRITICAL REMINDER FOR AI AGENTS
 

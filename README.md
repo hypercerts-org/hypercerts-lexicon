@@ -76,6 +76,22 @@ The raw lexicons published on ATProto can also be used, but they are
 guarantees, git history, and other tooling provided by the packaged
 releases.
 
+### AI Agent Skill
+
+If you use AI coding assistants (e.g. Claude Code, OpenCode), you can
+install a skill that teaches your agent how to build with these
+lexicons:
+
+```bash
+npx skills add hypercerts-org/hypercerts-lexicon
+```
+
+This installs the
+[`building-with-hypercerts-lexicons`](.agents/skills/building-with-hypercerts-lexicons/SKILL.md)
+skill, which provides your agent with guidance on package entry points,
+TypeScript types, validation, all lexicon schemas, code examples, and
+AT Protocol conventions.
+
 ## Maintenance and publishing releases
 
 Clearly stability and predictability for users and developers are
