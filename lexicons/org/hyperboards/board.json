@@ -13,7 +13,7 @@
           "subject": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes."
+            "description": "Reference to the org.hypercerts.claim.activity or org.hypercerts.collection this board visualizes."
           },
           "config": {
             "type": "ref",
