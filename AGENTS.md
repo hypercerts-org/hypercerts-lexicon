@@ -97,9 +97,9 @@ npm run gen-api
 
 This runs `lex gen-api` on all lexicon JSON files and:
 
-1. Generates TypeScript types in `generated/`
-2. Creates type shims for external lexicons
-3. Auto-generates `generated/exports.ts` with clean exports
+1. Generates TypeScript types in `generated/` (including vendored
+   external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
+2. Auto-generates `generated/exports.ts` with clean exports
 
 Then to build the distributable bundles:
 
@@ -231,8 +231,7 @@ scripts/                Build and codegen scripts
    structure
 
 2. Run `npm run gen-api` to:
-   - Generate types in `generated/`
-   - Create type shims for external lexicons
+   - Generate types in `generated/` (including vendored external lexicons)
    - Auto-generate `generated/exports.ts` with all exports
 
 3. Update `ERD.puml` as appropriate:

@@ -42,7 +42,7 @@
     "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && ./scripts/create-shims.sh && npm run gen-index",
+    "gen-api": "find ./lexicons -name '*.json' | xargs lex gen-api --yes ./generated && npm run gen-index",
     "gen-md": "find ./lexicons -name '*.json' | xargs lex gen-md --yes ./lexicons.md",
     "gen-schemas-md": "node ./scripts/generate-schemas.js",
     "//gen-ts": "UNUSED - use gen-api instead",
@@ -65,8 +65,6 @@
     "prepare": "husky && ./scripts/setup-merge-driver.sh"
   },
   "dependencies": {
-    "@atcute/bluesky": "^3.2.15",
-    "@atcute/leaflet": "^1.0.15",
     "@atproto/lexicon": "^0.6.0",
     "multiformats": "^13.3.6"
   },
