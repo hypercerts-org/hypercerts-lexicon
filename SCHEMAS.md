@@ -263,19 +263,19 @@ Overall score for an evaluation on a numeric scale.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                                                                                                                             | Comments        |
-| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `from`           | `ref`    | ❌       | DID of the sender who transferred the funds. This field is optional, and can be left undefined to represent anonymity.                                                                  |                 |
-| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              | maxLength: 2048 |
-| `amount`         | `string` | ✅       | Amount of funding received as a numeric string (e.g. '1000.50').                                                                                                                        | maxLength: 50   |
-| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10   |
-| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50   |
-| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50   |
-| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256  |
-| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                                                                                   |                 |
-| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500  |
-| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                 |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                 |
+| Property         | Type     | Required | Description                                                                                                                                                                             | Comments       |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `from`           | `union`  | ❌       | The sender of the funds (either an account DID or a strong reference to a record). Optional — omit to represent anonymity.                                                              |                |
+| `to`             | `union`  | ✅       | The recipient of the funds (either an account DID or a strong reference to a record).                                                                                                   |                |
+| `amount`         | `string` | ✅       | Amount of funding received as a numeric string (e.g. '1000.50').                                                                                                                        | maxLength: 50  |
+| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10  |
+| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50  |
+| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50  |
+| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256 |
+| `for`            | `ref`    | ❌       | Optional strong reference to the activity, project, or organization this funding relates to.                                                                                            |                |
+| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
+| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
 
 ---
 
