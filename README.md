@@ -296,7 +296,10 @@ await agent.api.com.atproto.repo.createRecord({
 Individual constants (recommended):
 
 ```typescript
-import { ACTIVITY_NSID, COLLECTION_NSID } from "@hypercerts-org/lexicon";
+import {
+  ACTIVITY_NSID,
+  HYPERCERTS_COLLECTION_NSID,
+} from "@hypercerts-org/lexicon";
 ```
 
 Semantic object:
@@ -388,10 +391,10 @@ const activity = {
 ### Creating Collections (Projects, Portfolios, etc.)
 
 ```typescript
-import { COLLECTION_NSID } from "@hypercerts-org/lexicon";
+import { HYPERCERTS_COLLECTION_NSID } from "@hypercerts-org/lexicon";
 
 const project = {
-  $type: COLLECTION_NSID,
+  $type: HYPERCERTS_COLLECTION_NSID,
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "Activities focused on carbon reduction and reforestation",
@@ -460,15 +463,17 @@ When one user includes another's record (e.g. adding an activity to a
 collection), the owner can confirm or reject with an acknowledgement:
 
 ```typescript
-import { ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
 
 const ack = {
-  $type: ACKNOWLEDGEMENT_NSID,
+  $type: CONTEXT_ACKNOWLEDGEMENT_NSID,
   subject: {
     uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
     cid: "bafy...",
   },
+  // context is a union — use $type to specify the variant
   context: {
+    $type: "com.atproto.repo.strongRef",
     uri: "at://did:plc:alice/org.hypercerts.collection/7x9def",
     cid: "bafy...",
   },
@@ -480,10 +485,10 @@ const ack = {
 ### Creating Attachments
 
 ```typescript
-import { ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
 
 const attachment = {
-  $type: ATTACHMENT_NSID,
+  $type: CONTEXT_ATTACHMENT_NSID,
   title: "Field Survey Report",
   contentType: "report",
   subjects: [
@@ -492,9 +497,13 @@ const attachment = {
       cid: "...",
     },
   ],
+  // content items are a union — use $type to specify the variant
   content: [
-    { uri: "https://example.com/reports/survey-2024.pdf" },
-    { uri: "ipfs://Qm..." },
+    {
+      $type: "org.hypercerts.defs#uri",
+      uri: "https://example.com/reports/survey-2024.pdf",
+    },
+    { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
   createdAt: new Date().toISOString(),
