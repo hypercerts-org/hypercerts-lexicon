@@ -574,6 +574,54 @@ Object containing a large image
 
 External lexicons from other protocols and systems.
 
+### `app.bsky.richtext.facet`
+
+**Description:** Annotation of a sub-string within rich text.
+
+#### Properties
+
+| Property   | Type      | Required | Description                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index`    | `ref`     | ✅       | Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets. |
+| `features` | `union[]` | ✅       |                                                                                                                                                                                                                                                                                                                                                            |
+
+#### Defs
+
+##### `app.bsky.richtext.facet#mention`
+
+Facet feature for mention of another account. The text is usually a handle, including a '@' prefix, but the facet reference is a DID.
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `did`    | `string` | ✅       |             |
+
+##### `app.bsky.richtext.facet#link`
+
+Facet feature for a URL. The text URL may have been simplified or truncated, but the facet reference should be a complete URL.
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `uri`    | `string` | ✅       |             |
+
+##### `app.bsky.richtext.facet#tag`
+
+Facet feature for a hashtag. The text usually includes a '#' prefix, but the facet reference should not (except in the case of 'double hash tags').
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `tag`    | `string` | ✅       |             |
+
+##### `app.bsky.richtext.facet#byteSlice`
+
+Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets.
+
+| Property    | Type      | Required | Description |
+| ----------- | --------- | -------- | ----------- |
+| `byteStart` | `integer` | ✅       |             |
+| `byteEnd`   | `integer` | ✅       |             |
+
+---
+
 ### `com.atproto.repo.strongRef`
 
 #### Properties
@@ -653,6 +701,323 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 | `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                           | maxLength: 2048                  |
 | `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                     | maxLength: 2048                  |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                              |                                  |
+
+---
+
+### `pub.leaflet.blocks.blockquote`
+
+#### Properties
+
+| Property    | Type     | Required | Description |
+| ----------- | -------- | -------- | ----------- |
+| `plaintext` | `string` | ✅       |             |
+| `facets`    | `ref[]`  | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.bskyPost`
+
+#### Properties
+
+| Property     | Type     | Required | Description |
+| ------------ | -------- | -------- | ----------- |
+| `postRef`    | `ref`    | ✅       |             |
+| `clientHost` | `string` | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.button`
+
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `text`   | `string` | ✅       |             |
+| `url`    | `string` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.code`
+
+#### Properties
+
+| Property                  | Type     | Required | Description |
+| ------------------------- | -------- | -------- | ----------- |
+| `plaintext`               | `string` | ✅       |             |
+| `language`                | `string` | ❌       |             |
+| `syntaxHighlightingTheme` | `string` | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.header`
+
+#### Properties
+
+| Property    | Type      | Required | Description |
+| ----------- | --------- | -------- | ----------- |
+| `level`     | `integer` | ❌       |             |
+| `plaintext` | `string`  | ✅       |             |
+| `facets`    | `ref[]`   | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.horizontalRule`
+
+#### Properties
+
+---
+
+### `pub.leaflet.blocks.iframe`
+
+#### Properties
+
+| Property | Type      | Required | Description |
+| -------- | --------- | -------- | ----------- |
+| `url`    | `string`  | ✅       |             |
+| `height` | `integer` | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.image`
+
+#### Properties
+
+| Property      | Type     | Required | Description                                           | Comments                            |
+| ------------- | -------- | -------- | ----------------------------------------------------- | ----------------------------------- |
+| `image`       | `blob`   | ✅       |                                                       | maxSize: 1000000, accepts: image/\* |
+| `alt`         | `string` | ❌       | Alt text description of the image, for accessibility. |                                     |
+| `aspectRatio` | `ref`    | ✅       |                                                       |                                     |
+
+#### Defs
+
+##### `pub.leaflet.blocks.image#aspectRatio`
+
+| Property | Type      | Required | Description |
+| -------- | --------- | -------- | ----------- |
+| `width`  | `integer` | ✅       |             |
+| `height` | `integer` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.math`
+
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `tex`    | `string` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.orderedList`
+
+#### Properties
+
+| Property     | Type      | Required | Description                                                                |
+| ------------ | --------- | -------- | -------------------------------------------------------------------------- |
+| `startIndex` | `integer` | ❌       | The starting number for this ordered list. Defaults to 1 if not specified. |
+| `children`   | `ref[]`   | ✅       |                                                                            |
+
+#### Defs
+
+##### `pub.leaflet.blocks.orderedList#listItem`
+
+| Property                | Type      | Required | Description                                                                                                               |
+| ----------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `checked`               | `boolean` | ❌       | If present, this item is a checklist item. true = checked, false = unchecked. If absent, this is a normal list item.      |
+| `content`               | `union`   | ✅       |                                                                                                                           |
+| `children`              | `ref[]`   | ❌       | Nested ordered list items. Mutually exclusive with unorderedListChildren; if both are present, children takes precedence. |
+| `unorderedListChildren` | `ref`     | ❌       | A nested unordered list. Mutually exclusive with children; if both are present, children takes precedence.                |
+
+---
+
+### `pub.leaflet.blocks.page`
+
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `id`     | `string` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.poll`
+
+#### Properties
+
+| Property  | Type  | Required | Description |
+| --------- | ----- | -------- | ----------- |
+| `pollRef` | `ref` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.text`
+
+#### Properties
+
+| Property    | Type     | Required | Description |
+| ----------- | -------- | -------- | ----------- |
+| `plaintext` | `string` | ✅       |             |
+| `textSize`  | `string` | ❌       |             |
+| `facets`    | `ref[]`  | ❌       |             |
+
+---
+
+### `pub.leaflet.blocks.unorderedList`
+
+#### Properties
+
+| Property   | Type    | Required | Description |
+| ---------- | ------- | -------- | ----------- |
+| `children` | `ref[]` | ✅       |             |
+
+#### Defs
+
+##### `pub.leaflet.blocks.unorderedList#listItem`
+
+| Property              | Type      | Required | Description                                                                                                               |
+| --------------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `checked`             | `boolean` | ❌       | If present, this item is a checklist item. true = checked, false = unchecked. If absent, this is a normal list item.      |
+| `content`             | `union`   | ✅       |                                                                                                                           |
+| `children`            | `ref[]`   | ❌       | Nested unordered list items. Mutually exclusive with orderedListChildren; if both are present, children takes precedence. |
+| `orderedListChildren` | `ref`     | ❌       | Nested ordered list items. Mutually exclusive with children; if both are present, children takes precedence.              |
+
+---
+
+### `pub.leaflet.blocks.website`
+
+#### Properties
+
+| Property       | Type     | Required | Description | Comments                            |
+| -------------- | -------- | -------- | ----------- | ----------------------------------- |
+| `previewImage` | `blob`   | ❌       |             | maxSize: 1000000, accepts: image/\* |
+| `title`        | `string` | ❌       |             |                                     |
+| `description`  | `string` | ❌       |             |                                     |
+| `src`          | `string` | ✅       |             |                                     |
+
+---
+
+### `pub.leaflet.pages.linearDocument`
+
+#### Properties
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `id`     | `string` | ❌       |             |
+| `blocks` | `ref[]`  | ✅       |             |
+
+#### Defs
+
+##### `pub.leaflet.pages.linearDocument#block`
+
+| Property    | Type     | Required | Description |
+| ----------- | -------- | -------- | ----------- |
+| `block`     | `union`  | ✅       |             |
+| `alignment` | `string` | ❌       |             |
+
+##### `pub.leaflet.pages.linearDocument#quote`
+
+| Property | Type  | Required | Description |
+| -------- | ----- | -------- | ----------- |
+| `start`  | `ref` | ✅       |             |
+| `end`    | `ref` | ✅       |             |
+
+##### `pub.leaflet.pages.linearDocument#position`
+
+| Property | Type        | Required | Description |
+| -------- | ----------- | -------- | ----------- |
+| `block`  | `integer[]` | ✅       |             |
+| `offset` | `integer`   | ✅       |             |
+
+---
+
+### `pub.leaflet.richtext.facet`
+
+**Description:** Annotation of a sub-string within rich text.
+
+#### Properties
+
+| Property   | Type      | Required | Description                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index`    | `ref`     | ✅       | Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets. |
+| `features` | `union[]` | ✅       |                                                                                                                                                                                                                                                                                                                                                            |
+
+#### Defs
+
+##### `pub.leaflet.richtext.facet#byteSlice`
+
+Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets.
+
+| Property    | Type      | Required | Description |
+| ----------- | --------- | -------- | ----------- |
+| `byteStart` | `integer` | ✅       |             |
+| `byteEnd`   | `integer` | ✅       |             |
+
+##### `pub.leaflet.richtext.facet#link`
+
+Facet feature for a URL. The text URL may have been simplified or truncated, but the facet reference should be a complete URL.
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `uri`    | `string` | ✅       |             |
+
+##### `pub.leaflet.richtext.facet#didMention`
+
+Facet feature for mentioning a did.
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `did`    | `string` | ✅       |             |
+
+##### `pub.leaflet.richtext.facet#atMention`
+
+Facet feature for mentioning an AT URI.
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `atURI`  | `string` | ✅       |             |
+
+##### `pub.leaflet.richtext.facet#code`
+
+Facet feature for inline code.
+
+##### `pub.leaflet.richtext.facet#highlight`
+
+Facet feature for highlighted text.
+
+##### `pub.leaflet.richtext.facet#underline`
+
+Facet feature for underline markup
+
+##### `pub.leaflet.richtext.facet#strikethrough`
+
+Facet feature for strikethrough markup
+
+##### `pub.leaflet.richtext.facet#id`
+
+Facet feature for an identifier. Used for linking to a segment
+
+| Property | Type     | Required | Description |
+| -------- | -------- | -------- | ----------- |
+| `id`     | `string` | ❌       |             |
+
+##### `pub.leaflet.richtext.facet#bold`
+
+Facet feature for bold text
+
+##### `pub.leaflet.richtext.facet#italic`
+
+Facet feature for italic text
+
+##### `pub.leaflet.richtext.facet#footnote`
+
+Facet feature for a footnote reference
+
+| Property           | Type     | Required | Description |
+| ------------------ | -------- | -------- | ----------- |
+| `footnoteId`       | `string` | ✅       |             |
+| `contentPlaintext` | `string` | ✅       |             |
+| `contentFacets`    | `ref[]`  | ❌       |             |
 
 ---
 

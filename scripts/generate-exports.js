@@ -68,9 +68,24 @@ function pathToImportName(filePath) {
     return `${parentName.toUpperCase()}_DEFS_LEXICON_JSON`;
   }
 
-  // For external lexicons (com.atproto.*), use just the base name
-  if (filePath.startsWith("com/")) {
-    return `${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
+  // For external lexicons (com.atproto.*, app.bsky.*, pub.leaflet.*),
+  // use enough path segments to avoid collisions between namespaces
+  if (
+    filePath.startsWith("com/") ||
+    filePath.startsWith("app/bsky/") ||
+    filePath.startsWith("pub/")
+  ) {
+    const parts = parentDir.split("/");
+    // Use last two meaningful path segments + baseName for disambiguation
+    // e.g., app/bsky/richtext/facet -> BSKY_RICHTEXT_FACET
+    //        pub/leaflet/richtext/facet -> LEAFLET_RICHTEXT_FACET
+    //        pub/leaflet/blocks/text -> LEAFLET_BLOCKS_TEXT
+    //        com/atproto/repo/strongRef -> STRONG_REF (keep existing behavior)
+    if (filePath.startsWith("com/")) {
+      return `${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
+    }
+    const prefix = parts.slice(1).join("_"); // skip top-level (app/pub/com)
+    return `${prefix.toUpperCase()}_${splitCamelCase(baseName).toUpperCase()}_LEXICON_JSON`;
   }
 
   // For files in subdirectories, include the subdirectory name
