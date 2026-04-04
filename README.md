@@ -14,19 +14,19 @@ CLAIMS ─ the core impact record and its parts
   (the hypercert)    │       │          │
                      │       ▼          │
                      ├──► contribution          (role, timeframe)
-                     ├──► contributorInformation (identity, avatar)
+                     ├──► contributorInformation (identity, image)
                      ├──► rights                (licensing terms)
                      └──► workScope
-                            ├── cel             (CEL expression)
-                            └── tag             (reusable scope atom)
+                            ├── cel ───► tag    (CEL expression referencing tags)
+                            └── string          (free-form scope)
 
 CONTEXT ─ evidence, data, and social verification
 ──────────────────────────────────────────────────────────────────────
-  attachment ─────────────► activity / evaluation / ...
-  measurement ────────────► activity / ...
-  evaluation ─────────────► activity / attachment
+  attachment ─────────────► any record (activity, evaluation, …)
+  measurement ────────────► any record (activity, …)
+  evaluation ─────────────► any record (activity, measurement, …)
                   └──────► measurement
-  acknowledgement ────────► activity / collection  (bidirectional link)
+  acknowledgement ────────► any record  (bidirectional link)
 
 FUNDING ─ payment records
 ──────────────────────────────────────────────────────────────────────
@@ -41,9 +41,10 @@ HYPERBOARDS ─ visual display layer (hyperboards.org)
 CERTIFIED ─ shared lexicons (certified.app)
 ──────────────────────────────────────────────────────────────────────
   location                  (geo coordinates, GeoJSON, H3, …)
+  link/evm                  (ATProto DID ↔ EVM wallet link)
   actor/profile             (user profile)
   actor/organization        (org metadata)
-  badge/definition ──► badge/award ──► badge/response
+  badge/response ──► badge/award ──► badge/definition
 ```
 
 Every arrow (`►`) is a `strongRef` or union reference stored on the
@@ -206,8 +207,8 @@ const record = {
 };
 
 // Validate before writing
-const result = validate(ACTIVITY_NSID, record);
-if (!result.valid) throw new Error(JSON.stringify(result.errors));
+const result = validate(record, ACTIVITY_NSID, "main");
+if (!result.success) throw new Error(String(result.error));
 
 // Write to the network
 await agent.api.com.atproto.repo.createRecord({
@@ -225,7 +226,7 @@ await agent.api.com.atproto.repo.createRecord({
 | --------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | **Activity**                | `org.hypercerts.claim.activity`               | The main hypercert record — describes impact work with title, description, contributors, work scope, timeframe, locations, and rights. |
 | **Contribution**            | `org.hypercerts.claim.contribution`           | Details about a specific contribution: role, description, and timeframe.                                                               |
-| **Contributor Information** | `org.hypercerts.claim.contributorInformation` | Identity record for a contributor: identifier (DID or URI), display name, and avatar.                                                  |
+| **Contributor Information** | `org.hypercerts.claim.contributorInformation` | Identity record for a contributor: identifier (DID or URI), display name, and image.                                                   |
 | **Rights**                  | `org.hypercerts.claim.rights`                 | Licensing and rights terms (e.g. "CC BY-SA 4.0") attached to an activity.                                                              |
 
 ### Collections (`org.hypercerts.*`)
@@ -270,7 +271,7 @@ await agent.api.com.atproto.repo.createRecord({
 | **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).    |
 | **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                |
 | **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date.                                                          |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                           |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, and optional issuer allowlist.                                                          |
 | **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                 |
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                     |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492). |
@@ -430,7 +431,10 @@ const location = {
   lpVersion: "1.0",
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "coordinate-decimal",
-  location: { string: "-3.4653, -62.2159" },
+  location: {
+    $type: "app.certified.location#string",
+    string: "-3.4653, -62.2159",
+  },
   name: "Amazon Research Station",
   createdAt: new Date().toISOString(),
 };
@@ -441,7 +445,10 @@ const geoLocation = {
   lpVersion: "1.0",
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "geojson-point",
-  location: { string: '{"type":"Point","coordinates":[-62.2159,-3.4653]}' },
+  location: {
+    $type: "app.certified.location#string",
+    string: '{"type":"Point","coordinates":[-62.2159,-3.4653]}',
+  },
   name: "Research Station Alpha",
   createdAt: new Date().toISOString(),
 };

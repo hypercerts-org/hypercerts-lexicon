@@ -593,12 +593,12 @@ External lexicons from other protocols and systems.
 
 #### Properties
 
-| Property             | Type     | Required | Description                                                                                              | Comments        |
-| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------- | --------------- |
-| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.claim.collection this board visualizes. |                 |
-| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                  |                 |
-| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                                    | maxLength: 1000 |
-| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                       |                 |
+| Property             | Type     | Required | Description                                                                                        | Comments        |
+| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.collection this board visualizes. |                 |
+| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                            |                 |
+| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                              | maxLength: 1000 |
+| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                 |                 |
 
 #### Defs
 

@@ -65,8 +65,8 @@ const record = {
 };
 
 // Validate before writing
-const result = validate(ACTIVITY_NSID, record);
-if (!result.valid) throw new Error(JSON.stringify(result.errors));
+const result = validate(record, ACTIVITY_NSID, "main");
+if (!result.success) throw new Error(String(result.error));
 
 // Write to the network
 await agent.api.com.atproto.repo.createRecord({
@@ -155,9 +155,9 @@ const doc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
 ```typescript
 import { validate, ACTIVITY_NSID } from "@hypercerts-org/lexicon";
 
-const result = validate(ACTIVITY_NSID, record);
-if (!result.valid) {
-  console.error(result.errors);
+const result = validate(record, ACTIVITY_NSID, "main");
+if (!result.success) {
+  console.error(result.error);
 }
 ```
 
@@ -198,7 +198,7 @@ if (result.success) {
 | --------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Activity**                | `org.hypercerts.claim.activity`               | The main hypercert record — title, description, contributors, work scope, timeframe, locations, rights |
 | **Contribution**            | `org.hypercerts.claim.contribution`           | Details about a specific contribution: role, description, timeframe                                    |
-| **Contributor Information** | `org.hypercerts.claim.contributorInformation` | Identity record: DID or URI identifier, display name, avatar                                           |
+| **Contributor Information** | `org.hypercerts.claim.contributorInformation` | Identity record: DID or URI identifier, display name, image                                            |
 | **Rights**                  | `org.hypercerts.claim.rights`                 | Licensing terms (e.g. "CC BY-SA 4.0") attached to an activity                                          |
 
 ### Collections
@@ -243,7 +243,7 @@ if (result.success) {
 | **Location**         | `app.certified.location`           | Geographic reference via [Location Protocol](https://spec.decentralizedgeo.org) |
 | **Profile**          | `app.certified.actor.profile`      | User profile: display name, bio, avatar, banner                                 |
 | **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location                          |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, optional issuer allowlist                |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist               |
 | **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                  |
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                      |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature                 |
@@ -256,18 +256,18 @@ CLAIMS
   (the hypercert)    │       │          │
                      │       v          │
                      ├──> contribution          (role, timeframe)
-                     ├──> contributorInformation (identity, avatar)
+                     ├──> contributorInformation (identity, image)
                      ├──> rights                (licensing terms)
                      └──> workScope
-                            ├── cel             (CEL expression)
-                            └── tag             (reusable scope atom)
+                            ├── cel ──> tag     (CEL expression referencing tags)
+                            └── string          (free-form scope)
 
 CONTEXT
-  attachment ────────────> activity / evaluation / ...
-  measurement ───────────> activity / ...
-  evaluation ────────────> activity / attachment
+  attachment ────────────> any record (activity, evaluation, …)
+  measurement ───────────> any record (activity, …)
+  evaluation ────────────> any record (activity, measurement, …)
                   └──────> measurement
-  acknowledgement ───────> activity / collection  (bidirectional)
+  acknowledgement ───────> any record  (bidirectional)
 
 FUNDING
   receipt ───────────────> activity    (from funder -> to recipient)
@@ -276,6 +276,13 @@ HYPERBOARDS
   board ─────────────────> activity / collection
     └── contributorConfig > contributorInformation
   displayProfile           (per-user visual defaults)
+
+CERTIFIED
+  location                 (geo coordinates, GeoJSON, H3, …)
+  link/evm                 (ATProto DID <-> EVM wallet link)
+  actor/profile            (user profile)
+  actor/organization       (org metadata)
+  badge/response ──> badge/award ──> badge/definition
 ```
 
 Every arrow is a `strongRef` or union reference stored on AT Protocol.
@@ -369,7 +376,10 @@ const location = {
   lpVersion: "1.0",
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "coordinate-decimal",
-  location: { string: "-3.4653, -62.2159" },
+  location: {
+    $type: "app.certified.location#string",
+    string: "-3.4653, -62.2159",
+  },
   name: "Amazon Research Station",
   createdAt: new Date().toISOString(),
 };
