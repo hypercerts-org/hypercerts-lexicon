@@ -129,18 +129,18 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 #### Properties
 
-| Property                 | Type     | Required | Description                                                                                                                                                       | Comments                                                                    |
-| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `type`                   | `string` | ❌       | The type of this collection. Values beyond the known set are permitted.                                                                                           | maxLength: 64, Known values: `favorites`, `project`, `portfolio`, `program` |
-| `title`                  | `string` | ✅       | Display name for this collection (e.g. 'Q1 2025 Impact Projects')                                                                                                 | maxLength: 800, maxGraphemes: 80                                            |
-| `shortDescription`       | `string` | ❌       | Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                       | maxLength: 3000, maxGraphemes: 300                                          |
-| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                     |                                                                             |
-| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                                                             |
-| `avatar`                 | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                                                             |
-| `banner`                 | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                                                             |
-| `items`                  | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                                                             |
-| `location`               | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                                                             |
-| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                                                             |
+| Property                 | Type     | Required | Description                                                                                                                                                       | Comments                           |
+| ------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `type`                   | `string` | ❌       | The type of this collection. Values beyond the known set are permitted.                                                                                           | maxLength: 64                      |
+| `title`                  | `string` | ✅       | Display name for this collection (e.g. 'Q1 2025 Impact Projects')                                                                                                 | maxLength: 800, maxGraphemes: 80   |
+| `shortDescription`       | `string` | ❌       | Short summary of this collection, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                       | maxLength: 3000, maxGraphemes: 300 |
+| `shortDescriptionFacets` | `ref[]`  | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                     |                                    |
+| `description`            | `ref`    | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                  |                                    |
+| `avatar`                 | `union`  | ❌       | The collection's avatar/profile image as a URI or image blob.                                                                                                     |                                    |
+| `banner`                 | `union`  | ❌       | Larger horizontal image to display behind the collection view.                                                                                                    |                                    |
+| `items`                  | `ref[]`  | ❌       | Array of items in this collection with optional weights.                                                                                                          | maxLength: 1000                    |
+| `location`               | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location. |                                    |
+| `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                 |                                    |
 
 #### Defs
 
@@ -181,17 +181,17 @@ An item in a collection, with an identifier and optional weight.
 
 #### Properties
 
-| Property                 | Type      | Required | Description                                                                                                                                                                                                                               | Comments                                                                                 |
-| ------------------------ | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `subjects`               | `ref[]`   | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                                                                           |
-| `contentType`            | `string`  | ❌       | The type of attachment. Values beyond the known set are permitted.                                                                                                                                                                        | maxLength: 64, Known values: `report`, `audit`, `evidence`, `testimonial`, `methodology` |
-| `content`                | `union[]` | ❌       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                                                                           |
-| `title`                  | `string`  | ✅       | Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')                                                                                                                                                     | maxLength: 256                                                                           |
-| `shortDescription`       | `string`  | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300                                                       |
-| `shortDescriptionFacets` | `ref[]`   | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                                                                          |
-| `description`            | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                          |                                                                                          |
-| `location`               | `ref`     | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                                                                          |
-| `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                                                                          |
+| Property                 | Type      | Required | Description                                                                                                                                                                                                                               | Comments                           |
+| ------------------------ | --------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `subjects`               | `ref[]`   | ❌       | References to the subject(s) the attachment is connected to—this may be an activity claim, outcome claim, measurement, evaluation, or even another attachment. This is optional as the attachment can exist before the claim is recorded. | maxLength: 100                     |
+| `contentType`            | `string`  | ❌       | The type of attachment. Values beyond the known set are permitted.                                                                                                                                                                        | maxLength: 64                      |
+| `content`                | `union[]` | ❌       | The files, documents, or external references included in this attachment record.                                                                                                                                                          | maxLength: 100                     |
+| `title`                  | `string`  | ✅       | Display title for this attachment (e.g. 'Impact Assessment Report', 'Audit Findings')                                                                                                                                                     | maxLength: 256                     |
+| `shortDescription`       | `string`  | ❌       | Short summary of this attachment, suitable for previews and list views. Rich text annotations may be provided via `shortDescriptionFacets`.                                                                                               | maxLength: 3000, maxGraphemes: 300 |
+| `shortDescriptionFacets` | `ref[]`   | ❌       | Rich text annotations for `shortDescription` (mentions, URLs, hashtags, etc).                                                                                                                                                             |                                    |
+| `description`            | `ref`     | ❌       | Rich-text description, represented as a Leaflet linear document.                                                                                                                                                                          |                                    |
+| `location`               | `ref`     | ❌       | A strong reference to the location where this attachment's subject matter occurred. The record referenced must conform with the lexicon app.certified.location.                                                                           |                                    |
+| `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                        |                                    |
 
 ---
 
@@ -289,7 +289,7 @@ Overall score for an evaluation on a numeric scale.
 | ------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | `expression` | `string` | ✅       | A CEL expression encoding the work scope conditions. Example: scope.hasAll(['mangrove_restoration', 'environmental_education']) && location.country == 'KE'                         | maxLength: 10000, maxGraphemes: 5000 |
 | `usedTags`   | `ref[]`  | ✅       | Strong references to org.hypercerts.workscope.tag records used in the expression. Enables fast indexing by AT-URI and provides referential integrity to the underlying tag records. | maxLength: 100                       |
-| `version`    | `string` | ✅       | CEL context schema version.                                                                                                                                                         | maxLength: 16, Known values: `v1`    |
+| `version`    | `string` | ✅       | CEL context schema version.                                                                                                                                                         | maxLength: 16                        |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this expression was originally created.                                                                                                              |                                      |
 
 ---
@@ -302,19 +302,19 @@ Overall score for an evaluation on a numeric scale.
 
 #### Properties
 
-| Property            | Type       | Required | Description                                                                                                                                                                            | Comments                                                             |
-| ------------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `key`               | `string`   | ✅       | Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.    | maxLength: 120                                                       |
-| `name`              | `string`   | ✅       | Human-readable name for this scope.                                                                                                                                                    | maxLength: 200                                                       |
-| `category`          | `string`   | ❌       | Category type of this scope.                                                                                                                                                           | maxLength: 50, Known values: `topic`, `language`, `domain`, `method` |
-| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                                                                                                             | maxLength: 10000, maxGraphemes: 1000                                 |
-| `parent`            | `ref`      | ❌       | Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.          |                                                                      |
-| `status`            | `string`   | ❌       | Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.                                                  | maxLength: 20, Known values: `proposed`, `accepted`, `deprecated`    |
-| `supersededBy`      | `ref`      | ❌       | When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.                        |                                                                      |
-| `aliases`           | `string[]` | ❌       | Alternative human-readable names for this scope (e.g., translations, abbreviations, or common synonyms). Unlike sameAs, these are plain-text labels, not links to external ontologies. | maxLength: 50                                                        |
-| `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.         | maxLength: 20                                                        |
-| `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                                 |                                                                      |
-| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                     |                                                                      |
+| Property            | Type       | Required | Description                                                                                                                                                                            | Comments                             |
+| ------------------- | ---------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `key`               | `string`   | ✅       | Lowercase, underscore-separated machine-readable key for this scope (e.g., 'mangrove_restoration', 'biodiversity_monitoring'). Used as the canonical identifier in CEL expressions.    | maxLength: 120                       |
+| `name`              | `string`   | ✅       | Human-readable name for this scope.                                                                                                                                                    | maxLength: 200                       |
+| `category`          | `string`   | ❌       | Category type of this scope.                                                                                                                                                           | maxLength: 50                        |
+| `description`       | `string`   | ❌       | Optional longer description of this scope.                                                                                                                                             | maxLength: 10000, maxGraphemes: 1000 |
+| `parent`            | `ref`      | ❌       | Optional strong reference to a parent work scope tag record for taxonomy/hierarchy support. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.          |                                      |
+| `status`            | `string`   | ❌       | Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.                                                  | maxLength: 20                        |
+| `supersededBy`      | `ref`      | ❌       | When status is 'deprecated', points to the replacement work scope tag record. The record referenced must conform with the lexicon org.hypercerts.workscope.tag.                        |                                      |
+| `aliases`           | `string[]` | ❌       | Alternative human-readable names for this scope (e.g., translations, abbreviations, or common synonyms). Unlike sameAs, these are plain-text labels, not links to external ontologies. | maxLength: 50                        |
+| `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.         | maxLength: 20                        |
+| `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                                 |                                      |
+| `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                     |                                      |
 
 ---
 
@@ -330,15 +330,15 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 #### Properties
 
-| Property       | Type     | Required | Description                                                                                                                                                                                                                               | Comments                                                                                                                              |
-| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                                                                                                                                      | maxLength: 10                                                                                                                         |
-| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system.                                                                                                                 | maxLength: 100                                                                                                                        |
-| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry | maxLength: 20, Known values: `coordinate-decimal`, `geojson-point`, `geojson`, `h3`, `geohash`, `wkt`, `address`, `scaledCoordinates` |
-| `location`     | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                                                                                                                                            |                                                                                                                                       |
-| `name`         | `string` | ❌       | Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')                                                                                                                                                 | maxLength: 1000, maxGraphemes: 100                                                                                                    |
-| `description`  | `string` | ❌       | Additional context about this location, such as its significance to the work or specific boundaries                                                                                                                                       | maxLength: 2000, maxGraphemes: 500                                                                                                    |
-| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                         |                                                                                                                                       |
+| Property       | Type     | Required | Description                                                                                                                                                                                                                               | Comments                           |
+| -------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `lpVersion`    | `string` | ✅       | The version of the Location Protocol                                                                                                                                                                                                      | maxLength: 10                      |
+| `srs`          | `string` | ✅       | The Spatial Reference System URI (e.g., http://www.opengis.net/def/crs/OGC/1.3/CRS84) that defines the coordinate system.                                                                                                                 | maxLength: 100                     |
+| `locationType` | `string` | ✅       | An identifier for the format of the location data (e.g., coordinate-decimal, geojson-point). See the Location Protocol spec for the full registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry | maxLength: 20                      |
+| `location`     | `union`  | ✅       | The location of where the work was performed as a URI, blob, or inline string.                                                                                                                                                            |                                    |
+| `name`         | `string` | ❌       | Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')                                                                                                                                                 | maxLength: 1000, maxGraphemes: 100 |
+| `description`  | `string` | ❌       | Additional context about this location, such as its significance to the work or specific boundaries                                                                                                                                       | maxLength: 2000, maxGraphemes: 500 |
+| `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                         |                                    |
 
 #### Defs
 
@@ -360,14 +360,14 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                              | Comments                                                                                                                    |
-| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `badgeType`      | `string` | ✅       | Category of the badge. Values beyond the known set are permitted.                        | maxLength: 100, Known values: `endorsement`, `verification`, `participation`, `certification`, `affiliation`, `recognition` |
-| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                                                                              |
-| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: image/png, image/jpeg, image/webp, image/svg+xml                                                 |
-| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                                                                          |
-| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                                                                              |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                                                                             |
+| Property         | Type     | Required | Description                                                                              | Comments                                                                            |
+| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `badgeType`      | `string` | ✅       | Category of the badge. Values beyond the known set are permitted.                        | maxLength: 100                                                                      |
+| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                                      |
+| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: `image/png`, `image/jpeg`, `image/webp`, `image/svg+xml` |
+| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                                  |
+| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                                      |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                                     |
 
 ---
 
@@ -397,12 +397,12 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                                                                                            | Comments                             |
-| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `badgeAward` | `ref`    | ✅       | Strong reference to the badge award being responded to. The record referenced must conform with the lexicon app.certified.badge.award. |                                      |
-| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).                                                                         | Known values: `accepted`, `rejected` |
-| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient.                                                               | maxLength: 50                        |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                      |                                      |
+| Property     | Type     | Required | Description                                                                                                                            | Comments      |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `badgeAward` | `ref`    | ✅       | Strong reference to the badge award being responded to. The record referenced must conform with the lexicon app.certified.badge.award. |               |
+| `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).                                                                         |               |
+| `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient.                                                               | maxLength: 50 |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                      |               |
 
 ---
 
@@ -782,11 +782,11 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 #### Properties
 
-| Property      | Type     | Required | Description                                           | Comments                            |
-| ------------- | -------- | -------- | ----------------------------------------------------- | ----------------------------------- |
-| `image`       | `blob`   | ✅       |                                                       | maxSize: 1000000, accepts: image/\* |
-| `alt`         | `string` | ❌       | Alt text description of the image, for accessibility. |                                     |
-| `aspectRatio` | `ref`    | ✅       |                                                       |                                     |
+| Property      | Type     | Required | Description                                           | Comments                             |
+| ------------- | -------- | -------- | ----------------------------------------------------- | ------------------------------------ |
+| `image`       | `blob`   | ✅       |                                                       | maxSize: 1000000, accepts: `image/*` |
+| `alt`         | `string` | ❌       | Alt text description of the image, for accessibility. |                                      |
+| `aspectRatio` | `ref`    | ✅       |                                                       |                                      |
 
 #### Defs
 
@@ -888,12 +888,12 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 #### Properties
 
-| Property       | Type     | Required | Description | Comments                            |
-| -------------- | -------- | -------- | ----------- | ----------------------------------- |
-| `previewImage` | `blob`   | ❌       |             | maxSize: 1000000, accepts: image/\* |
-| `title`        | `string` | ❌       |             |                                     |
-| `description`  | `string` | ❌       |             |                                     |
-| `src`          | `string` | ✅       |             |                                     |
+| Property       | Type     | Required | Description | Comments                             |
+| -------------- | -------- | -------- | ----------- | ------------------------------------ |
+| `previewImage` | `blob`   | ❌       |             | maxSize: 1000000, accepts: `image/*` |
+| `title`        | `string` | ❌       |             |                                      |
+| `description`  | `string` | ❌       |             |                                      |
+| `src`          | `string` | ✅       |             |                                      |
 
 ---
 

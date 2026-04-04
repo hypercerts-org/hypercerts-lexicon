@@ -53,12 +53,7 @@ function getComments(prop) {
   if (prop.maxGraphemes) comments.push(`maxGraphemes: ${prop.maxGraphemes}`);
   if (prop.maxSize) comments.push(`maxSize: ${prop.maxSize}`);
   if (prop.accept?.length > 0)
-    comments.push(`accepts: ${prop.accept.join(", ")}`);
-  if (prop.knownValues) {
-    comments.push(
-      `Known values: ${prop.knownValues.map((v) => `\`${v}\``).join(", ")}`,
-    );
-  }
+    comments.push(`accepts: ${prop.accept.map((a) => `\`${a}\``).join(", ")}`);
   return comments.join(", ");
 }
 
