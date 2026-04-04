@@ -38,6 +38,19 @@
             "format": "datetime",
             "description": "When the organization was established. Stored as datetime per ATProto conventions (no date-only format exists). Clients should use midnight UTC (e.g., '2005-01-01T00:00:00.000Z'); consumers should treat only the date portion as canonical."
           },
+          "longDescription": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#descriptionString",
+              "com.atproto.repo.strongRef"
+            ],
+            "description": "Long-form description of the organization, such as its mission, history, or detailed project narrative. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document)."
+          },
+          "visibility": {
+            "type": "string",
+            "knownValues": ["public", "unlisted"],
+            "description": "Controls whether the organization or project is publicly discoverable on platforms that honor this setting."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
