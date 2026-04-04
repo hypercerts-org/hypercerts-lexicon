@@ -86,9 +86,9 @@ lexicon type on the AT Protocol network.
 ```typescript
 import {
   ACTIVITY_NSID,
-  COLLECTION_NSID,
-  ATTACHMENT_NSID,
-  RECEIPT_NSID,
+  HYPERCERTS_COLLECTION_NSID,
+  CONTEXT_ATTACHMENT_NSID,
+  FUNDING_RECEIPT_NSID,
 } from "@hypercerts-org/lexicon";
 ```
 
@@ -320,10 +320,10 @@ const activity = {
 ### Creating a Collection
 
 ```typescript
-import { COLLECTION_NSID } from "@hypercerts-org/lexicon";
+import { HYPERCERTS_COLLECTION_NSID } from "@hypercerts-org/lexicon";
 
 const project = {
-  $type: COLLECTION_NSID,
+  $type: HYPERCERTS_COLLECTION_NSID,
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "Activities focused on carbon reduction",
@@ -349,15 +349,17 @@ const project = {
 ### Creating an Acknowledgement
 
 ```typescript
-import { ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
 
 const ack = {
-  $type: ACKNOWLEDGEMENT_NSID,
+  $type: CONTEXT_ACKNOWLEDGEMENT_NSID,
   subject: {
     uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
     cid: "bafy...",
   },
+  // context is a union — use $type to specify the variant
   context: {
+    $type: "com.atproto.repo.strongRef",
     uri: "at://did:plc:alice/org.hypercerts.collection/7x9def",
     cid: "bafy...",
   },
@@ -412,10 +414,10 @@ const evmLink = {
 ### Creating an Attachment
 
 ```typescript
-import { ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
 
 const attachment = {
-  $type: ATTACHMENT_NSID,
+  $type: CONTEXT_ATTACHMENT_NSID,
   title: "Field Survey Report",
   contentType: "report",
   subjects: [
@@ -424,9 +426,13 @@ const attachment = {
       cid: "...",
     },
   ],
+  // content items are a union — use $type to specify the variant
   content: [
-    { uri: "https://example.com/reports/survey-2024.pdf" },
-    { uri: "ipfs://Qm..." },
+    {
+      $type: "org.hypercerts.defs#uri",
+      uri: "https://example.com/reports/survey-2024.pdf",
+    },
+    { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
   createdAt: new Date().toISOString(),
@@ -436,10 +442,10 @@ const attachment = {
 ### Recording a Funding Receipt
 
 ```typescript
-import { RECEIPT_NSID } from "@hypercerts-org/lexicon";
+import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 
 const receipt = {
-  $type: RECEIPT_NSID,
+  $type: FUNDING_RECEIPT_NSID,
   subject: {
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
     cid: "...",
