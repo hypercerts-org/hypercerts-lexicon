@@ -11,14 +11,14 @@
         "required": ["to", "amount", "currency", "createdAt"],
         "properties": {
           "from": {
-            "type": "ref",
-            "ref": "app.certified.defs#did",
-            "description": "DID of the sender who transferred the funds. This field is optional, and can be left undefined to represent anonymity."
+            "type": "union",
+            "description": "The sender of the funds (either an account DID or a strong reference to a record). Optional — omit to represent anonymity.",
+            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
           },
           "to": {
-            "type": "string",
-            "description": "The recipient of the funds. Can be identified by DID or a clear-text name.",
-            "maxLength": 2048
+            "type": "union",
+            "description": "The recipient of the funds (either an account DID or a strong reference to a record).",
+            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
           },
           "amount": {
             "type": "string",
@@ -46,9 +46,9 @@
             "maxLength": 256
           },
           "for": {
-            "type": "string",
-            "format": "at-uri",
-            "description": "Optional reference to the activity, project, or organization this funding relates to."
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Optional strong reference to the activity, project, or organization this funding relates to."
           },
           "notes": {
             "type": "string",
