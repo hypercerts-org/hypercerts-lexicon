@@ -33,9 +33,9 @@ for (const [, schema] of Object.entries(LexiconsExports.schemaDict)) {
   const s = schema as { id: string; defs: Record<string, unknown> };
   ALL_KNOWN_TYPE_STRINGS.add(s.id);
   for (const defName of Object.keys(s.defs)) {
-    if (defName === "main") {
-      ALL_KNOWN_TYPE_STRINGS.add(s.id); // main $type is just the NSID
-    } else {
+    // "main" $type is just the NSID (already added above); only add
+    // named defs as "nsid#defName" fragments.
+    if (defName !== "main") {
       ALL_KNOWN_TYPE_STRINGS.add(`${s.id}#${defName}`);
     }
   }
