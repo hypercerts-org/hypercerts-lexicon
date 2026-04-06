@@ -248,6 +248,12 @@ scripts/                Build and codegen scripts
      If neither file already references the lexicon then it's
      _recommended_ but _not mandatory_ to add docs for it.
 
+   - For any newly added or modified **required/public** lexicon, add
+     or update documentation in both files even if neither previously
+     referenced it, so the docs stay in sync with the schema.
+     The "recommended but not mandatory" exemption above applies only
+     to optional or internal-only lexicons.
+
    - Document new lexicons or changes to existing ones
 
    - Document all properties **except facet fields** (facets may be
