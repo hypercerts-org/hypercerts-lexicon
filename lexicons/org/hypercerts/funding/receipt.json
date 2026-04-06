@@ -8,17 +8,25 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["from", "to", "amount", "currency", "createdAt"],
+        "required": ["to", "amount", "currency", "createdAt"],
         "properties": {
           "from": {
-            "type": "ref",
-            "ref": "app.certified.defs#did",
-            "description": "DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous."
+            "type": "union",
+            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
           },
           "to": {
-            "type": "string",
-            "description": "The recipient of the funds. Can be identified by DID or a clear-text name.",
-            "maxLength": 2048
+            "type": "union",
+            "description": "The recipient of the funds (a free-text string, an account DID, or a strong reference to a record).",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
           },
           "amount": {
             "type": "string",
@@ -46,9 +54,9 @@
             "maxLength": 256
           },
           "for": {
-            "type": "string",
-            "format": "at-uri",
-            "description": "Optional reference to the activity, project, or organization this funding relates to."
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Optional strong reference to the activity, project, or organization this funding relates to."
           },
           "notes": {
             "type": "string",
@@ -65,6 +73,18 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this receipt record was created."
           }
+        }
+      }
+    },
+    "text": {
+      "type": "object",
+      "description": "A free-text string value (e.g. a display name, wallet address, or other identifier).",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The string value.",
+          "maxLength": 2048
         }
       }
     }

@@ -250,19 +250,27 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                                                                                                                             | Comments        |
-| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `from`           | `ref`    | ✅       | DID of the sender who transferred the funds. Leave empty if sender wants to stay anonymous.                                                                                             |                 |
-| `to`             | `string` | ✅       | The recipient of the funds. Can be identified by DID or a clear-text name.                                                                                                              | maxLength: 2048 |
-| `amount`         | `string` | ✅       | Amount of funding received as a numeric string (e.g. '1000.50').                                                                                                                        | maxLength: 50   |
-| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10   |
-| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50   |
-| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50   |
-| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256  |
-| `for`            | `string` | ❌       | Optional reference to the activity, project, or organization this funding relates to.                                                                                                   |                 |
-| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500  |
-| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                 |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                 |
+| Property         | Type     | Required | Description                                                                                                                                                                             | Comments       |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `from`           | `union`  | ❌       | The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.                                                |                |
+| `to`             | `union`  | ✅       | The recipient of the funds (a free-text string, an account DID, or a strong reference to a record).                                                                                     |                |
+| `amount`         | `string` | ✅       | Amount of funding received as a numeric string (e.g. '1000.50').                                                                                                                        | maxLength: 50  |
+| `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10  |
+| `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50  |
+| `paymentNetwork` | `string` | ❌       | Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).                                                                                                 | maxLength: 50  |
+| `transactionId`  | `string` | ❌       | Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. | maxLength: 256 |
+| `for`            | `ref`    | ❌       | Optional strong reference to the activity, project, or organization this funding relates to.                                                                                            |                |
+| `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
+| `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
+
+#### Defs
+
+##### `org.hypercerts.funding.receipt#text`
+
+| Property | Type     | Required | Description       |
+| -------- | -------- | -------- | ----------------- |
+| `value`  | `string` | ✅       | The string value. |
 
 ---
 
@@ -435,6 +443,41 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture' |                                    |
 | `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                        |                                    |
 | `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created              |                                    |
+
+---
+
+### `app.certified.link.evm`
+
+**Description:** A verifiable link between an ATProto DID and an EVM wallet address, proven via a cryptographic signature. Currently supports EOA wallets via EIP-712 typed data signatures; the proof field is an open union to allow future signature methods.
+
+**Key:** `any`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                                                                                                                                   | Comments      |
+| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `address`   | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                           | maxLength: 42 |
+| `proof`     | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format. |               |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                            |               |
+
+#### Defs
+
+##### `app.certified.link.evm#eip712Proof`
+
+| Property    | Type     | Required | Description                                                                                                                                     |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `signature` | `string` | ✅       | ECDSA signature over the EIP-712 hash (hex-encoded with 0x prefix, 64 or 65 bytes).                                                             |
+| `message`   | `ref`    | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain. |
+
+##### `app.certified.link.evm#eip712Message`
+
+| Property     | Type     | Required | Description                                                                                                                                                          |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `did`        | `string` | ✅       | The ATProto DID being linked to the EVM address.                                                                                                                     |
+| `evmAddress` | `string` | ✅       | The EVM wallet address (must match the top-level address field).                                                                                                     |
+| `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. |
+| `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 |
+| `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         |
 
 ---
 

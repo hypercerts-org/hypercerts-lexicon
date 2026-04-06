@@ -126,9 +126,9 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Funding (`org.hypercerts.funding.*`)
 
-| Lexicon     | NSID                             | Description                                                                                                       |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment from a funder to a recipient, with amount, currency, payment rail, and optional transaction ID. |
+| Lexicon     | NSID                             | Description                                                                                                                                                       |
+| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient, with amount, currency, payment rail, and optional transaction ID. The sender (`from`) is optional to support anonymous funders. |
 
 ### Hyperboards (`org.hyperboards.*`)
 
@@ -139,14 +139,15 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Certified (`app.certified.*`)
 
-| Lexicon              | NSID                               | Description                                                                                                                  |
-| -------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.). |
-| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                             |
-| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date.                                                       |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                        |
-| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                              |
-| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                  |
+| Lexicon              | NSID                               | Description                                                                                                                     |
+| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).    |
+| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                |
+| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date.                                                          |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                           |
+| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                 |
+| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                     |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492). |
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
@@ -380,6 +381,47 @@ npm run format        # Auto-fix formatting
 npm run gen-schemas-md # Regenerate SCHEMAS.md
 npm run test          # Run tests
 ```
+
+### Linking ATProto Identity to EVM Wallets
+
+The `app.certified.link.evm` record enables verifiable linking between
+an ATProto DID and an EVM wallet address. The link is proven via a
+cryptographic signature, allowing any verifier to confirm that the
+wallet owner authorized the binding. Currently supports EOA wallets
+via EIP-712 typed data signatures; the `proof` field is an open union
+to allow future signature methods (e.g. ERC-1271, ERC-6492).
+
+```typescript
+import { LINK_EVM_NSID } from "@hypercerts-org/lexicon";
+
+const evmLinkRecord = {
+  $type: LINK_EVM_NSID,
+  address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  proof: {
+    $type: "app.certified.link.evm#eip712Proof",
+    signature: "0xabc123...", // truncated for readability; real signatures are 130-132 hex chars
+    message: {
+      $type: "app.certified.link.evm#eip712Message",
+      did: "did:plc:alice",
+      evmAddress: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      chainId: "1",
+      timestamp: "1709500000",
+      nonce: "0",
+    },
+  },
+  createdAt: new Date().toISOString(),
+};
+```
+
+**Key fields:**
+
+- `address` (required): 0x-prefixed EVM wallet address (EIP-55
+  checksummed, 42 chars)
+- `proof` (required): Open union containing the cryptographic proof of
+  wallet ownership. Each variant bundles its signature with the
+  corresponding message format. Currently the only variant is
+  `#eip712Proof` for EOA wallets.
+- `createdAt` (required): Timestamp when the record was created
 
 ### Adding or Modifying a Lexicon
 
