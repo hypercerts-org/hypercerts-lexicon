@@ -132,7 +132,11 @@ describe("org.hypercerts.funding.receipt", () => {
 
   it("should reject a record missing the required 'createdAt' field", () => {
     const result = validate(
-      { to: { did: "did:plc:recipient123" }, amount: "500", currency: "USD" },
+      {
+        to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
+        amount: "500",
+        currency: "USD",
+      },
       ids.OrgHypercertsFundingReceipt,
       "main",
       false,
