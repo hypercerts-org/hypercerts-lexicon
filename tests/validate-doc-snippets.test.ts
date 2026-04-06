@@ -207,10 +207,24 @@ function collectRuntimeNamespaceAccesses(blocks: string[]): DottedAccess[] {
         /:\s*$/.test(prefix) || /\bas\s+$/.test(prefix) || /<\s*$/.test(prefix);
 
       if (isTypePosition) {
-        // Only in a type position — skip unless it also appears
-        // in a runtime position elsewhere
+        // This occurrence is in a type-annotation context (`: Foo.Bar`,
+        // `as Foo.Bar`, or `<Foo.Bar>`).  We never report type-only accesses
+        // because interfaces/types don't exist at runtime.
+        //
+        // Two sub-cases:
+        //
+        // 1. `typePositions.has(key)` — the first pass confirmed this key
+        //    appears in a type context.  Don't mark `seen`, so that a
+        //    runtime-position occurrence of the same key later in the loop can
+        //    still be found and reported.
+        //
+        // 2. `!typePositions.has(key)` — the local prefix heuristic fired, but
+        //    the first-pass regex (which uses a slightly different pattern)
+        //    didn't match this key as a type position.  This is an edge case;
+        //    mark it `seen` to avoid re-examining it on every iteration, then
+        //    skip.
         if (!typePositions.has(key)) {
-          seen.add(key); // mark seen so we don't re-check
+          seen.add(key);
         }
         continue;
       }
