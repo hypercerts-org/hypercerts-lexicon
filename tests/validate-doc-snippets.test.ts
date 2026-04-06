@@ -346,16 +346,13 @@ function describeDocSnippets(label: string, relPath: string) {
 
       it("no validate() calls have an NSID as the first argument", () => {
         for (const { firstArg, context } of suspicious) {
-          // This fails if someone writes validate(ACTIVITY_NSID, record, ...)
+          // Fails if someone writes validate(ACTIVITY_NSID, record, ...)
           // instead of validate(record, ACTIVITY_NSID, ...)
-          expect.soft(firstArg).not.toMatch(/^[A-Z_]+_NSID$/);
-          if (firstArg.match(/^[A-Z_]+_NSID$/)) {
-            // Provide helpful context in the error
-            throw new Error(
-              `validate() called with NSID "${firstArg}" as first argument ` +
-                `(should be second). Context: ...${context}...`,
-            );
-          }
+          expect(
+            firstArg,
+            `validate() called with NSID "${firstArg}" as first argument ` +
+              `(should be second). Context: ...${context}...`,
+          ).not.toMatch(/^[A-Z_]+_NSID$/);
         }
       });
     });
