@@ -46,7 +46,10 @@ for (const [, schema] of Object.entries(LexiconsExports.schemaDict)) {
 /** Extract fenced TypeScript code blocks from markdown. */
 function extractTypeScriptBlocks(markdown: string): string[] {
   const blocks: string[] = [];
-  const regex = /```typescript\n([\s\S]*?)```/g;
+  // Accept ```ts, ```tsx, ```typescript (case-insensitive), optional info
+  // strings, and either LF or CRLF line endings so no fences are silently
+  // skipped.
+  const regex = /```(?:ts|tsx|typescript)\b[^\n]*\r?\n([\s\S]*?)```/gi;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(markdown)) !== null) {
     blocks.push(match[1].trim());
