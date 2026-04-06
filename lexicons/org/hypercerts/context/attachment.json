@@ -66,9 +66,9 @@
             "type": "union",
             "refs": [
               "org.hypercerts.defs#descriptionString",
-              "com.atproto.repo.strongRef"
+              "pub.leaflet.pages.linearDocument#main"
             ],
-            "description": "Long-form description of the attachment. An inline string for plain text or markdown, or a strong reference to a rich-text document record (e.g. a Leaflet linear document)."
+            "description": "Long-form description of the attachment. An inline string for plain text or markdown, or a Leaflet linear document for rich-text content."
           },
           "location": {
             "type": "ref",
