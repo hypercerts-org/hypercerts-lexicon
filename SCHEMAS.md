@@ -265,8 +265,8 @@ Overall score for an evaluation on a numeric scale.
 
 | Property         | Type     | Required | Description                                                                                                                                                                             | Comments       |
 | ---------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `from`           | `union`  | ❌       | The sender of the funds (either an account DID or a strong reference to a record). Optional — omit to represent anonymity.                                                              |                |
-| `to`             | `union`  | ✅       | The recipient of the funds (either an account DID or a strong reference to a record).                                                                                                   |                |
+| `from`           | `union`  | ❌       | The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.                                                |                |
+| `to`             | `union`  | ✅       | The recipient of the funds (a free-text string, an account DID, or a strong reference to a record).                                                                                     |                |
 | `amount`         | `string` | ✅       | Amount of funding received as a numeric string (e.g. '1000.50').                                                                                                                        | maxLength: 50  |
 | `currency`       | `string` | ✅       | Currency of the payment (e.g. EUR, USD, ETH).                                                                                                                                           | maxLength: 10  |
 | `paymentRail`    | `string` | ❌       | How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).                                                                              | maxLength: 50  |
@@ -276,6 +276,16 @@ Overall score for an evaluation on a numeric scale.
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
+
+#### Defs
+
+##### `org.hypercerts.funding.receipt#text`
+
+A free-text string value (e.g. a display name, wallet address, or other identifier).
+
+| Property | Type     | Required | Description       |
+| -------- | -------- | -------- | ----------------- |
+| `value`  | `string` | ✅       | The string value. |
 
 ---
 

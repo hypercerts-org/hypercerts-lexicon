@@ -12,13 +12,21 @@
         "properties": {
           "from": {
             "type": "union",
-            "description": "The sender of the funds (either an account DID or a strong reference to a record). Optional — omit to represent anonymity.",
-            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
+            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
           },
           "to": {
             "type": "union",
-            "description": "The recipient of the funds (either an account DID or a strong reference to a record).",
-            "refs": ["app.certified.defs#did", "com.atproto.repo.strongRef"]
+            "description": "The recipient of the funds (a free-text string, an account DID, or a strong reference to a record).",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
           },
           "amount": {
             "type": "string",
@@ -65,6 +73,18 @@
             "format": "datetime",
             "description": "Client-declared timestamp when this receipt record was created."
           }
+        }
+      }
+    },
+    "text": {
+      "type": "object",
+      "description": "A free-text string value (e.g. a display name, wallet address, or other identifier).",
+      "required": ["value"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The string value.",
+          "maxLength": 2048
         }
       }
     }
