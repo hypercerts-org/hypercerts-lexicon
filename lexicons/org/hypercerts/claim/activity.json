@@ -30,9 +30,13 @@
             }
           },
           "description": {
-            "type": "ref",
-            "ref": "pub.leaflet.pages.linearDocument#main",
-            "description": "Rich-text description, represented as a Leaflet linear document."
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#descriptionString",
+              "pub.leaflet.pages.linearDocument",
+              "com.atproto.repo.strongRef"
+            ],
+            "description": "Long-form description of the activity. An inline string for plain text or markdown, a Leaflet linear document for rich-text content, or a strong reference to an external description record."
           },
           "image": {
             "type": "union",
