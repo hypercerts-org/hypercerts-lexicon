@@ -18,7 +18,15 @@ Add a changeset when making changes that affect consumers:
 - Modifying generation scripts that affect exported code
 - Any change that requires a version bump or affects package consumers
 
-Skip changesets for internal changes (build scripts, documentation only).
+Skip changesets for purely internal changes that don't reach npm users
+(e.g. CI config, `AGENTS.md`, `tests/`, `.agents/` skill files).
+
+**Do not skip changesets for changes to files that are published in the
+npm package.** Check the `files` field in `package.json` to see what
+ships. Currently that includes `dist/`, `lexicons/`, `SCHEMAS.md`, and
+`CHANGELOG.md`. Additionally, npm automatically includes `README.md`
+regardless of the `files` field. Changes to any of these files warrant
+a changeset.
 
 ## Format
 
