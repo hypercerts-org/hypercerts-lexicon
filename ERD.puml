@@ -242,6 +242,19 @@ dataclass collection {
     !endif
 }
 
+' org.hypercerts.claim.post
+dataclass post {
+    !if (SHOW_FIELDS == "true")
+    text
+    replies[]?
+    embed?
+    labels?
+    tags[]?
+    attachments[]?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.context.acknowledgement
 dataclass acknowledgement {
     !if (SHOW_FIELDS == "true")
@@ -383,6 +396,9 @@ fundingReceipt::from --> funder
 fundingReceipt::to --> contributorEntity
 
 fundingReceipt::for --> activity : funds
+
+post::replies --> activity : "replies to"
+post::replies --> collection : "replies to"
 
 badgeAward::badge --> badgeDefinition
 badgeResponse::badgeAward --> badgeAward
