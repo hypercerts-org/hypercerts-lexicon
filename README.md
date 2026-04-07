@@ -44,6 +44,9 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/profile             (user profile)
   actor/organization        (org metadata)
   badge/definition ──► badge/award ──► badge/response
+  signature/inline          (embedded cryptographic signature)
+  signature/defs            (shared signatures array def)
+  signature/proof           (remote attestation proof record)
 ```
 
 Every arrow (`►`) is a `strongRef` or union reference stored on the
@@ -275,6 +278,18 @@ await agent.api.com.atproto.repo.createRecord({
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                     |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492). |
 
+### Signatures (`app.certified.signature.*`)
+
+| Lexicon              | NSID                             | Description                                                                                                                                                              |
+| -------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Inline Signature** | `app.certified.signature.inline` | An inline cryptographic signature for attesting to record content. Uses JOSE algorithm identifiers (ES256, ES256K, Ed25519).                                             |
+| **Shared Defs**      | `app.certified.signature.defs`   | Shared type definitions for signatures. Provides the `#list` array def (a union of inline signatures and strongRefs) referenced by the `signatures` property on records. |
+| **Proof**            | `app.certified.signature.proof`  | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef.                          |
+
+Nearly all record lexicons include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
+
+`app.certified.link.evm` is the one exception: it already carries its own EIP-712 wallet-ownership proof in the `proof` field, which is the integrity mechanism for its semantic claim (DID ↔ wallet). Adding an `app.certified.signature.defs#list` on top would introduce a second, incompatible signing mechanism on the same record and no additional trust, so it is deliberately omitted.
+
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
 ## Entity Relationship Diagram
@@ -493,6 +508,71 @@ const attachment = {
   createdAt: new Date().toISOString(),
 };
 ```
+
+### Cryptographic Signatures
+
+Nearly all record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services. (`app.certified.link.evm` is the sole exception — see the [Signatures table](#signatures-appcertifiedsignature) above for why.)
+
+Signatures support two patterns:
+
+1. **Inline signatures**: Embedded directly in the record
+2. **Remote attestations**: References to proof records in other repositories (via `strongRef`)
+
+```typescript
+import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
+
+// Activity with inline signature
+const signedActivity = {
+  $type: ACTIVITY_NSID,
+  title: "Verified Reforestation Project",
+  shortDescription: "Planted 1,000 trees in partnership with local community",
+  createdAt: new Date().toISOString(),
+  signatures: [
+    // Inline signature (embedded)
+    {
+      $type: "app.certified.signature.inline",
+      signatureType: "ES256K", // JOSE algorithm: secp256k1
+      signature: new Uint8Array([
+        /* signature bytes */
+      ]),
+      key: "did:plc:platform123#signing", // DID verification method
+    },
+    // Remote attestation (reference to proof in another repo)
+    {
+      $type: "com.atproto.repo.strongRef",
+      uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+      cid: "bafy...",
+    },
+  ],
+};
+```
+
+#### Signature Algorithm Identifiers
+
+The `signatureType` property uses [JOSE algorithm identifiers](https://www.iana.org/assignments/jose/jose.xhtml):
+
+| Value     | Curve     | Description                             |
+| --------- | --------- | --------------------------------------- |
+| `ES256`   | P-256     | NIST curve, WebCrypto compatible        |
+| `ES256K`  | secp256k1 | Ethereum/Bitcoin curve, ATProto default |
+| `Ed25519` | Ed25519   | EdDSA, increasingly popular             |
+
+#### Remote Attestation Proofs
+
+For remote attestations, create a proof record in the attestor's repository:
+
+```typescript
+import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon";
+
+const proof = {
+  $type: SIGNATURE_PROOF_NSID,
+  cid: "bafy...", // CID of the attested content
+  note: "Verified by platform quality assurance process",
+  createdAt: new Date().toISOString(),
+};
+```
+
+For the full specification, see Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r).
 
 ## Development
 
