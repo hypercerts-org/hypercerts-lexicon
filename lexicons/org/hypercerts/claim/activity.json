@@ -87,6 +87,11 @@
             "type": "string",
             "format": "datetime",
             "description": "Client-declared timestamp when this record was originally created"
+          },
+          "signatures": {
+            "type": "ref",
+            "ref": "app.certified.signature.defs#list",
+            "description": "Optional cryptographic signatures attesting to this record's content."
           }
         }
       }
