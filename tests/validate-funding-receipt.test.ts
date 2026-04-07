@@ -74,6 +74,32 @@ describe("org.hypercerts.funding.receipt", () => {
     expect(result.success).toBe(true);
   });
 
+  it("should accept 'to' as a text string", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      to: {
+        $type: "org.hypercerts.funding.receipt#text",
+        value: "Alice",
+      },
+      amount: "1000.00",
+      currency: "USD",
+      createdAt: "2024-01-01T00:00:00Z",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept 'from' as a text string", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      from: {
+        $type: "org.hypercerts.funding.receipt#text",
+        value: "0x1234567890abcdef1234567890abcdef12345678",
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("should accept a valid record with all optional fields present", () => {
     const result = FundingReceipt.validateMain({
       $type: ids.OrgHypercertsFundingReceipt,
