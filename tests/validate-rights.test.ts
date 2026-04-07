@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
-import * as Rights from "../generated/types/org/hypercerts/claim/rights.js";
+import { validate, ids } from "../generated/lexicons";
+import * as Rights from "../generated/types/org/hypercerts/claim/rights";
 
 describe("org.hypercerts.claim.rights", () => {
   it("should accept valid record with correct fields", () => {

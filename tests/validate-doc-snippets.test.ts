@@ -18,10 +18,10 @@ import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
 // Import the full package exports (simulates `@hypercerts-org/lexicon`)
-import * as PackageExports from "../generated/exports.js";
+import * as PackageExports from "../generated/exports";
 
 // Import the lexicons-only entry point (simulates `@hypercerts-org/lexicon/lexicons`)
-import * as LexiconsExports from "../generated/lexicons.js";
+import * as LexiconsExports from "../generated/lexicons";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pkgExports = PackageExports as Record<string, unknown>;
