@@ -76,10 +76,11 @@ function collectNamedImports(blocks: string[]): NamedImport[] {
       const source = m[2];
       if (!source.startsWith("@hypercerts-org/lexicon")) continue;
       for (const part of m[1].split(",")) {
-        const name = part
-          .trim()
-          .split(/\s+as\s+/)[0]
-          .trim();
+        const trimmed = part.trim();
+        // Skip inline `type` modifiers: `import { type Foo }` — "type" is
+        // not a runtime export and would otherwise be looked up incorrectly.
+        if (/^type\b/.test(trimmed)) continue;
+        const name = trimmed.split(/\s+as\s+/)[0].trim();
         const key = `${source}::${name}`;
         if (name.length > 0 && !name.startsWith("//") && !seen.has(key)) {
           seen.add(key);
