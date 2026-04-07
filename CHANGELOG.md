@@ -50,7 +50,41 @@ This is a **packaging change**, not a schema change. No record structures are af
 
 ### Breaking changes
 
-This release includes three breaking schema changes. All were identified early enough in adoption that the team decided the long-term gains outweigh the migration cost.
+This release includes four breaking schema changes. All were identified early enough in adoption that the team decided the long-term gains outweigh the migration cost.
+
+#### Description fields widened to union type
+
+`org.hypercerts.claim.activity` · `org.hypercerts.collection` · `org.hypercerts.context.attachment` · `org.hypercerts.context.evaluation` · `org.hypercerts.context.measurement`
+
+The `description` field across all major lexicons changed from a single Leaflet `linearDocument` ref to a three-way union: an inline string (`org.hypercerts.defs#descriptionString`), a Leaflet linear document (`pub.leaflet.pages.linearDocument`), or a strong reference to an external description record (`com.atproto.repo.strongRef`). This resolves the pain point where apps broke because only Leaflet documents were accepted.
+
+The new `descriptionString` def supports plain text or markdown up to 250,000 bytes (25,000 graphemes) with optional rich text facets.
+
+```diff
+  // Before — Leaflet only
+- "description": { "$type": "pub.leaflet.pages.linearDocument", "blocks": [...] }
+
+  // After — plain string (simplest)
++ "description": {
++   "$type": "org.hypercerts.defs#descriptionString",
++   "value": "A reforestation project in the Amazon basin."
++ }
+
+  // After — Leaflet (still works)
++ "description": { "$type": "pub.leaflet.pages.linearDocument", "blocks": [...] }
+
+  // After — strong ref to external record
++ "description": { "$type": "com.atproto.repo.strongRef", "uri": "at://...", "cid": "bafyrei..." }
+```
+
+**Who needs to update:**
+
+| Consumer      | Action                                                                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Indexers      | Handle union with `$type` discriminator. Store string descriptions directly. Continue handling Leaflet docs. Resolve strong refs if needed.    |
+| AppViews      | Return descriptions with their `$type`. Render all three variants appropriately.                                                               |
+| SDK consumers | Regenerate types. Code that previously passed a bare Leaflet doc must now include the `$type` discriminator.                                   |
+| Frontend      | Render plain strings, Leaflet docs, and resolved strong refs. The `descriptionString` variant is the simplest path for apps that broke before. |
 
 #### Evaluation scores are now strings
 
