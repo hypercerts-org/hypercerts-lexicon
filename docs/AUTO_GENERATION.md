@@ -8,9 +8,8 @@ The `generated/exports.ts` file is **automatically generated** from lexicon JSON
 
 When you run `npm run gen-api`, the build process:
 
-1. Runs `lex gen-api` to generate TypeScript types in `generated/`
-2. Runs `scripts/create-shims.sh` to create type shims for external lexicons
-3. Runs `scripts/generate-exports.js` to auto-generate `generated/exports.ts`
+1. Runs `lex gen-api` to generate TypeScript types in `generated/` (including vendored external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
+2. Runs `scripts/generate-exports.js` to auto-generate `generated/exports.ts`
 
 ## The Generation Script
 

@@ -53,7 +53,7 @@ function getComments(prop) {
   if (prop.maxGraphemes) comments.push(`maxGraphemes: ${prop.maxGraphemes}`);
   if (prop.maxSize) comments.push(`maxSize: ${prop.maxSize}`);
   if (prop.accept?.length > 0)
-    comments.push(`accepts: ${prop.accept.join(", ")}`);
+    comments.push(`accepts: ${prop.accept.map((a) => `\`${a}\``).join(", ")}`);
   if (prop.knownValues) {
     comments.push(
       `Known values: ${prop.knownValues.map((v) => `\`${v}\``).join(", ")}`,
@@ -252,18 +252,20 @@ function generateMainSection(mainDef, lexicon) {
   const propsSource = mainDef.record || mainDef;
   const hasProperties = propsSource.properties !== undefined;
 
+  let hasPropertyRows = false;
   if (hasProperties) {
-    output.push("#### Properties", "");
     const required = propsSource.required || [];
     const rows = extractPropertyRows(propsSource, required, lexicon.data.defs);
 
+    output.push("#### Properties", "");
     if (rows.length > 0) {
+      hasPropertyRows = true;
       const hasComments = rows.some((r) => r.comments);
       output.push(...renderTable(rows, hasComments));
     }
   }
 
-  return { output, hasProperties };
+  return { output, hasProperties, hasPropertyRows };
 }
 
 function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
@@ -313,10 +315,12 @@ function generateLexiconSection(lexicon, isFirst = false) {
 
   // Use lexicon description if no main, otherwise use main's description
   let hasProperties = false;
+  let hasPropertyRows = false;
   if (mainDef) {
     const mainResult = generateMainSection(mainDef, lexicon);
     output.push(...mainResult.output);
     hasProperties = mainResult.hasProperties;
+    hasPropertyRows = mainResult.hasPropertyRows;
   } else {
     output.push(...generateDescription(lexicon.data.description));
   }
@@ -327,7 +331,7 @@ function generateLexiconSection(lexicon, isFirst = false) {
 
   // Add trailing blank unless we end with just description/key (no tables)
   const hasAdditionalDefs = additionalDefs.length > 0;
-  if (hasProperties || hasAdditionalDefs) {
+  if (hasPropertyRows || hasAdditionalDefs) {
     output.push("");
   }
 
