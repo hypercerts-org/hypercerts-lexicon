@@ -35,7 +35,7 @@ describe("app.certified.actor.organization", () => {
     }
   });
 
-  it("should accept record with inline longDescription", () => {
+  it("should accept record with inline longDescription (descriptionString)", () => {
     const result = Organization.validateMain({
       $type: ids.AppCertifiedActorOrganization,
       longDescription: {
