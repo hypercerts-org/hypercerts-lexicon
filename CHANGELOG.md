@@ -16,7 +16,7 @@ npm install @hypercerts-org/lexicon@0.11.0
 
 `app.certified.link.evm`
 
-A new record type for creating verifiable links between ATProto identities and EVM wallet addresses. Each record contains a cryptographic proof — currently EIP-712 typed data signatures for EOA wallets — that binds a DID to an Ethereum address on-chain.
+A new record type for creating verifiable links between ATProto identities and EVM wallet addresses. Each record contains a cryptographic proof — currently EIP-712 typed data signatures for EOA wallets — that binds a DID to an Ethereum address onchain.
 
 The `proof` field is an open union, so future signature methods (ERC-1271, ERC-6492) can be added without breaking existing records.
 
