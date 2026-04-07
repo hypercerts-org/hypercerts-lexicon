@@ -18,8 +18,8 @@ Add a changeset when making changes that affect consumers:
 - Modifying generation scripts that affect exported code
 - Any change that requires a version bump or affects package consumers
 
-Skip changesets for purely internal changes that don't reach npm users
-(e.g. CI config, `AGENTS.md`, `tests/`, `.agents/` skill files).
+Skip changesets for purely internal changes that don't reach any users
+(e.g. CI config, `AGENTS.md`, `tests/`).
 
 **Do not skip changesets for changes to files that are published in the
 npm package.** Check the `files` field in `package.json` to see what
@@ -27,6 +27,14 @@ ships. Currently that includes `dist/`, `lexicons/`, `SCHEMAS.md`, and
 `CHANGELOG.md`. Additionally, npm automatically includes `README.md`
 regardless of the `files` field. Changes to any of these files warrant
 a changeset.
+
+**Also do not skip changesets for changes to
+`.agents/skills/building-with-hypercerts-lexicons/SKILL.md`.** Although
+this file is not in the npm package, it is installed by downstream AI
+agents via `npx skills add hypercerts-org/hypercerts-lexicon` and acts
+as the primary usage guide for those agents. Changes to it are
+effectively user-facing (or at least AI-agent-facing) and warrant a
+changeset.
 
 ## Format
 
