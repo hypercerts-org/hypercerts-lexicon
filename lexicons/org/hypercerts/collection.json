@@ -40,9 +40,10 @@
             "type": "union",
             "refs": [
               "org.hypercerts.defs#descriptionString",
-              "pub.leaflet.pages.linearDocument#main"
+              "pub.leaflet.pages.linearDocument#main",
+              "com.atproto.repo.strongRef"
             ],
-            "description": "Long-form description of the collection. An inline string for plain text or markdown, or a Leaflet linear document for rich-text content."
+            "description": "Long-form description of the collection. An inline string for plain text or markdown, a Leaflet linear document for rich-text content, or a strong reference to an external description record."
           },
           "avatar": {
             "type": "union",
