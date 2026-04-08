@@ -1,5 +1,18 @@
 # @hypercerts-org/lexicon
 
+## 0.11.1
+
+### Patch Changes
+
+- [#196](https://github.com/hypercerts-org/hypercerts-lexicon/pull/196) [`e66a459`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/e66a4595e5df6640d082072284c96282acaa3faf) Thanks [@aspiers](https://github.com/aspiers)! - Fix incorrect NSID reference in `org.hyperboards.board` subject field description (`org.hypercerts.claim.collection` → `org.hypercerts.collection`).
+
+  Documentation fixes in `README.md` and `SCHEMAS.md`:
+  - Correct `validate()` call signature examples (parameter order and result shape)
+  - Fix relationship diagram arrow directions and missing entries (`link/evm`, `CERTIFIED` section)
+  - Fix contributor field name (`avatar` → `image`)
+  - Fix context target descriptions (generalized to `any record` since subjects use generic `strongRef`)
+  - Add missing `$type` discriminators to union member examples
+
 ## 0.11.0
 
 The v0.11.0 release introduces EVM identity linking, stronger type safety across badge and funding schemas, vendored Leaflet lexicons for runtime validation, and a set of schema refinements based on real-world usage from the first month of v0.10.0 adoption. All changes listed below are merged to `main` and will ship together as a single coordinated release.
