@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
-import * as FundingReceipt from "../generated/types/org/hypercerts/funding/receipt.js";
+import { validate, ids } from "../generated/lexicons";
+import * as FundingReceipt from "../generated/types/org/hypercerts/funding/receipt";
 
 const validBase = {
   to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },

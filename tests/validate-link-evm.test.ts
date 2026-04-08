@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
-import * as EvmLink from "../generated/types/app/certified/link/evm.js";
+import { validate, ids } from "../generated/lexicons";
+import * as EvmLink from "../generated/types/app/certified/link/evm";
 
 const EIP712_DOMAIN = {
   name: "IdentityLink",
