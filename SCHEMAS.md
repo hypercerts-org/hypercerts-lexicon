@@ -801,11 +801,12 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 #### Properties
 
-| Property      | Type     | Required | Description                                           | Comments                             |
-| ------------- | -------- | -------- | ----------------------------------------------------- | ------------------------------------ |
-| `image`       | `blob`   | ✅       |                                                       | maxSize: 1000000, accepts: `image/*` |
-| `alt`         | `string` | ❌       | Alt text description of the image, for accessibility. |                                      |
-| `aspectRatio` | `ref`    | ✅       |                                                       |                                      |
+| Property      | Type      | Required | Description                                                                           | Comments                             |
+| ------------- | --------- | -------- | ------------------------------------------------------------------------------------- | ------------------------------------ |
+| `image`       | `blob`    | ✅       |                                                                                       | maxSize: 1000000, accepts: `image/*` |
+| `alt`         | `string`  | ❌       | Alt text description of the image, for accessibility.                                 |                                      |
+| `aspectRatio` | `ref`     | ✅       |                                                                                       |                                      |
+| `fullBleed`   | `boolean` | ❌       | Whether the image should extend to the full width of the container, ignoring padding. |                                      |
 
 #### Defs
 
