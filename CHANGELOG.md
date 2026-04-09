@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 0.11.2
+
+### Patch Changes
+
+- [#205](https://github.com/hypercerts-org/hypercerts-lexicon/pull/205) [`4af4e8b`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/4af4e8b60029a87faff6a0a7a342ab50621a6875) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Sync vendored `pub.leaflet.blocks.image` lexicon with upstream, adding the optional `fullBleed` boolean property
+
 ## 0.11.1
 
 ### Patch Changes
