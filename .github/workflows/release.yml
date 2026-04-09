@@ -104,11 +104,32 @@ jobs:
         with:
           publish: npm run release
           version: npm run version-packages
-          title: "chore: release package"
-          commit: "chore: release package"
+          title: "Release"
+          commit: "Release"
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           NPM_CONFIG_PROVENANCE: true
+
+      # changesets/action does not support templating the version into the
+      # PR title (see changesets/action#388). As a workaround, rename the
+      # Release PR to include the version number after the action has run
+      # the version bump. The commit message on the release branch is left
+      # as the static "Release" value — it gets rewritten on every re-run
+      # of this workflow, and the merge commit title on main is controlled
+      # by the person merging the PR.
+      - name: Rename Release PR with version
+        if: env.RELEASE_TYPE == 'stable' && steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          PR_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
+        run: |
+          VERSION=$(gh api \
+            "repos/${{ github.repository }}/contents/package.json?ref=changeset-release/main" \
+            -H "Accept: application/vnd.github.raw" \
+            | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version")
+          NEW_TITLE="Release v$VERSION"
+          echo "Renaming PR #$PR_NUMBER to: $NEW_TITLE"
+          gh pr edit "$PR_NUMBER" --title "$NEW_TITLE"
 
       # Beta release: version, commit, publish, and push in one step.
       # changesets/action is not used here because it requires two workflow
