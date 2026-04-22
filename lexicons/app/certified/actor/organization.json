@@ -42,7 +42,7 @@
             "type": "union",
             "refs": [
               "org.hypercerts.defs#descriptionString",
-              "pub.leaflet.pages.linearDocument#main",
+              "pub.leaflet.pages.linearDocument",
               "com.atproto.repo.strongRef"
             ],
             "description": "Long-form description of the organization, such as its mission, history, or detailed project narrative. An inline string for plain text or markdown, a Leaflet linear document record embedded directly, or a strong reference to an existing document record."
