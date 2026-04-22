@@ -608,6 +608,18 @@ class StyleChecker {
 
     // Check if this is an external ref (e.g., "com.atproto.repo.strongRef" or "org.hypercerts.defs#uri")
     if (typeof ref === "string" && !ref.startsWith("#")) {
+      // Known-external lexicon namespaces are not present in the local lexicons/ directory.
+      // Skip resolution for these — they are valid by convention (the same namespaces skipped
+      // during file-level style checks).
+      const knownExternalPrefixes = [
+        "pub.leaflet.",
+        "app.bsky.",
+        "com.atproto.",
+      ];
+      if (knownExternalPrefixes.some((prefix) => ref.startsWith(prefix))) {
+        return;
+      }
+
       const resolvedDef = this.resolveExternalRef(ref);
       if (resolvedDef) {
         if (!resolvedDef.type) {

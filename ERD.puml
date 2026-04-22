@@ -50,6 +50,8 @@ dataclass organization {
     urls[]?
     location?
     foundedDate?
+    longDescription?
+    visibility?
     createdAt
     !endif
 }

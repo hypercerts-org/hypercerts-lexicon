@@ -266,15 +266,15 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Certified (`app.certified.*`)
 
-| Lexicon              | NSID                               | Description                                                                                                                     |
-| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).    |
-| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                |
-| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date.                                                          |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, and optional issuer allowlist.                                                          |
-| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                 |
-| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                     |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492). |
+| Lexicon              | NSID                               | Description                                                                                                                       |
+| -------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).      |
+| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                  |
+| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, and discoverability visibility. |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                             |
+| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                   |
+| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                       |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).   |
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
