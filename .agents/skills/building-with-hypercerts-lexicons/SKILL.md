@@ -238,15 +238,15 @@ if (result.success) {
 
 ### Certified — shared lexicons
 
-| Lexicon              | NSID                               | Purpose                                                                         |
-| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------- |
-| **Location**         | `app.certified.location`           | Geographic reference via [Location Protocol](https://spec.decentralizedgeo.org) |
-| **Profile**          | `app.certified.actor.profile`      | User profile: display name, bio, avatar, banner                                 |
-| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location                          |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist               |
-| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                  |
-| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                      |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature                 |
+| Lexicon              | NSID                               | Purpose                                                                                                                      |
+| -------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Location**         | `app.certified.location`           | Geographic reference via [Location Protocol](https://spec.decentralizedgeo.org)                                              |
+| **Profile**          | `app.certified.actor.profile`      | User profile: display name, bio, avatar, banner                                                                              |
+| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, discoverability visibility |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist                                                            |
+| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                                                               |
+| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                   |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature                                                              |
 
 ## Relationship Map
 
