@@ -1,5 +1,15 @@
 # @hypercerts-org/lexicon
 
+## 0.12.0
+
+### Minor Changes
+
+- [#174](https://github.com/hypercerts-org/hypercerts-lexicon/pull/174) [`b1c2096`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/b1c2096844b4c5aaf03d48f1a5820dc1f0714daf) Thanks [@satyam-mishra-pce](https://github.com/satyam-mishra-pce)! - Add optional `longDescription` and `visibility` fields to `app.certified.actor.organization` lexicon. `longDescription` uses the description union pattern — an inline string for plain text or markdown, an embedded Leaflet linear document for rich-text content, or a strong reference to an existing description record — matching the pattern used on activity, collection, and attachment.
+
+### Patch Changes
+
+- [#208](https://github.com/hypercerts-org/hypercerts-lexicon/pull/208) [`18abe86`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/18abe86caaa6ca45c4a5bcb23cbcec8b23cca0aa) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Sync `SKILL.md` Organization row with `README.md`: list `foundedDate`, `longDescription`, and `visibility` in the Certified lexicons overview table so AI agents building on top of `app.certified.actor.organization` see the full set of documented fields.
+
 ## 0.11.2
 
 ### Patch Changes
