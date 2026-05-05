@@ -45,6 +45,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/profile             (user profile)
   actor/organization        (org metadata)
   badge/response ──► badge/award ──► badge/definition
+  graph/follow ────────────► account DID  (social follow)
 ```
 
 Every arrow (`►`) is a `strongRef` or union reference stored on the
@@ -266,15 +267,16 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Certified (`app.certified.*`)
 
-| Lexicon              | NSID                               | Description                                                                                                                       |
-| -------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).      |
-| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                  |
-| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, and discoverability visibility. |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                             |
-| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                   |
-| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                       |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).   |
+| Lexicon              | NSID                               | Description                                                                                                                                 |
+| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Location**         | `app.certified.location`           | Geographic reference using the [Location Protocol](https://spec.decentralizedgeo.org) (coordinates, GeoJSON, H3, WKT, etc.).                |
+| **Profile**          | `app.certified.actor.profile`      | User account profile with display name, bio, avatar, and banner.                                                                            |
+| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, and discoverability visibility.           |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                                       |
+| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity.                                                                                             |
+| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                                 |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).             |
+| **Follow**           | `app.certified.graph.follow`       | Social-graph follow relationship — declares that the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`. |
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
@@ -523,6 +525,28 @@ npm run format        # Auto-fix formatting
 npm run gen-schemas-md # Regenerate SCHEMAS.md
 npm run test          # Run tests
 ```
+
+### Following another account
+
+The `app.certified.graph.follow` record is the social-graph primitive
+for `certified.app`. Its shape is identical to `app.bsky.graph.follow`
+(same `key: tid`, same `subject` / `createdAt` / optional `via`
+fields), so feed-builders and view services can index it with the
+same logic they already use for Bluesky follows.
+
+```typescript
+import { GRAPH_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+
+const follow = {
+  $type: GRAPH_FOLLOW_NSID,
+  subject: "did:plc:bob", // DID of the account being followed
+  createdAt: new Date().toISOString(),
+};
+```
+
+The optional `via` field is a `com.atproto.repo.strongRef` to any
+record that mediated the follow (e.g. a starter pack or other curated
+list), mirroring the equivalent field on `app.bsky.graph.follow`.
 
 ### Linking ATProto Identity to EVM Wallets
 
