@@ -247,6 +247,7 @@ if (result.success) {
 | **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                                                               |
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                   |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature                                                              |
+| **Follow**           | `app.certified.graph.follow`       | Social-graph follow: declares the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`      |
 
 ## Relationship Map
 
@@ -283,6 +284,7 @@ CERTIFIED
   actor/profile            (user profile)
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
+  graph/follow ───────────> account DID (social follow)
 ```
 
 Every arrow is a `strongRef` or union reference stored on AT Protocol.
@@ -386,6 +388,23 @@ const location = {
   createdAt: new Date().toISOString(),
 };
 ```
+
+### Following another account
+
+```typescript
+import { GRAPH_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+
+const follow = {
+  $type: GRAPH_FOLLOW_NSID,
+  subject: "did:plc:bob", // DID of the account being followed
+  createdAt: new Date().toISOString(),
+};
+```
+
+`app.certified.graph.follow` mirrors `app.bsky.graph.follow` (same
+key strategy and fields including the optional `via` strongRef), so
+feed-builders and view services can index it with the same logic
+they already use for Bluesky follows.
 
 ### Linking an EVM Wallet
 
