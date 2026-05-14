@@ -278,6 +278,58 @@ await agent.api.com.atproto.repo.createRecord({
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
+## Schema Conventions
+
+A few conventions are worth knowing before you start emitting records,
+because they affect what counts as a "valid" record vs. one that breaks
+interop with the wider ecosystem.
+
+### `knownValues` is an open vocabulary, not a closed enum
+
+When you see `"knownValues": [...]` on a string field, those values are
+**conventions for interoperability, not constraints.** Lexicon validators
+do not reject values outside the list. The vocabulary is intentionally
+open so applications can extend it with domain-specific variants without
+waiting for a schema bump.
+
+If the lexicon authors wanted a field to be closed, they would have used
+`enum` instead — which the validator does enforce.
+
+In practice:
+
+- **Prefer a `knownValues` entry** when one matches your semantics. It
+  guarantees other Hypercerts-aware consumers (indexers, AppViews,
+  search facets, dropdown UIs) will recognize the value without
+  per-app special-casing.
+- **Custom values are permitted** when no listed value fits. The record
+  is still wire-valid. Consumers that filter on the canonical list
+  simply won't categorize the value; consumers that read the raw string
+  will see whatever you wrote.
+- **Custom values are at-your-own-risk for interop.** A custom
+  `locationType: "geojson-polygon"`, for example, is a perfectly valid
+  record — but a downstream tool that buckets by the Location Protocol
+  registry will treat it as "other". Use the closest `knownValues`
+  entry (here, `geojson`, which is the catch-all for non-Point GeoJSON)
+  when you want canonical bucketing.
+
+When a `knownValues` list grows in a way that's broadly useful, open a
+PR to add the new entry to the lexicon — that's how the canonical list
+stays in sync with real-world usage.
+
+### `strongRef` pins to a specific record version
+
+Fields typed as `com.atproto.repo.strongRef` carry both `uri` AND `cid`.
+The `cid` is a content hash that pins the reference to the exact record
+version at the time the reference was written — if the referenced
+record is later overwritten, consumers can detect that the reference
+has drifted.
+
+This matters when you might otherwise be tempted to embed a full record
+by value to "snapshot" it. A strongRef + CID already provides the
+snapshot semantic, and it's what the lexicon uses across
+`badge.award.badge`, `badge.response.badgeAward`, `funding.receipt.for`,
+and similar fields where the historical content needs to stay stable.
+
 ## Entity Relationship Diagram
 
 ![Hypercert ERD](ERD.svg)

@@ -22,7 +22,7 @@
           },
           "category": {
             "type": "string",
-            "description": "Category type of this scope.",
+            "description": "Category type of this scope. Values beyond the known set are permitted.",
             "knownValues": ["topic", "language", "domain", "method"],
             "maxLength": 50
           },
@@ -39,7 +39,7 @@
           },
           "status": {
             "type": "string",
-            "description": "Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy.",
+            "description": "Lifecycle status of this tag. Communities propose tags, curators accept them, deprecated tags point to replacements via supersededBy. Values beyond the known set are permitted.",
             "knownValues": ["proposed", "accepted", "deprecated"],
             "maxLength": 20
           },
