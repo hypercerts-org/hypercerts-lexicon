@@ -36,35 +36,35 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 A contributor to the activity, with identity, weight, and contribution details.
 
-| Property              | Type     | Required | Description                                                                                                                                                                                                                                                                                       |
-| --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `contributorIdentity` | `union`  | ✅       | Inline contributor identity object with an identity string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record. The record referenced must conform with the lexicon org.hypercerts.claim.contributorInformation. |
-| `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.                                |
-| `contributionDetails` | `union`  | ❌       | Inline contribution role object with a role string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.                                              |
+| Property              | Type     | Required | Description                                                                                                                                                                                                                                                                                       | Comments       |
+| --------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `contributorIdentity` | `union`  | ✅       | Inline contributor identity object with an identity string (DID or identifier) via org.hypercerts.claim.activity#contributorIdentity, or a strong reference to a contributor information record. The record referenced must conform with the lexicon org.hypercerts.claim.contributorInformation. |                |
+| `contributionWeight`  | `string` | ❌       | The relative weight/importance of this contribution (stored as a string to avoid float precision issues). Must be a positive numeric value. Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.                                | maxLength: 100 |
+| `contributionDetails` | `union`  | ❌       | Inline contribution role object with a role string via org.hypercerts.claim.activity#contributorRole, or a strong reference to a contribution details record. The record referenced must conform with the lexicon org.hypercerts.claim.contribution.                                              |                |
 
 ##### `org.hypercerts.claim.activity#contributorIdentity`
 
 Contributor information as a string (DID or identifier).
 
-| Property   | Type     | Required | Description                                          |
-| ---------- | -------- | -------- | ---------------------------------------------------- |
-| `identity` | `string` | ✅       | The contributor identity string (DID or identifier). |
+| Property   | Type     | Required | Description                                          | Comments                           |
+| ---------- | -------- | -------- | ---------------------------------------------------- | ---------------------------------- |
+| `identity` | `string` | ✅       | The contributor identity string (DID or identifier). | maxLength: 1000, maxGraphemes: 100 |
 
 ##### `org.hypercerts.claim.activity#contributorRole`
 
 Contribution details as a string.
 
-| Property | Type     | Required | Description                       |
-| -------- | -------- | -------- | --------------------------------- |
-| `role`   | `string` | ✅       | The contribution role or details. |
+| Property | Type     | Required | Description                       | Comments                           |
+| -------- | -------- | -------- | --------------------------------- | ---------------------------------- |
+| `role`   | `string` | ✅       | The contribution role or details. | maxLength: 1000, maxGraphemes: 100 |
 
 ##### `org.hypercerts.claim.activity#workScopeString`
 
 A free-form string describing the work scope for simple or legacy scopes.
 
-| Property | Type     | Required | Description                        |
-| -------- | -------- | -------- | ---------------------------------- |
-| `scope`  | `string` | ✅       | The work scope description string. |
+| Property | Type     | Required | Description                        | Comments                            |
+| -------- | -------- | -------- | ---------------------------------- | ----------------------------------- |
+| `scope`  | `string` | ✅       | The work scope description string. | maxLength: 4000, maxGraphemes: 1000 |
 
 ---
 
@@ -148,10 +148,10 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 An item in a collection, with an identifier and optional weight.
 
-| Property         | Type     | Required | Description                                                                                                                                                                                     |
-| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.collection).                                   |
-| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. |
+| Property         | Type     | Required | Description                                                                                                                                                                                     | Comments       |
+| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.collection).                                   |                |
+| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed. | maxLength: 100 |
 
 ---
 
@@ -220,11 +220,11 @@ An item in a collection, with an identifier and optional weight.
 
 Overall score for an evaluation on a numeric scale.
 
-| Property | Type     | Required | Description                                                                   |
-| -------- | -------- | -------- | ----------------------------------------------------------------------------- |
-| `min`    | `string` | ✅       | Minimum value of the scale as a numeric string (e.g. '0', '1').               |
-| `max`    | `string` | ✅       | Maximum value of the scale as a numeric string (e.g. '5', '10').              |
-| `value`  | `string` | ✅       | Score within the inclusive range [min, max] as a numeric string (e.g. '3.7'). |
+| Property | Type     | Required | Description                                                                   | Comments      |
+| -------- | -------- | -------- | ----------------------------------------------------------------------------- | ------------- |
+| `min`    | `string` | ✅       | Minimum value of the scale as a numeric string (e.g. '0', '1').               | maxLength: 50 |
+| `max`    | `string` | ✅       | Maximum value of the scale as a numeric string (e.g. '5', '10').              | maxLength: 50 |
+| `value`  | `string` | ✅       | Score within the inclusive range [min, max] as a numeric string (e.g. '3.7'). | maxLength: 50 |
 
 ---
 
@@ -283,9 +283,9 @@ Overall score for an evaluation on a numeric scale.
 
 A free-text string value (e.g. a display name, wallet address, or other identifier).
 
-| Property | Type     | Required | Description       |
-| -------- | -------- | -------- | ----------------- |
-| `value`  | `string` | ✅       | The string value. |
+| Property | Type     | Required | Description       | Comments        |
+| -------- | -------- | -------- | ----------------- | --------------- |
+| `value`  | `string` | ✅       | The string value. | maxLength: 2048 |
 
 ---
 
@@ -356,9 +356,9 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 
 A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
-| Property | Type     | Required | Description               |
-| -------- | -------- | -------- | ------------------------- |
-| `string` | `string` | ✅       | The location string value |
+| Property | Type     | Required | Description               | Comments                             |
+| -------- | -------- | -------- | ------------------------- | ------------------------------------ |
+| `string` | `string` | ✅       | The location string value | maxLength: 10000, maxGraphemes: 1000 |
 
 ---
 
@@ -440,10 +440,10 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 A labeled URL reference.
 
-| Property | Type     | Required | Description                                                                        |
-| -------- | -------- | -------- | ---------------------------------------------------------------------------------- |
-| `url`    | `string` | ✅       | The URL.                                                                           |
-| `label`  | `string` | ❌       | Optional human-readable label for this URL (e.g. 'Support page', 'Donation page'). |
+| Property | Type     | Required | Description                                                                        | Comments                             |
+| -------- | -------- | -------- | ---------------------------------------------------------------------------------- | ------------------------------------ |
+| `url`    | `string` | ✅       | The URL.                                                                           | maxLength: 10000, maxGraphemes: 2048 |
+| `label`  | `string` | ❌       | Optional human-readable label for this URL (e.g. 'Support page', 'Donation page'). | maxLength: 640, maxGraphemes: 64     |
 
 ---
 
@@ -487,22 +487,22 @@ A labeled URL reference.
 
 EOA wallet ownership proof via EIP-712 typed data signature. Contains both the structured message that was signed and the resulting signature.
 
-| Property    | Type     | Required | Description                                                                                                                                     |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| `signature` | `string` | ✅       | ECDSA signature over the EIP-712 hash (hex-encoded with 0x prefix, 64 or 65 bytes).                                                             |
-| `message`   | `ref`    | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain. |
+| Property    | Type     | Required | Description                                                                                                                                     | Comments       |
+| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `signature` | `string` | ✅       | ECDSA signature over the EIP-712 hash (hex-encoded with 0x prefix, 64 or 65 bytes).                                                             | maxLength: 132 |
+| `message`   | `ref`    | ✅       | The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain. |                |
 
 ##### `app.certified.link.evm#eip712Message`
 
 The EIP-712 typed data message that was signed by the wallet. Contains the fields binding an ATProto DID to an EVM address on a specific chain.
 
-| Property     | Type     | Required | Description                                                                                                                                                          |
-| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `did`        | `string` | ✅       | The ATProto DID being linked to the EVM address.                                                                                                                     |
-| `evmAddress` | `string` | ✅       | The EVM wallet address (must match the top-level address field).                                                                                                     |
-| `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. |
-| `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 |
-| `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         |
+| Property     | Type     | Required | Description                                                                                                                                                          | Comments       |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `did`        | `string` | ✅       | The ATProto DID being linked to the EVM address.                                                                                                                     | maxLength: 256 |
+| `evmAddress` | `string` | ✅       | The EVM wallet address (must match the top-level address field).                                                                                                     | maxLength: 42  |
+| `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. | maxLength: 78  |
+| `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 | maxLength: 78  |
+| `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         | maxLength: 78  |
 
 ---
 
@@ -520,9 +520,9 @@ Common type definitions used across all protocols.
 
 A Decentralized Identifier (DID) string.
 
-| Property | Type     | Required | Description           |
-| -------- | -------- | -------- | --------------------- |
-| `did`    | `string` | ✅       | The DID string value. |
+| Property | Type     | Required | Description           | Comments       |
+| -------- | -------- | -------- | --------------------- | -------------- |
+| `did`    | `string` | ✅       | The DID string value. | maxLength: 256 |
 
 ---
 
@@ -536,10 +536,10 @@ A Decentralized Identifier (DID) string.
 
 An inline long-form description as plain text or markdown, with optional rich-text annotations.
 
-| Property | Type     | Required | Description                                                                |
-| -------- | -------- | -------- | -------------------------------------------------------------------------- |
-| `value`  | `string` | ✅       | The description text (plain text or markdown).                             |
-| `facets` | `ref[]`  | ❌       | Rich text annotations for the description (mentions, URLs, hashtags, etc). |
+| Property | Type     | Required | Description                                                                | Comments                               |
+| -------- | -------- | -------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| `value`  | `string` | ✅       | The description text (plain text or markdown).                             | maxLength: 250000, maxGraphemes: 25000 |
+| `facets` | `ref[]`  | ❌       | Rich text annotations for the description (mentions, URLs, hashtags, etc). |                                        |
 
 ##### `org.hypercerts.defs#uri`
 
@@ -553,41 +553,41 @@ Object containing a URI to external data
 
 Object containing a blob to external data
 
-| Property | Type   | Required | Description                        |
-| -------- | ------ | -------- | ---------------------------------- |
-| `blob`   | `blob` | ✅       | Blob to external data (up to 10MB) |
+| Property | Type   | Required | Description                        | Comments                          |
+| -------- | ------ | -------- | ---------------------------------- | --------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 10MB) | maxSize: 10485760, accepts: `*/*` |
 
 ##### `org.hypercerts.defs#largeBlob`
 
 Object containing a blob to external data
 
-| Property | Type   | Required | Description                         |
-| -------- | ------ | -------- | ----------------------------------- |
-| `blob`   | `blob` | ✅       | Blob to external data (up to 100MB) |
+| Property | Type   | Required | Description                         | Comments                           |
+| -------- | ------ | -------- | ----------------------------------- | ---------------------------------- |
+| `blob`   | `blob` | ✅       | Blob to external data (up to 100MB) | maxSize: 104857600, accepts: `*/*` |
 
 ##### `org.hypercerts.defs#smallImage`
 
 Object containing a small image
 
-| Property | Type   | Required | Description       |
-| -------- | ------ | -------- | ----------------- |
-| `image`  | `blob` | ✅       | Image (up to 5MB) |
+| Property | Type   | Required | Description       | Comments                                                                        |
+| -------- | ------ | -------- | ----------------- | ------------------------------------------------------------------------------- |
+| `image`  | `blob` | ✅       | Image (up to 5MB) | maxSize: 5242880, accepts: `image/jpeg`, `image/jpg`, `image/png`, `image/webp` |
 
 ##### `org.hypercerts.defs#smallVideo`
 
 Object containing a small video
 
-| Property | Type   | Required | Description        |
-| -------- | ------ | -------- | ------------------ |
-| `video`  | `blob` | ✅       | Video (up to 20MB) |
+| Property | Type   | Required | Description        | Comments                                              |
+| -------- | ------ | -------- | ------------------ | ----------------------------------------------------- |
+| `video`  | `blob` | ✅       | Video (up to 20MB) | maxSize: 20971520, accepts: `video/mp4`, `video/webm` |
 
 ##### `org.hypercerts.defs#largeImage`
 
 Object containing a large image
 
-| Property | Type   | Required | Description        |
-| -------- | ------ | -------- | ------------------ |
-| `image`  | `blob` | ✅       | Image (up to 10MB) |
+| Property | Type   | Required | Description        | Comments                                                                         |
+| -------- | ------ | -------- | ------------------ | -------------------------------------------------------------------------------- |
+| `image`  | `blob` | ✅       | Image (up to 10MB) | maxSize: 10485760, accepts: `image/jpeg`, `image/jpg`, `image/png`, `image/webp` |
 
 ---
 
@@ -628,9 +628,9 @@ Facet feature for a URL. The text URL may have been simplified or truncated, but
 
 Facet feature for a hashtag. The text usually includes a '#' prefix, but the facet reference should not (except in the case of 'double hash tags').
 
-| Property | Type     | Required | Description |
-| -------- | -------- | -------- | ----------- |
-| `tag`    | `string` | ✅       |             |
+| Property | Type     | Required | Description | Comments                         |
+| -------- | -------- | -------- | ----------- | -------------------------------- |
+| `tag`    | `string` | ✅       |             | maxLength: 640, maxGraphemes: 64 |
 
 ##### `app.bsky.richtext.facet#byteSlice`
 
@@ -675,33 +675,33 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 
 Visual configuration for a hyperboard's background, colors, and layout.
 
-| Property              | Type      | Required | Description                                                           |
-| --------------------- | --------- | -------- | --------------------------------------------------------------------- |
-| `backgroundType`      | `string`  | ❌       | Type of background content.                                           |
-| `backgroundImage`     | `union`   | ❌       | Background image as a URI or image blob.                              |
-| `backgroundIframeUrl` | `string`  | ❌       | URI of the background iframe.                                         |
-| `backgroundGrayscale` | `boolean` | ❌       | Whether the background is rendered in grayscale. Default: true.       |
-| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           |
-| `backgroundColor`     | `string`  | ❌       | Background color as a hex string (e.g. '#ffffff').                    |
-| `borderColor`         | `string`  | ❌       | Border color as a hex string (e.g. '#000000').                        |
-| `grayscaleImages`     | `boolean` | ❌       | Whether contributor images are rendered in grayscale. Default: false. |
-| `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  |
-| `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    |
+| Property              | Type      | Required | Description                                                           | Comments                                          |
+| --------------------- | --------- | -------- | --------------------------------------------------------------------- | ------------------------------------------------- |
+| `backgroundType`      | `string`  | ❌       | Type of background content.                                           | maxLength: 10, Known values: `image`, `iframe`    |
+| `backgroundImage`     | `union`   | ❌       | Background image as a URI or image blob.                              |                                                   |
+| `backgroundIframeUrl` | `string`  | ❌       | URI of the background iframe.                                         | maxLength: 2048                                   |
+| `backgroundGrayscale` | `boolean` | ❌       | Whether the background is rendered in grayscale. Default: true.       |                                                   |
+| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           |                                                   |
+| `backgroundColor`     | `string`  | ❌       | Background color as a hex string (e.g. '#ffffff').                    | maxLength: 20                                     |
+| `borderColor`         | `string`  | ❌       | Border color as a hex string (e.g. '#000000').                        | maxLength: 20                                     |
+| `grayscaleImages`     | `boolean` | ❌       | Whether contributor images are rendered in grayscale. Default: false. |                                                   |
+| `imageShape`          | `string`  | ❌       | Shape used to crop contributor images on this board.                  | maxLength: 20, Known values: `circular`, `square` |
+| `aspectRatio`         | `string`  | ❌       | Display aspect ratio of the board.                                    | maxLength: 10, Known values: `16:9`, `4:3`, `1:1` |
 
 ##### `org.hyperboards.board#contributorConfig`
 
 Configuration for a specific contributor within a board. Values serve as fallbacks when the contributor has not defined them on their profile. It can also be used to override contributor settings on this board without changing their global profile.
 
-| Property         | Type      | Required | Description                                                                                                                                                                                                            |
-| ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |
-| `override`       | `boolean` | ❌       | When true, these values take precedence over the contributor's own profile and display settings. When false or omitted, they are only used as fallbacks if the contributor has not set their own settings.             |
-| `displayName`    | `string`  | ❌       | Display name for this contributor on this board.                                                                                                                                                                       |
-| `image`          | `union`   | ❌       | Avatar or face image for this contributor on this board, as a URI or image blob.                                                                                                                                       |
-| `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |
-| `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |
-| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              |
-| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           |
+| Property         | Type      | Required | Description                                                                                                                                                                                                            | Comments                         |
+| ---------------- | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `contributor`    | `union`   | ✅       | Identifies the contributor being styled. A strong reference to an org.hypercerts.claim.contributorInformation record, or a contributorIdentity (DID or identifier string) for contributors without a dedicated record. |                                  |
+| `override`       | `boolean` | ❌       | When true, these values take precedence over the contributor's own profile and display settings. When false or omitted, they are only used as fallbacks if the contributor has not set their own settings.             |                                  |
+| `displayName`    | `string`  | ❌       | Display name for this contributor on this board.                                                                                                                                                                       | maxLength: 640, maxGraphemes: 64 |
+| `image`          | `union`   | ❌       | Avatar or face image for this contributor on this board, as a URI or image blob.                                                                                                                                       |                                  |
+| `video`          | `union`   | ❌       | Video for this contributor, as a URI (embed/direct link) or uploaded video blob.                                                                                                                                       |                                  |
+| `hoverImage`     | `union`   | ❌       | Image overlay shown when hovering over this contributor, as a URI or image blob.                                                                                                                                       |                                  |
+| `hoverIframeUrl` | `string`  | ❌       | Iframe overlay shown when hovering over this contributor.                                                                                                                                                              | maxLength: 2048                  |
+| `url`            | `string`  | ❌       | Click-through link URL for this contributor.                                                                                                                                                                           | maxLength: 2048                  |
 
 ---
 
@@ -932,10 +932,10 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 ##### `pub.leaflet.pages.linearDocument#block`
 
-| Property    | Type     | Required | Description |
-| ----------- | -------- | -------- | ----------- |
-| `block`     | `union`  | ✅       |             |
-| `alignment` | `string` | ❌       |             |
+| Property    | Type     | Required | Description | Comments                                                                                   |
+| ----------- | -------- | -------- | ----------- | ------------------------------------------------------------------------------------------ |
+| `block`     | `union`  | ✅       |             |                                                                                            |
+| `alignment` | `string` | ❌       |             | Known values: `#textAlignLeft`, `#textAlignCenter`, `#textAlignRight`, `#textAlignJustify` |
 
 ##### `pub.leaflet.pages.linearDocument#quote`
 

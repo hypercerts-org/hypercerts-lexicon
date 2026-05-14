@@ -296,7 +296,8 @@ function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
       lexicon.data.defs,
     );
     if (defRows.length > 0) {
-      output.push(...renderTable(defRows, false));
+      const hasComments = defRows.some((r) => r.comments);
+      output.push(...renderTable(defRows, hasComments));
       // Add blank line after table only if not the last def
       if (index < additionalDefs.length - 1) {
         output.push("");
