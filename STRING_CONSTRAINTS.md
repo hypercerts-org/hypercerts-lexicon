@@ -26,7 +26,8 @@ When both are used, the style guide recommends a **10–20:1 ratio** for `maxLen
 ### When to use neither
 
 - **Format-typed fields** (`datetime`, `at-uri`, `uri`, `did`, `cid`, etc.) do **not** get `maxLength`/`maxGraphemes` — the format itself constrains the value. The style guide explicitly says: _"Don't redundantly specify both a format and length limits."_
-- **`knownValues`/`enum` fields** do not need length constraints; the allowed values are already defined.
+- **`enum` fields** do not need length constraints — the allowed values are fully defined and the validator enforces them.
+- **`knownValues` fields** are an open vocabulary (any string is permitted; the listed values are interoperability conventions). They still need `maxLength` to bound the size of custom values, but `maxGraphemes` is usually unnecessary because the known values themselves are short.
 - **Array `maxLength`** limits the number of items, not byte size. Used to prevent unbounded arrays.
 
 ---
