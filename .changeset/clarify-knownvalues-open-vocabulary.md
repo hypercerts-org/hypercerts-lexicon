@@ -1,0 +1,5 @@
+---
+"@hypercerts-org/lexicon": patch
+---
+
+Clarify that `knownValues` is an open vocabulary, not a closed enum. Adds a "Schema Conventions" section to README.md explaining that custom string values are permitted on any `knownValues` field (and contrasting with `enum`, which is closed and validator-enforced). Updates inline descriptions on `app.certified.location#locationType`, `org.hypercerts.workscope.tag#category`, and `org.hypercerts.workscope.tag#status` to explicitly note that values beyond the listed set are permitted — bringing them in line with the existing wording on `org.hypercerts.collection#type`, `org.hypercerts.context.attachment#contentType`, and `app.certified.badge.definition#badgeType`. The `locationType` description now also explicitly calls out that polygons / multipolygons / featurecollections use the catch-all `geojson` entry rather than a typed variant. Fixes a misleading line in STRING_CONSTRAINTS.md that conflated `knownValues` with `enum`. Documentation-only — no schema or type changes.
