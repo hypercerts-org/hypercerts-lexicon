@@ -396,8 +396,15 @@ import { GRAPH_FOLLOW_NSID } from "@hypercerts-org/lexicon";
 
 const follow = {
   $type: GRAPH_FOLLOW_NSID,
-  subject: "did:plc:bob", // DID of the account being followed
+  // DID of the account being followed (any valid DID — did:plc, did:web, etc.)
+  subject: "did:plc:ewvi7nxzyoun6zhxrhs64oiz",
   createdAt: new Date().toISOString(),
+  // Optional `via` strongRef — set when the follow was mediated by another
+  // record (e.g. a starter-pack-style curated list). Omit for direct follows.
+  // via: {
+  //   uri: "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/app.certified.graph.starterpack/3k2abc",
+  //   cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  // },
 };
 ```
 
