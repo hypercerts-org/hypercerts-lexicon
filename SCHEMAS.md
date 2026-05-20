@@ -467,6 +467,22 @@ A labeled URL reference.
 
 ---
 
+### `app.certified.graph.follow`
+
+**Description:** Record declaring a social 'follow' relationship of another account. Duplicate follows will be ignored by the AppView.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property    | Type     | Required | Description                                                                                                                                                                                                                 |
+| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`   | `string` | ✅       | DID of the account being followed.                                                                                                                                                                                          |
+| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                          |
+| `via`       | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon. |
+
+---
+
 ### `app.certified.link.evm`
 
 **Description:** A verifiable link between an ATProto DID and an EVM wallet address, proven via a cryptographic signature. Currently supports EOA wallets via EIP-712 typed data signatures; the proof field is an open union to allow future signature methods.
