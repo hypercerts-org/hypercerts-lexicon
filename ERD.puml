@@ -240,23 +240,16 @@ dataclass rights {
     !endif
 }
 
-' app.certified.signature.inline
-dataclass signatureInline {
-    !if (SHOW_FIELDS == "true")
-    signatureType?
-    signature
-    key
-    !endif
-}
-
-' app.certified.signature.proof
-dataclass signatureProof {
-    !if (SHOW_FIELDS == "true")
-    cid
-    note?
-    createdAt?
-    !endif
-}
+' Signature-related lexicons (app.certified.signature.defs#inline,
+' app.certified.signature.defs#list, app.certified.signature.proof)
+' are deliberately omitted from this diagram.
+'
+' Every record lexicon carries an optional `signatures` array referencing
+' app.certified.signature.defs#list, so the relationship is uniform across
+' all ~20 record entities. Drawing those arrows would add a thicket of
+' identical "signatures" edges from every dataclass on the diagram without
+' communicating any additional structure. The signature-related lexicons
+' are documented in SCHEMAS.md and README.md instead.
 
 ' app.certified.link.evm
 dataclass linkEvm {
@@ -432,15 +425,7 @@ follow::subject --> contributorEntity : follows
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
 
-' Signature relationships
-' Nearly all record lexicons have an optional `signatures` array (ref
-' to app.certified.signature.defs#list) containing a union of
-' signatureInline objects and strongRefs to signatureProof records.
-' Only activity is shown here to avoid cluttering the diagram; the
-' pattern is identical for all record lexicons except
-' app.certified.link.evm, which carries its own EIP-712 wallet
-' ownership proof and deliberately omits the signatures property.
-activity ..> signatureInline : signatures
-activity ..> signatureProof : "signatures (strongRef)"
+' Signature relationships are intentionally not drawn here -- see the
+' comment near the top of the file (before linkEvm) for rationale.
 
 @enduml
