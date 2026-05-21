@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.signature.proof",
+  "description": "A remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record's `signatures` array via `com.atproto.repo.strongRef`. Conforms to the ATProtocol Attestation Specification.",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Remote attestation proof containing the CID of the content being attested.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["cid"],
+        "properties": {
+          "cid": {
+            "type": "string",
+            "format": "cid",
+            "description": "CID of the attested content, computed per the ATProtocol Attestation Specification: encode the record with the `signatures` field removed and a temporary `$sig` object inserted (containing `$type` and the housing `repository` DID) as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1."
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional note explaining the attestation purpose or context.",
+            "maxLength": 500
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this proof was created."
+          }
+        }
+      }
+    }
+  }
+}
