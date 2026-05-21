@@ -583,10 +583,12 @@ const attachment = {
 
 Nearly all record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services. (`app.certified.link.evm` is the sole exception — see the [Signatures table](#signatures-appcertifiedsignature) above for why.)
 
-Signatures support two patterns:
+The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r). In particular, signatures sign the **CID** of the record (not its raw bytes), and CID generation injects a temporary `$sig` object carrying the housing repository's DID so that signatures cannot be replayed across content versions or across repositories.
 
-1. **Inline signatures**: Embedded directly in the record
-2. **Remote attestations**: References to proof records in other repositories (via `strongRef`)
+Two patterns are supported:
+
+1. **Inline signatures**: Embedded directly in the record via `app.certified.signature.inline`.
+2. **Remote attestations**: References to `app.certified.signature.proof` records in other repositories, via `com.atproto.repo.strongRef`.
 
 ```typescript
 import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
@@ -601,13 +603,12 @@ const signedActivity = {
     // Inline signature (embedded)
     {
       $type: "app.certified.signature.inline",
-      signatureType: "ES256K", // JOSE algorithm: secp256k1
       signature: new Uint8Array([
-        /* signature bytes */
+        /* ECDSA signature bytes (low-S per BIP-0062) over the record's CID */
       ]),
       key: "did:plc:platform123#signing", // DID verification method
     },
-    // Remote attestation (reference to proof in another repo)
+    // Remote attestation (reference to a proof record in another repo)
     {
       $type: "com.atproto.repo.strongRef",
       uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
@@ -617,15 +618,28 @@ const signedActivity = {
 };
 ```
 
-#### Signature Algorithm Identifiers
+#### Signing Algorithm
 
-The `signatureType` property uses [JOSE algorithm identifiers](https://www.iana.org/assignments/jose/jose.xhtml):
+The spec mandates **ECDSA** with the low-S variant per BIP-0062. The signing curve is determined by the multicodec prefix of the verification method's `publicKeyMultibase` in the signer's DID document:
 
-| Value     | Curve     | Description                             |
-| --------- | --------- | --------------------------------------- |
-| `ES256`   | P-256     | NIST curve, WebCrypto compatible        |
-| `ES256K`  | secp256k1 | Ethereum/Bitcoin curve, ATProto default |
-| `Ed25519` | Ed25519   | EdDSA, increasingly popular             |
+| Multicodec prefix | Curve             | JOSE alg |
+| ----------------- | ----------------- | -------- |
+| `0xE701`          | secp256k1 (K-256) | `ES256K` |
+| `0x1200`          | P-256 (secp256r1) | `ES256`  |
+
+There is deliberately no `signatureType` field on the inline signature: the algorithm is canonically derived from the resolved key, and a separate tag would risk disagreeing with the multicodec.
+
+#### Signing & Verification Procedure (Summary)
+
+To **sign** a record:
+
+1. Take the record without its `signatures` field.
+2. Insert a temporary `$sig` object containing `$type` (the attestation type identifier) and `repository` (the housing repo's DID).
+3. Encode the result as canonical DAG-CBOR (sorted keys by CBOR byte length then lexically, definite-length items, shortest integer encodings).
+4. SHA-256 hash to produce a 36-byte CIDv1 (`0x01 0x71 0x12 0x20` + 32-byte hash).
+5. ECDSA-sign those 36 bytes (low-S) with the private key matching the verification method named in `key`.
+
+To **verify**, reconstruct the same CID using the housing repo's DID, resolve `key` to a public key via the DID document, and check the ECDSA signature against the CID bytes.
 
 #### Remote Attestation Proofs
 
@@ -636,7 +650,7 @@ import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon";
 
 const proof = {
   $type: SIGNATURE_PROOF_NSID,
-  cid: "bafy...", // CID of the attested content
+  cid: "bafy...", // CID of the attested content (computed as above)
   note: "Verified by platform quality assurance process",
   createdAt: new Date().toISOString(),
 };

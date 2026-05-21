@@ -1,16 +1,15 @@
 {
   "lexicon": 1,
   "id": "app.certified.signature.defs",
-  "description": "Common type definitions for cryptographic signatures attached to records.",
+  "description": "Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification.",
   "defs": {
     "list": {
       "type": "array",
-      "description": "Reusable array of cryptographic signatures attesting to a record's content. Uses an open union to support inline signatures and strong references to remote attestation proof records.",
+      "description": "Reusable array of cryptographic signatures attesting to a record's content. Open union of inline signatures and strong references to remote attestation proof records.",
       "items": {
         "type": "union",
         "refs": ["app.certified.signature.inline", "com.atproto.repo.strongRef"]
-      },
-      "maxLength": 100
+      }
     }
   }
 }
