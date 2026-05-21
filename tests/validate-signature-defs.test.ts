@@ -3,11 +3,12 @@ import { ids } from "../generated/lexicons.js";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 
 /**
- * Tests that the `signatures` property works correctly on record lexicons.
- * Uses activity as a representative — all 20 record lexicons share the
- * same signatures property definition.
+ * Tests the `app.certified.signature.defs#list` array def — specifically
+ * its union semantics (inline signature + strongRef) and array-level
+ * behavior (optional, empty, mixed). Uses activity as a representative
+ * carrier; all 19 record lexicons reference the same def.
  */
-describe("signatures property on records", () => {
+describe("app.certified.signature.defs#list (via activity carrier)", () => {
   const baseActivity = {
     title: "Test Activity",
     shortDescription: "A test activity for signature validation",
