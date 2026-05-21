@@ -256,7 +256,7 @@ if (result.success) {
 | **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs) and `#inline` (the inline signature object shape). Referenced by the `signatures` property on every record lexicon. |
 | **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                  |
 
-All 21 record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
+All 21 record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 ## Relationship Map
 
@@ -542,8 +542,10 @@ To produce the signature bytes: take the record without its
 `$type` and the housing repository's `repository` DID, encode as
 canonical DAG-CBOR, SHA-256 hash to a 36-byte CIDv1, then ECDSA-sign
 those 36 bytes (low-S). See the
-[ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r)
-for full procedure and verification details.
+[ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22)
+for full procedure and verification details, and the
+[accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)
+for background and motivation.
 
 ### Creating a Remote Attestation Proof
 

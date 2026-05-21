@@ -581,7 +581,7 @@ const attachment = {
 
 All record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services.
 
-The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r). In particular, signatures sign the **CID** of the record (not its raw bytes), and CID generation injects a temporary `$sig` object carrying the housing repository's DID so that signatures cannot be replayed across content versions or across repositories.
+The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)). In particular, signatures sign the **CID** of the record (not its raw bytes), and CID generation injects a temporary `$sig` object carrying the housing repository's DID so that signatures cannot be replayed across content versions or across repositories.
 
 Two patterns are supported:
 
@@ -654,7 +654,7 @@ const proof = {
 };
 ```
 
-For the full specification, see Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r).
+For the full specification, see Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22). For background and motivation, see the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r).
 
 ## Development
 
