@@ -8,7 +8,26 @@
       "description": "Reusable array of cryptographic signatures attesting to a record's content. Open union of inline signatures and strong references to remote attestation proof records.",
       "items": {
         "type": "union",
-        "refs": ["app.certified.signature.inline", "com.atproto.repo.strongRef"]
+        "refs": [
+          "app.certified.signature.defs#inline",
+          "com.atproto.repo.strongRef"
+        ]
+      }
+    },
+    "inline": {
+      "type": "object",
+      "description": "Inline attestation signature embedded directly in a record. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` metadata object (containing `$type` and the housing repository DID) inserted before canonical DAG-CBOR encoding. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.",
+      "required": ["signature", "key"],
+      "properties": {
+        "signature": {
+          "type": "bytes",
+          "description": "ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory."
+        },
+        "key": {
+          "type": "string",
+          "description": "Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and the specific key used; the key's multicodec prefix determines the signing curve.",
+          "maxLength": 512
+        }
       }
     }
   }

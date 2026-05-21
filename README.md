@@ -46,8 +46,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/organization        (org metadata)
   badge/response ──► badge/award ──► badge/definition
   graph/follow ────────────► account DID  (social follow)
-  signature/inline          (embedded cryptographic signature)
-  signature/defs            (shared signatures array def)
+  signature/defs            (shared #list and #inline defs)
   signature/proof           (remote attestation proof record)
 ```
 
@@ -283,15 +282,14 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Signatures (`app.certified.signature.*`)
 
-| Lexicon              | NSID                             | Description                                                                                                                                                              |
-| -------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Inline Signature** | `app.certified.signature.inline` | An inline cryptographic signature for attesting to record content. Uses JOSE algorithm identifiers (ES256, ES256K, Ed25519).                                             |
-| **Shared Defs**      | `app.certified.signature.defs`   | Shared type definitions for signatures. Provides the `#list` array def (a union of inline signatures and strongRefs) referenced by the `signatures` property on records. |
-| **Proof**            | `app.certified.signature.proof`  | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef.                          |
+| Lexicon         | NSID                            | Description                                                                                                                                                                                                                             |
+| --------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shared Defs** | `app.certified.signature.defs`  | Shared type definitions for signatures. Provides the `#list` array def (a union of inline signatures and strongRefs) and the `#inline` object def (the inline signature shape), all referenced by the `signatures` property on records. |
+| **Proof**       | `app.certified.signature.proof` | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef.                                                                                         |
 
-Nearly all record lexicons include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
+All record lexicons include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
 
-`app.certified.link.evm` is the one exception: it already carries its own EIP-712 wallet-ownership proof in the `proof` field, which is the integrity mechanism for its semantic claim (DID ↔ wallet). Adding an `app.certified.signature.defs#list` on top would introduce a second, incompatible signing mechanism on the same record and no additional trust, so it is deliberately omitted.
+Note on `app.certified.link.evm`: it carries _two_ orthogonal integrity primitives. The EIP-712 `proof` field proves wallet consent (the EVM key holder agreed to be linked to the DID). The `signatures` array proves record provenance (e.g. that a platform UI minted the record, defending against replay of harvested EIP-712 signatures). Both are useful and they do not conflict.
 
 > **Full property tables** → [SCHEMAS.md](SCHEMAS.md)
 
@@ -581,13 +579,13 @@ const attachment = {
 
 ### Cryptographic Signatures
 
-Nearly all record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services. (`app.certified.link.evm` is the sole exception — see the [Signatures table](#signatures-appcertifiedsignature) above for why.)
+All record lexicons support optional cryptographic signatures via the `signatures` property. This enables platform attestation and verification that records were created through trusted services.
 
 The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r). In particular, signatures sign the **CID** of the record (not its raw bytes), and CID generation injects a temporary `$sig` object carrying the housing repository's DID so that signatures cannot be replayed across content versions or across repositories.
 
 Two patterns are supported:
 
-1. **Inline signatures**: Embedded directly in the record via `app.certified.signature.inline`.
+1. **Inline signatures**: Embedded directly in the record via `app.certified.signature.defs#inline`.
 2. **Remote attestations**: References to `app.certified.signature.proof` records in other repositories, via `com.atproto.repo.strongRef`.
 
 ```typescript
@@ -602,7 +600,7 @@ const signedActivity = {
   signatures: [
     // Inline signature (embedded)
     {
-      $type: "app.certified.signature.inline",
+      $type: "app.certified.signature.defs#inline",
       signature: new Uint8Array([
         /* ECDSA signature bytes (low-S per BIP-0062) over the record's CID */
       ]),
