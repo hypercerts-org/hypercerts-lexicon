@@ -29,7 +29,6 @@ describe("signatures property on records", () => {
       signatures: [
         {
           $type: "app.certified.signature.inline",
-          signatureType: "ES256K",
           signature: new Uint8Array([1, 2, 3, 4]),
           key: "did:plc:platform123#signing",
         },
@@ -70,7 +69,6 @@ describe("signatures property on records", () => {
         },
         {
           $type: "app.certified.signature.inline",
-          signatureType: "Ed25519",
           signature: new Uint8Array([0xca, 0xfe]),
           key: "did:plc:signer2#key-2",
         },

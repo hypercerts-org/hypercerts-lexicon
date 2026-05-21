@@ -4,13 +4,13 @@
 
 Add cryptographic signature support to all lexicons
 
-Adds optional cryptographic signature support to all record lexicons, enabling platform attestation and verification that records were created through trusted services. This is inspired by the [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r) by Nick Gerakines.
+Adds optional cryptographic signature support to all record lexicons, enabling platform attestation and verification that records were created through trusted services. The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r).
 
 **New lexicons:**
 
-- `app.certified.signature.inline` - Inline cryptographic signature object with JOSE algorithm identifiers (ES256, ES256K, Ed25519)
-- `app.certified.signature.defs` - Shared type definitions for signatures, providing the `#list` array def (a union of inline signatures and strongRefs to remote proofs) that is referenced from record lexicons
-- `app.certified.signature.proof` - Remote attestation proof record containing the CID of attested content
+- `app.certified.signature.inline` - Inline cryptographic signature object. Two required fields only: `signature` (ECDSA bytes, low-S per BIP-0062, signing the record's CID) and `key` (DID verification method reference). The signing curve is determined by the multicodec prefix on the verification method's `publicKeyMultibase`, so no separate algorithm-tag field is carried on the signature itself.
+- `app.certified.signature.defs` - Shared type definitions for signatures, providing the `#list` array def (open union of inline signatures and strongRefs to remote proofs) that is referenced from record lexicons.
+- `app.certified.signature.proof` - Remote attestation proof record containing the CID of the attested content (computed with the spec's `$sig`-repository binding).
 
 **Changes to existing lexicons:**
 
@@ -42,11 +42,7 @@ Adds optional cryptographic signature support to all record lexicons, enabling p
 
 This is a non-breaking extension - signatures are optional on all records. Two signature patterns are supported:
 
-1. **Inline signatures** - Embedded directly in the record via `app.certified.signature.inline`
-2. **Remote attestations** - References to proof records in other repositories via `com.atproto.repo.strongRef`
+1. **Inline signatures** - Embedded directly in the record via `app.certified.signature.inline`.
+2. **Remote attestations** - References to proof records in other repositories via `com.atproto.repo.strongRef`.
 
-Signature algorithm identifiers use [JOSE format](https://www.iana.org/assignments/jose/jose.xhtml) per ATProto convention:
-
-- `ES256K` - secp256k1 (Ethereum/Bitcoin curve, ATProto default)
-- `ES256` - P-256 (NIST curve, WebCrypto compatible)
-- `Ed25519` - EdDSA
+The signing curve (P-256 / K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`, per the ATProtocol Attestation Specification. ECDSA with the low-S variant per BIP-0062 is mandatory.
