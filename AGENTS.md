@@ -294,24 +294,9 @@ npm run check
 
 ### Writing Tests
 
-Tests live in `tests/` and by default use one file per lexicon, named
+Tests live in `tests/` with one file per lexicon, named
 `validate-<lexicon-slug>.test.ts` (e.g. `validate-link-evm.test.ts`,
 `validate-rights.test.ts`).
-
-This is a convention, not a strict rule. When a test genuinely
-exercises behavior that spans multiple lexicons or code files —
-shared `*.defs` lexicons referenced from many records, cross-cutting
-union semantics, validation behavior that surfaces only in
-composition, etc. — pick the clearest, most concise name that
-describes what's actually under test, even if that file doesn't map
-1:1 to a single lexicon. Don't duplicate near-identical tests across
-every carrier just to satisfy the naming convention.
-
-For example, `validate-signature-defs.test.ts` exercises
-`app.certified.signature.defs#list` (union of inline + strongRef,
-array semantics) via a representative record carrier, rather than
-spawning 19 near-identical files for every record lexicon that
-references the def.
 
 The generated code provides two ways to validate records:
 
