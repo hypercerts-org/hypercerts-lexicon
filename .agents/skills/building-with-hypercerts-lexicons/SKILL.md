@@ -510,40 +510,85 @@ services. Two patterns are supported in any combination:
    `app.certified.signature.proof` records in other repositories via
    `com.atproto.repo.strongRef`.
 
+**Step 1: build an inline signature.** Compute the spec-defined CID
+over the record-to-be-signed, then ECDSA-sign it with the platform's
+key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto)
+(ATProto's signing primitives — handles low-S automatically),
+[`@ipld/dag-cbor`](https://www.npmjs.com/package/@ipld/dag-cbor) for
+canonical encoding, and [`multiformats`](https://www.npmjs.com/package/multiformats)
+for CID construction:
+
 ```typescript
+import { Secp256k1Keypair } from "@atproto/crypto";
+import * as dagCbor from "@ipld/dag-cbor";
+import { CID } from "multiformats/cid";
+import { sha256 } from "multiformats/hashes/sha2";
+import * as raw from "multiformats/codecs/raw";
 import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
 
-const signedActivity = {
+// 1. The record we want to sign (without the signatures field).
+const recordToSign = {
   $type: ACTIVITY_NSID,
   title: "Verified Reforestation Project",
   shortDescription: "Planted 1,000 trees in partnership with local community",
-  createdAt: new Date().toISOString(),
-  signatures: [
-    // Inline signature (embedded)
-    {
-      $type: "app.certified.signature.defs#inline",
-      signature: new Uint8Array([
-        /* ECDSA signature bytes (low-S per BIP-0062) over the record's CID */
-      ]),
-      key: "did:plc:platform123#signing", // DID verification method
-    },
-    // Remote attestation (reference to a proof record in another repo)
-    {
-      $type: "com.atproto.repo.strongRef",
-      uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-      cid: "bafy...",
-    },
-  ],
+  createdAt: "2026-05-21T12:00:00.000Z",
+};
+
+// 2. Insert temporary $sig metadata: attestation type + housing repo DID.
+//    This binds the signature to a specific repository, preventing
+//    cross-repo replay.
+const platformDid = "did:plc:platform123";
+const cborInput = {
+  ...recordToSign,
+  $sig: {
+    $type: "app.certified.signature.defs#inline",
+    repository: platformDid,
+  },
+};
+
+// 3. Encode canonically as DAG-CBOR, then build the 36-byte CIDv1
+//    (dag-cbor codec 0x71 + SHA-256 multihash).
+const cborBytes = dagCbor.encode(cborInput);
+const hash = await sha256.digest(cborBytes);
+const cid = CID.createV1(dagCbor.code, hash);
+const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
+
+// 4. ECDSA-sign the CID bytes. Keypair.sign() applies the standard
+//    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
+const keypair = await Secp256k1Keypair.create({ exportable: false });
+const signatureBytes = await keypair.sign(cidBytes);
+
+const inlineSignature = {
+  $type: "app.certified.signature.defs#inline" as const,
+  signature: signatureBytes,
+  key: `${platformDid}#signing`, // DID verification method reference
 };
 ```
 
-To produce the signature bytes: take the record without its
-`signatures` field, insert a temporary `$sig` object containing
-`$type` and the housing repository's `repository` DID, encode as
-canonical DAG-CBOR, SHA-256 hash to a 36-byte CIDv1, then ECDSA-sign
-those 36 bytes (low-S). See the
+**Step 2: build a remote attestation reference** (optional — only if
+the attestation lives in another repo's proof record):
+
+```typescript
+const remoteAttestation = {
+  $type: "com.atproto.repo.strongRef" as const,
+  uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+  cid: "bafy...", // CID of the proof record being referenced
+};
+```
+
+**Step 3: attach to the record.** Both shapes can coexist in the same
+array; consumers verify each entry independently.
+
+```typescript
+const signedActivity = {
+  ...recordToSign,
+  signatures: [inlineSignature, remoteAttestation],
+};
+```
+
+See the
 [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22)
-for full procedure and verification details, and the
+for the full procedure and verification rules, and the
 [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)
 for background and motivation.
 

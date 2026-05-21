@@ -588,34 +588,6 @@ Two patterns are supported:
 1. **Inline signatures**: Embedded directly in the record via `app.certified.signature.defs#inline`.
 2. **Remote attestations**: References to `app.certified.signature.proof` records in other repositories, via `com.atproto.repo.strongRef`.
 
-```typescript
-import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
-
-// Activity with inline signature
-const signedActivity = {
-  $type: ACTIVITY_NSID,
-  title: "Verified Reforestation Project",
-  shortDescription: "Planted 1,000 trees in partnership with local community",
-  createdAt: new Date().toISOString(),
-  signatures: [
-    // Inline signature (embedded)
-    {
-      $type: "app.certified.signature.defs#inline",
-      signature: new Uint8Array([
-        /* ECDSA signature bytes (low-S per BIP-0062) over the record's CID */
-      ]),
-      key: "did:plc:platform123#signing", // DID verification method
-    },
-    // Remote attestation (reference to a proof record in another repo)
-    {
-      $type: "com.atproto.repo.strongRef",
-      uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-      cid: "bafy...",
-    },
-  ],
-};
-```
-
 #### Signing Algorithm
 
 The spec mandates **ECDSA** with the low-S variant per BIP-0062. The signing curve is determined by the multicodec prefix of the verification method's `publicKeyMultibase` in the signer's DID document:
@@ -627,15 +599,80 @@ The spec mandates **ECDSA** with the low-S variant per BIP-0062. The signing cur
 
 There is deliberately no `signatureType` field on the inline signature: the algorithm is canonically derived from the resolved key, and a separate tag would risk disagreeing with the multicodec.
 
-#### Signing & Verification Procedure (Summary)
+#### Step 1: Build an Inline Signature
 
-To **sign** a record:
+Compute the spec-defined CID over the record-to-be-signed, then ECDSA-sign it with the platform's key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto) (ATProto's signing primitives — handles low-S automatically), [`@ipld/dag-cbor`](https://www.npmjs.com/package/@ipld/dag-cbor) for canonical encoding, and [`multiformats`](https://www.npmjs.com/package/multiformats) for CID construction:
 
-1. Take the record without its `signatures` field.
-2. Insert a temporary `$sig` object containing `$type` (the attestation type identifier) and `repository` (the housing repo's DID).
-3. Encode the result as canonical DAG-CBOR (sorted keys by CBOR byte length then lexically, definite-length items, shortest integer encodings).
-4. SHA-256 hash to produce a 36-byte CIDv1 (`0x01 0x71 0x12 0x20` + 32-byte hash).
-5. ECDSA-sign those 36 bytes (low-S) with the private key matching the verification method named in `key`.
+```typescript
+import { Secp256k1Keypair } from "@atproto/crypto";
+import * as dagCbor from "@ipld/dag-cbor";
+import { CID } from "multiformats/cid";
+import { sha256 } from "multiformats/hashes/sha2";
+import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
+
+// 1. The record we want to sign (without the signatures field).
+const recordToSign = {
+  $type: ACTIVITY_NSID,
+  title: "Verified Reforestation Project",
+  shortDescription: "Planted 1,000 trees in partnership with local community",
+  createdAt: "2026-05-21T12:00:00.000Z",
+};
+
+// 2. Insert temporary $sig metadata: attestation type + housing repo DID.
+//    This binds the signature to a specific repository, preventing
+//    cross-repo replay.
+const platformDid = "did:plc:platform123";
+const cborInput = {
+  ...recordToSign,
+  $sig: {
+    $type: "app.certified.signature.defs#inline",
+    repository: platformDid,
+  },
+};
+
+// 3. Encode canonically as DAG-CBOR, then build the 36-byte CIDv1
+//    (dag-cbor codec 0x71 + SHA-256 multihash).
+const cborBytes = dagCbor.encode(cborInput);
+const hash = await sha256.digest(cborBytes);
+const cid = CID.createV1(dagCbor.code, hash);
+const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
+
+// 4. ECDSA-sign the CID bytes. Keypair.sign() applies the standard
+//    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
+const keypair = await Secp256k1Keypair.create({ exportable: false });
+const signatureBytes = await keypair.sign(cidBytes);
+
+const inlineSignature = {
+  $type: "app.certified.signature.defs#inline" as const,
+  signature: signatureBytes,
+  key: `${platformDid}#signing`, // DID verification method reference
+};
+```
+
+#### Step 2: Build a Remote Attestation Reference (Optional)
+
+Only if the attestation lives in another repo's proof record:
+
+```typescript
+const remoteAttestation = {
+  $type: "com.atproto.repo.strongRef" as const,
+  uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+  cid: "bafy...", // CID of the proof record being referenced
+};
+```
+
+#### Step 3: Attach to the Record
+
+Both shapes can coexist in the same array; consumers verify each entry independently.
+
+```typescript
+const signedActivity = {
+  ...recordToSign,
+  signatures: [inlineSignature, remoteAttestation],
+};
+```
+
+#### Verifying a Signature
 
 To **verify**, reconstruct the same CID using the housing repo's DID, resolve `key` to a public key via the DID document, and check the ECDSA signature against the CID bytes.
 
