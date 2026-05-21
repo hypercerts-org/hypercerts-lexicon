@@ -1,5 +1,15 @@
 # @hypercerts-org/lexicon
 
+## 0.13.0
+
+### Minor Changes
+
+- [#209](https://github.com/hypercerts-org/hypercerts-lexicon/pull/209) [`8ec051f`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8ec051faaf46b507409d97ca609b05fb8f318a3d) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Add `app.certified.graph.follow` lexicon — a social-graph follow record schema-compatible with `app.bsky.graph.follow` (same `tid` key, same `subject` / `createdAt` / optional `via` strongRef fields). Exports new `GRAPH_FOLLOW_NSID`, `GRAPH_FOLLOW_LEXICON_JSON`, `GRAPH_FOLLOW_LEXICON_DOC`, and `AppCertifiedGraphFollow` type namespace.
+
+### Patch Changes
+
+- [#213](https://github.com/hypercerts-org/hypercerts-lexicon/pull/213) [`80e5b42`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/80e5b427b1e6886417d2db12017e7aa4a42a6482) Thanks [@s-adamantine](https://github.com/s-adamantine)! - Clarify that `knownValues` is an open vocabulary, not a closed enum. Adds a "Schema Conventions" section to README.md explaining that custom string values are permitted on any `knownValues` field (and contrasting with `enum`, which is closed and validator-enforced). Updates inline descriptions on `app.certified.location#locationType`, `org.hypercerts.workscope.tag#category`, and `org.hypercerts.workscope.tag#status` to explicitly note that values beyond the listed set are permitted — bringing them in line with the existing wording on `org.hypercerts.collection#type`, `org.hypercerts.context.attachment#contentType`, and `app.certified.badge.definition#badgeType`. The `locationType` description now also explicitly calls out that polygons / multipolygons / featurecollections use the catch-all `geojson` entry rather than a typed variant. Fixes a misleading line in STRING_CONSTRAINTS.md that conflated `knownValues` with `enum`. Documentation-only — no schema or type changes.
+
 ## 0.12.0
 
 ### Minor Changes
