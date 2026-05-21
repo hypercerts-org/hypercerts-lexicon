@@ -4,7 +4,7 @@
 
 Add cryptographic signature support to all lexicons
 
-Adds optional cryptographic signature support to all record lexicons, enabling platform attestation and verification that records were created through trusted services. The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://ngerakines.leaflet.pub/3m3idxul5hc2r).
+Adds optional cryptographic signature support to all record lexicons, enabling platform attestation and verification that records were created through trusted services. The on-the-wire shape, signing procedure, and verification procedure all conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)).
 
 **New lexicons:**
 
