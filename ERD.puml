@@ -240,26 +240,6 @@ dataclass rights {
     !endif
 }
 
-' Signature-related lexicons (app.certified.signature.defs#inline,
-' app.certified.signature.defs#list, app.certified.signature.proof)
-' are deliberately omitted from this diagram.
-'
-' Every record lexicon carries an optional `signatures` array referencing
-' app.certified.signature.defs#list, so the relationship is uniform across
-' all ~20 record entities. Drawing those arrows would add a thicket of
-' identical "signatures" edges from every dataclass on the diagram without
-' communicating any additional structure. The signature-related lexicons
-' are documented in SCHEMAS.md and README.md instead.
-
-' app.certified.link.evm
-dataclass linkEvm {
-    !if (SHOW_FIELDS == "true")
-    address
-    proof
-    createdAt
-    !endif
-}
-
 ' org.hypercerts.collection
 dataclass collection {
     !if (SHOW_FIELDS == "true")
@@ -424,8 +404,5 @@ badgeAward::subject --> activity
 follow::subject --> contributorEntity : follows
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
-
-' Signature relationships are intentionally not drawn here -- see the
-' comment near the top of the file (before linkEvm) for rationale.
 
 @enduml

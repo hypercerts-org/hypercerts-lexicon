@@ -246,17 +246,8 @@ if (result.success) {
 | **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist                                                            |
 | **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                                                               |
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                   |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature. Can additionally carry `signatures[]` for record provenance |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature                                                              |
 | **Follow**           | `app.certified.graph.follow`       | Social-graph follow: declares the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`      |
-
-### Signatures — cryptographic attestation
-
-| Lexicon             | NSID                            | Purpose                                                                                                                                                                                                                               |
-| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs) and `#inline` (the inline signature object shape). Referenced by the `signatures` property on every record lexicon. |
-| **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                  |
-
-All 21 record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 ## Relationship Map
 
@@ -294,12 +285,6 @@ CERTIFIED
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
   graph/follow ───────────> account DID (social follow)
-  signature/defs           (shared #list and #inline defs)
-  signature/proof          (remote attestation proof record)
-
-  Every record lexicon also carries an optional `signatures` array
-  referencing app.certified.signature.defs#list (not drawn — the
-  arrow would fan out identically from every record).
 ```
 
 Every arrow is a `strongRef` or union reference stored on AT Protocol.
@@ -494,113 +479,6 @@ const receipt = {
   transactionId: "0xabc...",
   for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
   occurredAt: new Date().toISOString(),
-  createdAt: new Date().toISOString(),
-};
-```
-
-### Attaching Cryptographic Signatures
-
-Any record can carry an optional `signatures` array, enabling platform
-attestation and verification that records were created through trusted
-services. Two patterns are supported in any combination:
-
-1. **Inline signatures** — embedded directly in the record via
-   `app.certified.signature.defs#inline`.
-2. **Remote attestations** — references to
-   `app.certified.signature.proof` records in other repositories via
-   `com.atproto.repo.strongRef`.
-
-**Step 1: build an inline signature.** Compute the spec-defined CID
-over the record-to-be-signed, then ECDSA-sign it with the platform's
-key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto)
-(ATProto's signing primitives — handles low-S automatically),
-[`@ipld/dag-cbor`](https://www.npmjs.com/package/@ipld/dag-cbor) for
-canonical encoding, and [`multiformats`](https://www.npmjs.com/package/multiformats)
-for CID construction:
-
-```typescript
-import { Secp256k1Keypair } from "@atproto/crypto";
-import * as dagCbor from "@ipld/dag-cbor";
-import { CID } from "multiformats/cid";
-import { sha256 } from "multiformats/hashes/sha2";
-import * as raw from "multiformats/codecs/raw";
-import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
-
-// 1. The record we want to sign (without the signatures field).
-const recordToSign = {
-  $type: ACTIVITY_NSID,
-  title: "Verified Reforestation Project",
-  shortDescription: "Planted 1,000 trees in partnership with local community",
-  createdAt: "2026-05-21T12:00:00.000Z",
-};
-
-// 2. Insert temporary $sig metadata: attestation type + housing repo DID.
-//    This binds the signature to a specific repository, preventing
-//    cross-repo replay.
-const platformDid = "did:plc:platform123";
-const cborInput = {
-  ...recordToSign,
-  $sig: {
-    $type: "app.certified.signature.defs#inline",
-    repository: platformDid,
-  },
-};
-
-// 3. Encode canonically as DAG-CBOR, then build the 36-byte CIDv1
-//    (dag-cbor codec 0x71 + SHA-256 multihash).
-const cborBytes = dagCbor.encode(cborInput);
-const hash = await sha256.digest(cborBytes);
-const cid = CID.createV1(dagCbor.code, hash);
-const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
-
-// 4. ECDSA-sign the CID bytes. Keypair.sign() applies the standard
-//    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
-const keypair = await Secp256k1Keypair.create({ exportable: false });
-const signatureBytes = await keypair.sign(cidBytes);
-
-const inlineSignature = {
-  $type: "app.certified.signature.defs#inline" as const,
-  signature: signatureBytes,
-  key: `${platformDid}#signing`, // DID verification method reference
-};
-```
-
-**Step 2: build a remote attestation reference** (optional — only if
-the attestation lives in another repo's proof record):
-
-```typescript
-const remoteAttestation = {
-  $type: "com.atproto.repo.strongRef" as const,
-  uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-  cid: "bafy...", // CID of the proof record being referenced
-};
-```
-
-**Step 3: attach to the record.** Both shapes can coexist in the same
-array; consumers verify each entry independently.
-
-```typescript
-const signedActivity = {
-  ...recordToSign,
-  signatures: [inlineSignature, remoteAttestation],
-};
-```
-
-See the
-[ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22)
-for the full procedure and verification rules, and the
-[accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)
-for background and motivation.
-
-### Creating a Remote Attestation Proof
-
-```typescript
-import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon";
-
-const proof = {
-  $type: SIGNATURE_PROOF_NSID,
-  cid: "bafy...", // CID of the attested content (computed as above)
-  note: "Verified by platform quality assurance process",
   createdAt: new Date().toISOString(),
 };
 ```
