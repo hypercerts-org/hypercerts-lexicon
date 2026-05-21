@@ -47,5 +47,3 @@ This is a non-breaking extension - signatures are optional on all records. Two s
 
 1. **Inline signatures** - Embedded directly in the record via `app.certified.signature.defs#inline`.
 2. **Remote attestations** - References to proof records in other repositories via `com.atproto.repo.strongRef`.
-
-The signing curve (P-256 / K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`, per the ATProtocol Attestation Specification. ECDSA with the low-S variant per BIP-0062 is mandatory.
