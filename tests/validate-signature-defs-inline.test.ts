@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
-import * as SignatureInline from "../generated/types/app/certified/signature/inline.js";
+import { validate } from "../generated/lexicons.js";
+import { validateInline } from "../generated/types/app/certified/signature/defs.js";
 
-describe("app.certified.signature.inline", () => {
+describe("app.certified.signature.defs#inline", () => {
   it("should accept a valid inline signature", () => {
-    const result = SignatureInline.validateMain({
-      $type: "app.certified.signature.inline",
+    const result = validateInline({
+      $type: "app.certified.signature.defs#inline",
       signature: new Uint8Array([1, 2, 3, 4]),
       key: "did:plc:abc123#signing",
     });
@@ -20,8 +20,8 @@ describe("app.certified.signature.inline", () => {
       {
         key: "did:plc:abc123#signing",
       },
-      ids.AppCertifiedSignatureInline,
-      "main",
+      "app.certified.signature.defs",
+      "inline",
       false,
     );
     expect(result.success).toBe(false);
@@ -32,8 +32,8 @@ describe("app.certified.signature.inline", () => {
       {
         signature: new Uint8Array([1, 2, 3]),
       },
-      ids.AppCertifiedSignatureInline,
-      "main",
+      "app.certified.signature.defs",
+      "inline",
       false,
     );
     expect(result.success).toBe(false);

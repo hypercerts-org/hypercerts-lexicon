@@ -492,11 +492,12 @@ A labeled URL reference.
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                                                 |
-| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `subject`   | `string` | ✅       | DID of the account being followed.                                                                                                                                                                                          |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                          |
-| `via`       | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon. |
+| Property     | Type     | Required | Description                                                                                                                                                                                                                 |
+| ------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`    | `string` | ✅       | DID of the account being followed.                                                                                                                                                                                          |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                          |
+| `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon. |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                       |
 
 ---
 
@@ -508,11 +509,12 @@ A labeled URL reference.
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                   | Comments      |
-| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `address`   | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                           | maxLength: 42 |
-| `proof`     | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format. |               |
-| `createdAt` | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                            |               |
+| Property     | Type     | Required | Description                                                                                                                                                                                                                             | Comments      |
+| ------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `address`    | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                                                                     | maxLength: 42 |
+| `proof`      | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format.                                           |               |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                      |               |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content. The EIP-712 `proof` field proves wallet consent (orthogonal trust statement); `signatures` proves record provenance (e.g. that a platform UI minted this record). |               |
 
 #### Defs
 
@@ -543,18 +545,16 @@ The EIP-712 typed data message that was signed by the wallet. Contains the field
 
 **Description:** Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification.
 
----
+#### Defs
 
-### `app.certified.signature.inline`
+##### `app.certified.signature.defs#inline`
 
-**Description:** Inline attestation signature embedded directly in a record.
+Inline attestation signature embedded directly in a record. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` metadata object (containing `$type` and the housing repository DID) inserted before canonical DAG-CBOR encoding. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
-#### Properties
-
-| Property    | Type     | Required | Description                                                                                                                                                                                       | Comments       |
-| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                      |                |
-| `key`       | `string` | ✅       | Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and the specific key used; the key's multicodec prefix determines the signing curve. | maxLength: 512 |
+| Property    | Type     | Required | Description                                                                                                                                                                                       |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                      |
+| `key`       | `string` | ✅       | Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and the specific key used; the key's multicodec prefix determines the signing curve. |
 
 ---
 

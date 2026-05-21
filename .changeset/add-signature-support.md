@@ -8,13 +8,14 @@ Adds optional cryptographic signature support to all record lexicons, enabling p
 
 **New lexicons:**
 
-- `app.certified.signature.inline` - Inline cryptographic signature object. Two required fields only: `signature` (ECDSA bytes, low-S per BIP-0062, signing the record's CID) and `key` (DID verification method reference). The signing curve is determined by the multicodec prefix on the verification method's `publicKeyMultibase`, so no separate algorithm-tag field is carried on the signature itself.
-- `app.certified.signature.defs` - Shared type definitions for signatures, providing the `#list` array def (open union of inline signatures and strongRefs to remote proofs) that is referenced from record lexicons.
+- `app.certified.signature.defs` - Shared type definitions for signatures. Provides:
+  - `#list` - open union array of inline signatures and `com.atproto.repo.strongRef` references to remote proofs
+  - `#inline` - inline signature object with two required fields: `signature` (ECDSA bytes, low-S per BIP-0062, signing the record's CID) and `key` (DID verification method reference). The signing curve is determined by the multicodec prefix on the verification method's `publicKeyMultibase`, so no separate algorithm-tag field is carried on the signature itself.
 - `app.certified.signature.proof` - Remote attestation proof record containing the CID of the attested content (computed with the spec's `$sig`-repository binding).
 
 **Changes to existing lexicons:**
 
-19 record lexicons now include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) placed directly on the record with no wrapper object:
+All 21 record lexicons now include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) placed directly on the record with no wrapper object:
 
 - `org.hypercerts.claim.activity`
 - `org.hypercerts.claim.contribution`
@@ -35,14 +36,16 @@ Adds optional cryptographic signature support to all record lexicons, enabling p
 - `app.certified.actor.profile`
 - `app.certified.actor.organization`
 - `app.certified.location`
+- `app.certified.graph.follow`
+- `app.certified.link.evm`
 
-`app.certified.link.evm` is deliberately excluded: it already carries its own EIP-712 wallet-ownership proof in the `proof` field, which is the integrity mechanism for its semantic DID ↔ wallet claim. Adding a second, incompatible signing mechanism on the same record would provide no additional trust and invite confusion.
+Note on `app.certified.link.evm`: this record carries two orthogonal integrity primitives. The EIP-712 `proof` field proves wallet consent (the EVM key holder agreed to be linked to the DID). The `signatures` array proves record provenance (e.g. that a platform UI minted the record, defending against replay of harvested EIP-712 signatures). Both are useful and they do not conflict.
 
 **Design notes:**
 
 This is a non-breaking extension - signatures are optional on all records. Two signature patterns are supported:
 
-1. **Inline signatures** - Embedded directly in the record via `app.certified.signature.inline`.
+1. **Inline signatures** - Embedded directly in the record via `app.certified.signature.defs#inline`.
 2. **Remote attestations** - References to proof records in other repositories via `com.atproto.repo.strongRef`.
 
 The signing curve (P-256 / K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`, per the ATProtocol Attestation Specification. ECDSA with the low-S variant per BIP-0062 is mandatory.

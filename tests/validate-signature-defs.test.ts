@@ -6,7 +6,7 @@ import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
  * Tests the `app.certified.signature.defs#list` array def — specifically
  * its union semantics (inline signature + strongRef) and array-level
  * behavior (optional, empty, mixed). Uses activity as a representative
- * carrier; all 19 record lexicons reference the same def.
+ * carrier; all 21 record lexicons reference the same def.
  */
 describe("app.certified.signature.defs#list (via activity carrier)", () => {
   const baseActivity = {
@@ -29,7 +29,7 @@ describe("app.certified.signature.defs#list (via activity carrier)", () => {
       ...baseActivity,
       signatures: [
         {
-          $type: "app.certified.signature.inline",
+          $type: "app.certified.signature.defs#inline",
           signature: new Uint8Array([1, 2, 3, 4]),
           key: "did:plc:platform123#signing",
         },
@@ -59,7 +59,7 @@ describe("app.certified.signature.defs#list (via activity carrier)", () => {
       ...baseActivity,
       signatures: [
         {
-          $type: "app.certified.signature.inline",
+          $type: "app.certified.signature.defs#inline",
           signature: new Uint8Array([0xde, 0xad]),
           key: "did:plc:signer1#key-1",
         },
@@ -69,7 +69,7 @@ describe("app.certified.signature.defs#list (via activity carrier)", () => {
           cid: "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae",
         },
         {
-          $type: "app.certified.signature.inline",
+          $type: "app.certified.signature.defs#inline",
           signature: new Uint8Array([0xca, 0xfe]),
           key: "did:plc:signer2#key-2",
         },
