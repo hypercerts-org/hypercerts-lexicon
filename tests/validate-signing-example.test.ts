@@ -26,7 +26,7 @@ import { verifySignature } from "@atproto/crypto";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const EXTRACT_DIR = resolve(ROOT, "tests/extracted");
+const EXTRACT_DIR = resolve(ROOT, "tmp/extracted-signing-examples");
 
 interface ExtractedExample {
   signedActivity: { signatures: unknown[] };
@@ -206,7 +206,7 @@ for (const [label, relPath, basename] of SOURCES) {
       expect(example.inlineSignature.$type).toBe(
         "app.certified.signature.defs#inline",
       );
-      expect(example.inlineSignature.signature).toBe(example.signatureBytes);
+      expect(example.inlineSignature.signature).toEqual(example.signatureBytes);
       expect(example.inlineSignature.key).toMatch(/^did:[^:]+:.+#.+$/);
     });
 
@@ -219,10 +219,10 @@ for (const [label, relPath, basename] of SOURCES) {
 
     it("attaches both signatures to the final record", () => {
       expect(example.signedActivity.signatures).toHaveLength(2);
-      expect(example.signedActivity.signatures[0]).toBe(
+      expect(example.signedActivity.signatures[0]).toEqual(
         example.inlineSignature,
       );
-      expect(example.signedActivity.signatures[1]).toBe(
+      expect(example.signedActivity.signatures[1]).toEqual(
         example.remoteAttestation,
       );
     });

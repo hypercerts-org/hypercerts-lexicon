@@ -640,12 +640,14 @@ const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
 // 4. ECDSA-sign the CID bytes. Keypair.sign() applies the standard
 //    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
 const keypair = await Secp256k1Keypair.create({ exportable: false });
+const signerDid = keypair.did();
+const signerKey = `${signerDid}#${signerDid.slice("did:key:".length)}`;
 const signatureBytes = await keypair.sign(cidBytes);
 
 const inlineSignature = {
   $type: "app.certified.signature.defs#inline" as const,
   signature: signatureBytes,
-  key: `${platformDid}#signing`, // DID verification method reference
+  key: signerKey, // DID verification method reference for the keypair above
 };
 ```
 
