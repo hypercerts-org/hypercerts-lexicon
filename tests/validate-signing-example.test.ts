@@ -26,7 +26,7 @@ import { verifySignature } from "@atproto/crypto";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const EXTRACT_DIR = resolve(ROOT, "tmp/extracted-signing-examples");
+const EXTRACT_DIR = resolve(ROOT, "tmp/extracted");
 
 interface ExtractedExample {
   signedActivity: { signatures: unknown[] };
@@ -244,7 +244,7 @@ for (const [label, relPath, basename] of SOURCES) {
       expect(result.success).toBe(true);
     });
 
-    it("produced signature verifies against the signing public key", async () => {
+    it("the produced signature verifies against the signing public key", async () => {
       const ok = await verifySignature(
         example.keypair.did(),
         example.cidBytes,

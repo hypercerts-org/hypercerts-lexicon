@@ -557,6 +557,9 @@ const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
 //    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
 const keypair = await Secp256k1Keypair.create({ exportable: false });
 const signerDid = keypair.did();
+if (!signerDid.startsWith("did:key:")) {
+  throw new Error(`Expected did:key signer, got ${signerDid}`);
+}
 const signerKey = `${signerDid}#${signerDid.slice("did:key:".length)}`;
 const signatureBytes = await keypair.sign(cidBytes);
 
