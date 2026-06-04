@@ -193,6 +193,15 @@ dataclass badgeResponse {
     !endif
 }
 
+' app.certified.graph.follow
+dataclass follow {
+    !if (SHOW_FIELDS == "true")
+    subject
+    via?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.workscope.cel
 dataclass celExpression {
     !if (SHOW_FIELDS == "true")
@@ -390,6 +399,9 @@ badgeAward::badge --> badgeDefinition
 badgeResponse::badgeAward --> badgeAward
 badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
+
+' app.certified.graph.follow points at an account DID (the entity being followed)
+follow::subject --> contributorEntity : follows
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
 
