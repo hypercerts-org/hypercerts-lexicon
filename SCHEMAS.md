@@ -299,6 +299,12 @@ A free-text string value (e.g. a display name, wallet address, or other identifi
 
 ---
 
+### `org.hypercerts.permissions.crud`
+
+**Description:** Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.
+
+---
+
 ### `org.hypercerts.workscope.cel`
 
 **Description:** A structured, machine-evaluable work scope definition using CEL (Common Expression Language). Tags referenced in the expression correspond to org.hypercerts.workscope.tag keys. See https://github.com/google/cel-spec. Note: this is intentionally type 'object' (not 'record') so it can be directly embedded inline in union types (e.g., activity.workScope) without requiring a separate collection or strongRef indirection.
@@ -538,6 +544,12 @@ The EIP-712 typed data message that was signed by the wallet. Contains the field
 | `chainId`    | `string` | ✅       | EVM chain ID as string (bigint serialized). Identifies which chain was used for signing; for EOA wallets the identity link applies across all EVM-compatible chains. | maxLength: 78  |
 | `timestamp`  | `string` | ✅       | Unix timestamp when the attestation was created (bigint serialized).                                                                                                 | maxLength: 78  |
 | `nonce`      | `string` | ✅       | Replay-protection nonce (bigint serialized).                                                                                                                         | maxLength: 78  |
+
+---
+
+### `app.certified.permissions.crud`
+
+**Description:** Permission set granting create, update, and delete on every Certified (app.certified) record collection.
 
 ---
 

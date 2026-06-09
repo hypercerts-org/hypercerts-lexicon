@@ -2,7 +2,7 @@
 "@hypercerts-org/lexicon": minor
 ---
 
-Add two permission-set lexicons — `org.hypercerts.permissions.crud` and `app.certified.permissions.crud` — each granting create/update/delete over every record collection in its namespace.
+Add two permission-set lexicons — `org.hypercerts.authWrite` and `app.certified.authWrite` — each granting create/update/delete over every record collection in its namespace.
 
 A [permission set](https://atproto.com/specs/permission#permission-sets) lets any AT Protocol app request a whole bundle of `repo:` scopes with a single `include:<nsid>` OAuth scope, instead of enumerating each collection by hand. The user's PDS resolves and expands the set during the OAuth grant; the same published set can also be consumed by services (e.g. the Certified group service) when expanding API-key scopes.
 
