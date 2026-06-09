@@ -154,27 +154,29 @@ function pathToGeneratedType(filePath) {
 }
 
 /**
- * Read lexicon NSID from JSON file
- */
-function readNsid(filePath) {
-  const fullPath = join(lexiconsDir, filePath);
-  const content = readFileSync(fullPath, "utf-8");
-  const lexicon = JSON.parse(content);
-  return lexicon.lexicon === 1 ? lexicon.id : null;
-}
-
-/**
  * Generate generated/exports.ts content
  */
 function generateIndex() {
-  const jsonFiles = findJsonFiles(lexiconsDir).sort();
+  // Parse each lexicon once, then derive everything from the parsed doc — both
+  // the permission-set check and the NSID — to avoid re-reading the same file.
+  const jsonFiles = findJsonFiles(lexiconsDir)
+    .sort()
+    .map((filePath) => ({
+      filePath,
+      doc: JSON.parse(readFileSync(join(lexiconsDir, filePath), "utf-8")),
+    }))
+    // Permission-set lexicons (lexicons/**/permissions/*.json) are published
+    // as-is but have no TS shape — lex gen-api cannot codegen them, so they are
+    // excluded from `generated/` here just as they are from the gen-* globs in
+    // package.json. The two exclusions must stay aligned.
+    .filter(({ doc }) => doc?.defs?.main?.type !== "permission-set");
 
-  const lexicons = jsonFiles.map((filePath) => ({
+  const lexicons = jsonFiles.map(({ filePath, doc }) => ({
     path: filePath,
     importName: pathToImportName(filePath),
     namespace: pathToNamespace(filePath),
     generatedTypePath: pathToGeneratedType(filePath),
-    nsid: readNsid(filePath),
+    nsid: doc.lexicon === 1 ? doc.id : null,
   }));
 
   // Filter out lexicons without NSIDs (should be rare)

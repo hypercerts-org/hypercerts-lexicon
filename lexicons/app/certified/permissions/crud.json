@@ -1,0 +1,30 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.permissions.crud",
+  "defs": {
+    "main": {
+      "type": "permission-set",
+      "description": "Permission set granting create, update, and delete on every Certified (app.certified) record collection.",
+      "title": "Manage your Certified data",
+      "detail": "Create, edit, and delete your Certified records (profile, badges, follows, wallet links, and related data).",
+      "permissions": [
+        {
+          "type": "permission",
+          "resource": "repo",
+          "collection": [
+            "app.certified.actor.organization",
+            "app.certified.actor.profile",
+            "app.certified.badge.award",
+            "app.certified.badge.definition",
+            "app.certified.badge.response",
+            "app.certified.graph.follow",
+            "app.certified.link.evm",
+            "app.certified.location",
+            "app.certified.signature.proof"
+          ],
+          "action": ["create", "update", "delete"]
+        }
+      ]
+    }
+  }
+}

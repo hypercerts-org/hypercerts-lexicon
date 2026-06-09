@@ -1,0 +1,32 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.permissions.crud",
+  "defs": {
+    "main": {
+      "type": "permission-set",
+      "description": "Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.",
+      "title": "Manage your Hypercerts data",
+      "detail": "Create, edit, and delete your Hypercerts records (impact claims, evaluations, funding, and related data).",
+      "permissions": [
+        {
+          "type": "permission",
+          "resource": "repo",
+          "collection": [
+            "org.hypercerts.claim.activity",
+            "org.hypercerts.claim.contribution",
+            "org.hypercerts.claim.contributorInformation",
+            "org.hypercerts.claim.rights",
+            "org.hypercerts.collection",
+            "org.hypercerts.context.acknowledgement",
+            "org.hypercerts.context.attachment",
+            "org.hypercerts.context.evaluation",
+            "org.hypercerts.context.measurement",
+            "org.hypercerts.funding.receipt",
+            "org.hypercerts.workscope.tag"
+          ],
+          "action": ["create", "update", "delete"]
+        }
+      ]
+    }
+  }
+}
