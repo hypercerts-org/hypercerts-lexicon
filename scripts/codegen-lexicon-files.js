@@ -13,7 +13,11 @@
  * `main.type === "permission-set"` check) skip the same files by **content**,
  * not by path, so they cannot drift as files move.
  *
- * Usage (in package.json): `lex gen-api --yes ./generated $(node ./scripts/codegen-lexicon-files.js)`
+ * Usage (in package.json): pipe into `xargs -0`, e.g.
+ *   `node ./scripts/codegen-lexicon-files.js | xargs -0 lex gen-api --yes ./generated`
+ * Piping (not `$(…)`) is deliberate: a failure or empty output here propagates
+ * through the pipeline instead of being swallowed by command substitution, and
+ * `xargs` avoids ARG_MAX limits. Output is NUL-delimited for `xargs -0`.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
@@ -47,4 +51,13 @@ const files = findJsonFiles(lexiconsDir)
   .filter((f) => !isPermissionSet(f))
   .sort();
 
-process.stdout.write(files.join("\n") + "\n");
+// Fail loudly rather than let the codegen run on an empty arg list (which could
+// otherwise "succeed" producing nothing). The pipeline (`node … | xargs lex …`)
+// already propagates this non-zero exit, unlike a `$(…)` substitution.
+if (files.length === 0) {
+  process.stderr.write("codegen-lexicon-files: no lexicons found\n");
+  process.exit(1);
+}
+
+// NUL-delimited for `xargs -0` — robust against any path characters.
+process.stdout.write(files.join("\0") + "\0");
