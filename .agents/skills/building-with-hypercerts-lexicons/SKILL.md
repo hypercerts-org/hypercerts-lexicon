@@ -198,15 +198,15 @@ collection write needs a `repo:<collection>?action=…` scope. Rather than list
 every collection by hand, request a **permission set** — a published bundle —
 with a single `include:` scope:
 
-| Permission set NSID               | Grants write (create/update/delete) on    |
-| --------------------------------- | ----------------------------------------- |
-| `org.hypercerts.permissions.crud` | all `org.hypercerts.*` record collections |
-| `app.certified.permissions.crud`  | all `app.certified.*` record collections  |
+| Permission set NSID        | Grants write (create/update/delete) on    |
+| -------------------------- | ----------------------------------------- |
+| `org.hypercerts.authWrite` | all `org.hypercerts.*` record collections |
+| `app.certified.authWrite`  | all `app.certified.*` record collections  |
 
 In your OAuth client's authorization request, ask for the set(s) you need:
 
 ```text
-scope: include:org.hypercerts.permissions.crud
+scope: include:org.hypercerts.authWrite
 ```
 
 The user's PDS resolves the published set and expands it into the underlying

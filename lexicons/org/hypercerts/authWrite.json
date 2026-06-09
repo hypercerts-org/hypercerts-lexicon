@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.permissions.crud",
+  "id": "org.hypercerts.authWrite",
   "defs": {
     "main": {
       "type": "permission-set",

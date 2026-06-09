@@ -36,7 +36,7 @@ These are general AT Protocol artifacts, not specific to any one service. The
 expected consumers, in rough order of generality:
 
 1. **Any atproto app working with Hypercerts / Certified data directly.** An
-   OAuth client requests `include:org.hypercerts.permissions.crud` (and/or the
+   OAuth client requests `include:org.hypercerts.authWrite` (and/or the
    `app.certified.*` set) in its authorization request; the user's PDS expands it
    and the app reads/writes those collections in the user's own repo. No
    intermediary is involved. This is the broadest case.
@@ -60,38 +60,49 @@ We define two **record-collection write** sets — one per data namespace in thi
 repo. Each grants the three `repo:` write actions — create, update, delete —
 over all of that namespace's record collections.
 
-| Set NSID                          | Grants write (create/update/delete) on    |
-| --------------------------------- | ----------------------------------------- |
-| `org.hypercerts.permissions.crud` | all `org.hypercerts.*` record collections |
-| `app.certified.permissions.crud`  | all `app.certified.*` record collections  |
+| Set NSID                   | Grants write (create/update/delete) on    |
+| -------------------------- | ----------------------------------------- |
+| `org.hypercerts.authWrite` | all `org.hypercerts.*` record collections |
+| `app.certified.authWrite`  | all `app.certified.*` record collections  |
 
 Both are authored and published from **this repository**, which is the namespace
 authority for both — see _Namespace authority_ below.
 
-> **"CRUD" but no read action.** The leaf is `crud` as a familiar shorthand, but
-> a `repo:` permission has only three actions — `create`, `update`, `delete`
-> (there is no `read` action in the scope grammar). Reading records needs **no
-> permission at all**: atproto repo records are public and world-readable via
-> `com.atproto.repo.getRecord` / `listRecords`, with no scope required. So a
-> "CRUD" set covers the only parts of CRUD that _are_ permissioned — the writes —
-> and "read" is implicitly available to everyone. The user-facing `title` /
-> `detail` (the authorization-dialog consent copy) describe this in plain terms —
-> "Manage your … data" / "Create, edit, and delete …" — deliberately not implying
-> any grantable read scope exists.
+> **Write only — no read action.** The leaf is `authWrite` because a `repo:`
+> permission has only three actions — `create`, `update`, `delete` (there is no
+> `read` action in the scope grammar). Reading records needs **no permission at
+> all**: atproto repo records are public and world-readable via
+> `com.atproto.repo.getRecord` / `listRecords`, with no scope required. So these
+> sets cover the only repo operations that _are_ permissioned — the writes — and
+> "read" is implicitly available to everyone. The user-facing `title` / `detail`
+> (the authorization-dialog consent copy) say "Manage your … data" / "Create,
+> edit, and delete …" accordingly.
 
-> **Naming.** The spec prescribes no naming convention: a permission set is
-> identified only by `type: "permission-set"` in its `main` def, and its sole
-> examples are illustrative (`com.example.authFull`). The `permissions.crud`
-> leaf is a house choice for this repo; rename freely.
+> **Naming — and why the NSID is a single segment under the namespace root.**
+> Two constraints, one of them hard:
+>
+> 1. **The set NSID's authority must parent the collections it grants** (the
+>    namespace-authority rule below). `NSID.authority` is the reversed domain of
+>    _all but the last segment_, so a set named `org.hypercerts.permissions.crud`
+>    has authority `permissions.hypercerts.org`, which does **not** parent
+>    `org.hypercerts.claim.*` — `IncludeScope.toScopes` would silently return an
+>    empty list. The set NSID must therefore be a **single leaf directly under the
+>    namespace root** (`org.hypercerts.<leaf>`), whose authority is `hypercerts.org`.
+> 2. **Convention follows real precedent.** Bluesky publishes its own permission
+>    sets exactly this way — single segment under the namespace, `auth`-prefixed
+>    capability leaf: `app.bsky.authViewAll`, `app.bsky.authCreatePosts`,
+>    `app.bsky.authDeleteContent`, `app.bsky.authFullApp`. The spec's illustrative
+>    examples (`com.example.authFull`, `com.example.authBasicFeatures`) match. So
+>    `authWrite` mirrors that style: `auth`-prefixed, names the capability.
 
-### `org.hypercerts.permissions.crud`
+### `org.hypercerts.authWrite`
 
 Enumerates every `type: "record"` collection under `org.hypercerts.*`:
 
 ```jsonc
 {
   "lexicon": 1,
-  "id": "org.hypercerts.permissions.crud",
+  "id": "org.hypercerts.authWrite",
   "defs": {
     "main": {
       "type": "permission-set",
@@ -123,14 +134,14 @@ Enumerates every `type: "record"` collection under `org.hypercerts.*`:
 }
 ```
 
-### `app.certified.permissions.crud`
+### `app.certified.authWrite`
 
 Enumerates every `type: "record"` collection under `app.certified.*`:
 
 ```jsonc
 {
   "lexicon": 1,
-  "id": "app.certified.permissions.crud",
+  "id": "app.certified.authWrite",
   "defs": {
     "main": {
       "type": "permission-set",
@@ -202,8 +213,11 @@ not what these sets are for.)
 
 A `repo:` scope targets the **user's own repo**, so it has no audience. Both sets
 here are `repo:`-only, so an `include:` for them is requested **without** any
-`?aud=` parameter, and expands to plain
-`repo:<collection>?action=create&action=update&action=delete` scopes.
+`?aud=` parameter. Each set expands to a **single combined `repo:` scope** that
+lists every collection — `IncludeScope.toScopes` coalesces the permission's
+collection array into one scope string
+(`repo:?collection=<a>&collection=<b>&…&action=create&action=update&action=delete`),
+rather than emitting one scope per collection.
 
 (For completeness: an `rpc:` permission _does_ take an `aud` naming the target
 service, and a set can let the `include:`'s `?aud=` flow into `rpc:` permissions
@@ -270,7 +284,7 @@ the `type: "record"` defs in its namespace).
 > [#219](https://github.com/hypercerts-org/hypercerts-lexicon/pull/219)
 > (`feat/signature-support-v2`, HYPER-181) adds the `app.certified.signature.proof`
 > record lexicon, which does **not** exist on `main` yet and so is **not** in
-> `app.certified.permissions.crud` here. When #219 merges,
+> `app.certified.authWrite` here. When #219 merges,
 > `app.certified.signature.proof` must be added to the set's `collection` list
 > (and re-published). The two PRs touch different files, so neither blocks the
 > other — this is just a follow-up to land after both.
