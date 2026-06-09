@@ -167,7 +167,7 @@ function generateIndex() {
     }))
     // Permission-set lexicons have no TS shape — lex gen-api cannot codegen them
     // — so they are excluded from `generated/` here, by the SAME content check
-    // (`main.type === "permission-set"`) that scripts/codegen-lexicon-files.js
+    // (`main.type === "permission-set"`) that scripts/run-lex-codegen.js
     // uses to exclude them from the gen-* CLI invocations. Excluding by content
     // (not by path) keeps the two in lock-step regardless of where set files live.
     .filter(({ doc }) => doc?.defs?.main?.type !== "permission-set");
