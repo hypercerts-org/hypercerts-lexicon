@@ -56,17 +56,28 @@ key-creation — reads the same published definition.
 
 ## The sets
 
-We define two **record-collection CRUD** sets — one per data namespace in this
-repo. Each grants create/update/delete over all of that namespace's record
-collections.
+We define two **record-collection write** sets — one per data namespace in this
+repo. Each grants the three `repo:` write actions — create, update, delete —
+over all of that namespace's record collections.
 
-| Set NSID                          | Grants CRUD on                            |
+| Set NSID                          | Grants write (create/update/delete) on    |
 | --------------------------------- | ----------------------------------------- |
 | `org.hypercerts.permissions.crud` | all `org.hypercerts.*` record collections |
 | `app.certified.permissions.crud`  | all `app.certified.*` record collections  |
 
 Both are authored and published from **this repository**, which is the namespace
 authority for both — see _Namespace authority_ below.
+
+> **"CRUD" but no read action.** The leaf is `crud` as a familiar shorthand, but
+> a `repo:` permission has only three actions — `create`, `update`, `delete`
+> (there is no `read` action in the scope grammar). Reading records needs **no
+> permission at all**: atproto repo records are public and world-readable via
+> `com.atproto.repo.getRecord` / `listRecords`, with no scope required. So a
+> "CRUD" set covers the only parts of CRUD that _are_ permissioned — the writes —
+> and "read" is implicitly available to everyone. The user-facing `title` /
+> `detail` (the authorization-dialog consent copy) describe this in plain terms —
+> "Manage your … data" / "Create, edit, and delete …" — deliberately not implying
+> any grantable read scope exists.
 
 > **Naming.** The spec prescribes no naming convention: a permission set is
 > identified only by `type: "permission-set"` in its `main` def, and its sole
@@ -84,7 +95,9 @@ Enumerates every `type: "record"` collection under `org.hypercerts.*`:
   "defs": {
     "main": {
       "type": "permission-set",
-      "title": "Full CRUD on Hypercerts record collections",
+      "description": "Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.",
+      "title": "Manage your Hypercerts data",
+      "detail": "Create, edit, and delete your Hypercerts records (impact claims, evaluations, funding, and related data).",
       "permissions": [
         {
           "type": "permission",
@@ -121,7 +134,9 @@ Enumerates every `type: "record"` collection under `app.certified.*`:
   "defs": {
     "main": {
       "type": "permission-set",
-      "title": "Full CRUD on Certified record collections",
+      "description": "Permission set granting create, update, and delete on every Certified (app.certified) record collection.",
+      "title": "Manage your Certified data",
+      "detail": "Create, edit, and delete your Certified records (profile, badges, follows, wallet links, and related data).",
       "permissions": [
         {
           "type": "permission",
