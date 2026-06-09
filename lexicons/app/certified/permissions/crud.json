@@ -19,8 +19,7 @@
             "app.certified.badge.response",
             "app.certified.graph.follow",
             "app.certified.link.evm",
-            "app.certified.location",
-            "app.certified.signature.proof"
+            "app.certified.location"
           ],
           "action": ["create", "update", "delete"]
         }
