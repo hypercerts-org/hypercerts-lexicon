@@ -42,7 +42,7 @@
     "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types",
     "build:types": "tsc --project tsconfig.build.json",
-    "//permissions": "permission-set lexicons are published as-is but have no TS shape; lex gen-* cannot codegen them. scripts/run-lex-codegen.js runs a lex subcommand over all lexicons EXCEPT permission-sets (excluded by content — the same check generate-exports.js uses). It is a single Node process that spawns lex with the file list as argv and forwards lex's exit code, so a producer failure propagates without `set -o pipefail` (not portable across npm's sh) and there is no ARG_MAX limit.",
+    "//permissions": "permission-set lexicons are published as-is but have no TS shape; lex gen-* cannot codegen them. scripts/run-lex-codegen.js runs a lex subcommand over all lexicons EXCEPT permission-sets (excluded by content — the same check generate-exports.js uses). It is a single Node process that spawns lex with the file list as argv and forwards lex's exit code, so a producer failure propagates without `set -o pipefail` (not portable across npm's sh) and shell word-splitting is avoided. (argv is still bounded by the OS execve arg limit, ~2 MB on Linux — far above this list.)",
     "gen-api": "node ./scripts/run-lex-codegen.js gen-api --yes ./generated && npm run gen-index",
     "gen-md": "node ./scripts/run-lex-codegen.js gen-md --yes ./lexicons.md",
     "gen-schemas-md": "node ./scripts/generate-schemas.js",
