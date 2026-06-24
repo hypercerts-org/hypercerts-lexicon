@@ -1,12 +1,16 @@
-# Design: Permission Sets for Hypercerts & Certified data
+# Design: Permission Sets for Hypercerts, Hyperboards & Certified data
 
-Status: **Proposed**
+Status: **Implemented** — the sets described here are published as lexicon
+files in this repository (`lexicons/org/hypercerts/authWrite.json`,
+`lexicons/org/hyperboards/authWrite.json`,
+`lexicons/app/certified/authWrite.json`). This document records the design and
+the rationale behind it.
 
-This document designs **permission sets** for the `org.hypercerts.*` and
-`app.certified.*` record collections defined in this repository — published,
-reusable bundles of AT Protocol OAuth scopes that any application can request
-with a single `include:<nsid>` scope, instead of enumerating every underlying
-`repo:` scope by hand.
+This document designs **permission sets** for the `org.hypercerts.*`,
+`org.hyperboards.*`, and `app.certified.*` record collections defined in this
+repository — published, reusable bundles of AT Protocol OAuth scopes that any
+application can request with a single `include:<nsid>` scope, instead of
+enumerating every underlying `repo:` scope by hand.
 
 ## Background: what a permission set is
 
@@ -35,11 +39,12 @@ set replaces that with one curated, versioned name.
 These are general AT Protocol artifacts, not specific to any one service. The
 expected consumers, in rough order of generality:
 
-1. **Any atproto app working with Hypercerts / Certified data directly.** An
-   OAuth client requests `include:org.hypercerts.authWrite` (and/or the
-   `app.certified.*` set) in its authorization request; the user's PDS expands it
-   and the app reads/writes those collections in the user's own repo. No
-   intermediary is involved. This is the broadest case.
+1. **Any atproto app working with Hypercerts / Hyperboards / Certified data
+   directly.** An OAuth client requests `include:org.hypercerts.authWrite`
+   (and/or the `org.hyperboards.*` or `app.certified.*` set) in its
+   authorization request; the user's PDS expands it and the app reads/writes
+   those collections in the user's own repo. No intermediary is involved. This
+   is the broadest case.
 2. **The Certified group service (CGS), via OAuth.** CGS is used as a standard
    OAuth resource (reached through AT Protocol service proxying). A client
    calling CGS on a user's behalf requests the same sets; the user's PDS expands
@@ -56,17 +61,18 @@ key-creation — reads the same published definition.
 
 ## The sets
 
-We define two **record-collection write** sets — one per data namespace in this
-repo. Each grants the three `repo:` write actions — create, update, delete —
+We define three **record-collection write** sets — one per data namespace in
+this repo. Each grants the three `repo:` write actions — create, update, delete —
 over all of that namespace's record collections.
 
-| Set NSID                   | Grants write (create/update/delete) on    |
-| -------------------------- | ----------------------------------------- |
-| `org.hypercerts.authWrite` | all `org.hypercerts.*` record collections |
-| `app.certified.authWrite`  | all `app.certified.*` record collections  |
+| Set NSID                    | Grants write (create/update/delete) on     |
+| --------------------------- | ------------------------------------------ |
+| `org.hypercerts.authWrite`  | all `org.hypercerts.*` record collections  |
+| `org.hyperboards.authWrite` | all `org.hyperboards.*` record collections |
+| `app.certified.authWrite`   | all `app.certified.*` record collections   |
 
-Both are authored and published from **this repository**, which is the namespace
-authority for both — see _Namespace authority_ below.
+All three are authored and published from **this repository**, which is the
+namespace authority for all of them — see _Namespace authority_ below.
 
 > **Write only — no read action.** The leaf is `authWrite` because a `repo:`
 > permission has only three actions — `create`, `update`, `delete` (there is no
@@ -134,6 +140,36 @@ Enumerates every `type: "record"` collection under `org.hypercerts.*`:
 }
 ```
 
+### `org.hyperboards.authWrite`
+
+Enumerates every `type: "record"` collection under `org.hyperboards.*`:
+
+```jsonc
+{
+  "lexicon": 1,
+  "id": "org.hyperboards.authWrite",
+  "defs": {
+    "main": {
+      "type": "permission-set",
+      "description": "Permission set granting create, update, and delete on every Hyperboards (org.hyperboards) record collection.",
+      "title": "Manage your Hyperboards data",
+      "detail": "Create, edit, and delete your Hyperboards records (board configurations and display profiles).",
+      "permissions": [
+        {
+          "type": "permission",
+          "resource": "repo",
+          "collection": [
+            "org.hyperboards.board",
+            "org.hyperboards.displayProfile",
+          ],
+          "action": ["create", "update", "delete"],
+        },
+      ],
+    },
+  },
+}
+```
+
 ### `app.certified.authWrite`
 
 Enumerates every `type: "record"` collection under `app.certified.*`:
@@ -170,9 +206,10 @@ Enumerates every `type: "record"` collection under `app.certified.*`:
 }
 ```
 
-> The collection lists are derived from this repo's `lexicons/org/hypercerts/`
-> and `lexicons/app/certified/` (`type: "record"` defs at time of writing). They
-> must be **kept in sync** as record types are added — see _Maintenance_.
+> The collection lists are derived from this repo's `lexicons/org/hypercerts/`,
+> `lexicons/org/hyperboards/`, and `lexicons/app/certified/` (`type: "record"`
+> defs at time of writing). They must be **kept in sync** as record types are
+> added — see _Maintenance_.
 
 ## Design rules these sets follow
 
@@ -188,12 +225,14 @@ and `rpc:` permissions (by lxm NSID).
 Consequences here:
 
 - A set under `org.hypercerts.*` may grant `repo:org.hypercerts.*` collections,
-  and **only** those — it cannot reference `app.certified.*` collections, or any
-  third party's, or any service's `rpc:` methods. Likewise the `app.certified.*`
-  set is confined to `app.certified.*`.
-- This is why there are **two** sets rather than one combined set: the two
-  namespaces are distinct authorities and cannot legally be mixed in a single
-  set. An app that needs both requests both `include:` scopes.
+  and **only** those — it cannot reference `org.hyperboards.*` or
+  `app.certified.*` collections, or any third party's, or any service's `rpc:`
+  methods. Likewise each of the `org.hyperboards.*` and `app.certified.*` sets
+  is confined to its own namespace.
+- This is why there are **three** sets rather than one combined set: the three
+  namespaces have distinct authorities (`hypercerts.org`, `hyperboards.org`,
+  `certified.app`) and cannot legally be mixed in a single set. An app that
+  needs more than one requests each `include:` scope.
 - The authority confinement is also what makes a published set **safe for any
   client to resolve**: an `include:` can only ever widen access to the set's own
   namespace, never smuggle in foreign permissions.
@@ -211,9 +250,10 @@ not what these sets are for.)
 
 ### `repo:` permissions carry no `aud`
 
-A `repo:` scope targets the **user's own repo**, so it has no audience. Both sets
-here are `repo:`-only, so an `include:` for them is requested **without** any
-`?aud=` parameter. Each set expands to a **single combined `repo:` scope** that
+A `repo:` scope targets the **user's own repo**, so it has no audience. All
+three sets here are `repo:`-only, so an `include:` for them is requested
+**without** any `?aud=` parameter. Each set expands to a **single combined
+`repo:` scope** that
 lists every collection — `IncludeScope.toScopes` coalesces the permission's
 collection array into one scope string
 (`repo:?collection=<a>&collection=<b>&…&action=create&action=update&action=delete`),
@@ -227,7 +267,7 @@ would.)
 
 ## Publication and resolution
 
-Both sets are published like any other Lexicon schema in this repo (see
+All three sets are published like any other Lexicon schema in this repo (see
 [`PUBLISHING.md`](../PUBLISHING.md)) and resolved at runtime via the standard
 **Lexicon resolution system**, to which the permission spec defers:
 _"Permission sets are Lexicon schemas and are published and fetched using the
@@ -269,16 +309,17 @@ full detail lives in the CGS design doc
 
 The point for _this_ repo: the sets must be **self-contained and
 deployment-agnostic** — no CGS-specific assumptions baked into the definitions.
-The two CRUD sets satisfy this trivially (pure `repo:` collection grants).
+All three CRUD sets satisfy this trivially (pure `repo:` collection grants).
 
 ## Maintenance
 
 The enumerated `collection` lists are the one ongoing obligation. Whenever a
-`type: "record"` lexicon is added to or removed from `org.hypercerts.*` or
-`app.certified.*`, the corresponding set must be updated and re-published, or the
-new collection will be silently uncovered by the set. Worth a check in the
-release process (and ideally an automated test asserting each set lists exactly
-the `type: "record"` defs in its namespace).
+`type: "record"` lexicon is added to or removed from `org.hypercerts.*`,
+`org.hyperboards.*`, or `app.certified.*`, the corresponding set must be updated
+and re-published, or the new collection will be silently uncovered by the set.
+The `AGENTS.md` "Adding / modifying a lexicon" checklist calls this out. Worth a
+check in the release process too (and ideally an automated test asserting each
+set lists exactly the `type: "record"` defs in its namespace).
 
 > **Known pending update.** PR
 > [#219](https://github.com/hypercerts-org/hypercerts-lexicon/pull/219)

@@ -235,18 +235,21 @@ scripts/                Build and codegen scripts
    - Auto-generate `generated/exports.ts` with all exports
 
 3. Update the relevant **permission set** if appropriate:
-   - The `permission-set` lexicons (`lexicons/org/hypercerts/authWrite.json`
-     and `lexicons/app/certified/authWrite.json`) each enumerate **every
+   - The `permission-set` lexicons (`lexicons/org/hypercerts/authWrite.json`,
+     `lexicons/org/hyperboards/authWrite.json`, and
+     `lexicons/app/certified/authWrite.json`) each enumerate **every
      `type: "record"` collection in their namespace** — the list is both
      the grant and its boundary, with no wildcards allowed inside a set.
-   - When you **add** a new `org.hypercerts.*` or `app.certified.*` record
-     lexicon, add its NSID to the matching set's `permissions[].collection`
-     list, or it will not be grantable via the published set. Likewise
-     **remove** the NSID when you delete a record lexicon.
+   - When you **add** a new `org.hypercerts.*`, `org.hyperboards.*`, or
+     `app.certified.*` record lexicon, add its NSID to the matching set's
+     `permissions[].collection` list, or it will not be grantable via the
+     published set. Likewise **remove** the NSID when you delete a record
+     lexicon.
    - A set may only reference collections under **its own namespace
-     authority**, so `org.hypercerts.*` records go in
-     `org.hypercerts.authWrite` and `app.certified.*` records in
-     `app.certified.authWrite` — never the other set.
+     authority**, so each namespace's records go in its own set
+     (`org.hypercerts.*` → `org.hypercerts.authWrite`, `org.hyperboards.*` →
+     `org.hyperboards.authWrite`, `app.certified.*` →
+     `app.certified.authWrite`) — never another set.
    - This does not apply to non-record defs (e.g. `query`, `object`, or
      `permission-set` lexicons themselves), which are not repo collections.
    - See [docs/design/permission-sets.md](docs/design/permission-sets.md)

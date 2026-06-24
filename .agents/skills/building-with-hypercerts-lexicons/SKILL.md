@@ -192,16 +192,17 @@ if (result.success) {
 
 ## Permission Sets (OAuth scopes)
 
-To **write** Hypercerts or Certified records to a user's repo, your app needs
-the user's authorization. AT Protocol grants this via OAuth scopes: each
-collection write needs a `repo:<collection>?action=…` scope. Rather than list
-every collection by hand, request a **permission set** — a published bundle —
-with a single `include:` scope:
+To **write** Hypercerts, Hyperboards, or Certified records to a user's repo,
+your app needs the user's authorization. AT Protocol grants this via OAuth
+scopes: each collection write needs a `repo:<collection>?action=…` scope. Rather
+than list every collection by hand, request a **permission set** — a published
+bundle — with a single `include:` scope:
 
-| Permission set NSID        | Grants write (create/update/delete) on    |
-| -------------------------- | ----------------------------------------- |
-| `org.hypercerts.authWrite` | all `org.hypercerts.*` record collections |
-| `app.certified.authWrite`  | all `app.certified.*` record collections  |
+| Permission set NSID         | Grants write (create/update/delete) on     |
+| --------------------------- | ------------------------------------------ |
+| `org.hypercerts.authWrite`  | all `org.hypercerts.*` record collections  |
+| `org.hyperboards.authWrite` | all `org.hyperboards.*` record collections |
+| `app.certified.authWrite`   | all `app.certified.*` record collections   |
 
 In your OAuth client's authorization request, ask for the set(s) you need:
 
@@ -213,10 +214,10 @@ The user's PDS resolves the published set and expands it into the underlying
 `repo:` scopes on the consent screen, where the user sees the set's plain-language
 description (e.g. "Manage your Hypercerts data"). Notes:
 
-- **Two sets, never one.** A permission set may only reference its own namespace
-  authority (atproto permission spec), so `org.hypercerts.*` and
-  `app.certified.*` cannot share a set. An app needing both requests **both**
-  `include:` scopes.
+- **One set per namespace, never combined.** A permission set may only reference
+  its own namespace authority (atproto permission spec), so `org.hypercerts.*`,
+  `org.hyperboards.*`, and `app.certified.*` each need their own set. An app
+  needing more than one requests **each** `include:` scope.
 - **Writes only.** These cover create/update/delete. **Reading** records needs no
   scope at all — atproto repo records are public.
 - **`repo:` scopes carry no `aud`** — request the `include:` without an `?aud=`.
