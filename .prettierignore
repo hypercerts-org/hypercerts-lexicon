@@ -14,3 +14,4 @@ tmp/
 .codex/
 .gemini/
 .beads/
+.git-worktrees/
