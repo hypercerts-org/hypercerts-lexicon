@@ -5,13 +5,45 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname, relative } from "node:path";
+import { join, dirname, relative, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
 import stringWidth from "string-width";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 const lexiconsDir = join(projectRoot, "lexicons");
+const defaultOutputPath = join(projectRoot, "SCHEMAS.md");
+
+function resolveOutputPath(path) {
+  return isAbsolute(path) ? path : join(projectRoot, path);
+}
+
+function parseOutputPath(argv) {
+  let outputPath = defaultOutputPath;
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+
+    if (arg === "--outfile" || arg === "-o") {
+      const value = argv[i + 1];
+      if (!value) {
+        throw new Error(`${arg} requires a path`);
+      }
+      outputPath = resolveOutputPath(value);
+      i++;
+    } else if (arg.startsWith("--outfile=")) {
+      const value = arg.slice("--outfile=".length);
+      if (!value) {
+        throw new Error("--outfile requires a path");
+      }
+      outputPath = resolveOutputPath(value);
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+
+  return outputPath;
+}
 
 // File system utilities
 function findJsonFiles(dir, baseDir = dir) {
@@ -33,7 +65,13 @@ function findJsonFiles(dir, baseDir = dir) {
 function readLexicon(filePath) {
   const fullPath = join(lexiconsDir, filePath);
   const content = readFileSync(fullPath, "utf-8");
-  return JSON.parse(content);
+
+  try {
+    return JSON.parse(content);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to parse lexicon ${filePath}: ${message}`);
+  }
 }
 
 // Type and metadata extraction
@@ -431,8 +469,8 @@ function generateMarkdown() {
 
 async function main() {
   try {
+    const outputPath = parseOutputPath(process.argv.slice(2));
     const content = generateMarkdown();
-    const outputPath = join(projectRoot, "SCHEMAS.md");
     writeFileSync(outputPath, content, "utf-8");
     console.log(`✅ Generated ${outputPath}`);
   } catch (error) {
