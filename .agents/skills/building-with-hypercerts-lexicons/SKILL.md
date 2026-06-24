@@ -510,7 +510,38 @@ services. Two patterns are supported in any combination:
    `app.certified.signature.proof` records in other repositories via
    `com.atproto.repo.strongRef`.
 
-**Step 1: build an inline signature.** Compute the spec-defined CID
+> **Key management.** The platform signing keypair is a long-lived
+> identity, not a per-record artefact. It MUST be generated once,
+> persisted in secure storage (HSM, KMS, sealed secret, etc.), and
+> reused across every signed record so that the public key resolved
+> from the `key` DID-URL stays stable for verifiers. Generating a
+> fresh keypair per signature (the "throwaway key" anti-pattern)
+> defeats verification: nobody can confirm that two records came from
+> the same signer, and the `did:key:` in `key` will not match
+> anything any verifier has previously seen or pinned.
+
+**Step 1: load (or create on first run) the platform signing
+keypair.** Use `exportable: true` so the private key bytes can be
+written to your secret store, then reload them on every subsequent
+process start. The example below performs an in-memory round trip via
+`export()` / `import()` to demonstrate the API surface — in
+production, replace the round trip with real reads and writes against
+your KMS / sealed-secret store:
+
+```typescript
+import { Secp256k1Keypair } from "@atproto/crypto";
+
+// First-run bootstrap: generate, export, persist.
+const fresh = await Secp256k1Keypair.create({ exportable: true });
+const privateKeyBytes = await fresh.export(); // 32 raw bytes
+// e.g. await kms.putSecret("hypercerts/platform-signing-key", privateKeyBytes);
+
+// Every subsequent process load: read bytes from the store and rehydrate.
+// e.g. const privateKeyBytes = await kms.getSecret("hypercerts/platform-signing-key");
+const keypair = await Secp256k1Keypair.import(privateKeyBytes);
+```
+
+**Step 2: build an inline signature.** Compute the spec-defined CID
 over the record-to-be-signed, then ECDSA-sign it with the platform's
 key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto)
 (ATProto's signing primitives — handles low-S automatically),
@@ -519,7 +550,6 @@ canonical encoding, and [`multiformats`](https://www.npmjs.com/package/multiform
 for CID construction:
 
 ```typescript
-import { Secp256k1Keypair } from "@atproto/crypto";
 import * as dagCbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
@@ -553,9 +583,9 @@ const hash = await sha256.digest(cborBytes);
 const cid = CID.createV1(dagCbor.code, hash);
 const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
 
-// 4. ECDSA-sign the CID bytes. Keypair.sign() applies the standard
-//    ECDSA hash-then-sign convention and enforces low-S per BIP-0062.
-const keypair = await Secp256k1Keypair.create({ exportable: false });
+// 4. ECDSA-sign the CID bytes with the persisted keypair from Step 1.
+//    Keypair.sign() applies the standard ECDSA hash-then-sign convention
+//    and enforces low-S per BIP-0062.
 const signerDid = keypair.did();
 if (!signerDid.startsWith("did:key:")) {
   throw new Error(`Expected did:key signer, got ${signerDid}`);
@@ -570,7 +600,7 @@ const inlineSignature = {
 };
 ```
 
-**Step 2: build a remote attestation reference** (optional — only if
+**Step 3: build a remote attestation reference** (optional — only if
 the attestation lives in another repo's proof record):
 
 ```typescript
@@ -581,7 +611,7 @@ const remoteAttestation = {
 };
 ```
 
-**Step 3: attach to the record.** Both shapes can coexist in the same
+**Step 4: attach to the record.** Both shapes can coexist in the same
 array; consumers verify each entry independently.
 
 ```typescript
