@@ -57,6 +57,7 @@ export default [
       "**/coverage/**",
       "generated/**",
       "tmp/**",
+      ".git-worktrees/**",
     ],
   },
   {
