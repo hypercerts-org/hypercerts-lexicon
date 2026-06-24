@@ -734,6 +734,12 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 
 ---
 
+### `org.hyperboards.authWrite`
+
+**Description:** Permission set granting create, update, and delete on every Hyperboards (org.hyperboards) record collection.
+
+---
+
 ### `org.hyperboards.board`
 
 **Description:** Configuration record for a hyperboard, wrapping an underlying activity or collection with visual presentation settings. Stored in the creator's PDS.

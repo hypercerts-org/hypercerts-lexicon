@@ -197,6 +197,7 @@ Enumerates every `type: "record"` collection under `app.certified.*`:
             "app.certified.graph.follow",
             "app.certified.link.evm",
             "app.certified.location",
+            "app.certified.signature.proof",
           ],
           "action": ["create", "update", "delete"],
         },
@@ -320,15 +321,6 @@ and re-published, or the new collection will be silently uncovered by the set.
 The `AGENTS.md` "Adding / modifying a lexicon" checklist calls this out. Worth a
 check in the release process too (and ideally an automated test asserting each
 set lists exactly the `type: "record"` defs in its namespace).
-
-> **Known pending update.** PR
-> [#219](https://github.com/hypercerts-org/hypercerts-lexicon/pull/219)
-> (`feat/signature-support-v2`, HYPER-181) adds the `app.certified.signature.proof`
-> record lexicon, which does **not** exist on `main` yet and so is **not** in
-> `app.certified.authWrite` here. When #219 merges,
-> `app.certified.signature.proof` must be added to the set's `collection` list
-> (and re-published). The two PRs touch different files, so neither blocks the
-> other — this is just a follow-up to land after both.
 
 ## References
 
