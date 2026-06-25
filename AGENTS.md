@@ -234,11 +234,32 @@ scripts/                Build and codegen scripts
    - Generate types in `generated/` (including vendored external lexicons)
    - Auto-generate `generated/exports.ts` with all exports
 
-3. Update `ERD.puml` as appropriate:
+3. Update the relevant **permission set** if appropriate:
+   - The `permission-set` lexicons (`lexicons/org/hypercerts/authWrite.json`,
+     `lexicons/org/hyperboards/authWrite.json`, and
+     `lexicons/app/certified/authWrite.json`) each enumerate **every
+     `type: "record"` collection in their namespace** — the list is both
+     the grant and its boundary, with no wildcards allowed inside a set.
+   - When you **add** a new `org.hypercerts.*`, `org.hyperboards.*`, or
+     `app.certified.*` record lexicon, add its NSID to the matching set's
+     `permissions[].collection` list, or it will not be grantable via the
+     published set. Likewise **remove** the NSID when you delete a record
+     lexicon.
+   - A set may only reference collections under **its own namespace
+     authority**, so each namespace's records go in its own set
+     (`org.hypercerts.*` → `org.hypercerts.authWrite`, `org.hyperboards.*` →
+     `org.hyperboards.authWrite`, `app.certified.*` →
+     `app.certified.authWrite`) — never another set.
+   - This does not apply to non-record defs (e.g. `query`, `object`, or
+     `permission-set` lexicons themselves), which are not repo collections.
+   - See [docs/design/permission-sets.md](docs/design/permission-sets.md)
+     for the full rationale.
+
+4. Update `ERD.puml` as appropriate:
    - **Include all fields except facet fields** (they're cosmetic and
      don't affect structure)
 
-4. Update `README.md` and `SKILL.md` as appropriate:
+5. Update `README.md` and `SKILL.md` as appropriate:
    - If `README.md` or
      `.agents/skills/building-with-hypercerts-lexicons/SKILL.md`
      already references that lexicon, **both files must be updated**
@@ -263,17 +284,18 @@ scripts/                Build and codegen scripts
      valid export names, `$type` strings, and API call signatures.
      This will catch many (but not all) documentation errors.
 
-5. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
+6. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
 
-6. Run `npm run format` to ensure everything is formatted correctly
+7. Run `npm run format` to ensure everything is formatted correctly
    via Prettier
 
-7. Run `npm run check` to validate, typecheck, and build
+8. Run `npm run check` to validate, typecheck, and build
 
-8. **REQUIRED: Create a changeset file** using the `writing-changesets` skill
-   - **This step is MANDATORY for ALL changes that affect users**
-   - See the `writing-changesets` skill for details on changeset requirements
-   - Use the skill - do NOT write changeset files manually
+9. **REQUIRED: Create a changeset file** using the `writing-changesets` skill
+
+- **This step is MANDATORY for ALL changes that affect users**
+- See the `writing-changesets` skill for details on changeset requirements
+- Use the skill - do NOT write changeset files manually
 
 **No manual edits needed!** Everything is automatically regenerated.
 
