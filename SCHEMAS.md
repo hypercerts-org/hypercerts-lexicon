@@ -431,6 +431,22 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 ---
 
+### `app.certified.actor.createdVia`
+
+**Description:** Records which application created this Certified account, identified by the OAuth client_id URL of that application. A lightweight provenance marker that lets consumers distinguish, for example, records originating from a test or staging environment from real ones, without requiring cryptographic platform attestations.
+
+**Key:** `literal:self`
+
+#### Properties
+
+| Property     | Type     | Required | Description                                                                                                                                                                                                                          |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `clientId`   | `string` | ✅       | The OAuth `client_id` URL uniquely identifying the application that created this account. This is the client metadata document URL used during the ATProto OAuth flow (e.g. 'https://app.certified.one/oauth/client-metadata.json'). |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                   |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                |
+
+---
+
 ### `app.certified.actor.organization`
 
 **Description:** Extended metadata for an organization actor. Complements the base actor profile with organization-specific fields like legal structure and reference links.
