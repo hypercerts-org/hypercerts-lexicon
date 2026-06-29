@@ -441,7 +441,7 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 | Property     | Type     | Required | Description                                                                                                                                                                                                                          |
 | ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `clientId`   | `string` | ✅       | The OAuth `client_id` URL uniquely identifying the application that created this account. This is the client metadata document URL used during the ATProto OAuth flow (e.g. 'https://app.certified.one/oauth/client-metadata.json'). |
+| `clientId`   | `string` | ❌       | The OAuth `client_id` URL uniquely identifying the application that created this account. This is the client metadata document URL used during the ATProto OAuth flow (e.g. 'https://app.certified.one/oauth/client-metadata.json'). |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                   |
 | `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                |
 

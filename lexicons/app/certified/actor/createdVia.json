@@ -8,7 +8,7 @@
       "key": "literal:self",
       "record": {
         "type": "object",
-        "required": ["clientId", "createdAt"],
+        "required": ["createdAt"],
         "properties": {
           "clientId": {
             "type": "string",
