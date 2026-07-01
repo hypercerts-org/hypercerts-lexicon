@@ -292,10 +292,9 @@ scripts/                Build and codegen scripts
 8. Run `npm run check` to validate, typecheck, and build
 
 9. **REQUIRED: Create a changeset file** using the `writing-changesets` skill
-
-- **This step is MANDATORY for ALL changes that affect users**
-- See the `writing-changesets` skill for details on changeset requirements
-- Use the skill - do NOT write changeset files manually
+   - **This step is MANDATORY for ALL changes that affect users**
+   - See the `writing-changesets` skill for details on changeset requirements
+   - Use the skill - do NOT write changeset files manually
 
 **No manual edits needed!** Everything is automatically regenerated.
 
