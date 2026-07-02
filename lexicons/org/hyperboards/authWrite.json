@@ -4,7 +4,6 @@
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Hyperboards (org.hyperboards) record collection.",
       "title": "Manage your Hyperboards data",
       "detail": "Create, edit, and delete your Hyperboards records (board configurations and display profiles).",
       "permissions": [

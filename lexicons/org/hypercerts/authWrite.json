@@ -4,7 +4,6 @@
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.",
       "title": "Manage your Hypercerts data",
       "detail": "Create, edit, and delete your Hypercerts records (impact claims, evaluations, funding, and related data).",
       "permissions": [

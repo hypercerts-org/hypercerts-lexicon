@@ -4,7 +4,6 @@
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Certified (app.certified) record collection.",
       "title": "Manage your Certified data",
       "detail": "Create, edit, and delete your Certified records (profile, badges, follows, wallet links, and related data).",
       "permissions": [

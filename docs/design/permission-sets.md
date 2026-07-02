@@ -112,7 +112,6 @@ Enumerates every `type: "record"` collection under `org.hypercerts.*`:
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.",
       "title": "Manage your Hypercerts data",
       "detail": "Create, edit, and delete your Hypercerts records (impact claims, evaluations, funding, and related data).",
       "permissions": [
@@ -151,7 +150,6 @@ Enumerates every `type: "record"` collection under `org.hyperboards.*`:
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Hyperboards (org.hyperboards) record collection.",
       "title": "Manage your Hyperboards data",
       "detail": "Create, edit, and delete your Hyperboards records (board configurations and display profiles).",
       "permissions": [
@@ -181,7 +179,6 @@ Enumerates every `type: "record"` collection under `app.certified.*`:
   "defs": {
     "main": {
       "type": "permission-set",
-      "description": "Permission set granting create, update, and delete on every Certified (app.certified) record collection.",
       "title": "Manage your Certified data",
       "detail": "Create, edit, and delete your Certified records (profile, badges, follows, wallet links, and related data).",
       "permissions": [
@@ -321,6 +318,50 @@ and re-published, or the new collection will be silently uncovered by the set.
 The `AGENTS.md` "Adding / modifying a lexicon" checklist calls this out. Worth a
 check in the release process too (and ideally an automated test asserting each
 set lists exactly the `type: "record"` defs in its namespace).
+
+### Growing a set is safe: existing grants pick up new collections
+
+Because we will keep adding lexicons, the key question is what happens to a grant
+a user already accepted when the set is later re-published with **more**
+collections. The answer differs for the two consumption paths:
+
+- **OAuth grants are dynamic — no re-auth, no `.vN` NSID.** The user's
+  Authorization Server (their PDS) persists the _raw_ `include:<nsid>` scope in
+  the grant, not a frozen expansion of it, and **re-resolves the published set on
+  each token refresh**. So adding a collection to a published set widens every
+  existing session the next time it refreshes, without the user re-authorizing.
+  The permission spec makes this explicit: _"The permissions associated with an
+  Access Token should remain fixed, but when a client refreshes their tokens
+  (obtaining a new access token), the computed permissions for the session may be
+  updated to reflect changes to sets"_, so _"client software can then be updated
+  to take advantage of those new lexicons, without requiring users to
+  re-authenticate their sessions."_ In the reference PDS
+  ([`@atproto/oauth-provider`](https://github.com/bluesky-social/atproto/tree/main/packages/oauth/oauth-provider))
+  this is the `rotateToken` path re-expanding `parameters.scope` via
+  `buildTokenScope`. Propagation is bounded by the Auth Server's resolved-set
+  cache (spec-recommended stale lifetime and firm upper bound: **24 h**) plus the
+  access-token lifetime (~15–30 min); bumping the client-metadata
+  `software_version` is the spec's cache-purge lever if a faster rollout is
+  needed. This holds only because every collection we add stays under the set's
+  **own namespace authority** (the [authority rule](#namespace-authority) both
+  permits it and is why no cross-namespace addition can ever go into one of these
+  sets — that still needs a separate `include:` and an explicit scope upgrade).
+
+- **CGS API keys are a frozen snapshot** (see [Consumption by CGS](#consumption-by-cgs)):
+  expansion happens once at key-creation time, so a re-published set does **not**
+  retroactively widen already-issued keys. Growing access there means re-issuing
+  the key — which is the intended workflow, since an API key's scope should be
+  auditable and stable for its lifetime.
+
+A new NSID (`*.authWrite2` / `.v2`) is therefore **not** needed to _add_
+collections. It would only be warranted to _remove or attenuate_ existing
+permissions, which the spec advises doing "very sparingly" precisely because it
+silently narrows live sessions.
+
+> Caveat: the above is the behaviour of the reference PDS and any
+> spec-conformant Authorization Server. A non-reference or forked
+> implementation should be checked against this before relying on the dynamic
+> re-expansion.
 
 ## References
 

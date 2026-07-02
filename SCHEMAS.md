@@ -9,8 +9,6 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 ### `org.hypercerts.authWrite`
 
-**Description:** Permission set granting create, update, and delete on every Hypercerts (org.hypercerts) record collection.
-
 ---
 
 ### `org.hypercerts.claim.activity`
@@ -492,8 +490,6 @@ A labeled URL reference.
 
 ### `app.certified.authWrite`
 
-**Description:** Permission set granting create, update, and delete on every Certified (app.certified) record collection.
-
 ---
 
 ### `app.certified.graph.follow`
@@ -735,8 +731,6 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 ---
 
 ### `org.hyperboards.authWrite`
-
-**Description:** Permission set granting create, update, and delete on every Hyperboards (org.hyperboards) record collection.
 
 ---
 
