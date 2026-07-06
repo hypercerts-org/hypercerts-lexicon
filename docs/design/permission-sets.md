@@ -319,11 +319,38 @@ The `AGENTS.md` "Adding / modifying a lexicon" checklist calls this out. Worth a
 check in the release process too (and ideally an automated test asserting each
 set lists exactly the `type: "record"` defs in its namespace).
 
-### Growing a set is safe: existing grants pick up new collections
+### Growing a set silently widens existing OAuth grants
 
 Because we will keep adding lexicons, the key question is what happens to a grant
 a user already accepted when the set is later re-published with **more**
-collections. The answer differs for the two consumption paths:
+collections.
+
+**The consent caveat, stated plainly:** on the OAuth path this widening is
+**silent** — a user who granted `include:org.hypercerts.authWrite` when it
+covered 11 collections gets write access to the 12th on their next token refresh,
+with **no new consent prompt**. This is by design in AT Protocol: the user
+consents to _the set_, an intentionally-mutable named bundle, not to a frozen
+snapshot of its members. The refresh path (`rotateToken`) re-expands and re-issues
+the widened scope without gating on consent (verified — there is no consent or
+`authorizedScopes` re-check in that path). If that is not acceptable for a given
+capability, do **not** add it to an existing set: publish it under a **new** set
+NSID so clients must request it explicitly and users must re-consent.
+
+Two things bound how alarming this is in practice:
+
+1. **Newly-added permissions are highly correlated with what the user already
+   granted.** The [authority rule](#namespace-authority) forces every collection
+   in a set to live under the set's own namespace — so anything we can add to
+   `org.hypercerts.authWrite` is _another `org.hypercerts.*` write_, in the same
+   trust domain the user already opted into. The set is, in effect, a standing
+   consent to "write my Hypercerts data", and new Hypercerts record types are the
+   natural extension of that. A set can **never** silently pull in a _cross_-
+   namespace permission (e.g. `app.certified.*`) — that is structurally
+   impossible and always needs a separate `include:` and explicit re-consent.
+2. It only ever _adds_; it can never silently _narrow_ or redirect an existing
+   grant.
+
+With that caveat understood, the mechanics differ for the two consumption paths:
 
 - **OAuth grants are dynamic — no re-auth, no `.vN` NSID.** The user's
   Authorization Server (their PDS) persists the _raw_ `include:<nsid>` scope in
@@ -353,15 +380,24 @@ collections. The answer differs for the two consumption paths:
   the key — which is the intended workflow, since an API key's scope should be
   auditable and stable for its lifetime.
 
-A new NSID (`*.authWrite2` / `.v2`) is therefore **not** needed to _add_
-collections. It would only be warranted to _remove or attenuate_ existing
-permissions, which the spec advises doing "very sparingly" precisely because it
-silently narrows live sessions.
+So a new NSID (`*.authWrite2` / `.v2`) is **not** needed to _add_ collections as
+a mechanical matter — the platform is built to expand sets in place. Reach for a
+new set NSID (or an explicit separate `include:`) only when the addition should
+**not** be granted silently — i.e. when re-consent is the point — or to _remove
+or attenuate_ existing permissions, which the spec advises doing "very sparingly"
+because it silently narrows live sessions. For our sets, whose members are all
+same-namespace CRUD, in-place growth is the expected and appropriate path.
 
-> Caveat: the above is the behaviour of the reference PDS and any
-> spec-conformant Authorization Server. A non-reference or forked
-> implementation should be checked against this before relying on the dynamic
-> re-expansion.
+This holds for **ePDS**, our own Authorization Server, too. ePDS wraps a stock
+[`@atproto/pds`](https://www.npmjs.com/package/@atproto/pds) /
+[`@atproto/oauth-provider`](https://www.npmjs.com/package/@atproto/oauth-provider)
+with a Better Auth login layer; it customises the authentication and consent
+flow but does **not** fork or override token issuance or refresh. It persists the
+raw `include:<nsid>` scope (unexpanded) and delegates refresh to the provider's
+stock `rotateToken`, which re-runs `buildTokenScope` on every rotation — so ePDS
+re-expands the current published set exactly like the reference PDS. Any other
+non-reference or forked Authorization Server should still be checked against this
+before relying on the dynamic re-expansion.
 
 ## References
 
