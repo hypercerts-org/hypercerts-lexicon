@@ -11,3 +11,5 @@ There are **three** sets rather than one because the spec requires it: a permiss
 Permission sets are published as-is (they are the source of truth for what gets published to AT Protocol) but have no TypeScript shape — `lex gen-api` cannot generate code for `permission-set` defs. They are therefore excluded from the codegen globs (`gen-api`/`gen-md`/`gen-ts`) and from `generated/exports.ts`, while still shipping as raw lexicon JSON.
 
 Collection lists are enumerated explicitly because the spec forbids wildcards inside a permission set; they must be kept in sync as record types are added. See `docs/design/permission-sets.md`.
+
+The generated `SCHEMAS.md` reference now renders permission-set entries (title, detail, and the resource/collections/actions each set grants) instead of leaving them as empty sections.

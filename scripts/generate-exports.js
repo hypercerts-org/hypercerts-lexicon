@@ -23,6 +23,22 @@ const projectRoot = join(__dirname, "..");
 const lexiconsDir = join(projectRoot, "lexicons");
 
 /**
+ * Read and parse a lexicon JSON file, rethrowing parse failures with the
+ * offending file path so codegen errors are traceable (mirrors
+ * scripts/generate-schemas.js).
+ */
+function readLexicon(filePath) {
+  const content = readFileSync(join(lexiconsDir, filePath), "utf-8");
+
+  try {
+    return JSON.parse(content);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to parse lexicon ${filePath}: ${message}`);
+  }
+}
+
+/**
  * Recursively find all JSON files in a directory
  */
 function findJsonFiles(dir, baseDir = dir) {
@@ -163,7 +179,7 @@ function generateIndex() {
     .sort()
     .map((filePath) => ({
       filePath,
-      doc: JSON.parse(readFileSync(join(lexiconsDir, filePath), "utf-8")),
+      doc: readLexicon(filePath),
     }))
     // Permission-set lexicons have no TS shape — lex gen-api cannot codegen them
     // — so they are excluded from `generated/` here, by the SAME content check

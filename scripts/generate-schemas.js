@@ -272,10 +272,37 @@ function generateDescription(description) {
   return description ? [`**Description:** ${description}`, ""] : [];
 }
 
+function generatePermissionSetSection(mainDef) {
+  const output = [];
+
+  if (mainDef.title) output.push(`**Title:** ${mainDef.title}`, "");
+  if (mainDef.detail) output.push(`**Detail:** ${mainDef.detail}`, "");
+
+  const permissions = mainDef.permissions || [];
+  for (const permission of permissions) {
+    const collections = (permission.collection || [])
+      .map((c) => `\`${c}\``)
+      .join(", ");
+    const actions = (permission.action || []).map((a) => `\`${a}\``).join(", ");
+    output.push(`**Resource:** \`${permission.resource}\``, "");
+    if (collections) output.push(`**Collections:** ${collections}`, "");
+    if (actions) output.push(`**Actions:** ${actions}`, "");
+  }
+
+  return output;
+}
+
 function generateMainSection(mainDef, lexicon) {
   const output = [];
 
   if (!mainDef) return output;
+
+  // Permission sets have no properties — render their title/detail/permissions
+  // so the section isn't blank in the reference.
+  if (mainDef.type === "permission-set") {
+    const permOutput = generatePermissionSetSection(mainDef);
+    return { output: permOutput, hasProperties: false, hasPropertyRows: false };
+  }
 
   output.push(...generateDescription(mainDef.description));
 
