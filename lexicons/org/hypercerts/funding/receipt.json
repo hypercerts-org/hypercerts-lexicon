@@ -28,6 +28,15 @@
               "com.atproto.repo.strongRef"
             ]
           },
+          "via": {
+            "type": "union",
+            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker) — named in the record rather than merely implied by who authored the receipt. Distinct from paymentNetwork (the scheme or chain) and from the record author; lets consumers group receipts by facilitator regardless of author.",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
+          },
           "amount": {
             "type": "string",
             "description": "Amount of funding received as a numeric string (e.g. '1000.50').",
@@ -37,6 +46,19 @@
             "type": "string",
             "description": "Currency of the payment (e.g. EUR, USD, ETH).",
             "maxLength": 10
+          },
+          "netAmount": {
+            "type": "string",
+            "description": "Amount the recipient actually received after all fees, as a numeric string in the receipt's currency. When present, amount is the gross amount the sender paid, and amount - sum(fees[].amount) ≈ netAmount. Recording both sides prevents honest receipts for one payment from disagreeing: the sender attests the gross, the recipient the net.",
+            "maxLength": 50
+          },
+          "fees": {
+            "type": "array",
+            "description": "Itemized deductions between the gross amount and netAmount, in the receipt's currency (e.g. platform commission, processor fee, network/gas cost). A receipt is retrospective, so no charge-bearer field is needed — the amounts already encode who bore what: a sender covering fees simply raises the gross above the intended contribution.",
+            "items": {
+              "type": "ref",
+              "ref": "#fee"
+            }
           },
           "fx": {
             "type": "ref",
@@ -77,6 +99,11 @@
             "type": "string",
             "format": "datetime",
             "description": "Timestamp when the payment occurred."
+          },
+          "settledAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the funds actually settled to the recipient (e.g. a processor's funds-available date, an interbank settlement date, or a block timestamp). May differ from occurredAt by days on delayed rails such as bank transfers."
           },
           "createdAt": {
             "type": "string",
@@ -132,6 +159,36 @@
           "type": "string",
           "format": "datetime",
           "description": "When the rate was captured; usually the payment time."
+        }
+      }
+    },
+    "fee": {
+      "type": "object",
+      "description": "A single fee deducted from a payment.",
+      "required": ["amount"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Category of the fee. knownValues is an open, advisory vocabulary.",
+          "knownValues": [
+            "processor",
+            "platform",
+            "network",
+            "fx",
+            "tax",
+            "other"
+          ],
+          "maxLength": 30
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable description (e.g. 'Stripe processing fee', 'Ma Earth platform fee', 'gas').",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "string",
+          "description": "Fee amount as a numeric string, in the receipt's currency.",
+          "maxLength": 50
         }
       }
     }
