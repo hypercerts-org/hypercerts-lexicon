@@ -83,7 +83,7 @@ namespace authority for all of them — see _Namespace authority_ below.
 > "read" is implicitly available to everyone. The user-facing `title` / `detail`
 > (the authorization-dialog consent copy) say "Manage your … data" / "Create,
 > edit, and delete …" accordingly.
-
+>
 > **Naming — and why the NSID is a single segment under the namespace root.**
 > Two constraints, one of them hard:
 >

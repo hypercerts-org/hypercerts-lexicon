@@ -14,7 +14,7 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname, relative, parse } from "node:path";
+import { join, dirname, relative, parse, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 
@@ -50,7 +50,10 @@ function findJsonFiles(dir, baseDir = dir) {
     if (entry.isDirectory()) {
       results.push(...findJsonFiles(fullPath, baseDir));
     } else if (entry.isFile() && entry.name.endsWith(".json")) {
-      const relativePath = relative(baseDir, fullPath);
+      // Normalize to POSIX separators: downstream helpers (pathToImportName,
+      // pathToNamespace, etc.) treat lexicon paths as POSIX and split on "/".
+      // On Windows, path.relative yields "\"-separated paths that would break them.
+      const relativePath = relative(baseDir, fullPath).split(sep).join("/");
       results.push(relativePath);
     }
   }

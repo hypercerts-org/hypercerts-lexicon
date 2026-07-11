@@ -280,13 +280,24 @@ function generatePermissionSetSection(mainDef) {
 
   const permissions = mainDef.permissions || [];
   for (const permission of permissions) {
+    output.push(`**Resource:** \`${permission.resource}\``, "");
+
+    // repo permissions carry collection/action; rpc permissions carry
+    // lxm/aud/inheritAud. Render whichever fields are present so an rpc
+    // permission isn't reduced to a bare "**Resource:** `rpc`".
     const collections = (permission.collection || [])
       .map((c) => `\`${c}\``)
       .join(", ");
     const actions = (permission.action || []).map((a) => `\`${a}\``).join(", ");
-    output.push(`**Resource:** \`${permission.resource}\``, "");
     if (collections) output.push(`**Collections:** ${collections}`, "");
     if (actions) output.push(`**Actions:** ${actions}`, "");
+
+    const lxm = (permission.lxm || []).map((l) => `\`${l}\``).join(", ");
+    if (lxm) output.push(`**LXM:** ${lxm}`, "");
+    if (permission.aud) output.push(`**Audience:** \`${permission.aud}\``, "");
+    if (permission.inheritAud !== undefined) {
+      output.push(`**Inherit audience:** \`${permission.inheritAud}\``, "");
+    }
   }
 
   return output;
@@ -295,7 +306,7 @@ function generatePermissionSetSection(mainDef) {
 function generateMainSection(mainDef, lexicon) {
   const output = [];
 
-  if (!mainDef) return output;
+  if (!mainDef) return { output, hasProperties: false, hasPropertyRows: false };
 
   // Permission sets have no properties — render their title/detail/permissions
   // so the section isn't blank in the reference.
