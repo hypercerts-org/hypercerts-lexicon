@@ -484,6 +484,33 @@ A labeled URL reference.
 
 ---
 
+### `app.certified.graph.entityFollow`
+
+**Description:** Record declaring a social 'follow' relationship with a non-account entity, such as a specific record. Account (DID) follows are out of scope and belong to app.certified.graph.follow. The subject is an open union so additional non-DID entity kinds can be added in the future. Duplicate follows will be ignored by the AppView.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property     | Type     | Required | Description                                                                                                                                                                                                                      |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`    | `union`  | ✅       | The entity being followed. Must never include account DIDs; use app.certified.graph.follow for accounts.                                                                                                                         |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                               |
+| `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.certified.graph.follow; the referenced record may conform with any lexicon. |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                            |
+
+#### Defs
+
+##### `app.certified.graph.entityFollow#recordSubject`
+
+A followed subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so the follow survives updates to the record.
+
+| Property | Type     | Required | Description                                     |
+| -------- | -------- | -------- | ----------------------------------------------- |
+| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. |
+
+---
+
 ### `app.certified.graph.follow`
 
 **Description:** Record declaring a social 'follow' relationship of another account. Duplicate follows will be ignored by the AppView.
