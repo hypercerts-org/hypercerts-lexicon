@@ -14,13 +14,29 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname, relative, parse } from "node:path";
+import { join, dirname, relative, parse, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 const lexiconsDir = join(projectRoot, "lexicons");
+
+/**
+ * Read and parse a lexicon JSON file, rethrowing parse failures with the
+ * offending file path so codegen errors are traceable (mirrors
+ * scripts/generate-schemas.js).
+ */
+function readLexicon(filePath) {
+  const content = readFileSync(join(lexiconsDir, filePath), "utf-8");
+
+  try {
+    return JSON.parse(content);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to parse lexicon ${filePath}: ${message}`);
+  }
+}
 
 /**
  * Recursively find all JSON files in a directory
@@ -34,7 +50,10 @@ function findJsonFiles(dir, baseDir = dir) {
     if (entry.isDirectory()) {
       results.push(...findJsonFiles(fullPath, baseDir));
     } else if (entry.isFile() && entry.name.endsWith(".json")) {
-      const relativePath = relative(baseDir, fullPath);
+      // Normalize to POSIX separators: downstream helpers (pathToImportName,
+      // pathToNamespace, etc.) treat lexicon paths as POSIX and split on "/".
+      // On Windows, path.relative yields "\"-separated paths that would break them.
+      const relativePath = relative(baseDir, fullPath).split(sep).join("/");
       results.push(relativePath);
     }
   }
@@ -154,27 +173,30 @@ function pathToGeneratedType(filePath) {
 }
 
 /**
- * Read lexicon NSID from JSON file
- */
-function readNsid(filePath) {
-  const fullPath = join(lexiconsDir, filePath);
-  const content = readFileSync(fullPath, "utf-8");
-  const lexicon = JSON.parse(content);
-  return lexicon.lexicon === 1 ? lexicon.id : null;
-}
-
-/**
  * Generate generated/exports.ts content
  */
 function generateIndex() {
-  const jsonFiles = findJsonFiles(lexiconsDir).sort();
+  // Parse each lexicon once, then derive everything from the parsed doc — both
+  // the permission-set check and the NSID — to avoid re-reading the same file.
+  const lexiconDocs = findJsonFiles(lexiconsDir)
+    .sort()
+    .map((filePath) => ({
+      filePath,
+      doc: readLexicon(filePath),
+    }))
+    // Permission-set lexicons have no TS shape — lex gen-api cannot codegen them
+    // — so they are excluded from `generated/` here, by the SAME content check
+    // (`main.type === "permission-set"`) that scripts/run-lex-codegen.js
+    // uses to exclude them from the gen-* CLI invocations. Excluding by content
+    // (not by path) keeps the two in lock-step regardless of where set files live.
+    .filter(({ doc }) => doc?.defs?.main?.type !== "permission-set");
 
-  const lexicons = jsonFiles.map((filePath) => ({
+  const lexicons = lexiconDocs.map(({ filePath, doc }) => ({
     path: filePath,
     importName: pathToImportName(filePath),
     namespace: pathToNamespace(filePath),
     generatedTypePath: pathToGeneratedType(filePath),
-    nsid: readNsid(filePath),
+    nsid: doc.lexicon === 1 ? doc.id : null,
   }));
 
   // Filter out lexicons without NSIDs (should be rare)
