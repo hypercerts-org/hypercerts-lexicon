@@ -51,8 +51,10 @@ CERTIFIED ─ shared lexicons (certified.app)
   signature/proof           (remote attestation proof record)
 ```
 
-Every arrow (`►`) is a `strongRef` or union reference stored on the
-AT Protocol network. Full field-level documentation is in
+Every arrow (`►`) is a reference stored on the AT Protocol network —
+usually a `strongRef` or union reference, but sometimes a scalar
+identifier such as the `did` on `graph/follow` or the `at-uri` on
+`graph/entityFollow`. Full field-level documentation is in
 [SCHEMAS.md](SCHEMAS.md).
 
 ## Consuming These Lexicons

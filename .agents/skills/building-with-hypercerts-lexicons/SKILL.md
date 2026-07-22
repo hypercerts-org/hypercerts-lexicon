@@ -339,7 +339,9 @@ CERTIFIED
   arrow would fan out identically from every record).
 ```
 
-Every arrow is a `strongRef` or union reference stored on AT Protocol.
+Every arrow is a reference stored on AT Protocol — usually a
+`strongRef` or union reference, but sometimes a scalar identifier such
+as the `did` on `graph/follow` or the `at-uri` on `graph/entityFollow`.
 
 ## Common Patterns
 
