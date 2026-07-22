@@ -46,6 +46,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/organization        (org metadata)
   badge/response ──► badge/award ──► badge/definition
   graph/follow ────────────► account DID  (social follow)
+  graph/entityFollow ──────► record AT-URI (entity follow)
   signature/defs            (shared #list and #inline defs)
   signature/proof           (remote attestation proof record)
 ```
@@ -279,6 +280,7 @@ await agent.api.com.atproto.repo.createRecord({
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                                 |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).             |
 | **Follow**           | `app.certified.graph.follow`       | Social-graph follow relationship — declares that the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`. |
+| **Entity Follow**    | `app.certified.graph.entityFollow` | Follow relationship targeting a record rather than an account — declares that the author follows an entity by AT-URI.                       |
 
 ### Signatures (`app.certified.signature.*`)
 
@@ -758,6 +760,39 @@ const follow = {
 The optional `via` field is a `com.atproto.repo.strongRef` to any
 record that mediated the follow (e.g. a starter pack or other curated
 list), mirroring the equivalent field on `app.bsky.graph.follow`.
+
+### Following an entity
+
+The `app.certified.graph.entityFollow` record is the counterpart to
+`app.certified.graph.follow` for following a **record** rather than an
+**account**. The two are structurally identical (same `key: tid`, same
+`createdAt` / optional `via` / optional `signatures` fields); the only
+difference is `subject`, which is an `at-uri` pointing at the record
+being followed instead of a `did` identifying an account.
+
+```typescript
+import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+
+const entityFollow = {
+  $type: GRAPH_ENTITY_FOLLOW_NSID,
+  // AT-URI of the record being followed (any collection, not just Certified).
+  subject:
+    "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.activity/3k2abc",
+  createdAt: new Date().toISOString(),
+  // Optional `via` strongRef — set when the follow was mediated by another
+  // record (e.g. a starter-pack-style curated list). Omit for direct follows.
+  // via: {
+  //   uri: "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/app.certified.graph.starterpack/3k2abc",
+  //   cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  // },
+};
+```
+
+Because `subject` is an unconstrained `at-uri`, an entity follow may
+target a record in any collection — an activity, a claim, a collection,
+or a record governed by a lexicon outside this repository. Consumers
+should therefore treat the referenced collection as untrusted input and
+resolve it before assuming a particular record shape.
 
 ### Linking ATProto Identity to EVM Wallets
 

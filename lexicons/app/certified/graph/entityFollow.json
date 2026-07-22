@@ -1,0 +1,37 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.graph.entityFollow",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Record declaring a 'follow' relationship of an entity record rather than an account. Duplicate follows will be ignored by the AppView.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["subject", "createdAt"],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "at-uri",
+            "description": "AT-URI of the entity record being followed."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          },
+          "via": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon."
+          },
+          "signatures": {
+            "type": "ref",
+            "ref": "app.certified.signature.defs#list",
+            "description": "Optional cryptographic signatures attesting to this record's content."
+          }
+        }
+      }
+    }
+  }
+}

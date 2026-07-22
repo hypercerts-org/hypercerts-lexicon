@@ -283,6 +283,7 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                   |
 | **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature. Can additionally carry `signatures[]` for record provenance |
 | **Follow**           | `app.certified.graph.follow`       | Social-graph follow: declares the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`      |
+| **Entity Follow**    | `app.certified.graph.entityFollow` | Entity follow: declares the author follows a record by AT-URI rather than an account by DID                                  |
 
 ### Signatures — cryptographic attestation
 
@@ -329,6 +330,7 @@ CERTIFIED
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
   graph/follow ───────────> account DID (social follow)
+  graph/entityFollow ─────> record AT-URI (entity follow)
   signature/defs           (shared #list and #inline defs)
   signature/proof          (remote attestation proof record)
 
@@ -462,6 +464,35 @@ const follow = {
 key strategy and fields including the optional `via` strongRef), so
 feed-builders and view services can index it with the same logic
 they already use for Bluesky follows.
+
+### Following an Entity
+
+Use `app.certified.graph.entityFollow` to follow a **record** instead
+of an **account**. It is identical to `app.certified.graph.follow`
+except that `subject` is an `at-uri` referencing the followed record
+rather than a `did` identifying an account.
+
+```typescript
+import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+
+const entityFollow = {
+  $type: GRAPH_ENTITY_FOLLOW_NSID,
+  subject:
+    "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.activity/3k2abc",
+  createdAt: new Date().toISOString(),
+  // Optional `via` strongRef — set when the follow was mediated by another
+  // record (e.g. a starter-pack-style curated list). Omit for direct follows.
+  // via: {
+  //   uri: "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/app.certified.graph.starterpack/3k2abc",
+  //   cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  // },
+};
+```
+
+`subject` is an unconstrained `at-uri`, so an entity follow may point
+at a record in any collection — including one governed by a lexicon
+outside this repository. Resolve the referenced record before assuming
+a particular shape.
 
 ### Linking an EVM Wallet
 

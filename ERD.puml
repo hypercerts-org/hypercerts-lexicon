@@ -202,6 +202,15 @@ dataclass follow {
     !endif
 }
 
+' app.certified.graph.entityFollow
+dataclass entityFollow {
+    !if (SHOW_FIELDS == "true")
+    subject
+    via?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.workscope.cel
 dataclass celExpression {
     !if (SHOW_FIELDS == "true")
@@ -422,6 +431,12 @@ badgeAward::subject --> activity
 
 ' app.certified.graph.follow points at an account DID (the entity being followed)
 follow::subject --> contributorEntity : follows
+
+' app.certified.graph.entityFollow points at a record AT-URI rather than an
+' account DID. The subject is an unconstrained at-uri so it may reference any
+' record; activity is drawn as the representative target to keep the diagram
+' readable rather than fanning an arrow out to every record type.
+entityFollow::subject --> activity : follows
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
 

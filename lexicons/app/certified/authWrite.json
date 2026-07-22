@@ -16,6 +16,7 @@
             "app.certified.badge.award",
             "app.certified.badge.definition",
             "app.certified.badge.response",
+            "app.certified.graph.entityFollow",
             "app.certified.graph.follow",
             "app.certified.link.evm",
             "app.certified.location",

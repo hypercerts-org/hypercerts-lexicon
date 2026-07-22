@@ -506,9 +506,26 @@ A labeled URL reference.
 
 **Resource:** `repo`
 
-**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
+**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.graph.entityFollow`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
 
 **Actions:** `create`, `update`, `delete`
+
+---
+
+### `app.certified.graph.entityFollow`
+
+**Description:** Record declaring a 'follow' relationship of an entity record rather than an account. Duplicate follows will be ignored by the AppView.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property     | Type     | Required | Description                                                                                                                                                                                                                 |
+| ------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`    | `string` | ✅       | AT-URI of the entity record being followed.                                                                                                                                                                                 |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                          |
+| `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon. |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                       |
 
 ---
 
