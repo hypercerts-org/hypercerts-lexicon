@@ -95,6 +95,22 @@ describe("app.certified.graph.entityFollow", () => {
     expect(result.success).toBe(false);
   });
 
+  it("should reject a recordSubject uri that is not an AT-URI", () => {
+    const result = validate(
+      {
+        subject: {
+          $type: "app.certified.graph.entityFollow#recordSubject",
+          uri: "https://example.com/record",
+        },
+        createdAt: "2024-01-01T00:00:00Z",
+      },
+      ids.AppCertifiedGraphEntityFollow,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
   it("documents actual open-union behavior: an unrecognized subject $type currently passes validation", () => {
     // The `subject` union only declares `#recordSubject` today, but it is an
     // *open* union (no `closed: true`), by design, so future non-DID entity

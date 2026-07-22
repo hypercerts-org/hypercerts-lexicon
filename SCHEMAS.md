@@ -505,9 +505,9 @@ A labeled URL reference.
 
 A followed subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so the follow survives updates to the record.
 
-| Property | Type     | Required | Description                                     |
-| -------- | -------- | -------- | ----------------------------------------------- |
-| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. |
+| Property | Type     | Required | Description                                                                                                                                                                                                                                                                                                                |
+| -------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform. |
 
 ---
 

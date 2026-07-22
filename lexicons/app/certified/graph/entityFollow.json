@@ -41,7 +41,7 @@
         "uri": {
           "type": "string",
           "format": "at-uri",
-          "description": "AT-URI (DID form) of the record being followed."
+          "description": "AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform."
         }
       }
     }
