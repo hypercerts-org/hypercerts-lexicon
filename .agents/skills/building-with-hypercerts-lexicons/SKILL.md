@@ -190,6 +190,41 @@ if (result.success) {
 }
 ```
 
+## Permission Sets (OAuth scopes)
+
+To **write** Hypercerts, Hyperboards, or Certified records to a user's repo,
+your app needs the user's authorization. AT Protocol grants this via OAuth
+scopes: each collection write needs a `repo:<collection>?action=…` scope. Rather
+than list every collection by hand, request a **permission set** — a published
+bundle — with a single `include:` scope:
+
+| Permission set NSID         | Grants write (create/update/delete) on     |
+| --------------------------- | ------------------------------------------ |
+| `org.hypercerts.authWrite`  | all `org.hypercerts.*` record collections  |
+| `org.hyperboards.authWrite` | all `org.hyperboards.*` record collections |
+| `app.certified.authWrite`   | all `app.certified.*` record collections   |
+
+In your OAuth client's authorization request, ask for the set(s) you need:
+
+```text
+scope: include:org.hypercerts.authWrite
+```
+
+The user's PDS resolves the published set and expands it into the underlying
+`repo:` scopes on the consent screen, where the user sees the set's plain-language
+description (e.g. "Manage your Hypercerts data"). Notes:
+
+- **One set per namespace, never combined.** A permission set may only reference
+  its own namespace authority (atproto permission spec), so `org.hypercerts.*`,
+  `org.hyperboards.*`, and `app.certified.*` each need their own set. An app
+  needing more than one requests **each** `include:` scope.
+- **Writes only.** These cover create/update/delete. **Reading** records needs no
+  scope at all — atproto repo records are public.
+- **`repo:` scopes carry no `aud`** — request the `include:` without an `?aud=`.
+- These same published sets are also consumed by the Certified group service
+  (CGS) when it expands an API key's `include:` scope — see the CGS integration
+  guide.
+
 ## Lexicon Overview
 
 ### Claims — the core impact record
@@ -673,6 +708,8 @@ avoid typos.
 ## Further Reading
 
 - [SCHEMAS.md](https://github.com/hypercerts-org/hypercerts-lexicon/blob/main/SCHEMAS.md) — full property-level documentation for every lexicon
+- [docs/design/permission-sets.md](https://github.com/hypercerts-org/hypercerts-lexicon/blob/main/docs/design/permission-sets.md) — the permission sets and how they are consumed (OAuth + CGS API keys)
+- [ATProto permission spec](https://atproto.com/specs/permission#permission-sets) — OAuth scopes and permission sets
 - [CHANGELOG.md](https://github.com/hypercerts-org/hypercerts-lexicon/blob/main/CHANGELOG.md) — version history and migration guides
 - [ATProto Lexicon Guide](https://atproto.com/guides/lexicon) — AT Protocol lexicon fundamentals
 - [ATProto Lexicon Style Guide](https://atproto.com/guides/lexicon-style-guide) — schema design conventions

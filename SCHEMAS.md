@@ -7,6 +7,20 @@
 
 Hypercerts-specific lexicons for tracking impact work and claims.
 
+### `org.hypercerts.authWrite`
+
+**Title:** Manage your Hypercerts data
+
+**Detail:** Create, edit, and delete your Hypercerts records (impact claims, evaluations, funding, and related data).
+
+**Resource:** `repo`
+
+**Collections:** `org.hypercerts.claim.activity`, `org.hypercerts.claim.contribution`, `org.hypercerts.claim.contributorInformation`, `org.hypercerts.claim.rights`, `org.hypercerts.collection`, `org.hypercerts.context.acknowledgement`, `org.hypercerts.context.attachment`, `org.hypercerts.context.evaluation`, `org.hypercerts.context.measurement`, `org.hypercerts.funding.receipt`, `org.hypercerts.workscope.tag`
+
+**Actions:** `create`, `update`, `delete`
+
+---
+
 ### `org.hypercerts.claim.activity`
 
 **Description:** A hypercert record tracking impact work.
@@ -484,6 +498,20 @@ A labeled URL reference.
 
 ---
 
+### `app.certified.authWrite`
+
+**Title:** Manage your Certified data
+
+**Detail:** Create, edit, and delete your Certified records (profile, badges, follows, wallet links, and related data).
+
+**Resource:** `repo`
+
+**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
+
+**Actions:** `create`, `update`, `delete`
+
+---
+
 ### `app.certified.graph.follow`
 
 **Description:** Record declaring a social 'follow' relationship of another account. Duplicate follows will be ignored by the AppView.
@@ -719,6 +747,20 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 | -------- | -------- | -------- | ----------- |
 | `uri`    | `string` | ✅       |             |
 | `cid`    | `string` | ✅       |             |
+
+---
+
+### `org.hyperboards.authWrite`
+
+**Title:** Manage your Hyperboards data
+
+**Detail:** Create, edit, and delete your Hyperboards records (board configurations and display profiles).
+
+**Resource:** `repo`
+
+**Collections:** `org.hyperboards.board`, `org.hyperboards.displayProfile`
+
+**Actions:** `create`, `update`, `delete`
 
 ---
 
