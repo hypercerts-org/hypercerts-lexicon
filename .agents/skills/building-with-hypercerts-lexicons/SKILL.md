@@ -273,16 +273,17 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Certified — shared lexicons
 
-| Lexicon              | NSID                               | Purpose                                                                                                                      |
-| -------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| **Location**         | `app.certified.location`           | Geographic reference via [Location Protocol](https://spec.decentralizedgeo.org)                                              |
-| **Profile**          | `app.certified.actor.profile`      | User profile: display name, bio, avatar, banner                                                                              |
-| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, discoverability visibility |
-| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist                                                            |
-| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                                                               |
-| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                   |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature. Can additionally carry `signatures[]` for record provenance |
-| **Follow**           | `app.certified.graph.follow`       | Social-graph follow: declares the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`      |
+| Lexicon              | NSID                               | Purpose                                                                                                                                                                                                       |
+| -------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Location**         | `app.certified.location`           | Geographic reference via [Location Protocol](https://spec.decentralizedgeo.org)                                                                                                                               |
+| **Profile**          | `app.certified.actor.profile`      | User profile: display name, bio, avatar, banner                                                                                                                                                               |
+| **Organization**     | `app.certified.actor.organization` | Organization metadata: legal structure, URLs, location, founding date, optional long description, discoverability visibility                                                                                  |
+| **Badge Definition** | `app.certified.badge.definition`   | Defines a badge with type, title, icon, optional issuer allowlist                                                                                                                                             |
+| **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity                                                                                                                                                                |
+| **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award                                                                                                                                                                    |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID to EVM wallet link via EIP-712 signature. Can additionally carry `signatures[]` for record provenance                                                                                  |
+| **Follow**           | `app.certified.graph.follow`       | Social-graph follow: declares the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`                                                                                       |
+| **Entity Follow**    | `app.certified.graph.entityFollow` | Social-graph follow for non-account entities (e.g. a record, by AT-URI without a CID). Account (DID) follows stay in `app.certified.graph.follow`; `subject` is an open union for future non-DID entity kinds |
 
 ### Signatures — cryptographic attestation
 
@@ -329,6 +330,7 @@ CERTIFIED
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
   graph/follow ───────────> account DID (social follow)
+  graph/entityFollow ─────> record (by AT-URI) (non-account follow)
   signature/defs           (shared #list and #inline defs)
   signature/proof          (remote attestation proof record)
 
@@ -462,6 +464,35 @@ const follow = {
 key strategy and fields including the optional `via` strongRef), so
 feed-builders and view services can index it with the same logic
 they already use for Bluesky follows.
+
+### Following a Non-Account Entity
+
+```typescript
+import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+
+const entityFollow = {
+  $type: GRAPH_ENTITY_FOLLOW_NSID,
+  // subject is a union — use $type to specify the variant
+  subject: {
+    $type: "app.certified.defs#recordSubject",
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+  },
+  createdAt: new Date().toISOString(),
+  // Optional `via` strongRef — same semantics as on `app.certified.graph.follow`.
+  // via: {
+  //   uri: "at://did:plc:alice/app.certified.graph.starterpack/3k2abc",
+  //   cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  // },
+};
+```
+
+`app.certified.graph.entityFollow` is the sibling of
+`app.certified.graph.follow` for following anything that is not an
+account — accounts (DIDs) stay in `app.certified.graph.follow`. The
+only subject variant today is `app.certified.defs#recordSubject`, a
+record referenced by AT-URI (DID form, no CID) so the follow survives
+later updates to the record; `subject` is an open union so future
+non-DID entity kinds can be added non-breakingly.
 
 ### Linking an EVM Wallet
 

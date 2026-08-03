@@ -15,6 +15,18 @@
           "maxLength": 256
         }
       }
+    },
+    "recordSubject": {
+      "type": "object",
+      "description": "A subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so references made against it survive updates to the record.",
+      "required": ["uri"],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri",
+          "description": "AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform."
+        }
+      }
     }
   }
 }

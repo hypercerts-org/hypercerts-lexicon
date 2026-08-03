@@ -506,9 +506,26 @@ A labeled URL reference.
 
 **Resource:** `repo`
 
-**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
+**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.graph.entityFollow`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
 
 **Actions:** `create`, `update`, `delete`
+
+---
+
+### `app.certified.graph.entityFollow`
+
+**Description:** Record declaring a social 'follow' relationship with a non-account entity, such as a specific record. Account (DID) follows are out of scope and belong to app.certified.graph.follow. The subject is an open union so additional non-DID entity kinds can be added in the future. Duplicate follows will be ignored by the AppView.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property     | Type     | Required | Description                                                                                                                                                                                                                      |
+| ------------ | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `subject`    | `union`  | ✅       | The entity being followed. Must never include account DIDs; use app.certified.graph.follow for accounts.                                                                                                                         |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                               |
+| `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.certified.graph.follow; the referenced record may conform with any lexicon. |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                            |
 
 ---
 
@@ -619,6 +636,14 @@ A Decentralized Identifier (DID) string.
 | Property | Type     | Required | Description           | Comments       |
 | -------- | -------- | -------- | --------------------- | -------------- |
 | `did`    | `string` | ✅       | The DID string value. | maxLength: 256 |
+
+##### `app.certified.defs#recordSubject`
+
+A subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so references made against it survive updates to the record.
+
+| Property | Type     | Required | Description                                                                                                                                                                                                                                                                                                                |
+| -------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform. |
 
 ---
 

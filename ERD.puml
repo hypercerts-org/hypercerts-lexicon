@@ -202,6 +202,26 @@ dataclass follow {
     !endif
 }
 
+' app.certified.graph.entityFollow
+' subject is an open union (currently just #recordSubject); DIDs are
+' deliberately out of scope here and belong to app.certified.graph.follow.
+dataclass entityFollow {
+    !if (SHOW_FIELDS == "true")
+    subject
+    via?
+    createdAt
+    !endif
+}
+
+' Followed subjects that are records are referenced generically by
+' AT-URI (DID form, no CID) rather than modelled as a specific lexicon,
+' so the follow survives updates to the referenced record.
+entity "record (any lexicon, by AT-URI)" as entityFollowSubject #FFD4A3 {
+    !if (SHOW_FIELDS == "true")
+    AT-URI (DID form, no CID)
+    !endif
+}
+
 ' org.hypercerts.workscope.cel
 dataclass celExpression {
     !if (SHOW_FIELDS == "true")
@@ -422,6 +442,10 @@ badgeAward::subject --> activity
 
 ' app.certified.graph.follow points at an account DID (the entity being followed)
 follow::subject --> contributorEntity : follows
+
+' app.certified.graph.entityFollow points at a non-account record (open
+' union; account DIDs are out of scope here, see app.certified.graph.follow)
+entityFollow::subject --> entityFollowSubject : follows
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
 
