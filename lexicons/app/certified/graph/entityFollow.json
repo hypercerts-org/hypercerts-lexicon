@@ -12,7 +12,7 @@
         "properties": {
           "subject": {
             "type": "union",
-            "refs": ["#recordSubject"],
+            "refs": ["app.certified.defs#recordSubject"],
             "description": "The entity being followed. Must never include account DIDs; use app.certified.graph.follow for accounts."
           },
           "createdAt": {
@@ -30,18 +30,6 @@
             "ref": "app.certified.signature.defs#list",
             "description": "Optional cryptographic signatures attesting to this record's content."
           }
-        }
-      }
-    },
-    "recordSubject": {
-      "type": "object",
-      "description": "A followed subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so the follow survives updates to the record.",
-      "required": ["uri"],
-      "properties": {
-        "uri": {
-          "type": "string",
-          "format": "at-uri",
-          "description": "AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform."
         }
       }
     }

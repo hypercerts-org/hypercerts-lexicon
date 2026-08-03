@@ -527,16 +527,6 @@ A labeled URL reference.
 | `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.certified.graph.follow; the referenced record may conform with any lexicon. |
 | `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                            |
 
-#### Defs
-
-##### `app.certified.graph.entityFollow#recordSubject`
-
-A followed subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so the follow survives updates to the record.
-
-| Property | Type     | Required | Description                                                                                                                                                                                                                                                                                                                |
-| -------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform. |
-
 ---
 
 ### `app.certified.graph.follow`
@@ -646,6 +636,14 @@ A Decentralized Identifier (DID) string.
 | Property | Type     | Required | Description           | Comments       |
 | -------- | -------- | -------- | --------------------- | -------------- |
 | `did`    | `string` | ✅       | The DID string value. | maxLength: 256 |
+
+##### `app.certified.defs#recordSubject`
+
+A subject that is a record, referenced by AT-URI. The URI must use the DID form (not handle form) and deliberately carries no CID: it references the record's identity, not a specific version, so references made against it survive updates to the record.
+
+| Property | Type     | Required | Description                                                                                                                                                                                                                                                                                                                |
+| -------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `uri`    | `string` | ✅       | AT-URI (DID form) of the record being followed. Schema validation enforces only general at-uri syntax; writers MUST supply a full record URI (did authority, collection, and rkey — not a handle authority or a partial URI), and consumers (AppView/indexer) are expected to reject or skip subjects that do not conform. |
 
 ---
 

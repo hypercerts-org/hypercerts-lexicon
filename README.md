@@ -767,10 +767,10 @@ list), mirroring the equivalent field on `app.bsky.graph.follow`.
 `app.certified.graph.follow` for following anything that is **not** an
 account. Account (DID) follows are explicitly out of scope here — use
 `app.certified.graph.follow` for those. Today the only subject variant
-is `#recordSubject`, a record referenced by AT-URI (DID form, no CID),
-so the reference survives later updates to the record. `subject` is an
-open union so additional non-DID entity kinds can be added in the
-future without a breaking change.
+is `app.certified.defs#recordSubject`, a record referenced by AT-URI
+(DID form, no CID), so the reference survives later updates to the
+record. `subject` is an open union so additional non-DID entity kinds
+can be added in the future without a breaking change.
 
 ```typescript
 import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon";
@@ -779,7 +779,7 @@ const entityFollow = {
   $type: GRAPH_ENTITY_FOLLOW_NSID,
   // subject is a union — use $type to specify the variant
   subject: {
-    $type: "app.certified.graph.entityFollow#recordSubject",
+    $type: "app.certified.defs#recordSubject",
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
   },
   createdAt: new Date().toISOString(),

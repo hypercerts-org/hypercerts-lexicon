@@ -474,7 +474,7 @@ const entityFollow = {
   $type: GRAPH_ENTITY_FOLLOW_NSID,
   // subject is a union — use $type to specify the variant
   subject: {
-    $type: "app.certified.graph.entityFollow#recordSubject",
+    $type: "app.certified.defs#recordSubject",
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
   },
   createdAt: new Date().toISOString(),
@@ -489,10 +489,10 @@ const entityFollow = {
 `app.certified.graph.entityFollow` is the sibling of
 `app.certified.graph.follow` for following anything that is not an
 account — accounts (DIDs) stay in `app.certified.graph.follow`. The
-only subject variant today is `#recordSubject`, a record referenced by
-AT-URI (DID form, no CID) so the follow survives later updates to the
-record; `subject` is an open union so future non-DID entity kinds can
-be added non-breakingly.
+only subject variant today is `app.certified.defs#recordSubject`, a
+record referenced by AT-URI (DID form, no CID) so the follow survives
+later updates to the record; `subject` is an open union so future
+non-DID entity kinds can be added non-breakingly.
 
 ### Linking an EVM Wallet
 

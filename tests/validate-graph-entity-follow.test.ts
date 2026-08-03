@@ -11,7 +11,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = EntityFollow.validateMain({
       $type: ids.AppCertifiedGraphEntityFollow,
       subject: {
-        $type: "app.certified.graph.entityFollow#recordSubject",
+        $type: "app.certified.defs#recordSubject",
         uri: VALID_URI,
       },
       createdAt: "2024-01-01T00:00:00Z",
@@ -26,7 +26,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = EntityFollow.validateMain({
       $type: ids.AppCertifiedGraphEntityFollow,
       subject: {
-        $type: "app.certified.graph.entityFollow#recordSubject",
+        $type: "app.certified.defs#recordSubject",
         uri: VALID_URI,
       },
       createdAt: "2024-01-01T00:00:00Z",
@@ -58,7 +58,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = validate(
       {
         subject: {
-          $type: "app.certified.graph.entityFollow#recordSubject",
+          $type: "app.certified.defs#recordSubject",
           uri: VALID_URI,
         },
       },
@@ -85,7 +85,7 @@ describe("app.certified.graph.entityFollow", () => {
   it("should reject a recordSubject missing its required uri", () => {
     const result = validate(
       {
-        subject: { $type: "app.certified.graph.entityFollow#recordSubject" },
+        subject: { $type: "app.certified.defs#recordSubject" },
         createdAt: "2024-01-01T00:00:00Z",
       },
       ids.AppCertifiedGraphEntityFollow,
@@ -99,7 +99,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = validate(
       {
         subject: {
-          $type: "app.certified.graph.entityFollow#recordSubject",
+          $type: "app.certified.defs#recordSubject",
           uri: "https://example.com/record",
         },
         createdAt: "2024-01-01T00:00:00Z",
@@ -151,7 +151,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = validate(
       {
         subject: {
-          $type: "app.certified.graph.entityFollow#recordSubject",
+          $type: "app.certified.defs#recordSubject",
           uri: VALID_URI,
         },
         createdAt: "not-a-datetime",
@@ -167,7 +167,7 @@ describe("app.certified.graph.entityFollow", () => {
     const result = validate(
       {
         subject: {
-          $type: "app.certified.graph.entityFollow#recordSubject",
+          $type: "app.certified.defs#recordSubject",
           uri: VALID_URI,
         },
         createdAt: "2024-01-01T00:00:00Z",
