@@ -409,7 +409,10 @@ issue tracker** instead. If you need lightweight, in-session task
 tracking, use your own agent task tooling; do not resurrect bd.
 
 The `.beads/` files (and any bd git hooks under `.beads/hooks/`) are
-retained only for historical reference and are not maintained.
+retained only for historical reference and are not maintained. The
+scripts under `.beads/hooks/` are inert: `npm run prepare` installs
+husky, which points `core.hooksPath` at `.husky/`, so git never
+executes anything under `.beads/hooks/`.
 
 <!-- END BEADS INTEGRATION -->
 
