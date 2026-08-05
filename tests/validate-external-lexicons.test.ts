@@ -163,3 +163,57 @@ describe("external lexicon validation: pub.leaflet + app.bsky.richtext", () => {
     });
   });
 });
+
+describe("published Leaflet schema updates", () => {
+  it("accepts an iframe with an aspect ratio and no URL", () => {
+    const result = validate(
+      {
+        $type: "pub.leaflet.blocks.iframe",
+        aspectRatio: { width: 16, height: 9 },
+      },
+      ids.PubLeafletBlocksIframe,
+      "main",
+      true,
+    );
+
+    expect(result.success).toBe(true);
+  });
+
+  it("registers the posts list block and enforces its minimum limit", () => {
+    expect((ids as Record<string, string>).PubLeafletBlocksPostsList).toBe(
+      "pub.leaflet.blocks.postsList",
+    );
+
+    let result: ReturnType<typeof validate> | undefined;
+
+    expect(() => {
+      result = validate(
+        { limit: 0 },
+        "pub.leaflet.blocks.postsList",
+        "main",
+        true,
+      );
+    }).not.toThrow();
+
+    expect(result?.success).toBe(false);
+  });
+
+  it("registers Leaflet theme colors and enforces RGB channel bounds", () => {
+    expect((ids as Record<string, string>).PubLeafletThemeColor).toBe(
+      "pub.leaflet.theme.color",
+    );
+
+    let result: ReturnType<typeof validate> | undefined;
+
+    expect(() => {
+      result = validate(
+        { r: 256, g: 0, b: 0 },
+        "pub.leaflet.theme.color",
+        "rgb",
+        true,
+      );
+    }).not.toThrow();
+
+    expect(result?.success).toBe(false);
+  });
+});

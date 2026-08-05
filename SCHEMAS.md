@@ -757,10 +757,10 @@ Facet feature for a hashtag. The text usually includes a '#' prefix, but the fac
 
 Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets.
 
-| Property    | Type      | Required | Description |
-| ----------- | --------- | -------- | ----------- |
-| `byteStart` | `integer` | ✅       |             |
-| `byteEnd`   | `integer` | ✅       |             |
+| Property    | Type      | Required | Description | Comments   |
+| ----------- | --------- | -------- | ----------- | ---------- |
+| `byteStart` | `integer` | ✅       |             | minimum: 0 |
+| `byteEnd`   | `integer` | ✅       |             | minimum: 0 |
 
 ---
 
@@ -817,7 +817,7 @@ Visual configuration for a hyperboard's background, colors, and layout.
 | `backgroundImage`     | `union`   | ❌       | Background image as a URI or image blob.                              |                                                   |
 | `backgroundIframeUrl` | `string`  | ❌       | URI of the background iframe.                                         | maxLength: 2048                                   |
 | `backgroundGrayscale` | `boolean` | ❌       | Whether the background is rendered in grayscale. Default: true.       |                                                   |
-| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           |                                                   |
+| `backgroundOpacity`   | `integer` | ❌       | Background opacity as a percentage (0–100).                           | minimum: 0, maximum: 100                          |
 | `backgroundColor`     | `string`  | ❌       | Background color as a hex string (e.g. '#ffffff').                    | maxLength: 20                                     |
 | `borderColor`         | `string`  | ❌       | Border color as a hex string (e.g. '#000000').                        | maxLength: 20                                     |
 | `grayscaleImages`     | `boolean` | ❌       | Whether contributor images are rendered in grayscale. Default: false. |                                                   |
@@ -911,11 +911,11 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 #### Properties
 
-| Property    | Type      | Required | Description |
-| ----------- | --------- | -------- | ----------- |
-| `level`     | `integer` | ❌       |             |
-| `plaintext` | `string`  | ✅       |             |
-| `facets`    | `ref[]`   | ❌       |             |
+| Property    | Type      | Required | Description | Comments               |
+| ----------- | --------- | -------- | ----------- | ---------------------- |
+| `level`     | `integer` | ❌       |             | minimum: 1, maximum: 6 |
+| `plaintext` | `string`  | ✅       |             |                        |
+| `facets`    | `ref[]`   | ❌       |             |                        |
 
 ---
 
@@ -925,14 +925,46 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 ---
 
+### `pub.leaflet.blocks.html`
+
+#### Properties
+
+| Property      | Type      | Required | Description                                                     | Comments                   |
+| ------------- | --------- | -------- | --------------------------------------------------------------- | -------------------------- |
+| `html`        | `string`  | ✅       | Inline HTML rendered via a sandboxed iframe's srcdoc attribute. |                            |
+| `height`      | `integer` | ❌       |                                                                 | minimum: 16, maximum: 1600 |
+| `aspectRatio` | `ref`     | ❌       |                                                                 |                            |
+
+#### Defs
+
+##### `pub.leaflet.blocks.html#aspectRatio`
+
+| Property | Type      | Required | Description |
+| -------- | --------- | -------- | ----------- |
+| `width`  | `integer` | ✅       |             |
+| `height` | `integer` | ✅       |             |
+
+---
+
 ### `pub.leaflet.blocks.iframe`
 
 #### Properties
 
+| Property      | Type      | Required | Description                                                                                                                          | Comments                   |
+| ------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| `url`         | `string`  | ❌       |                                                                                                                                      |                            |
+| `html`        | `string`  | ❌       | DEPRECATED — use pub.leaflet.blocks.html instead. Inline HTML rendered via the iframe's srcdoc attribute. Takes precedence over url. |                            |
+| `height`      | `integer` | ❌       |                                                                                                                                      | minimum: 16, maximum: 1600 |
+| `aspectRatio` | `ref`     | ❌       |                                                                                                                                      |                            |
+
+#### Defs
+
+##### `pub.leaflet.blocks.iframe#aspectRatio`
+
 | Property | Type      | Required | Description |
 | -------- | --------- | -------- | ----------- |
-| `url`    | `string`  | ✅       |             |
-| `height` | `integer` | ❌       |             |
+| `width`  | `integer` | ✅       |             |
+| `height` | `integer` | ✅       |             |
 
 ---
 
@@ -946,10 +978,41 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 | `alt`         | `string`  | ❌       | Alt text description of the image, for accessibility.                                 |                                      |
 | `aspectRatio` | `ref`     | ✅       |                                                                                       |                                      |
 | `fullBleed`   | `boolean` | ❌       | Whether the image should extend to the full width of the container, ignoring padding. |                                      |
+| `width`       | `integer` | ❌       | Display width of the image in pixels, capped at the page width.                       |                                      |
 
 #### Defs
 
 ##### `pub.leaflet.blocks.image#aspectRatio`
+
+| Property | Type      | Required | Description |
+| -------- | --------- | -------- | ----------- |
+| `width`  | `integer` | ✅       |             |
+| `height` | `integer` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.imageGallery`
+
+#### Properties
+
+| Property   | Type      | Required | Description                                                         | Comments                                  |
+| ---------- | --------- | -------- | ------------------------------------------------------------------- | ----------------------------------------- |
+| `gap`      | `integer` | ❌       | Gap between images in pixels.                                       |                                           |
+| `format`   | `string`  | ❌       |                                                                     | Known values: `grid`, `carousel`, `strip` |
+| `images`   | `ref[]`   | ✅       |                                                                     |                                           |
+| `maxWidth` | `integer` | ❌       | Max width per image in grid view (px); drives how many columns fit. |                                           |
+
+#### Defs
+
+##### `pub.leaflet.blocks.imageGallery#image`
+
+| Property      | Type     | Required | Description                                           | Comments                             |
+| ------------- | -------- | -------- | ----------------------------------------------------- | ------------------------------------ |
+| `alt`         | `string` | ❌       | Alt text description of the image, for accessibility. |                                      |
+| `image`       | `blob`   | ✅       |                                                       | maxSize: 1000000, accepts: `image/*` |
+| `aspectRatio` | `ref`    | ✅       |                                                       |                                      |
+
+##### `pub.leaflet.blocks.imageGallery#aspectRatio`
 
 | Property | Type      | Required | Description |
 | -------- | --------- | -------- | ----------- |
@@ -965,6 +1028,14 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 | Property | Type     | Required | Description |
 | -------- | -------- | -------- | ----------- |
 | `tex`    | `string` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.membersOnlyDelimiter`
+
+**Description:** Marks where members-only content begins; blocks after this delimiter are only served to readers with an active paid membership.
+
+#### Properties
 
 ---
 
@@ -1007,6 +1078,52 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 | Property  | Type  | Required | Description |
 | --------- | ----- | -------- | ----------- |
 | `pollRef` | `ref` | ✅       |             |
+
+---
+
+### `pub.leaflet.blocks.postsList`
+
+#### Properties
+
+| Property             | Type       | Required | Description                   | Comments                        |
+| -------------------- | ---------- | -------- | ----------------------------- | ------------------------------- |
+| `view`               | `string`   | ❌       |                               | Known values: `small`, `medium` |
+| `limit`              | `integer`  | ❌       | Show at most this many posts. | minimum: 1                      |
+| `filterByTags`       | `string[]` | ❌       |                               |                                 |
+| `highlightFirstPost` | `boolean`  | ❌       |                               |                                 |
+
+---
+
+### `pub.leaflet.blocks.signup`
+
+**Description:** A subscribe/signup form for the publication. Renders the publication's subscribe form; carries no configurable data.
+
+#### Properties
+
+---
+
+### `pub.leaflet.blocks.standardSitePost`
+
+#### Properties
+
+| Property               | Type      | Required | Description | Comments                                 |
+| ---------------------- | --------- | -------- | ----------- | ---------------------------------------- |
+| `cid`                  | `string`  | ❌       |             |                                          |
+| `uri`                  | `string`  | ✅       |             |                                          |
+| `size`                 | `string`  | ❌       |             | Known values: `large`, `medium`, `small` |
+| `showPublicationTheme` | `boolean` | ❌       |             |                                          |
+
+---
+
+### `pub.leaflet.blocks.standardSitePublication`
+
+#### Properties
+
+| Property               | Type      | Required | Description |
+| ---------------------- | --------- | -------- | ----------- |
+| `cid`                  | `string`  | ❌       |             |
+| `uri`                  | `string`  | ✅       |             |
+| `showPublicationTheme` | `boolean` | ❌       |             |
 
 ---
 
@@ -1107,10 +1224,10 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 Specifies the sub-string range a facet feature applies to. Start index is inclusive, end index is exclusive. Indices are zero-indexed, counting bytes of the UTF-8 encoded text. NOTE: some languages, like Javascript, use UTF-16 or Unicode codepoints for string slice indexing; in these languages, convert to byte arrays before working with facets.
 
-| Property    | Type      | Required | Description |
-| ----------- | --------- | -------- | ----------- |
-| `byteStart` | `integer` | ✅       |             |
-| `byteEnd`   | `integer` | ✅       |             |
+| Property    | Type      | Required | Description | Comments   |
+| ----------- | --------- | -------- | ----------- | ---------- |
+| `byteStart` | `integer` | ✅       |             | minimum: 0 |
+| `byteEnd`   | `integer` | ✅       |             | minimum: 0 |
 
 ##### `pub.leaflet.richtext.facet#link`
 
@@ -1135,6 +1252,7 @@ Facet feature for mentioning an AT URI.
 | Property | Type     | Required | Description |
 | -------- | -------- | -------- | ----------- |
 | `atURI`  | `string` | ✅       |             |
+| `href`   | `string` | ❌       |             |
 
 ##### `pub.leaflet.richtext.facet#code`
 
@@ -1143,6 +1261,10 @@ Facet feature for inline code.
 ##### `pub.leaflet.richtext.facet#highlight`
 
 Facet feature for highlighted text.
+
+| Property | Type    | Required | Description |
+| -------- | ------- | -------- | ----------- |
+| `color`  | `union` | ❌       |             |
 
 ##### `pub.leaflet.richtext.facet#underline`
 
@@ -1177,6 +1299,29 @@ Facet feature for a footnote reference
 | `footnoteId`       | `string` | ✅       |             |
 | `contentPlaintext` | `string` | ✅       |             |
 | `contentFacets`    | `ref[]`  | ❌       |             |
+
+---
+
+### `pub.leaflet.theme.color`
+
+#### Defs
+
+##### `pub.leaflet.theme.color#rgb`
+
+| Property | Type      | Required | Description | Comments                 |
+| -------- | --------- | -------- | ----------- | ------------------------ |
+| `b`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
+| `g`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
+| `r`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
+
+##### `pub.leaflet.theme.color#rgba`
+
+| Property | Type      | Required | Description | Comments                 |
+| -------- | --------- | -------- | ----------- | ------------------------ |
+| `a`      | `integer` | ✅       |             | minimum: 0, maximum: 100 |
+| `b`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
+| `g`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
+| `r`      | `integer` | ✅       |             | minimum: 0, maximum: 255 |
 
 ---
 

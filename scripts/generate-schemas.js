@@ -87,6 +87,8 @@ function getTypeString(prop) {
 
 function getComments(prop) {
   const comments = [];
+  if (prop.minimum !== undefined) comments.push(`minimum: ${prop.minimum}`);
+  if (prop.maximum !== undefined) comments.push(`maximum: ${prop.maximum}`);
   if (prop.maxLength) comments.push(`maxLength: ${prop.maxLength}`);
   if (prop.maxGraphemes) comments.push(`maxGraphemes: ${prop.maxGraphemes}`);
   if (prop.maxSize) comments.push(`maxSize: ${prop.maxSize}`);
