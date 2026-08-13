@@ -1,5 +1,23 @@
 # @hypercerts-org/lexicon
 
+## 1.3.0
+
+Updates the bundled Leaflet lexicons to match their published schemas.
+
+### New Leaflet schemas
+
+- Blocks: `html`, `imageGallery`, `membersOnlyDelimiter`, `postsList`, `signup`, `standardSitePost`, and `standardSitePublication`
+- Theme colors: `pub.leaflet.theme.color`
+
+### Schema updates
+
+- Iframes no longer require a URL. They can also specify an aspect ratio or use the deprecated inline HTML field.
+- Images can specify their display width.
+- Linear documents accept the new block types.
+- Rich-text links can use `href`, and highlighted text can specify an RGB or RGBA color.
+
+Released in [#239](https://github.com/hypercerts-org/hypercerts-lexicon/pull/239) by [@Kzoeps](https://github.com/Kzoeps) ([`d772554`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/d77255423ca073bb55c4d0c6ec8e3b51c51daa18)).
+
 ## 1.2.0
 
 ### Minor Changes
