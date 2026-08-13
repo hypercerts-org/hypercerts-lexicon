@@ -56,6 +56,14 @@ dataclass organization {
     !endif
 }
 
+' app.certified.actor.createdVia
+dataclass createdVia {
+    !if (SHOW_FIELDS == "true")
+    clientId
+    createdAt
+    !endif
+}
+
 ' Contributors are represented by DIDs or human-readable strings
 ' therefore do not require modelling via a lexicon.
 entity "contributor (DID/profile)" as contributorEntity #FFD4A3 {
