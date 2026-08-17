@@ -1,0 +1,75 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.feature",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A record for a subject that Hypercerts records can describe, such as a zone or stratum. It carries the subject's identity, classification, and optional published spatial representations. Geometry itself lives in app.certified.location records, and grouping lives in org.hypercerts.collection records.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["title", "createdAt"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The coarse kind of subject this feature is, for example zone (an area a steward authors and manages) or stratum (an analytical unit derived from a model or methodology). This is not the feature's role or detailed classification — those are expressed through tags. Values beyond the known set are permitted.",
+            "knownValues": ["zone", "stratum"],
+            "maxLength": 64
+          },
+          "title": {
+            "type": "string",
+            "description": "Display name of the feature.",
+            "maxLength": 800,
+            "maxGraphemes": 80
+          },
+          "description": {
+            "type": "union",
+            "description": "Long-form description of the feature, as an inline string, a Leaflet document, or a reference to another record.",
+            "refs": [
+              "org.hypercerts.defs#descriptionString",
+              "pub.leaflet.pages.linearDocument",
+              "com.atproto.repo.strongRef"
+            ]
+          },
+          "locations": {
+            "type": "array",
+            "description": "Optional published spatial representations of this feature. Each referenced record must conform with app.certified.location. Multiple entries are alternative representations of the same subject at different precisions or encodings — for example an exact polygon and a coarser public representation for a sensitive site — never different places. Genuinely different places are either one MultiPolygon inside a single location record, or separate features. An empty or absent array is valid: the subject's geometry is unpublished or not applicable.",
+            "maxLength": 10,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "References to org.hypercerts.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.",
+            "maxLength": 20,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
+          },
+          "sameAs": {
+            "type": "array",
+            "description": "URIs of external identifiers that denote the same real-world subject, for example a cadastral parcel ID or a gazetteer entry. Entity identity only; vocabulary concordance belongs on org.hypercerts.tag.",
+            "maxLength": 20,
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          },
+          "signatures": {
+            "type": "ref",
+            "ref": "app.certified.signature.defs#list",
+            "description": "Optional cryptographic signatures attesting to this record's content."
+          }
+        }
+      }
+    }
+  }
+}

@@ -249,6 +249,19 @@ dataclass workScopeTag {
     !endif
 }
 
+' org.hypercerts.feature
+dataclass feature {
+    !if (SHOW_FIELDS == "true")
+    type?
+    title
+    description?
+    locations[]?
+    tags[]?
+    sameAs[]?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.tag
 dataclass tag {
     !if (SHOW_FIELDS == "true")
@@ -418,6 +431,9 @@ collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection::location --> location
 collection::tags --> tag
+collection::items --> feature
+feature::locations --> location
+feature::tags --> tag
 tag::broader --> tag
 tag::supersededBy --> tag
 
