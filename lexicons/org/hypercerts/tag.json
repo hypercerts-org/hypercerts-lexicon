@@ -1,0 +1,101 @@
+{
+  "lexicon": 1,
+  "id": "org.hypercerts.tag",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A reusable vocabulary term for classifying Hypercerts records — for example a land-cover class, a zone role, or a methodology. The schema carries portable term data; named vocabulary profiles decide which published terms and attachment points they recognize.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": ["key", "name", "category", "status", "createdAt"],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Stable lowercase machine identifier for this term within its publisher and category, for example boundary or mangrove.",
+            "maxLength": 120
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable display name of the term.",
+            "maxLength": 200
+          },
+          "category": {
+            "type": "string",
+            "description": "The classification axis this term belongs to, for example land-cover or zone-role. One term belongs to one category; a subject may carry tags from many categories at once. Values beyond the known set are permitted.",
+            "knownValues": [
+              "zone-role",
+              "land-cover",
+              "ecosystem-type",
+              "stratum-class",
+              "tenure",
+              "methodology",
+              "outcome-class",
+              "evidence-type"
+            ],
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "description": "Definition and scope notes for the term, written so a reader outside the publishing organization can apply it consistently.",
+            "maxLength": 10000,
+            "maxGraphemes": 1000
+          },
+          "broader": {
+            "type": "array",
+            "description": "Optional references to directly broader terms, forming a polyhierarchy (a term may have several broader terms). Each referenced record must conform with org.hypercerts.tag.",
+            "maxLength": 20,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Lifecycle status of the term: proposed (submitted, not yet governed), accepted (in active governed use), or deprecated (retired; see supersededBy). Values beyond the known set are permitted.",
+            "knownValues": ["proposed", "accepted", "deprecated"],
+            "maxLength": 20
+          },
+          "supersededBy": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "The replacement term for a deprecated term, letting consumers roll classifications forward without rewriting published records. The referenced record must conform with org.hypercerts.tag."
+          },
+          "aliases": {
+            "type": "array",
+            "description": "Alternative human-readable labels and abbreviations for search and display. Aliases carry no identity: references always point at the record, not at a label.",
+            "maxLength": 50,
+            "items": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          "sameAs": {
+            "type": "array",
+            "description": "URIs of exactly equivalent concepts in external vocabularies, for example ENVO, IUCN GET, OSM tag conventions, or registry methodology identifiers. Exact matches only; typed broader/narrower/close mappings are a named future field.",
+            "maxLength": 20,
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "referenceDocument": {
+            "type": "union",
+            "description": "A document defining or motivating this term, as a URI or an attached small blob.",
+            "refs": ["org.hypercerts.defs#uri", "org.hypercerts.defs#smallBlob"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this record was originally created."
+          },
+          "signatures": {
+            "type": "ref",
+            "ref": "app.certified.signature.defs#list",
+            "description": "Optional cryptographic signatures attesting to this record's content."
+          }
+        }
+      }
+    }
+  }
+}

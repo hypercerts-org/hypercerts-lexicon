@@ -249,6 +249,23 @@ dataclass workScopeTag {
     !endif
 }
 
+' org.hypercerts.tag
+dataclass tag {
+    !if (SHOW_FIELDS == "true")
+    key
+    name
+    category
+    description?
+    broader[]?
+    status
+    supersededBy?
+    aliases[]?
+    sameAs[]?
+    referenceDocument?
+    createdAt
+    !endif
+}
+
 ' org.hypercerts.claim.rights
 dataclass rights {
     !if (SHOW_FIELDS == "true")
@@ -289,6 +306,7 @@ dataclass collection {
     description?
     items[]?
     location?
+    tags[]?
     createdAt
     !endif
 }
@@ -399,6 +417,9 @@ measurement --> location
 collection::items --> activity
 collection::items --> collection : "recursive\nnesting"
 collection::location --> location
+collection::tags --> tag
+tag::broader --> tag
+tag::supersededBy --> tag
 
 acknowledgement::subject --> activity
 acknowledgement::subject --> contributorInformation

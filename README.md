@@ -17,8 +17,13 @@ CLAIMS ─ the core impact record and its parts
                      ├──► contributorInformation (identity, image)
                      ├──► rights                (licensing terms)
                      └──► workScope
-                            ├── cel ───► tag    (CEL expression referencing tags)
+                            ├── cel ───► workscope/tag  (CEL expression over scope tags)
                             └── string          (free-form scope)
+
+GENERAL TAGS ─ governed classification vocabulary
+──────────────────────────────────────────────────────────────────────
+  collection ─────────────► tag          (plain conjunctive classification)
+  tag ────────────────────► tag          (broader / supersededBy)
 
 CONTEXT ─ evidence, data, and social verification
 ──────────────────────────────────────────────────────────────────────
@@ -235,9 +240,15 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Collections (`org.hypercerts.*`)
 
-| Lexicon        | NSID                        | Description                                                                                                                                                 |
-| -------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Collection** | `org.hypercerts.collection` | A named, weighted group of activities and/or other collections. Supports recursive nesting. Used for projects, portfolios, favourites, funding rounds, etc. |
+| Lexicon        | NSID                        | Description                                                                                                                                                                                                      |
+| -------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Collection** | `org.hypercerts.collection` | A named, weighted group of activities and/or other collections. Supports recursive nesting. Used for projects, portfolios, favourites, funding rounds, etc. Carries optional governed classification via `tags`. |
+
+### General Tags (`org.hypercerts.tag`)
+
+| Lexicon | NSID                 | Description                                                                                                                                                                                                                                                                                           |
+| ------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tag** | `org.hypercerts.tag` | A reusable governed vocabulary term (category, lifecycle status, supersession, aliases, exact-match `sameAs` links to external vocabularies) for classifying records. Referenced from `collection.tags` as plain conjunctive facts. Distinct from `org.hypercerts.workscope.tag`, which is unchanged. |
 
 ### Context (`org.hypercerts.context.*`)
 
@@ -467,6 +478,13 @@ const project = {
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "Activities focused on carbon reduction and reforestation",
+  tags: [
+    // Optional governed classification — references to org.hypercerts.tag records:
+    {
+      uri: "at://did:plc:vocab/org.hypercerts.tag/outcome-class.carbon",
+      cid: "...",
+    },
+  ],
   items: [
     {
       itemIdentifier: {
@@ -488,6 +506,22 @@ const project = {
       },
     },
   ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Creating Tag Records (Governed Vocabulary)
+
+```typescript
+import { HYPERCERTS_TAG_NSID } from "@hypercerts-org/lexicon";
+
+const tag = {
+  $type: HYPERCERTS_TAG_NSID,
+  key: "site",
+  name: "Project site",
+  category: "zone-role",
+  status: "accepted",
+  description: "A managed area where restoration activity takes place.",
   createdAt: new Date().toISOString(),
 };
 ```
