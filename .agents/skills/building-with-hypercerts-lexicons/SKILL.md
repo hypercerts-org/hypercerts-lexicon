@@ -238,9 +238,15 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Collections
 
-| Lexicon        | NSID                        | Purpose                                                                                                                                       |
-| -------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Collection** | `org.hypercerts.collection` | Named, weighted group of activities and/or other collections. Supports recursive nesting. Used for projects, portfolios, funding rounds, etc. |
+| Lexicon        | NSID                        | Purpose                                                                                                                                  |
+| -------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Collection** | `org.hypercerts.collection` | Named, weighted group of activities and/or other collections. Supports recursive nesting. Optional `tags` carry governed classification. |
+
+### General Tags
+
+| Lexicon | NSID                 | Purpose                                                                                                                                           |
+| ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tag** | `org.hypercerts.tag` | Governed vocabulary term (category, `status` lifecycle, `supersededBy`, aliases, exact-match `sameAs` crosswalks) referenced by `collection.tags` |
 
 ### Context — evidence, data, social verification
 
@@ -292,7 +298,7 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 | **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs) and `#inline` (the inline signature object shape). Referenced by the `signatures` property on every record lexicon. |
 | **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                  |
 
-All 21 record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
+All record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 ## Relationship Map
 
@@ -305,8 +311,12 @@ CLAIMS
                      ├──> contributorInformation (identity, image)
                      ├──> rights                (licensing terms)
                      └──> workScope
-                            ├── cel ──> tag     (CEL expression referencing tags)
+                            ├── cel ──> workscope/tag  (CEL expression over scope tags)
                             └── string          (free-form scope)
+
+GENERAL TAGS
+  collection ────────────> tag           (plain conjunctive classification)
+  tag ───────────────────> tag           (broader / supersededBy)
 
 CONTEXT
   attachment ────────────> any record (activity, evaluation, …)
