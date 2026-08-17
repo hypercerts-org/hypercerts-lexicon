@@ -25,6 +25,12 @@ GENERAL TAGS ─ governed classification vocabulary
   collection ─────────────► tag          (plain conjunctive classification)
   tag ────────────────────► tag          (broader / supersededBy)
 
+FEATURES ─ non-agent subjects that claims describe
+──────────────────────────────────────────────────────────────────────
+  collection ─────────────► feature      (features as collection items)
+  feature ────────────────► location     (spatial representations)
+  feature ────────────────► tag          (governed classification)
+
 CONTEXT ─ evidence, data, and social verification
 ──────────────────────────────────────────────────────────────────────
   attachment ─────────────► any record (activity, evaluation, …)
@@ -243,6 +249,12 @@ await agent.api.com.atproto.repo.createRecord({
 | Lexicon        | NSID                        | Description                                                                                                                                                                                                      |
 | -------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Collection** | `org.hypercerts.collection` | A named, weighted group of activities and/or other collections. Supports recursive nesting. Used for projects, portfolios, favourites, funding rounds, etc. Carries optional governed classification via `tags`. |
+
+### Features (`org.hypercerts.feature`)
+
+| Lexicon     | NSID                     | Description                                                                                                                                                                                                                                                                                                                                                                        |
+| ----------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Feature** | `org.hypercerts.feature` | A subject record for non-agent things that claims describe — for example a land zone or an ecological stratum. Carries identity (`title`, coarse `type`), governed classification (`tags`), optional spatial representations (`locations` → `app.certified.location`), and exact entity concordance (`sameAs`). Grouping stays in collections; geometry stays in location records. |
 
 ### General Tags (`org.hypercerts.tag`)
 
@@ -504,6 +516,31 @@ const project = {
         uri: "at://did:plc:carol/org.hypercerts.collection/4m5ghi",
         cid: "...",
       },
+    },
+  ],
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Creating Feature Records (Zones, Strata)
+
+```typescript
+import { HYPERCERTS_FEATURE_NSID } from "@hypercerts-org/lexicon";
+
+const feature = {
+  $type: HYPERCERTS_FEATURE_NSID,
+  type: "zone",
+  title: "North restoration area",
+  locations: [
+    {
+      uri: "at://did:plc:alice/app.certified.location/3k2abc",
+      cid: "...",
+    },
+  ],
+  tags: [
+    {
+      uri: "at://did:plc:vocab/org.hypercerts.tag/zone-role.site",
+      cid: "...",
     },
   ],
   createdAt: new Date().toISOString(),
