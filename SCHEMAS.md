@@ -316,7 +316,7 @@ A free-text string value (e.g. a display name, wallet address, or other identifi
 
 ### `org.hypercerts.tag`
 
-**Description:** A reusable vocabulary term for classifying Hypercerts records — for example a land-cover class, a zone role, or a methodology. The schema carries portable term data; named vocabulary profiles decide which published terms and attachment points they recognize.
+**Description:** A reusable vocabulary term for classifying Hypercerts records — for example a land-cover class, a zone role, or a methodology. The schema carries portable term data; named vocabulary profiles decide which published terms and attachment points they recognize. Recommended record key: the deterministic form <category>.<key> (for example zone-role.site), as defined by the governing vocabulary profile; Lexicon validation cannot bind a record key to body fields, so writers and indexers enforce that agreement.
 
 **Key:** `any`
 
