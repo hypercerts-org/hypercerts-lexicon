@@ -29,7 +29,7 @@
           },
           "locationType": {
             "type": "string",
-            "description": "An identifier for the format of the location data. Use `geojson-point` for a single GeoJSON Point; use `geojson` as the catch-all for any other GeoJSON geometry (Polygon, MultiPolygon, FeatureCollection, etc.) — the inner payload's own GeoJSON `type` field carries the specifics. Values beyond the known set are permitted; see the Location Protocol spec for the canonical registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry",
+            "description": "An identifier for the format of the location data. Use `country-code` for uppercase ISO 3166-1 alpha-2 codes in `location.string` (e.g. `CH`). Although this lexicon requires `srs`, it has no meaning for this type and consumers must ignore it. Use `geojson-point` for a single GeoJSON Point; use `geojson` as the catch-all for any other GeoJSON geometry (Polygon, MultiPolygon, FeatureCollection, etc.) — the inner payload's own GeoJSON `type` field carries the specifics. Values beyond the known set are permitted; see the Location Protocol spec for the canonical registry: https://spec.decentralizedgeo.org/specification/location-types/#location-type-registry",
             "knownValues": [
               "coordinate-decimal",
               "geojson-point",
@@ -38,6 +38,7 @@
               "geohash",
               "wkt",
               "address",
+              "country-code",
               "scaledCoordinates"
             ],
             "maxLength": 20
