@@ -20,6 +20,7 @@
             "org.hypercerts.context.attachment",
             "org.hypercerts.context.evaluation",
             "org.hypercerts.context.measurement",
+            "org.hypercerts.feature",
             "org.hypercerts.funding.receipt",
             "org.hypercerts.tag",
             "org.hypercerts.workscope.tag"

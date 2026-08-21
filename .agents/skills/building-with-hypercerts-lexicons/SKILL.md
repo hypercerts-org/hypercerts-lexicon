@@ -242,6 +242,12 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 | -------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | **Collection** | `org.hypercerts.collection` | Named, weighted group of activities and/or other collections. Supports recursive nesting. Optional `tags` carry governed classification. |
 
+### Features
+
+| Lexicon     | NSID                     | Purpose                                                                                                                                     |
+| ----------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Feature** | `org.hypercerts.feature` | Subject record for non-agent things claims describe (zones, strata): identity, governed `tags`, optional `locations`, entity-level `sameAs` |
+
 ### General Tags
 
 | Lexicon | NSID                 | Purpose                                                                                                                                           |
@@ -317,6 +323,11 @@ CLAIMS
 GENERAL TAGS
   collection ────────────> tag           (plain conjunctive classification)
   tag ───────────────────> tag           (broader / supersededBy)
+
+FEATURES
+  collection ────────────> feature       (features as collection items)
+  feature ───────────────> location      (spatial representations)
+  feature ───────────────> tag           (governed classification)
 
 CONTEXT
   attachment ────────────> any record (activity, evaluation, …)
