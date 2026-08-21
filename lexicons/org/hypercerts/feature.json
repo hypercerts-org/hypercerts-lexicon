@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A record for a subject that Hypercerts records can describe, such as a zone or stratum. It carries the subject's identity, classification, and optional published spatial representations. Geometry itself lives in app.certified.location records, and grouping lives in org.hypercerts.collection records.",
+      "description": "A record for a non-agent subject that other records (measurements, evaluations, etc.) can be about, for example a land zone or an ecological stratum. It carries the subject's identity, classification, and optional published spatial representations. Geometry lives in app.certified.location records; grouping lives in org.hypercerts.collection records.",
       "key": "any",
       "record": {
         "type": "object",
@@ -33,8 +33,8 @@
           },
           "locations": {
             "type": "array",
-            "description": "Optional published spatial representations of this feature. Each referenced record must conform with app.certified.location. Multiple entries are alternative representations of the same subject at different precisions or encodings — for example an exact polygon and a coarser public representation for a sensitive site — never different places. Genuinely different places are either one MultiPolygon inside a single location record, or separate features. An empty or absent array is valid: the subject's geometry is unpublished or not applicable.",
-            "maxLength": 10,
+            "description": "Optional published spatial representations of this feature. Each referenced record must conform with app.certified.location. Multiple entries are alternative representations of the same subject at different precisions or encodings — never different places. Genuinely different places are either one MultiPolygon inside a single location record, or separate features. Writers SHOULD list entries in publisher-preferred order, most preferred first. All referenced locations are public once published: for sensitive subjects, publish only a coarse representation and keep exact geometry unpublished. An empty or absent array is valid: the subject's geometry is unpublished or not applicable.",
+            "maxLength": 1000,
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
