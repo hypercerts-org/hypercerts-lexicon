@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 1.3.1
+
+### Patch Changes
+
+- [#244](https://github.com/hypercerts-org/hypercerts-lexicon/pull/244) [`8dc6eb3`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8dc6eb3151baa1a0f3740b467c13502322eb643e) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Recognize ISO 3166-1 alpha-2 country codes as location values.
+
 ## 1.3.0
 
 Updates the bundled Leaflet lexicons to match their published schemas.
