@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "A reusable vocabulary term for classifying any Hypercerts record — for example a land-cover class, a zone role, or a methodology. The vocabulary is domain-general; geospatial categories are simply its first entries. The schema carries portable term data; named vocabulary profiles decide which published terms and attachment points they recognize. Recommended record key: the deterministic form <category>.<key> (for example zone-role.site), as defined by the governing vocabulary profile; Lexicon validation cannot bind a record key to body fields, so writers and indexers enforce that agreement.",
+      "description": "A reusable vocabulary term for classifying any Hypercerts record — for example a land-cover class, a zone role, or a methodology. The vocabulary is domain-general; geospatial categories are simply its first entries. The schema carries portable term data; named vocabulary profiles decide which published terms and attachment points they recognize. Recommended record key: the deterministic form <category>.<key> (for example zone-role.site), as defined by the governing vocabulary profile; Lexicon validation cannot bind a record key to body fields, so writers and indexers enforce that agreement. A tag reference pins the specific version (CID) of the term that the referencing record classified against; consumers resolve the term's current status and supersession by its URI.",
       "key": "any",
       "record": {
         "type": "object",
@@ -12,8 +12,9 @@
         "properties": {
           "key": {
             "type": "string",
-            "description": "Stable lowercase machine identifier for this term within its publisher and category, for example boundary or mangrove.",
-            "maxLength": 120
+            "description": "Stable lowercase machine identifier for this term within its publisher and category, for example boundary or mangrove. Must not contain dots, so that the recommended <category>.<key> record key remains unambiguous.",
+            "maxLength": 120,
+            "format": "record-key"
           },
           "name": {
             "type": "string",
@@ -22,7 +23,7 @@
           },
           "category": {
             "type": "string",
-            "description": "The classification axis this term belongs to, for example land-cover or zone-role. One term belongs to one category; a subject may carry tags from many categories at once. Values beyond the known set are permitted.",
+            "description": "The classification axis this term belongs to, for example land-cover or zone-role. One term belongs to one category; a subject may carry tags from many categories at once. Values beyond the known set are permitted. Must not contain dots, so that the recommended <category>.<key> record key remains unambiguous.",
             "knownValues": [
               "zone-role",
               "land-cover",
@@ -33,7 +34,8 @@
               "outcome-class",
               "evidence-type"
             ],
-            "maxLength": 50
+            "maxLength": 50,
+            "format": "record-key"
           },
           "description": {
             "type": "string",
