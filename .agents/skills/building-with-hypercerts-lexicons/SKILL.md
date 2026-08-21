@@ -441,6 +441,30 @@ const location = {
 };
 ```
 
+For `country-code` locations, use a valid uppercase ISO 3166-1 alpha-2 code
+such as `CH`. Do not use lowercase codes, alpha-3 codes, country names, or
+subdivision codes. Lexicon validation does not verify ISO registry membership,
+so producers must emit valid codes and consumers should validate them. Although
+`srs` is required, it has no meaning for country codes and consumers must ignore
+it.
+
+```typescript
+import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+
+const countryLocation = {
+  $type: LOCATION_NSID,
+  lpVersion: "1.0",
+  srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
+  locationType: "country-code",
+  location: {
+    $type: "app.certified.location#string",
+    string: "CH",
+  },
+  name: "Switzerland",
+  createdAt: new Date().toISOString(),
+};
+```
+
 ### Following another account
 
 ```typescript
