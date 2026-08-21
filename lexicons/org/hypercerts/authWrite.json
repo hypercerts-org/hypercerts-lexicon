@@ -21,6 +21,7 @@
             "org.hypercerts.context.evaluation",
             "org.hypercerts.context.measurement",
             "org.hypercerts.funding.receipt",
+            "org.hypercerts.tag",
             "org.hypercerts.workscope.tag"
           ],
           "action": ["create", "update", "delete"]

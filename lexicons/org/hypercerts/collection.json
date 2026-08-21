@@ -75,6 +75,15 @@
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
           },
+          "tags": {
+            "type": "array",
+            "description": "References to org.hypercerts.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.",
+            "maxLength": 20,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
