@@ -244,11 +244,11 @@ await agent.api.com.atproto.repo.createRecord({
 | -------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Collection** | `org.hypercerts.collection` | A named, weighted group of activities and/or other collections. Supports recursive nesting. Used for projects, portfolios, favourites, funding rounds, etc. Carries optional governed classification via `tags`. |
 
-### General Tags (`org.hypercerts.tag`)
+### General Tags (`org.hypercerts.vocab.tag`)
 
-| Lexicon | NSID                 | Description                                                                                                                                                                                                                                                                                           |
-| ------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tag** | `org.hypercerts.tag` | A reusable governed vocabulary term (category, lifecycle status, supersession, aliases, exact-match `sameAs` links to external vocabularies) for classifying records. Referenced from `collection.tags` as plain conjunctive facts. Distinct from `org.hypercerts.workscope.tag`, which is unchanged. |
+| Lexicon | NSID                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tag** | `org.hypercerts.vocab.tag` | A reusable governed vocabulary term for classifying records, with category, lifecycle status, supersession, aliases, exact-match `sameAs` links to external vocabularies, optional `broader` strong references to one or more directly broader terms, and an optional `referenceDocument` URI or attached small blob that defines or motivates the term. Referenced from `collection.tags` as plain conjunctive facts. Distinct from `org.hypercerts.workscope.tag`, which is unchanged. |
 
 ### Context (`org.hypercerts.context.*`)
 
@@ -479,9 +479,9 @@ const project = {
   title: "Carbon Offset Initiative",
   shortDescription: "Activities focused on carbon reduction and reforestation",
   tags: [
-    // Optional governed classification — references to org.hypercerts.tag records:
+    // Optional governed classification — references to org.hypercerts.vocab.tag records:
     {
-      uri: "at://did:plc:vocab/org.hypercerts.tag/outcome-class.carbon",
+      uri: "at://did:plc:vocab/org.hypercerts.vocab.tag/outcome-class.carbon",
       cid: "...",
     },
   ],
@@ -513,10 +513,10 @@ const project = {
 ### Creating Tag Records (Governed Vocabulary)
 
 ```typescript
-import { HYPERCERTS_TAG_NSID } from "@hypercerts-org/lexicon";
+import { VOCAB_TAG_NSID } from "@hypercerts-org/lexicon";
 
 const tag = {
-  $type: HYPERCERTS_TAG_NSID,
+  $type: VOCAB_TAG_NSID,
   key: "site",
   name: "Project site",
   category: "zone-role",

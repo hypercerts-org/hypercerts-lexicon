@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "org.hypercerts.tag",
+  "id": "org.hypercerts.vocab.tag",
   "defs": {
     "main": {
       "type": "record",
@@ -45,7 +45,7 @@
           },
           "broader": {
             "type": "array",
-            "description": "Optional references to directly broader terms, forming a polyhierarchy (a term may have several broader terms). Each referenced record must conform with org.hypercerts.tag.",
+            "description": "Optional references to directly broader terms, forming a polyhierarchy (a term may have several broader terms). Each referenced record must conform with org.hypercerts.vocab.tag.",
             "maxLength": 20,
             "items": {
               "type": "ref",
@@ -61,7 +61,7 @@
           "supersededBy": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "The replacement term for a deprecated term, letting consumers roll classifications forward without rewriting published records. The referenced record must conform with org.hypercerts.tag."
+            "description": "The replacement term for a deprecated term, letting consumers roll classifications forward without rewriting published records. The referenced record must conform with org.hypercerts.vocab.tag."
           },
           "aliases": {
             "type": "array",

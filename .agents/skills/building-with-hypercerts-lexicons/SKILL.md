@@ -244,9 +244,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### General Tags
 
-| Lexicon | NSID                 | Purpose                                                                                                                                           |
-| ------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tag** | `org.hypercerts.tag` | Governed vocabulary term (category, `status` lifecycle, `supersededBy`, aliases, exact-match `sameAs` crosswalks) referenced by `collection.tags` |
+| Lexicon | NSID                       | Purpose                                                                                                                                                                                                                                                                                                                              |
+| ------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Tag** | `org.hypercerts.vocab.tag` | Governed vocabulary term with category, `status` lifecycle, `supersededBy`, aliases, exact-match `sameAs` crosswalks, optional `broader` strong references to one or more directly broader terms, and an optional `referenceDocument` URI or attached small blob that defines or motivates the term; referenced by `collection.tags` |
 
 ### Context — evidence, data, social verification
 

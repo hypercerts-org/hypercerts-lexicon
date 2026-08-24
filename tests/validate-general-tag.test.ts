@@ -1,16 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { validate, ids } from "../generated/lexicons";
-import * as Tag from "../generated/types/org/hypercerts/tag";
+import * as Tag from "../generated/types/org/hypercerts/vocab/tag";
 import * as Collection from "../generated/types/org/hypercerts/collection";
 
 const VALID_TAG_URI =
-  "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.tag/zone-role.site";
+  "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.vocab.tag/zone-role.site";
 const VALID_CID = "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
 
-describe("org.hypercerts.tag", () => {
+describe("org.hypercerts.vocab.tag", () => {
   it("should accept a minimal valid tag record", () => {
     const result = Tag.validateMain({
-      $type: ids.OrgHypercertsTag,
+      $type: ids.OrgHypercertsVocabTag,
       key: "site",
       name: "Project site",
       category: "zone-role",
@@ -25,7 +25,7 @@ describe("org.hypercerts.tag", () => {
 
   it("should accept a tag with lifecycle, hierarchy, and crosswalk fields", () => {
     const result = Tag.validateMain({
-      $type: ids.OrgHypercertsTag,
+      $type: ids.OrgHypercertsVocabTag,
       key: "mangrove",
       name: "Mangrove",
       category: "land-cover",
@@ -52,7 +52,7 @@ describe("org.hypercerts.tag", () => {
         status: "accepted",
         createdAt: "2026-01-01T00:00:00Z",
       },
-      ids.OrgHypercertsTag,
+      ids.OrgHypercertsVocabTag,
       "main",
       false,
     );
@@ -67,7 +67,7 @@ describe("org.hypercerts.tag", () => {
         category: "zone-role",
         createdAt: "2026-01-01T00:00:00Z",
       },
-      ids.OrgHypercertsTag,
+      ids.OrgHypercertsVocabTag,
       "main",
       false,
     );

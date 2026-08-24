@@ -77,7 +77,7 @@
           },
           "tags": {
             "type": "array",
-            "description": "References to org.hypercerts.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.",
+            "description": "References to org.hypercerts.vocab.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.",
             "maxLength": 20,
             "items": {
               "type": "ref",
