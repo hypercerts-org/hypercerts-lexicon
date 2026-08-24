@@ -258,9 +258,9 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### General Tags (`org.hypercerts.vocab.tag`)
 
-| Lexicon | NSID                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tag** | `org.hypercerts.vocab.tag` | A reusable governed vocabulary term for classifying records, with category, lifecycle status, supersession, aliases, exact-match `sameAs` links to external vocabularies, optional `broader` strong references to one or more directly broader terms, and an optional `referenceDocument` URI or attached small blob that defines or motivates the term. Referenced from `collection.tags` as plain conjunctive facts. Distinct from `org.hypercerts.workscope.tag`, which is unchanged. |
+| Lexicon | NSID                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Tag** | `org.hypercerts.vocab.tag` | A reusable governed vocabulary term for classifying records, with category, lifecycle status, supersession, aliases, exact-match `sameAs` links to external vocabularies, optional `broader` strong references to one or more directly broader terms, and an optional `referenceDocument` URI or attached small blob that defines or motivates the term. Referenced from `collection.tags` and `feature.tags` as plain conjunctive facts. Distinct from `org.hypercerts.workscope.tag`, which is unchanged. |
 
 ### Context (`org.hypercerts.context.*`)
 
@@ -539,7 +539,7 @@ const feature = {
   ],
   tags: [
     {
-      uri: "at://did:plc:vocab/org.hypercerts.tag/zone-role.site",
+      uri: "at://did:plc:vocab/org.hypercerts.vocab.tag/zone-role.site",
       cid: "...",
     },
   ],

@@ -249,7 +249,7 @@ dataclass workScopeTag {
     !endif
 }
 
-' org.hypercerts.feature
+' org.hypercerts.entity.feature
 dataclass feature {
     !if (SHOW_FIELDS == "true")
     type?
@@ -262,7 +262,7 @@ dataclass feature {
     !endif
 }
 
-' org.hypercerts.tag
+' org.hypercerts.vocab.tag
 dataclass tag {
     !if (SHOW_FIELDS == "true")
     key
