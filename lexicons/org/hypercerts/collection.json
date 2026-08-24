@@ -75,6 +75,15 @@
             "ref": "com.atproto.repo.strongRef",
             "description": "A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location."
           },
+          "tags": {
+            "type": "array",
+            "description": "References to org.hypercerts.vocab.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.",
+            "maxLength": 20,
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            }
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
@@ -96,7 +105,7 @@
         "itemIdentifier": {
           "type": "ref",
           "ref": "com.atproto.repo.strongRef",
-          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity) and/or other collections (org.hypercerts.collection)."
+          "description": "Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity), features (org.hypercerts.entity.feature), and/or other collections (org.hypercerts.collection)."
         },
         "itemWeight": {
           "type": "string",

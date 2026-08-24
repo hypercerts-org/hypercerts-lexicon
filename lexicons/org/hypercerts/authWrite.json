@@ -20,7 +20,9 @@
             "org.hypercerts.context.attachment",
             "org.hypercerts.context.evaluation",
             "org.hypercerts.context.measurement",
+            "org.hypercerts.entity.feature",
             "org.hypercerts.funding.receipt",
+            "org.hypercerts.vocab.tag",
             "org.hypercerts.workscope.tag"
           ],
           "action": ["create", "update", "delete"]
