@@ -15,7 +15,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 
 **Resource:** `repo`
 
-**Collections:** `org.hypercerts.claim.activity`, `org.hypercerts.claim.contribution`, `org.hypercerts.claim.contributorInformation`, `org.hypercerts.claim.rights`, `org.hypercerts.collection`, `org.hypercerts.context.acknowledgement`, `org.hypercerts.context.attachment`, `org.hypercerts.context.evaluation`, `org.hypercerts.context.measurement`, `org.hypercerts.feature`, `org.hypercerts.funding.receipt`, `org.hypercerts.vocab.tag`, `org.hypercerts.workscope.tag`
+**Collections:** `org.hypercerts.claim.activity`, `org.hypercerts.claim.contribution`, `org.hypercerts.claim.contributorInformation`, `org.hypercerts.claim.rights`, `org.hypercerts.collection`, `org.hypercerts.context.acknowledgement`, `org.hypercerts.context.attachment`, `org.hypercerts.context.evaluation`, `org.hypercerts.context.measurement`, `org.hypercerts.entity.feature`, `org.hypercerts.funding.receipt`, `org.hypercerts.vocab.tag`, `org.hypercerts.workscope.tag`
 
 **Actions:** `create`, `update`, `delete`
 
@@ -168,10 +168,10 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 An item in a collection, with an identifier and optional weight.
 
-| Property         | Type     | Required | Description                                                                                                                                                                                       | Comments       |
-| ---------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity), features (org.hypercerts.feature), and/or other collections (org.hypercerts.collection). |                |
-| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.   | maxLength: 100 |
+| Property         | Type     | Required | Description                                                                                                                                                                                              | Comments       |
+| ---------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `itemIdentifier` | `ref`    | ✅       | Strong reference to an item in this collection. Items can be activities (org.hypercerts.claim.activity), features (org.hypercerts.entity.feature), and/or other collections (org.hypercerts.collection). |                |
+| `itemWeight`     | `string` | ❌       | Optional weight for this item (positive numeric value stored as string). Weights do not need to sum to a specific total; normalization can be performed by the consuming application as needed.          | maxLength: 100 |
 
 ---
 
@@ -279,7 +279,7 @@ Overall score for an evaluation on a numeric scale.
 
 ---
 
-### `org.hypercerts.feature`
+### `org.hypercerts.entity.feature`
 
 **Description:** A record for a non-agent subject that other records (measurements, evaluations, etc.) can be about, for example a land zone or an ecological stratum. It carries the subject's identity, classification, and optional published spatial representations. Geometry lives in app.certified.location records; grouping lives in org.hypercerts.collection records.
 
