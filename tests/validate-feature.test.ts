@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { validate, ids } from "../generated/lexicons";
-import * as Feature from "../generated/types/org/hypercerts/feature";
+import * as Feature from "../generated/types/org/hypercerts/entity/feature";
 
 const VALID_LOCATION_URI =
   "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/app.certified.location/3k2abc";
@@ -8,10 +8,10 @@ const VALID_TAG_URI =
   "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.tag/zone-role.site";
 const VALID_CID = "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
 
-describe("org.hypercerts.feature", () => {
+describe("org.hypercerts.entity.feature", () => {
   it("should accept a minimal valid feature (title + createdAt only)", () => {
     const result = Feature.validateMain({
-      $type: ids.OrgHypercertsFeature,
+      $type: ids.OrgHypercertsEntityFeature,
       title: "North restoration area",
       createdAt: "2026-01-01T00:00:00Z",
     });
@@ -20,7 +20,7 @@ describe("org.hypercerts.feature", () => {
 
   it("should accept a spatial feature with type, locations, tags, and sameAs", () => {
     const result = Feature.validateMain({
-      $type: ids.OrgHypercertsFeature,
+      $type: ids.OrgHypercertsEntityFeature,
       type: "zone",
       title: "North restoration area",
       locations: [{ uri: VALID_LOCATION_URI, cid: VALID_CID }],
@@ -38,7 +38,7 @@ describe("org.hypercerts.feature", () => {
 
   it("should accept a non-spatial feature (no locations)", () => {
     const result = Feature.validateMain({
-      $type: ids.OrgHypercertsFeature,
+      $type: ids.OrgHypercertsEntityFeature,
       type: "stratum",
       title: "Riparian stratum v2",
       tags: [{ uri: VALID_TAG_URI, cid: VALID_CID }],
@@ -53,7 +53,7 @@ describe("org.hypercerts.feature", () => {
         type: "zone",
         createdAt: "2026-01-01T00:00:00Z",
       },
-      ids.OrgHypercertsFeature,
+      ids.OrgHypercertsEntityFeature,
       "main",
       false,
     );
@@ -67,7 +67,7 @@ describe("org.hypercerts.feature", () => {
         locations: [{ uri: VALID_LOCATION_URI }],
         createdAt: "2026-01-01T00:00:00Z",
       },
-      ids.OrgHypercertsFeature,
+      ids.OrgHypercertsEntityFeature,
       "main",
       false,
     );
@@ -81,7 +81,7 @@ describe("org.hypercerts.feature", () => {
         sameAs: ["not a uri"],
         createdAt: "2026-01-01T00:00:00Z",
       },
-      ids.OrgHypercertsFeature,
+      ids.OrgHypercertsEntityFeature,
       "main",
       false,
     );
