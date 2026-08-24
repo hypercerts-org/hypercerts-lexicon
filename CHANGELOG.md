@@ -1,5 +1,43 @@
 # @hypercerts-org/lexicon
 
+## 1.4.0
+
+This release adds first-class records for non-agent subjects, together with shared tags for describing features and collections.
+
+### Represent non-agent subjects
+
+The new `org.hypercerts.entity.feature` record represents a subject that is not a person or organization. Examples include a managed land zone, ecological stratum, participant cohort, or campaign.
+
+A feature can include:
+
+- a title, description, and general type
+- tags describing the feature
+- optional location records when the subject is spatial
+- external identifiers through `sameAs`
+
+Collections can now include features alongside activities and nested collections. Existing activity claims continue to reference `app.certified.location` directly and do not need to change.
+
+### Add shared tags to features and collections
+
+The new `org.hypercerts.vocab.tag` record lets publishers define tags that features and collections can share.
+
+For example, a land feature could have both a "project site" tag and a "mangrove land cover" tag. Because each tag is published as a record, different features and collections can use the same definition instead of relying on inconsistent free-text values.
+
+A tag can also record:
+
+- alternative names
+- a link to the equivalent term in another standard
+- whether it has been retired and replaced
+- the more general tags it belongs under
+
+When a feature or collection has several tags, they are all treated as facts about that record. Tags do not express `OR`, `NOT`, weighting, or other logic.
+
+### Compatibility
+
+These changes are additive. Existing records remain valid.
+
+Thanks [@DjimoSerodio](https://github.com/DjimoSerodio) for contributing these changes in [#242](https://github.com/hypercerts-org/hypercerts-lexicon/pull/242).
+
 ## 1.3.1
 
 ### Patch Changes
