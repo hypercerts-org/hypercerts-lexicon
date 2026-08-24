@@ -244,9 +244,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Features
 
-| Lexicon     | NSID                            | Purpose                                                                                                                                     |
-| ----------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Feature** | `org.hypercerts.entity.feature` | Subject record for non-agent things claims describe (zones, strata): identity, governed `tags`, optional `locations`, entity-level `sameAs` |
+| Lexicon     | NSID                            | Purpose                                                                                                                                                                 |
+| ----------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Feature** | `org.hypercerts.entity.feature` | Subject record for non-agent things claims describe (zones, strata): identity, `description`, governed `tags`, optional `locations`, entity-level `sameAs`, `createdAt` |
 
 ### General Tags
 

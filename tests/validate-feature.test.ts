@@ -60,6 +60,19 @@ describe("org.hypercerts.entity.feature", () => {
     expect(result.success).toBe(false);
   });
 
+  it("should reject a feature missing required createdAt", () => {
+    const result = validate(
+      {
+        type: "zone",
+        title: "No timestamp feature",
+      },
+      ids.OrgHypercertsEntityFeature,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
   it("should reject a locations entry that is not a full strong reference", () => {
     const result = validate(
       {
