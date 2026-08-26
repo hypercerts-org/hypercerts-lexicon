@@ -28,6 +28,15 @@
               "com.atproto.repo.strongRef"
             ]
           },
+          "via": {
+            "type": "union",
+            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker) — named in the record rather than merely implied by who authored the receipt. Distinct from paymentNetwork (the scheme or chain) and from the record author; lets consumers group receipts by facilitator regardless of author.",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
+          },
           "amount": {
             "type": "string",
             "description": "Amount of funding received as a numeric string (e.g. '1000.50').",
@@ -37,6 +46,24 @@
             "type": "string",
             "description": "Currency of the payment (e.g. EUR, USD, ETH).",
             "maxLength": 10
+          },
+          "netAmount": {
+            "type": "string",
+            "description": "Amount the recipient actually received after all fees, as a numeric string in the receipt's currency. When present, amount is the gross amount the sender paid, and amount - sum(fees[].amount) ≈ netAmount. Recording both sides prevents honest receipts for one payment from disagreeing: the sender attests the gross, the recipient the net.",
+            "maxLength": 50
+          },
+          "fees": {
+            "type": "array",
+            "description": "Itemized deductions between the gross amount and netAmount, in the receipt's currency (e.g. platform commission, processor fee, network/gas cost). A receipt is retrospective, so no charge-bearer field is needed — the amounts already encode who bore what: a sender covering fees simply raises the gross above the intended contribution.",
+            "items": {
+              "type": "ref",
+              "ref": "#fee"
+            }
+          },
+          "fx": {
+            "type": "ref",
+            "ref": "#fxInfo",
+            "description": "Optional foreign-exchange context. Stamp at payment time whenever amount/currency is not the denomination the payment was actually made in (e.g. a platform recording a USD-normalized amount for a EUR card payment or an on-chain transfer). Receipts for the same payment written by other parties should copy this block verbatim from the receipt they reference, so consumers comparing or aggregating receipts reconcile deterministically instead of re-deriving rates that drift over time."
           },
           "paymentRail": {
             "type": "string",
@@ -50,13 +77,18 @@
           },
           "transactionId": {
             "type": "string",
-            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable.",
+            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable. Receipts are published to public repositories, so choose identifiers accordingly: prefer opaque processor IDs (dereferenceable only by the processor and the account holder) or internal payment references; avoid bank references that embed account details; and note that an onchain transaction hash publicly reveals the sending wallet — when the sender is deliberately anonymous (from omitted), consider whether publishing the hash is appropriate.",
             "maxLength": 256
           },
           "for": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
             "description": "Optional strong reference to the activity, project, or organization this funding relates to."
+          },
+          "refundOf": {
+            "type": "ref",
+            "ref": "com.atproto.repo.strongRef",
+            "description": "Optional strong reference marking this receipt as a refund — partial or whole — of the referenced receipt. Receipts are immutable once published (attestations bind to their content), so refunds are represented as new receipts rather than edits: amount/currency carry the refunded amount in the same denomination as the original (copy the original's fx block so partial refunds are computed at the original rate, without forex drift); from/to mirror the original reversed (when the original sender was anonymous, use the #text party for the refund's recipient). Multiple partial refunds are multiple refund receipts. Consumers aggregating funding should net refund receipts against the receipt they reference."
           },
           "notes": {
             "type": "string",
@@ -67,6 +99,11 @@
             "type": "string",
             "format": "datetime",
             "description": "Timestamp when the payment occurred."
+          },
+          "settledAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "When the funds actually settled to the recipient (e.g. a processor's funds-available date, an interbank settlement date, or a block timestamp). May differ from occurredAt by days on delayed rails such as bank transfers."
           },
           "createdAt": {
             "type": "string",
@@ -90,6 +127,68 @@
           "type": "string",
           "description": "The string value.",
           "maxLength": 2048
+        }
+      }
+    },
+    "fxInfo": {
+      "type": "object",
+      "description": "Foreign-exchange context binding a receipt's amount/currency to the payment's original denomination at a point in time.",
+      "required": ["originalAmount", "originalCurrency"],
+      "properties": {
+        "originalAmount": {
+          "type": "string",
+          "description": "Amount actually paid, as a numeric string, denominated in originalCurrency.",
+          "maxLength": 50
+        },
+        "originalCurrency": {
+          "type": "string",
+          "description": "Currency the payment was actually made in (e.g. EUR, CELO, USDC).",
+          "maxLength": 10
+        },
+        "rate": {
+          "type": "string",
+          "description": "Conversion rate applied at payment time, as a numeric string: the price of one unit of originalCurrency expressed in the receipt's currency, so amount = originalAmount x rate (up to rounding). Recording the rate explicitly removes rounding ambiguity and lets later computations (e.g. partial refunds) reuse the original rate instead of drifting with the market.",
+          "maxLength": 50
+        },
+        "rateSource": {
+          "type": "string",
+          "description": "Where the rate came from (e.g. stripe, ecb, coingecko).",
+          "maxLength": 50
+        },
+        "rateTimestamp": {
+          "type": "string",
+          "format": "datetime",
+          "description": "When the rate was captured; usually the payment time."
+        }
+      }
+    },
+    "fee": {
+      "type": "object",
+      "description": "A single fee deducted from a payment.",
+      "required": ["amount"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Category of the fee. knownValues is an open, advisory vocabulary.",
+          "knownValues": [
+            "processor",
+            "platform",
+            "network",
+            "fx",
+            "tax",
+            "other"
+          ],
+          "maxLength": 30
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable description (e.g. 'Stripe processing fee', 'Ma Earth platform fee', 'gas').",
+          "maxLength": 100
+        },
+        "amount": {
+          "type": "string",
+          "description": "Fee amount as a numeric string, in the receipt's currency.",
+          "maxLength": 50
         }
       }
     }
