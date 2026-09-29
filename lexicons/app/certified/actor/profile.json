@@ -12,7 +12,7 @@
         "properties": {
           "displayName": {
             "type": "string",
-            "description": "Display name for the account",
+            "description": "Display name for the account. For an organization, the public-facing name it uses in communications; a different registered legal name belongs in app.certified.actor.organization legalName.",
             "maxGraphemes": 64,
             "maxLength": 640
           },
@@ -39,7 +39,7 @@
               "org.hypercerts.defs#uri",
               "org.hypercerts.defs#smallImage"
             ],
-            "description": "Small image to be displayed next to posts from account. AKA, 'profile picture'"
+            "description": "Small image to be displayed next to posts from account. AKA, 'profile picture'. Clients crop it to a square or circle, so an organization should use its brandmark (the symbol without the name); the full logo belongs in app.certified.actor.organization logo."
           },
           "banner": {
             "type": "union",
