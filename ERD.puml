@@ -46,9 +46,13 @@ classDiagram {
 ' app.certified.actor.organization
 dataclass organization {
     !if (SHOW_FIELDS == "true")
+    legalName?
+    logo?
+    publicEmail?
     organizationType[]?
     urls[]?
     location?
+    additionalLocations[]?
     foundedDate?
     longDescription?
     visibility?
@@ -483,6 +487,7 @@ workScopeTag::supersededBy --> workScopeTag : "deprecation"
 contributorInformation::identifier --> contributorEntity : identifies
 
 organization::location --> location
+organization::additionalLocations --> location
 
 ' These ones are not described by any lexicon, but are added to
 ' the diagram for clarity
