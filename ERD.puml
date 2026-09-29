@@ -184,6 +184,8 @@ dataclass badgeAward {
     badge
     subject
     note?
+    validFrom?
+    validUntil?
     createdAt
     !endif
 }
