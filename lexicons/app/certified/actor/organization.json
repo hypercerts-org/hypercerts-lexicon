@@ -12,7 +12,7 @@
         "properties": {
           "legalName": {
             "type": "string",
-            "description": "The organization's registered legal name (e.g. 'Acme Social Enterprises Ltd.'), where it differs from the public-facing name. The public-facing name belongs in app.certified.actor.profile displayName.",
+            "description": "The organization's registered legal name. The public-facing name belongs in app.certified.actor.profile displayName.",
             "maxLength": 2560,
             "maxGraphemes": 256
           },
@@ -107,7 +107,7 @@
         },
         "label": {
           "type": "string",
-          "description": "Optional human-readable label for this URL (e.g. 'LinkedIn', 'Instagram', 'Donation page').",
+          "description": "Optional human-readable label for this URL (e.g. 'Donation page').",
           "maxLength": 640,
           "maxGraphemes": 64
         }
