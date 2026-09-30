@@ -93,6 +93,7 @@ dataclass attachment {
     description?
     location?
     tags[]?
+    capturedAt?
     createdAt
     !endif
 }
