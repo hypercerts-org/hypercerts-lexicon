@@ -1,0 +1,17 @@
+{
+  "lexicon": 1,
+  "id": "app.bsky.embed.record",
+  "description": "A representation of a record embedded in a Bluesky record (eg, a post). For example, a quote-post, or sharing a feed generator record.",
+  "defs": {
+    "main": {
+      "type": "object",
+      "required": ["record"],
+      "properties": {
+        "record": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef"
+        }
+      }
+    }
+  }
+}

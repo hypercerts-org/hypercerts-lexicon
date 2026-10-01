@@ -1,0 +1,111 @@
+{
+  "lexicon": 1,
+  "id": "app.certified.feed.post",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Record containing a post for certified feeds: an update, announcement, or other short-form content. A post stands on its own; it does not need to comment on, reply to, or attach to another record. Separate from app.bsky.feed.post so apps can publish without writing to Bluesky. Fields shared with app.bsky.feed.post use the same types, so an app can cross-post by also writing an app.bsky.feed.post with the same content.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": ["createdAt"],
+        "properties": {
+          "text": {
+            "type": "string",
+            "maxLength": 50000,
+            "maxGraphemes": 5000,
+            "description": "The primary post content. Optional, so a post may carry only an embed or attachments. The limit is higher than app.bsky.feed.post's 300 graphemes, so text may need shortening when cross-posting."
+          },
+          "facets": {
+            "type": "array",
+            "description": "Rich text annotations for `text` (mentions, URLs, hashtags, etc.).",
+            "items": {
+              "type": "ref",
+              "ref": "app.bsky.richtext.facet"
+            }
+          },
+          "reply": {
+            "type": "ref",
+            "ref": "#replyRef",
+            "description": "Set when this post replies to another post. Omit for a standalone post."
+          },
+          "embed": {
+            "type": "union",
+            "description": "Optional featured media or quoted record: images, a video, a gallery, an external link card, a quoted record of any lexicon (e.g. an activity or another post), or a quoted record with media. Uses the app.bsky.embed lexicons, so the same embed is valid on a cross-posted app.bsky.feed.post.",
+            "refs": [
+              "app.bsky.embed.images",
+              "app.bsky.embed.video",
+              "app.bsky.embed.gallery",
+              "app.bsky.embed.external",
+              "app.bsky.embed.record",
+              "app.bsky.embed.recordWithMedia"
+            ]
+          },
+          "langs": {
+            "type": "array",
+            "description": "Indicates human language of the post's primary text content.",
+            "maxLength": 3,
+            "items": {
+              "type": "string",
+              "format": "language"
+            }
+          },
+          "labels": {
+            "type": "union",
+            "description": "Self-label values for this post. Effectively content warnings.",
+            "refs": ["com.atproto.label.defs#selfLabels"]
+          },
+          "tags": {
+            "type": "array",
+            "description": "Additional hashtags, in addition to any included in post text and facets.",
+            "maxLength": 8,
+            "items": {
+              "type": "string",
+              "maxLength": 640,
+              "maxGraphemes": 64
+            }
+          },
+          "attachments": {
+            "type": "array",
+            "description": "Supplementary files, documents, or external references (e.g. a full report PDF). Unlike `embed`, attachments are not featured media; app.bsky.feed.post has no equivalent field.",
+            "items": {
+              "type": "union",
+              "refs": [
+                "org.hypercerts.defs#uri",
+                "org.hypercerts.defs#smallBlob"
+              ]
+            },
+            "maxLength": 100
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared timestamp when this post was originally created."
+          },
+          "signatures": {
+            "type": "ref",
+            "ref": "app.certified.signature.defs#list",
+            "description": "Optional cryptographic signatures attesting to this record's content."
+          }
+        }
+      }
+    },
+    "replyRef": {
+      "type": "object",
+      "description": "The thread a reply belongs to. Same shape as app.bsky.feed.post#replyRef.",
+      "required": ["root", "parent"],
+      "properties": {
+        "root": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "Strong reference to the first post of the thread. The record referenced must conform with the lexicon app.certified.feed.post."
+        },
+        "parent": {
+          "type": "ref",
+          "ref": "com.atproto.repo.strongRef",
+          "description": "Strong reference to the post being replied to directly; the same as `root` when replying to the first post of the thread. The record referenced must conform with the lexicon app.certified.feed.post."
+        }
+      }
+    }
+  }
+}

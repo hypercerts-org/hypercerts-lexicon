@@ -298,6 +298,7 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 | **Entity Follow**    | `app.certified.graph.entityFollow` | Social-graph follow for non-account entities (e.g. a record, by AT-URI without a CID). Account (DID) follows stay in `app.certified.graph.follow`; `subject` is an open union for future non-DID entity kinds |
 | **Like**             | `app.certified.feed.like`          | Social feedback on any record (by strongRef); optional `via` credits the repost it was found through. Schema-compatible with `app.bsky.feed.like`                                                             |
 | **Repost**           | `app.certified.feed.repost`        | Resurfaces any record (by strongRef) to the reposter's followers; optional `via` traces repost chains. Schema-compatible with `app.bsky.feed.repost`                                                          |
+| **Post**             | `app.certified.feed.post`          | Standalone post with rich text, optional `reply`, and optional embed (images, video, link card, quoted record). Shared fields use the `app.bsky.feed.post` types so an app can cross-post                     |
 
 ### Signatures — cryptographic attestation
 
@@ -356,6 +357,7 @@ CERTIFIED
   graph/entityFollow ─────> record (by AT-URI) (non-account follow)
   feed/like ──────────────> record (by strongRef) (social like)
   feed/repost ────────────> record (by strongRef) (social repost)
+  feed/post ──────────────> post (reply) / record (embed) (standalone post)
   signature/defs           (shared #list and #inline defs)
   signature/proof          (remote attestation proof record)
 
@@ -580,6 +582,44 @@ fields including the optional `via` strongRef). A like is social
 feedback only — not an evaluation or acknowledgement. Count likes and
 reposts by `subject.uri`, not by the full strongRef, so edits to the
 subject do not split the count.
+
+### Writing a Post
+
+```typescript
+import { FEED_POST_NSID } from "@hypercerts-org/lexicon";
+
+const post = {
+  $type: FEED_POST_NSID,
+  text: "Planted 1,200 mangroves along the estuary this week.",
+  langs: ["en"],
+  // Optional embed — app.bsky.embed.images / video / gallery / external /
+  // record / recordWithMedia. Here: quote the activity the post is about.
+  embed: {
+    $type: "app.bsky.embed.record",
+    record: {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+      cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+    },
+  },
+  createdAt: new Date().toISOString(),
+  // Optional `reply` — thread under another post (root = first post of the
+  // thread, parent = post replied to directly). Omit for a standalone post.
+  // reply: { root: { uri, cid }, parent: { uri, cid } },
+};
+```
+
+A post is standalone by default; it does not need to reply to or attach
+to another record. `text` is optional (up to 5000 graphemes) and
+`attachments` takes `org.hypercerts.defs#uri` / `#smallBlob` items for
+supplementary files.
+
+Posts are kept out of `app.bsky.feed.post`, so publishing one does not
+write to Bluesky. To also post on Bluesky, write a second
+`app.bsky.feed.post` record with the same `text` (shortened to 300
+graphemes), `facets`, `embed`, `langs`, `labels`, and `tags`; the shared
+fields use the same types, and the blobs are already in the author's
+repo. That second write needs its own `repo:app.bsky.feed.post` scope;
+`app.certified.authWrite` does not cover it.
 
 ### Linking an EVM Wallet
 

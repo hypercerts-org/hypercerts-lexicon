@@ -550,11 +550,11 @@ A labeled URL reference.
 
 **Title:** Manage your Certified data
 
-**Detail:** Create, edit, and delete your Certified records (profile, badges, follows, likes, reposts, wallet links, and related data).
+**Detail:** Create, edit, and delete your Certified records (profile, badges, follows, posts, likes, reposts, wallet links, and related data).
 
 **Resource:** `repo`
 
-**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.feed.like`, `app.certified.feed.repost`, `app.certified.graph.entityFollow`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
+**Collections:** `app.certified.actor.organization`, `app.certified.actor.profile`, `app.certified.badge.award`, `app.certified.badge.definition`, `app.certified.badge.response`, `app.certified.feed.like`, `app.certified.feed.post`, `app.certified.feed.repost`, `app.certified.graph.entityFollow`, `app.certified.graph.follow`, `app.certified.link.evm`, `app.certified.location`, `app.certified.signature.proof`
 
 **Actions:** `create`, `update`, `delete`
 
@@ -574,6 +574,40 @@ A labeled URL reference.
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                 |
 | `via`        | `ref`    | ❌       | Optional strong reference to the record through which the subject was encountered, typically an app.certified.feed.repost. Lets AppViews credit the account that surfaced the subject. Mirrors the optional `via` field on app.bsky.feed.like; the referenced record may conform with any lexicon. |
 | `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                              |
+
+---
+
+### `app.certified.feed.post`
+
+**Description:** Record containing a post for certified feeds: an update, announcement, or other short-form content. A post stands on its own; it does not need to comment on, reply to, or attach to another record. Separate from app.bsky.feed.post so apps can publish without writing to Bluesky. Fields shared with app.bsky.feed.post use the same types, so an app can cross-post by also writing an app.bsky.feed.post with the same content.
+
+**Key:** `tid`
+
+#### Properties
+
+| Property      | Type       | Required | Description                                                                                                                                                                                                                                                                                       | Comments                             |
+| ------------- | ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `text`        | `string`   | ❌       | The primary post content. Optional, so a post may carry only an embed or attachments. The limit is higher than app.bsky.feed.post's 300 graphemes, so text may need shortening when cross-posting.                                                                                                | maxLength: 50000, maxGraphemes: 5000 |
+| `facets`      | `ref[]`    | ❌       | Rich text annotations for `text` (mentions, URLs, hashtags, etc.).                                                                                                                                                                                                                                |                                      |
+| `reply`       | `ref`      | ❌       | The thread a reply belongs to. Same shape as app.bsky.feed.post#replyRef.                                                                                                                                                                                                                         |                                      |
+| `embed`       | `union`    | ❌       | Optional featured media or quoted record: images, a video, a gallery, an external link card, a quoted record of any lexicon (e.g. an activity or another post), or a quoted record with media. Uses the app.bsky.embed lexicons, so the same embed is valid on a cross-posted app.bsky.feed.post. |                                      |
+| `langs`       | `string[]` | ❌       | Indicates human language of the post's primary text content.                                                                                                                                                                                                                                      | maxLength: 3                         |
+| `labels`      | `union`    | ❌       | Self-label values for this post. Effectively content warnings.                                                                                                                                                                                                                                    |                                      |
+| `tags`        | `string[]` | ❌       | Additional hashtags, in addition to any included in post text and facets.                                                                                                                                                                                                                         | maxLength: 8                         |
+| `attachments` | `union[]`  | ❌       | Supplementary files, documents, or external references (e.g. a full report PDF). Unlike `embed`, attachments are not featured media; app.bsky.feed.post has no equivalent field.                                                                                                                  | maxLength: 100                       |
+| `createdAt`   | `string`   | ✅       | Client-declared timestamp when this post was originally created.                                                                                                                                                                                                                                  |                                      |
+| `signatures`  | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                             |                                      |
+
+#### Defs
+
+##### `app.certified.feed.post#replyRef`
+
+The thread a reply belongs to. Same shape as app.bsky.feed.post#replyRef.
+
+| Property | Type  | Required | Description                                                                                                                                                                                            |
+| -------- | ----- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `root`   | `ref` | ✅       | Strong reference to the first post of the thread. The record referenced must conform with the lexicon app.certified.feed.post.                                                                         |
+| `parent` | `ref` | ✅       | Strong reference to the post being replied to directly; the same as `root` when replying to the first post of the thread. The record referenced must conform with the lexicon app.certified.feed.post. |
 
 ---
 
@@ -798,6 +832,170 @@ Object containing a large image
 
 External lexicons from other protocols and systems.
 
+### `app.bsky.embed.defs`
+
+#### Defs
+
+##### `app.bsky.embed.defs#aspectRatio`
+
+width:height represents an aspect ratio. It may be approximate, and may not correspond to absolute dimensions in any given unit.
+
+| Property | Type      | Required | Description | Comments   |
+| -------- | --------- | -------- | ----------- | ---------- |
+| `width`  | `integer` | ✅       |             | minimum: 1 |
+| `height` | `integer` | ✅       |             | minimum: 1 |
+
+---
+
+### `app.bsky.embed.external`
+
+**Description:** A representation of some externally linked content (eg, a URL and 'card'), embedded in a Bluesky record (eg, a post).
+
+#### Properties
+
+| Property   | Type  | Required | Description |
+| ---------- | ----- | -------- | ----------- |
+| `external` | `ref` | ✅       |             |
+
+#### Defs
+
+##### `app.bsky.embed.external#external`
+
+| Property         | Type     | Required | Description                                                           | Comments                             |
+| ---------------- | -------- | -------- | --------------------------------------------------------------------- | ------------------------------------ |
+| `uri`            | `string` | ✅       |                                                                       |                                      |
+| `title`          | `string` | ✅       |                                                                       |                                      |
+| `description`    | `string` | ✅       |                                                                       |                                      |
+| `thumb`          | `blob`   | ❌       |                                                                       | maxSize: 1000000, accepts: `image/*` |
+| `associatedRefs` | `ref[]`  | ❌       | StrongRefs (uri+cid) of the Atmosphere records that backed this view. |                                      |
+
+---
+
+### `app.bsky.embed.gallery`
+
+#### Properties
+
+| Property | Type      | Required | Description                                                                                                                             | Comments      |
+| -------- | --------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `items`  | `union[]` | ✅       | The schema-level maxLength of 20 is a future-proof ceiling. Clients should currently enforce a soft limit of 10 items in authoring UIs. | maxLength: 20 |
+
+#### Defs
+
+##### `app.bsky.embed.gallery#image`
+
+| Property      | Type     | Required | Description                                           | Comments                             |
+| ------------- | -------- | -------- | ----------------------------------------------------- | ------------------------------------ |
+| `image`       | `blob`   | ✅       |                                                       | maxSize: 2000000, accepts: `image/*` |
+| `alt`         | `string` | ✅       | Alt text description of the image, for accessibility. |                                      |
+| `aspectRatio` | `ref`    | ✅       |                                                       |                                      |
+
+##### `app.bsky.embed.gallery#view`
+
+| Property | Type      | Required | Description |
+| -------- | --------- | -------- | ----------- |
+| `items`  | `union[]` | ✅       |             |
+
+##### `app.bsky.embed.gallery#viewImage`
+
+| Property      | Type     | Required | Description                                                                                                                                                           |
+| ------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thumbnail`   | `string` | ✅       | Fully-qualified URL where a thumbnail of the image can be fetched. For example, CDN location provided by the App View.                                                |
+| `fullsize`    | `string` | ✅       | Fully-qualified URL where a large version of the image can be fetched. May or may not be the exact original blob. For example, CDN location provided by the App View. |
+| `alt`         | `string` | ✅       | Alt text description of the image, for accessibility.                                                                                                                 |
+| `aspectRatio` | `ref`    | ✅       |                                                                                                                                                                       |
+
+---
+
+### `app.bsky.embed.images`
+
+#### Properties
+
+| Property | Type    | Required | Description | Comments     |
+| -------- | ------- | -------- | ----------- | ------------ |
+| `images` | `ref[]` | ✅       |             | maxLength: 4 |
+
+#### Defs
+
+##### `app.bsky.embed.images#image`
+
+| Property      | Type     | Required | Description                                                      | Comments                             |
+| ------------- | -------- | -------- | ---------------------------------------------------------------- | ------------------------------------ |
+| `image`       | `blob`   | ✅       | The raw image file. May be up to 2 MB, formerly limited to 1 MB. | maxSize: 2000000, accepts: `image/*` |
+| `alt`         | `string` | ✅       | Alt text description of the image, for accessibility.            |                                      |
+| `aspectRatio` | `ref`    | ❌       |                                                                  |                                      |
+
+##### `app.bsky.embed.images#view`
+
+| Property | Type    | Required | Description | Comments     |
+| -------- | ------- | -------- | ----------- | ------------ |
+| `images` | `ref[]` | ✅       |             | maxLength: 4 |
+
+##### `app.bsky.embed.images#viewImage`
+
+| Property      | Type     | Required | Description                                                                                                                                                           |
+| ------------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `thumb`       | `string` | ✅       | Fully-qualified URL where a thumbnail of the image can be fetched. For example, CDN location provided by the App View.                                                |
+| `fullsize`    | `string` | ✅       | Fully-qualified URL where a large version of the image can be fetched. May or may not be the exact original blob. For example, CDN location provided by the App View. |
+| `alt`         | `string` | ✅       | Alt text description of the image, for accessibility.                                                                                                                 |
+| `aspectRatio` | `ref`    | ❌       |                                                                                                                                                                       |
+
+---
+
+### `app.bsky.embed.record`
+
+#### Properties
+
+| Property | Type  | Required | Description |
+| -------- | ----- | -------- | ----------- |
+| `record` | `ref` | ✅       |             |
+
+---
+
+### `app.bsky.embed.recordWithMedia`
+
+#### Properties
+
+| Property | Type    | Required | Description |
+| -------- | ------- | -------- | ----------- |
+| `record` | `ref`   | ✅       |             |
+| `media`  | `union` | ✅       |             |
+
+---
+
+### `app.bsky.embed.video`
+
+#### Properties
+
+| Property       | Type     | Required | Description                                                        | Comments                                 |
+| -------------- | -------- | -------- | ------------------------------------------------------------------ | ---------------------------------------- |
+| `video`        | `blob`   | ✅       | The mp4 video file. May be up to 300mb, formerly limited to 100mb. | maxSize: 300000000, accepts: `video/mp4` |
+| `captions`     | `ref[]`  | ❌       |                                                                    | maxLength: 20                            |
+| `alt`          | `string` | ❌       | Alt text description of the video, for accessibility.              |                                          |
+| `aspectRatio`  | `ref`    | ❌       |                                                                    |                                          |
+| `presentation` | `string` | ❌       | A hint to the client about how to present the video.               | Known values: `default`, `gif`           |
+
+#### Defs
+
+##### `app.bsky.embed.video#caption`
+
+| Property | Type     | Required | Description | Comments                            |
+| -------- | -------- | -------- | ----------- | ----------------------------------- |
+| `lang`   | `string` | ✅       |             |                                     |
+| `file`   | `blob`   | ✅       |             | maxSize: 20000, accepts: `text/vtt` |
+
+##### `app.bsky.embed.video#view`
+
+| Property       | Type     | Required | Description                                          | Comments                       |
+| -------------- | -------- | -------- | ---------------------------------------------------- | ------------------------------ |
+| `cid`          | `string` | ✅       |                                                      |                                |
+| `playlist`     | `string` | ✅       |                                                      |                                |
+| `thumbnail`    | `string` | ❌       |                                                      |                                |
+| `alt`          | `string` | ❌       |                                                      |                                |
+| `aspectRatio`  | `ref`    | ❌       |                                                      |                                |
+| `presentation` | `string` | ❌       | A hint to the client about how to present the video. | Known values: `default`, `gif` |
+
+---
+
 ### `app.bsky.richtext.facet`
 
 **Description:** Annotation of a sub-string within rich text.
@@ -843,6 +1041,67 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 | ----------- | --------- | -------- | ----------- | ---------- |
 | `byteStart` | `integer` | ✅       |             | minimum: 0 |
 | `byteEnd`   | `integer` | ✅       |             | minimum: 0 |
+
+---
+
+### `com.atproto.label.defs`
+
+#### Defs
+
+##### `com.atproto.label.defs#label`
+
+Metadata tag on an atproto resource (eg, repo or record).
+
+| Property | Type      | Required | Description                                                                               | Comments       |
+| -------- | --------- | -------- | ----------------------------------------------------------------------------------------- | -------------- |
+| `ver`    | `integer` | ❌       | The AT Protocol version of the label object.                                              |                |
+| `src`    | `string`  | ✅       | DID of the actor who created this label.                                                  |                |
+| `uri`    | `string`  | ✅       | AT URI of the record, repository (account), or other resource that this label applies to. |                |
+| `cid`    | `string`  | ❌       | Optionally, CID specifying the specific version of 'uri' resource this label applies to.  |                |
+| `val`    | `string`  | ✅       | The short string name of the value or type of this label.                                 | maxLength: 128 |
+| `neg`    | `boolean` | ❌       | If true, this is a negation label, overwriting a previous label.                          |                |
+| `cts`    | `string`  | ✅       | Timestamp when this label was created.                                                    |                |
+| `exp`    | `string`  | ❌       | Timestamp at which this label expires (no longer applies).                                |                |
+| `sig`    | `bytes`   | ❌       | Signature of dag-cbor encoded label.                                                      |                |
+
+##### `com.atproto.label.defs#selfLabels`
+
+Metadata tags on an atproto record, published by the author within the record.
+
+| Property | Type    | Required | Description | Comments      |
+| -------- | ------- | -------- | ----------- | ------------- |
+| `values` | `ref[]` | ✅       |             | maxLength: 10 |
+
+##### `com.atproto.label.defs#selfLabel`
+
+Metadata tag on an atproto record, published by the author within the record. Note that schemas should use #selfLabels, not #selfLabel.
+
+| Property | Type     | Required | Description                                               | Comments       |
+| -------- | -------- | -------- | --------------------------------------------------------- | -------------- |
+| `val`    | `string` | ✅       | The short string name of the value or type of this label. | maxLength: 128 |
+
+##### `com.atproto.label.defs#labelValueDefinition`
+
+Declares a label value and its expected interpretations and behaviors.
+
+| Property         | Type      | Required | Description                                                                                                                                              | Comments                                 |
+| ---------------- | --------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `identifier`     | `string`  | ✅       | The value of the label being defined. Must only include lowercase ascii and the '-' character ([a-z-]+).                                                 | maxLength: 100, maxGraphemes: 100        |
+| `severity`       | `string`  | ✅       | How should a client visually convey this label? 'inform' means neutral and informational; 'alert' means negative and warning; 'none' means show nothing. | Known values: `inform`, `alert`, `none`  |
+| `blurs`          | `string`  | ✅       | What should this label hide in the UI, if applied? 'content' hides all of the target; 'media' hides the images/video/audio; 'none' hides nothing.        | Known values: `content`, `media`, `none` |
+| `defaultSetting` | `string`  | ❌       | The default setting for this label.                                                                                                                      | Known values: `ignore`, `warn`, `hide`   |
+| `adultOnly`      | `boolean` | ❌       | Does the user need to have adult content enabled in order to configure this label?                                                                       |                                          |
+| `locales`        | `ref[]`   | ✅       |                                                                                                                                                          |                                          |
+
+##### `com.atproto.label.defs#labelValueDefinitionStrings`
+
+Strings which describe the label in the UI, localized into a specific language.
+
+| Property      | Type     | Required | Description                                                               | Comments                               |
+| ------------- | -------- | -------- | ------------------------------------------------------------------------- | -------------------------------------- |
+| `lang`        | `string` | ✅       | The code of the language these strings are written in.                    |                                        |
+| `name`        | `string` | ✅       | A short human-readable name for the label.                                | maxLength: 640, maxGraphemes: 64       |
+| `description` | `string` | ✅       | A longer description of what the label means and why it might be applied. | maxLength: 100000, maxGraphemes: 10000 |
 
 ---
 

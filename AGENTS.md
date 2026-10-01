@@ -213,7 +213,9 @@ lexicons/               Source of truth (committed)
   org/hypercerts/         Hypercerts protocol lexicons
   org/hyperboards/        Hyperboards visual layer lexicons
   app/certified/          Shared/certified lexicons
-  com/atproto/            ATProto external references
+  app/bsky/               Bluesky external references (vendored)
+  com/atproto/            ATProto external references (vendored)
+  pub/leaflet/            Leaflet external references (vendored)
 
 generated/              Auto-generated TypeScript (gitignored)
 dist/                   Built bundles (gitignored)
@@ -222,6 +224,27 @@ scripts/                Build and codegen scripts
 
 > **Never edit `generated/` or `dist/` directly** — they are
 > regenerated from lexicon JSON files.
+
+### Vendored external lexicons
+
+Lexicons under `lexicons/app/bsky/`, `lexicons/com/atproto/`, and
+`lexicons/pub/leaflet/` are copies of other authorities' lexicons. They
+exist so codegen and runtime validation can resolve refs into those
+namespaces. Copy them from upstream; never edit them by hand.
+
+Three Bluesky embed lexicons are deliberately **trimmed**:
+`app.bsky.embed.external`, `app.bsky.embed.record`, and
+`app.bsky.embed.recordWithMedia` keep only their record-side defs
+(`main`, plus `#external` for `external`). Their AppView `view*` defs
+are dropped, together with `#colorRGB` on `external`, which only those
+view defs use. The view defs would pull in eight more lexicons
+(`app.bsky.actor.defs`, `app.bsky.feed.defs`, `app.bsky.graph.defs`, …),
+and they never appear in stored records. The other `app.bsky.*` and
+`com.atproto.*` files match upstream apart from formatting.
+
+The `app.bsky.embed.*` and `com.atproto.label.defs` files were copied
+from [bluesky-social/atproto@`52e51de`](https://github.com/bluesky-social/atproto/tree/52e51de0fc7b27173fe7ecc2c7b47ec476a8c1bf/lexicons).
+When re-syncing, apply the same trim to those three files.
 
 ## Common Patterns
 

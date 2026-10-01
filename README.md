@@ -60,6 +60,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   graph/entityFollow ──────► record (by AT-URI)  (non-account follow)
   feed/like ───────────────► record (by strongRef)  (social like)
   feed/repost ─────────────► record (by strongRef)  (social repost)
+  feed/post ───────────────► post (reply) / record (embed)  (standalone post)
   signature/defs            (shared #list and #inline defs)
   signature/proof           (remote attestation proof record)
 ```
@@ -308,6 +309,7 @@ await agent.api.com.atproto.repo.createRecord({
 | **Entity Follow**    | `app.certified.graph.entityFollow` | Social-graph follow relationship for non-account entities (e.g. a record, referenced by AT-URI without a CID so the follow survives updates). Account (DID) follows remain in `app.certified.graph.follow`; `subject` is an open union so future non-DID entity kinds can be added non-breakingly. |
 | **Like**             | `app.certified.feed.like`          | Social feedback on any record, referenced by strongRef. Optional `via` credits the repost it was found through. Schema-compatible with `app.bsky.feed.like`.                                                                                                                                       |
 | **Repost**           | `app.certified.feed.repost`        | Resurfaces any record (by strongRef, pinned to the version seen) to the reposter's followers. Optional `via` traces repost chains. Schema-compatible with `app.bsky.feed.repost`.                                                                                                                  |
+| **Post**             | `app.certified.feed.post`          | Standalone post (update, announcement) with rich text, optional `reply`, an optional embed (images, video, link card, quoted record), self-labels, tags, and attachments. Kept out of Bluesky; shared fields use the `app.bsky.feed.post` types so an app can cross-post.                          |
 
 ### Signatures (`app.certified.signature.*`)
 
@@ -919,6 +921,52 @@ The optional `via` field on both records is a strongRef to the record
 through which the subject was encountered — typically an
 `app.certified.feed.repost` — mirroring the equivalent field on
 `app.bsky.feed.like` and `app.bsky.feed.repost`.
+
+### Writing posts
+
+`app.certified.feed.post` is the standalone post for `certified.app`: an
+update, announcement, or other short-form content that does not need to
+comment on, reply to, or attach to another record. Posts are written to
+`app.certified.feed.post`, not `app.bsky.feed.post`, so an app can
+publish them without writing to Bluesky.
+
+The fields it shares with `app.bsky.feed.post` (`text`, `facets`,
+`reply`, `embed`, `langs`, `labels`, `tags`) use the same types. To also
+post on Bluesky, an app writes a second record, an `app.bsky.feed.post`
+with the same content. Both records live in the author's repository, so
+the embed and its blobs can be reused as-is. `text` may need shortening:
+Bluesky allows 300 graphemes, a certified post 5000. `attachments` has no
+Bluesky equivalent. The second write needs its own `repo:app.bsky.feed.post`
+OAuth scope; `app.certified.authWrite` does not cover it.
+
+`reply` is optional and threads a post under another post; omit it for a
+standalone post. To post about a record (an activity, a collection,
+another post), quote it with an `app.bsky.embed.record` embed.
+
+```typescript
+import { FEED_POST_NSID } from "@hypercerts-org/lexicon";
+
+const post = {
+  $type: FEED_POST_NSID,
+  text: "Planted 1,200 mangroves along the estuary this week.",
+  langs: ["en"],
+  // Optional: quote the record this post is about.
+  embed: {
+    $type: "app.bsky.embed.record",
+    record: {
+      uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
+      cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+    },
+  },
+  createdAt: new Date().toISOString(),
+  // Optional `reply` — set to thread this post under another post. `root`
+  // is the first post of the thread, `parent` the post replied to directly.
+  // reply: {
+  //   root: { uri: "at://did:plc:bob/app.certified.feed.post/3k2def", cid: "bafy…" },
+  //   parent: { uri: "at://did:plc:bob/app.certified.feed.post/3k2def", cid: "bafy…" },
+  // },
+};
+```
 
 ### Linking ATProto Identity to EVM Wallets
 
