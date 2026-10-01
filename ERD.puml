@@ -232,6 +232,21 @@ dataclass repost {
     !endif
 }
 
+' app.certified.feed.post
+' A standalone post; reply and embed are both optional.
+dataclass post {
+    !if (SHOW_FIELDS == "true")
+    text?
+    reply?
+    embed?
+    langs[]?
+    labels?
+    tags[]?
+    attachments[]?
+    createdAt
+    !endif
+}
+
 ' com.atproto.repo.strongRef
 ' Liked and reposted records are pinned to the version the author saw.
 dataclass strongRef {
@@ -519,6 +534,11 @@ like::subject --> strongRef : likes
 repost::subject --> strongRef : reposts
 like::via --> repost : via
 repost::via --> repost : via
+
+' app.certified.feed.post threads under another post via reply (root and
+' parent strongRefs); a record embed quotes any record by strongRef
+post::reply --> post : replies to
+post::embed --> strongRef : quotes
 ' This screws up the layout
 'badgeAward::subject --[norank]-> collection
 

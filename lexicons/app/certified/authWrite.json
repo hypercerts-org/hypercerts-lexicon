@@ -5,7 +5,7 @@
     "main": {
       "type": "permission-set",
       "title": "Manage your Certified data",
-      "detail": "Create, edit, and delete your Certified records (profile, badges, follows, likes, reposts, wallet links, and related data).",
+      "detail": "Create, edit, and delete your Certified records (profile, badges, follows, posts, likes, reposts, wallet links, and related data).",
       "permissions": [
         {
           "type": "permission",
@@ -17,6 +17,7 @@
             "app.certified.badge.definition",
             "app.certified.badge.response",
             "app.certified.feed.like",
+            "app.certified.feed.post",
             "app.certified.feed.repost",
             "app.certified.graph.entityFollow",
             "app.certified.graph.follow",

@@ -104,6 +104,16 @@ When both are used, the style guide recommends a **10–20:1 ratio** for `maxLen
 | -------- | -------------- | --------- | ------------ | --------------------------------------------------------- | ------------------------------------ |
 | `weight` | maxLength only | 50        | —            | Machine-oriented numeric string; never displayed as prose | 50 bytes; generous for weight values |
 
+## Post (`app.certified.feed.post`)
+
+| Field                 | Constraint      | maxLength | maxGraphemes | Why this constraint type                             | Why this value                                                                                       |
+| --------------------- | --------------- | --------- | ------------ | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `text`                | both            | 50000     | 5000         | Human-readable post body displayed in UI             | 5000 graphemes × 10:1 ratio = 50000 bytes; room for updates and reports beyond Bluesky's 300         |
+| `tags` (array)        | array maxLength | 8         | —            | Array item count limit; not a string                 | Matches `app.bsky.feed.post` `tags`                                                                  |
+| `tags[]`              | both            | 640       | 64           | Hashtag text displayed in UI                         | Matches `app.bsky.feed.post` `tags` and `app.bsky.richtext.facet#tag`, so tags survive cross-posting |
+| `langs` (array)       | array maxLength | 3         | —            | Array item count limit; items are `format: language` | Matches `app.bsky.feed.post` `langs`                                                                 |
+| `attachments` (array) | array maxLength | 100       | —            | Array item count limit; not a string                 | Matches `org.hypercerts.context.attachment` `content`                                                |
+
 ## Fields Without Length Constraints (by design)
 
 The following string fields use `format` and therefore do **not** receive `maxLength`/`maxGraphemes` per the style guide:
