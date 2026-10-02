@@ -56,6 +56,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/profile             (user profile)
   actor/organization        (org metadata)
   badge/response ──► badge/award ──► badge/definition
+  badge/award ────────────► custom typed data (inline or strongRef)
   graph/follow ────────────► account DID  (social follow)
   graph/entityFollow ──────► record (by AT-URI)  (non-account follow)
   feed/like ───────────────► record (by strongRef)  (social like)
@@ -373,6 +374,43 @@ by value to "snapshot" it. A strongRef + CID already provides the
 snapshot semantic, and it's what the lexicon uses across
 `badge.award.badge`, `badge.response.badgeAward`, `funding.receipt.for`,
 and similar fields where the historical content needs to stay stable.
+
+### Badge extensions declare a contract on the definition
+
+Badge awards can carry optional `extensions`: an open-union array of inline
+typed objects and `com.atproto.repo.strongRef` objects. Integrators define
+their own extension lexicons; the shared badge schema does not need to
+enumerate each project's types. Inline data avoids a separate record write
+and read, while a strong reference allows a separately stored, version-pinned
+payload. Both forms can appear in the same array (at most 20 entries).
+
+A badge definition is the type of its awards, so it also declares the
+extension data that belongs to the badge. The optional `extensionTypes` array
+holds up to 20 entries of the form `{ type, required }`. `type` is a fully
+qualified payload type identifier (at most 512 bytes), such as
+`org.example.goodmarket.defs#approvalMetadata` for an inline object or
+`org.example.goodmarket.approvalMetadata` for a referenced record. `badgeType`
+remains the broad category (for example, `certification`), not the extension
+schema identifier.
+
+Two rules apply, using the definition version referenced by the award:
+
+1. An award that lacks an extension marked `required: true` is not a valid
+   award of the badge. A payload that fails its own schema counts as missing.
+2. An extension whose type is not listed is outside the badge's contract. The
+   award stays valid; consumers may ignore the extension and should not present
+   it as data defined by the badge.
+
+Omitting `extensionTypes` or leaving it empty declares no extensions. For a
+strong reference, the payload type is the collection NSID in its AT-URI, not
+the wrapper's `com.atproto.repo.strongRef` type.
+
+**Lexicon validation alone does not enforce this cross-record contract or
+validate third-party inline payloads admitted by the open union.** Consumers
+must perform those checks separately.
+
+See [Badge extensions](docs/design/badge-extensions.md) for the Good Market
+Approved example, publishing requirements, and consumer behavior.
 
 ## Entity Relationship Diagram
 

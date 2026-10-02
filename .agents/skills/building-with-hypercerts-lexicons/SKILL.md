@@ -352,6 +352,7 @@ CERTIFIED
   actor/profile            (user profile)
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
+  badge/award ────────────> custom typed data (inline or strongRef)
   graph/follow ───────────> account DID (social follow)
   graph/entityFollow ─────> record (by AT-URI) (non-account follow)
   feed/like ──────────────> record (by strongRef) (social like)
@@ -367,6 +368,46 @@ CERTIFIED
 Every arrow is a `strongRef` or union reference stored on AT Protocol.
 
 ## Common Patterns
+
+### Badge extensions
+
+`app.certified.badge.award.extensions` is an optional array (maximum 20)
+containing inline typed objects, `com.atproto.repo.strongRef` objects, or both.
+Define custom data in your own lexicon, not as new shared badge fields. Inline
+payloads avoid separate record writes and reads; references pin separately
+stored records by URI and CID. Strong references in this union must include
+`$type: "com.atproto.repo.strongRef"` as well as `uri` and `cid`.
+
+`app.certified.badge.definition.extensionTypes` declares the extension types
+that belong to a badge: an optional array (maximum 20) of `{ type, required }`
+entries. `type` is a payload type identifier (at most 512 bytes): a full
+Lexicon reference such as `org.example.goodmarket.defs#approvalMetadata` for
+an inline object, or a record NSID such as
+`org.example.goodmarket.approvalMetadata` for a referenced record. `required`
+defaults to false. `badgeType` still describes the badge's broad category, not
+its extension type.
+
+Consumers apply two rules, using the definition version referenced by the
+award. First, an award that lacks a `required: true` extension is not a valid
+award of the badge; a payload that fails its own schema counts as missing.
+Second, an extension whose type is not listed is outside the badge's contract:
+the award stays valid, and the extension may be ignored but must not be
+presented as data defined by the badge. Omitting `extensionTypes` or leaving
+it empty declares no extensions. Match inline payloads by exact `$type` and
+references by the collection NSID in the AT-URI, not the strongRef wrapper's
+type. A required entry names one form (inline or referenced), so list only the
+form you issue.
+
+The shared Lexicon validator checks the carrier structure, not this
+cross-record contract or arbitrary third-party inline fields. Register and
+validate your own extension schemas separately even when they are included in
+the same validator registry.
+
+Good Market Approved can use a custom payload with just `sectors: string[]`
+and `focus: string[]`. The placeholder identifiers above are illustrative, not
+existing Good Market lexicons. See the repository's
+[badge extension guide](https://github.com/hypercerts-org/hypercerts-lexicon/blob/main/docs/design/badge-extensions.md)
+for complete inline and referenced examples.
 
 ### Creating an Activity (Hypercert)
 
