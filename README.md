@@ -384,25 +384,30 @@ enumerate each project's types. Inline data avoids a separate record write
 and read, while a strong reference allows a separately stored, version-pinned
 payload. Both forms can appear in the same array (at most 20 entries).
 
-Badge definitions can declare optional `extensionTypes`: up to 20 fully
-qualified payload type identifiers (each at most 512 bytes), such as
+A badge definition is the type of its awards, so it also declares the
+extension data that belongs to the badge. The optional `extensionTypes` array
+holds up to 20 entries of the form `{ type, required }`. `type` is a fully
+qualified payload type identifier (at most 512 bytes), such as
 `org.example.goodmarket.defs#approvalMetadata` for an inline object or
-`org.example.goodmarket.approvalMetadata` for a referenced record. This lets
-consumers discover the expected data before any awards exist. `badgeType`
+`org.example.goodmarket.approvalMetadata` for a referenced record. `badgeType`
 remains the broad category (for example, `certification`), not the extension
 schema identifier.
 
-When `extensionTypes` is present, consumers must match each payload's `$type`
-exactly against it and validate the payload against its own schema. For a
-strong reference, check the referenced record's type and CID, not the wrapper's
-`com.atproto.repo.strongRef` type. Use the definition version referenced by the
-award. Omission declares no restriction; an empty list allows no extensions.
-The listed types are alternatives, not mandatory payloads.
+Two rules apply, using the definition version referenced by the award:
+
+1. An award that lacks an extension marked `required: true` is not a valid
+   award of the badge. A payload that fails its own schema counts as missing.
+2. An extension whose type is not listed is outside the badge's contract. The
+   award stays valid; consumers may ignore the extension and should not present
+   it as data defined by the badge.
+
+Omitting `extensionTypes` or leaving it empty declares no extensions. For a
+strong reference, the payload type is the collection NSID in its AT-URI, not
+the wrapper's `com.atproto.repo.strongRef` type.
 
 **Lexicon validation alone does not enforce this cross-record contract or
 validate third-party inline payloads admitted by the open union.** Consumers
-must perform those checks separately and keep unsupported or unavailable
-extension data from hiding the base award or being presented as verified data.
+must perform those checks separately.
 
 See [Badge extensions](docs/design/badge-extensions.md) for the Good Market
 Approved example, publishing requirements, and consumer behavior.

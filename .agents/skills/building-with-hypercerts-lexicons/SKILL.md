@@ -378,24 +378,30 @@ payloads avoid separate record writes and reads; references pin separately
 stored records by URI and CID. Strong references in this union must include
 `$type: "com.atproto.repo.strongRef"` as well as `uri` and `cid`.
 
-`app.certified.badge.definition.extensionTypes` is an optional allowlist
-(maximum 20, each identifier at most 512 bytes) of payload `$type` identifiers:
-full Lexicon references such as `org.example.goodmarket.defs#approvalMetadata`
-for inline objects, or record NSIDs such as
-`org.example.goodmarket.approvalMetadata` for referenced records. Omission
-declares no restriction; an empty list allows no extensions. These are allowed
-alternatives, not required extensions. `badgeType` still describes the badge's
-broad category, not its extension type.
+`app.certified.badge.definition.extensionTypes` declares the extension types
+that belong to a badge: an optional array (maximum 20) of `{ type, required }`
+entries. `type` is a payload type identifier (at most 512 bytes): a full
+Lexicon reference such as `org.example.goodmarket.defs#approvalMetadata` for
+an inline object, or a record NSID such as
+`org.example.goodmarket.approvalMetadata` for a referenced record. `required`
+defaults to false. `badgeType` still describes the badge's broad category, not
+its extension type.
 
-Consumers must use the definition version referenced by the award, match each
-payload's `$type` exactly against `extensionTypes` when present, and validate
-the payload against its own schema. For references, resolve and verify the
-referenced version, then check its type, not the strongRef wrapper's type.
+Consumers apply two rules, using the definition version referenced by the
+award. First, an award that lacks a `required: true` extension is not a valid
+award of the badge; a payload that fails its own schema counts as missing.
+Second, an extension whose type is not listed is outside the badge's contract:
+the award stays valid, and the extension may be ignored but must not be
+presented as data defined by the badge. Omitting `extensionTypes` or leaving
+it empty declares no extensions. Match inline payloads by exact `$type` and
+references by the collection NSID in the AT-URI, not the strongRef wrapper's
+type. A required entry names one form (inline or referenced), so list only the
+form you issue.
+
 The shared Lexicon validator checks the carrier structure, not this
-cross-record contract or arbitrary third-party inline fields. Unsupported or
-unavailable extensions must not hide the base award; do not present unchecked
-extension data as verified. Register and validate your own extension schemas
-separately even when they are included in the same validator registry.
+cross-record contract or arbitrary third-party inline fields. Register and
+validate your own extension schemas separately even when they are included in
+the same validator registry.
 
 Good Market Approved can use a custom payload with just `sectors: string[]`
 and `focus: string[]`. The placeholder identifiers above are illustrative, not

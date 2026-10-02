@@ -33,11 +33,11 @@
           },
           "extensions": {
             "type": "array",
-            "description": "Publisher-defined supplementary data for this award. Each entry is an inline typed object with a fully qualified $type, or a strong reference to a separately stored extension record. The open union permits third-party Lexicons without adding them to the shared badge schema. Consumers must validate payloads against their own schemas and, when declared, the referenced badge definition's extensionTypes. Unknown or unavailable extensions must not prevent displaying the base award. A strong reference pins the extension to a particular record version; updates require a new reference to use the new version.",
+            "description": "Publisher-defined supplementary data for this award. Each entry is an inline typed object with a fully qualified $type, or a strong reference to a separately stored extension record. The open union permits third-party Lexicons without adding them to the shared badge schema. The referenced badge definition's extensionTypes declares which types belong to the badge and which are required; an award lacking a required extension is invalid, and extensions of undeclared types are outside the badge's contract. Consumers must validate payloads against their own schemas. Unknown or undeclared extensions must not prevent displaying an otherwise valid award. A strong reference pins the extension to a particular record version; updates require a new reference to use the new version.",
             "maxLength": 20,
             "items": {
               "type": "union",
-              "description": "An inline third-party extension object, or a strong reference to an extension record of any Lexicon. For a strong reference, the allowed payload type is the referenced record's $type.",
+              "description": "An inline third-party extension object, or a strong reference to an extension record of any Lexicon. For a strong reference, the payload type is the referenced record's type, which is the collection NSID in its AT-URI.",
               "refs": ["com.atproto.repo.strongRef"]
             }
           },

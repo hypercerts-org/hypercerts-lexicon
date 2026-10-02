@@ -56,12 +56,11 @@
           },
           "extensionTypes": {
             "type": "array",
-            "description": "Allowed extension payload types for awards of this badge. Each entry is a record NSID (e.g. org.example.goodmarket.approvalMetadata) or a full Lexicon reference for an inline object (e.g. org.example.goodmarket.defs#approvalMetadata). If omitted, no extension type restriction is declared; an empty array allows no extensions. Entries are alternatives, not required payloads. Consumers must validate each extension against its schema and match its payload $type to this list using the definition version referenced by the award. For strong references, check the referenced record's $type, not com.atproto.repo.strongRef. This cross-record constraint is not enforced by Lexicon validation alone.",
+            "description": "Extension types that belong to this badge. Each entry names one payload type that awards of this badge carry in their extensions, and whether it is required. An award that lacks a required extension is not a valid award of this badge. Extensions whose type is not listed are outside this badge's contract: they do not invalidate the award, and consumers may ignore them. Omitting this field or leaving it empty declares no extensions. Consumers apply the definition version referenced by the award. This cross-record rule is not enforced by Lexicon validation alone.",
             "maxLength": 20,
             "items": {
-              "type": "string",
-              "description": "A fully qualified Lexicon type identifier: a record NSID or an NSID with a named definition fragment. Compare the exact payload $type; no wildcards or prefix matching.",
-              "maxLength": 512
+              "type": "ref",
+              "ref": "#extensionType"
             }
           },
           "createdAt": {
@@ -74,6 +73,22 @@
             "ref": "app.certified.signature.defs#list",
             "description": "Optional cryptographic signatures attesting to this record's content."
           }
+        }
+      }
+    },
+    "extensionType": {
+      "type": "object",
+      "description": "Declares one extension payload type that belongs to a badge.",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Fully qualified Lexicon type identifier of the payload: a full Lexicon reference for an inline object (e.g. org.example.goodmarket.defs#approvalMetadata), or a record NSID for a strongly referenced record (e.g. org.example.goodmarket.approvalMetadata). Matched exactly against the inline object's $type, or against the collection NSID in a strong reference's AT-URI. No wildcards or prefix matching; a main definition is written as the bare NSID, without #main.",
+          "maxLength": 512
+        },
+        "required": {
+          "type": "boolean",
+          "description": "If true, every award of this badge must include an extension of this type, and an award without one is invalid. A payload that does not conform to its own schema counts as missing. If omitted or false, the extension is optional."
         }
       }
     }

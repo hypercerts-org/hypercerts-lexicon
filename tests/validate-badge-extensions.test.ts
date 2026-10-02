@@ -45,26 +45,31 @@ describe("app.certified.badge.definition extensionTypes", () => {
     ).toBe(true);
   });
 
-  it("accepts full inline identifiers and record NSIDs", () => {
-    const result = Definition.validateMain({
-      ...definition,
-      extensionTypes: [INLINE_TYPE, RECORD_TYPE],
-    });
+  it("accepts required and optional entries for inline identifiers and record NSIDs", () => {
+    const extensionTypes = [
+      { type: INLINE_TYPE, required: true },
+      { type: RECORD_TYPE, required: false },
+      { type: "org.example.other.metadata" },
+    ];
+    const result = Definition.validateMain({ ...definition, extensionTypes });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.value.extensionTypes).toEqual([INLINE_TYPE, RECORD_TYPE]);
+      expect(result.value.extensionTypes).toEqual(extensionTypes);
       expect(result.value.badgeType).toBe("certification");
     }
   });
 
-  it("enforces the 20-type array limit", () => {
+  it("enforces the 20-entry array limit", () => {
     for (const [count, success] of [
       [20, true],
       [21, false],
     ] as const) {
       expect(
         validate(
-          { ...definition, extensionTypes: Array(count).fill(INLINE_TYPE) },
+          {
+            ...definition,
+            extensionTypes: Array(count).fill({ type: INLINE_TYPE }),
+          },
           ids.AppCertifiedBadgeDefinition,
           "main",
           false,
@@ -80,7 +85,7 @@ describe("app.certified.badge.definition extensionTypes", () => {
     ] as const) {
       expect(
         validate(
-          { ...definition, extensionTypes: ["a".repeat(length)] },
+          { ...definition, extensionTypes: [{ type: "a".repeat(length) }] },
           ids.AppCertifiedBadgeDefinition,
           "main",
           false,
@@ -90,9 +95,13 @@ describe("app.certified.badge.definition extensionTypes", () => {
   });
 
   it.each(
-    [INLINE_TYPE, [42]].map((extensionTypes) => ({
-      extensionTypes,
-    })),
+    [
+      INLINE_TYPE,
+      [INLINE_TYPE],
+      [{ required: true }],
+      [{ type: 42 }],
+      [{ type: INLINE_TYPE, required: "yes" }],
+    ].map((extensionTypes) => ({ extensionTypes })),
   )("rejects a malformed extensionTypes value: %j", ({ extensionTypes }) => {
     const result = validate(
       { ...definition, extensionTypes },
@@ -203,14 +212,22 @@ describe("Good Market extension validation boundaries", () => {
     expect(registry.validate(INLINE_TYPE, invalidPayload).success).toBe(false);
   });
 
-  it("does not mistake carrier validation for definition allowlist enforcement", () => {
-    const restricted = { ...definition, extensionTypes: [INLINE_TYPE] };
+  it("does not mistake carrier validation for enforcement of the definition's contract", () => {
+    const declared = {
+      ...definition,
+      extensionTypes: [{ type: INLINE_TYPE, required: true }],
+    };
     const otherPayload = { $type: "org.example.other.metadata" };
-    expect(Definition.validateMain(restricted).success).toBe(true);
-    expect(
-      Award.validateMain({ ...award, extensions: [otherPayload] }).success,
-    ).toBe(true);
-    // An application must perform this cross-record check separately.
-    expect(restricted.extensionTypes.includes(otherPayload.$type)).toBe(false);
+    expect(Definition.validateMain(declared).success).toBe(true);
+    // Neither award carries the required extension, yet both pass carrier
+    // validation. An application must perform the cross-record check.
+    for (const extensions of [undefined, [otherPayload]]) {
+      expect(Award.validateMain({ ...award, extensions }).success).toBe(true);
+      const present = new Set((extensions ?? []).map((e) => e.$type));
+      const missing = declared.extensionTypes.filter(
+        (entry) => entry.required && !present.has(entry.type),
+      );
+      expect(missing).toHaveLength(1);
+    }
   });
 });

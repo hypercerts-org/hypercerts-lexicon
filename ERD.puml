@@ -200,8 +200,9 @@ dataclass badgeResponse {
 note right of badgeAward
   Extensions are inline typed objects or
   strong references to publisher-defined records.
-  Payload type must match extensionTypes
-  when declared by the referenced definition.
+  The referenced definition's extensionTypes
+  declares which types belong to the badge
+  and which are required.
 end note
 
 ' app.certified.graph.follow
