@@ -54,6 +54,16 @@
               "ref": "app.certified.defs#did"
             }
           },
+          "extensionTypes": {
+            "type": "array",
+            "description": "Allowed extension payload types for awards of this badge. Each entry is a record NSID (e.g. org.example.goodmarket.approvalMetadata) or a full Lexicon reference for an inline object (e.g. org.example.goodmarket.defs#approvalMetadata). If omitted, no extension type restriction is declared; an empty array allows no extensions. Entries are alternatives, not required payloads. Consumers must validate each extension against its schema and match its payload $type to this list using the definition version referenced by the award. For strong references, check the referenced record's $type, not com.atproto.repo.strongRef. This cross-record constraint is not enforced by Lexicon validation alone.",
+            "maxLength": 20,
+            "items": {
+              "type": "string",
+              "description": "A fully qualified Lexicon type identifier: a record NSID or an NSID with a named definition fragment. Compare the exact payload $type; no wildcards or prefix matching.",
+              "maxLength": 512
+            }
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",

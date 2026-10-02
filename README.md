@@ -56,6 +56,7 @@ CERTIFIED ─ shared lexicons (certified.app)
   actor/profile             (user profile)
   actor/organization        (org metadata)
   badge/response ──► badge/award ──► badge/definition
+  badge/award ────────────► custom typed data (inline or strongRef)
   graph/follow ────────────► account DID  (social follow)
   graph/entityFollow ──────► record (by AT-URI)  (non-account follow)
   feed/like ───────────────► record (by strongRef)  (social like)
@@ -373,6 +374,38 @@ by value to "snapshot" it. A strongRef + CID already provides the
 snapshot semantic, and it's what the lexicon uses across
 `badge.award.badge`, `badge.response.badgeAward`, `funding.receipt.for`,
 and similar fields where the historical content needs to stay stable.
+
+### Badge extensions declare a contract on the definition
+
+Badge awards can carry optional `extensions`: an open-union array of inline
+typed objects and `com.atproto.repo.strongRef` objects. Integrators define
+their own extension lexicons; the shared badge schema does not need to
+enumerate each project's types. Inline data avoids a separate record write
+and read, while a strong reference allows a separately stored, version-pinned
+payload. Both forms can appear in the same array (at most 20 entries).
+
+Badge definitions can declare optional `extensionTypes`: up to 20 fully
+qualified payload type identifiers (each at most 512 bytes), such as
+`org.example.goodmarket.defs#approvalMetadata` for an inline object or
+`org.example.goodmarket.approvalMetadata` for a referenced record. This lets
+consumers discover the expected data before any awards exist. `badgeType`
+remains the broad category (for example, `certification`), not the extension
+schema identifier.
+
+When `extensionTypes` is present, consumers must match each payload's `$type`
+exactly against it and validate the payload against its own schema. For a
+strong reference, check the referenced record's type and CID, not the wrapper's
+`com.atproto.repo.strongRef` type. Use the definition version referenced by the
+award. Omission declares no restriction; an empty list allows no extensions.
+The listed types are alternatives, not mandatory payloads.
+
+**Lexicon validation alone does not enforce this cross-record contract or
+validate third-party inline payloads admitted by the open union.** Consumers
+must perform those checks separately and keep unsupported or unavailable
+extension data from hiding the base award or being presented as verified data.
+
+See [Badge extensions](docs/design/badge-extensions.md) for the Good Market
+Approved example, publishing requirements, and consumer behavior.
 
 ## Entity Relationship Diagram
 

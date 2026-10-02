@@ -352,6 +352,7 @@ CERTIFIED
   actor/profile            (user profile)
   actor/organization       (org metadata)
   badge/response ──> badge/award ──> badge/definition
+  badge/award ────────────> custom typed data (inline or strongRef)
   graph/follow ───────────> account DID (social follow)
   graph/entityFollow ─────> record (by AT-URI) (non-account follow)
   feed/like ──────────────> record (by strongRef) (social like)
@@ -367,6 +368,40 @@ CERTIFIED
 Every arrow is a `strongRef` or union reference stored on AT Protocol.
 
 ## Common Patterns
+
+### Badge extensions
+
+`app.certified.badge.award.extensions` is an optional array (maximum 20)
+containing inline typed objects, `com.atproto.repo.strongRef` objects, or both.
+Define custom data in your own lexicon, not as new shared badge fields. Inline
+payloads avoid separate record writes and reads; references pin separately
+stored records by URI and CID. Strong references in this union must include
+`$type: "com.atproto.repo.strongRef"` as well as `uri` and `cid`.
+
+`app.certified.badge.definition.extensionTypes` is an optional allowlist
+(maximum 20, each identifier at most 512 bytes) of payload `$type` identifiers:
+full Lexicon references such as `org.example.goodmarket.defs#approvalMetadata`
+for inline objects, or record NSIDs such as
+`org.example.goodmarket.approvalMetadata` for referenced records. Omission
+declares no restriction; an empty list allows no extensions. These are allowed
+alternatives, not required extensions. `badgeType` still describes the badge's
+broad category, not its extension type.
+
+Consumers must use the definition version referenced by the award, match each
+payload's `$type` exactly against `extensionTypes` when present, and validate
+the payload against its own schema. For references, resolve and verify the
+referenced version, then check its type, not the strongRef wrapper's type.
+The shared Lexicon validator checks the carrier structure, not this
+cross-record contract or arbitrary third-party inline fields. Unsupported or
+unavailable extensions must not hide the base award; do not present unchecked
+extension data as verified. Register and validate your own extension schemas
+separately even when they are included in the same validator registry.
+
+Good Market Approved can use a custom payload with just `sectors: string[]`
+and `focus: string[]`. The placeholder identifiers above are illustrative, not
+existing Good Market lexicons. See the repository's
+[badge extension guide](https://github.com/hypercerts-org/hypercerts-lexicon/blob/main/docs/design/badge-extensions.md)
+for complete inline and referenced examples.
 
 ### Creating an Activity (Hypercert)
 

@@ -172,6 +172,7 @@ dataclass badgeDefinition {
     icon?
     description?
     allowedIssuers[]?
+    extensionTypes[]?
     createdAt
     !endif
 }
@@ -181,6 +182,8 @@ dataclass badgeAward {
     badge
     subject
     note?
+    url?
+    extensions[]?
     createdAt
     !endif
 }
@@ -193,6 +196,20 @@ dataclass badgeResponse {
     createdAt
     !endif
 }
+
+' Publisher-owned types are not additional shared Certified lexicons.
+entity "badge extension (publisher-defined type)" as badgeExtension #FFD4A3 {
+    !if (SHOW_FIELDS == "true")
+    $type
+    custom fields
+    !endif
+}
+
+note right of badgeExtension
+  Inline typed object or strongRef to a record.
+  Payload type must match extensionTypes
+  when declared by the referenced definition.
+end note
 
 ' app.certified.graph.follow
 dataclass follow {
@@ -502,6 +519,7 @@ fundingReceipt::to --> contributorEntity
 fundingReceipt::for --> activity : funds
 
 badgeAward::badge --> badgeDefinition
+badgeAward::extensions --> badgeExtension
 badgeResponse::badgeAward --> badgeAward
 badgeAward::subject --> contributorInformation
 badgeAward::subject --> activity
