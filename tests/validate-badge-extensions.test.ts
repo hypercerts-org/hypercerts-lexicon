@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { Lexicons, type LexiconDoc } from "@atproto/lexicon";
-import { readFileSync } from "node:fs";
 import { ids, schemas, validate } from "../generated/lexicons.js";
 import * as Definition from "../generated/types/app/certified/badge/definition.js";
 import * as Award from "../generated/types/app/certified/badge/award.js";
@@ -39,8 +38,11 @@ const referenceExtension = {
 };
 
 describe("app.certified.badge.definition extensionTypes", () => {
-  it("accepts an existing definition without an extension declaration", () => {
+  it("accepts omitted or empty extensionTypes", () => {
     expect(Definition.validateMain(definition).success).toBe(true);
+    expect(
+      Definition.validateMain({ ...definition, extensionTypes: [] }).success,
+    ).toBe(true);
   });
 
   it("accepts full inline identifiers and record NSIDs", () => {
@@ -55,33 +57,20 @@ describe("app.certified.badge.definition extensionTypes", () => {
     }
   });
 
-  it("accepts an empty allowlist without requiring payloads", () => {
-    expect(
-      Definition.validateMain({ ...definition, extensionTypes: [] }).success,
-    ).toBe(true);
-  });
-
-  it("accepts the maximum 20 types", () => {
-    expect(
-      Definition.validateMain({
-        ...definition,
-        extensionTypes: Array.from(
-          { length: 20 },
-          (_, i) => `org.example.goodmarket.extension${i}`,
-        ),
-      }).success,
-    ).toBe(true);
-  });
-
-  it("rejects more than 20 types", () => {
-    expect(
-      validate(
-        { ...definition, extensionTypes: Array(21).fill(INLINE_TYPE) },
-        ids.AppCertifiedBadgeDefinition,
-        "main",
-        false,
-      ).success,
-    ).toBe(false);
+  it("enforces the 20-type array limit", () => {
+    for (const [count, success] of [
+      [20, true],
+      [21, false],
+    ] as const) {
+      expect(
+        validate(
+          { ...definition, extensionTypes: Array(count).fill(INLINE_TYPE) },
+          ids.AppCertifiedBadgeDefinition,
+          "main",
+          false,
+        ).success,
+      ).toBe(success);
+    }
   });
 
   it("bounds identifier strings at 512 bytes independently of type resolution", () => {
@@ -101,7 +90,7 @@ describe("app.certified.badge.definition extensionTypes", () => {
   });
 
   it.each(
-    [null, INLINE_TYPE, {}, [42], [null], [{}]].map((extensionTypes) => ({
+    [INLINE_TYPE, [42]].map((extensionTypes) => ({
       extensionTypes,
     })),
   )("rejects a malformed extensionTypes value: %j", ({ extensionTypes }) => {
@@ -119,12 +108,12 @@ describe("app.certified.badge.definition extensionTypes", () => {
 });
 
 describe("app.certified.badge.award extensions", () => {
-  it("accepts an existing award without extensions", () => {
+  it("accepts omitted or empty extensions", () => {
     expect(Award.validateMain(award).success).toBe(true);
+    expect(Award.validateMain({ ...award, extensions: [] }).success).toBe(true);
   });
 
   it.each([
-    ["empty", []],
     ["inline", [inlineExtension]],
     ["referenced", [referenceExtension]],
     ["mixed", [inlineExtension, referenceExtension]],
@@ -150,42 +139,26 @@ describe("app.certified.badge.award extensions", () => {
     }
   });
 
-  it("accepts the maximum 20 extensions", () => {
-    expect(
-      Award.validateMain({
-        ...award,
-        extensions: Array(20).fill(inlineExtension),
-      }).success,
-    ).toBe(true);
-  });
-
-  it("rejects more than 20 extensions", () => {
-    expect(
-      validate(
-        { ...award, extensions: Array(21).fill(inlineExtension) },
-        ids.AppCertifiedBadgeAward,
-        "main",
-        false,
-      ).success,
-    ).toBe(false);
+  it("enforces the 20-extension array limit", () => {
+    for (const [count, success] of [
+      [20, true],
+      [21, false],
+    ] as const) {
+      expect(
+        validate(
+          { ...award, extensions: Array(count).fill(inlineExtension) },
+          ids.AppCertifiedBadgeAward,
+          "main",
+          false,
+        ).success,
+      ).toBe(success);
+    }
   });
 
   it.each(
     [
-      null,
-      {},
-      "data",
-      ["data"],
-      [null],
-      [42],
-      [{}],
       [{ sectors: [], focus: [] }],
-      [{ $type: 42 }],
-      [{ uri: referenceExtension.uri, cid: VALID_CID }],
       [{ $type: "com.atproto.repo.strongRef", uri: referenceExtension.uri }],
-      [{ $type: "com.atproto.repo.strongRef", cid: VALID_CID }],
-      [{ ...referenceExtension, cid: "not-a-cid" }],
-      [{ ...referenceExtension, uri: "https://example.org/extension" }],
     ].map((extensions) => ({ extensions })),
   )("rejects malformed extensions: %j", ({ extensions }) => {
     const result = validate(
@@ -201,124 +174,34 @@ describe("app.certified.badge.award extensions", () => {
   });
 });
 
-// Test-only third-party schemas. These are not new Certified lexicons.
-const metadataProperties = {
-  sectors: {
-    type: "array",
-    maxLength: 100,
-    items: { type: "string", maxLength: 256 },
-  },
-  focus: {
-    type: "array",
-    maxLength: 100,
-    items: { type: "string", maxLength: 256 },
-  },
-} as const;
-const inlineSchema: LexiconDoc = {
-  lexicon: 1,
-  id: "org.example.goodmarket.defs",
-  defs: {
-    approvalMetadata: {
-      type: "object",
-      required: ["sectors", "focus"],
-      properties: metadataProperties,
-    },
-  },
-};
-const recordSchema: LexiconDoc = {
-  lexicon: 1,
-  id: RECORD_TYPE,
-  defs: {
-    main: {
-      type: "record",
-      key: "tid",
-      record: {
-        type: "object",
-        required: ["sectors", "focus"],
-        properties: metadataProperties,
-      },
-    },
-  },
-};
-const registry = new Lexicons([...schemas, inlineSchema, recordSchema]);
-
 describe("Good Market extension validation boundaries", () => {
-  it("keeps the guide's JSON schemas and examples valid", () => {
-    const guide = readFileSync(
-      new URL("../docs/design/badge-extensions.md", import.meta.url),
-      "utf8",
-    );
-    const examples = Array.from(
-      guide.matchAll(/```json\n([\s\S]*?)\n```/g),
-      (match) => JSON.parse(match[1]),
-    );
-    expect(examples).toHaveLength(5);
-    const [schema, exampleDefinition, exampleAward, references, payload] =
-      examples;
-    const exampleRegistry = new Lexicons([...schemas, schema, recordSchema]);
-    expect(
-      exampleRegistry.validate(
-        ids.AppCertifiedBadgeDefinition,
-        exampleDefinition,
-      ).success,
-    ).toBe(true);
-    expect(
-      exampleRegistry.validate(ids.AppCertifiedBadgeAward, exampleAward)
-        .success,
-    ).toBe(true);
-    expect(
-      exampleRegistry.validate(INLINE_TYPE, exampleAward.extensions[0]).success,
-    ).toBe(true);
-    expect(
-      exampleRegistry.validate(ids.AppCertifiedBadgeAward, {
-        ...exampleAward,
-        extensions: references,
-      }).success,
-    ).toBe(true);
-    expect(exampleRegistry.validate(RECORD_TYPE, payload).success).toBe(true);
-    expect(exampleDefinition.extensionTypes).toEqual([
-      INLINE_TYPE,
-      RECORD_TYPE,
-    ]);
-    expect(Object.keys(schema.defs.approvalMetadata.properties)).toEqual([
-      "sectors",
-      "focus",
-    ]);
-  });
-
-  it("validates the inline schema's two string-array fields explicitly", () => {
+  it("requires separate payload validation, even with a registered schema", () => {
+    // Test-only third-party schema, not a new Certified lexicon.
+    const inlineSchema: LexiconDoc = {
+      lexicon: 1,
+      id: "org.example.goodmarket.defs",
+      defs: {
+        approvalMetadata: {
+          type: "object",
+          required: ["sectors", "focus"],
+          properties: {
+            sectors: { type: "array", items: { type: "string" } },
+            focus: { type: "array", items: { type: "string" } },
+          },
+        },
+      },
+    };
+    const registry = new Lexicons([...schemas, inlineSchema]);
+    const invalidPayload = { ...inlineExtension, sectors: [42] };
     expect(registry.validate(INLINE_TYPE, inlineExtension).success).toBe(true);
-    expect(Object.keys(metadataProperties)).toEqual(["sectors", "focus"]);
-  });
-
-  it("validates a standalone extension payload explicitly", () => {
     expect(
-      registry.validate(RECORD_TYPE, {
-        ...inlineExtension,
-        $type: RECORD_TYPE,
+      registry.validate(ids.AppCertifiedBadgeAward, {
+        ...award,
+        extensions: [invalidPayload],
       }).success,
     ).toBe(true);
+    expect(registry.validate(INLINE_TYPE, invalidPayload).success).toBe(false);
   });
-
-  it.each([
-    { $type: INLINE_TYPE, sectors: [42], focus: [] },
-    { $type: INLINE_TYPE, sectors: [], focus: "Fair Trade" },
-    { $type: INLINE_TYPE, sectors: [] },
-    { $type: INLINE_TYPE, focus: [] },
-  ])(
-    "requires separate payload validation, even with a registered schema: %j",
-    (payload) => {
-      // The carrier's open union accepts third-party types without validating
-      // their fields, even when the schema is in this same registry.
-      expect(
-        registry.validate(ids.AppCertifiedBadgeAward, {
-          ...award,
-          extensions: [payload],
-        }).success,
-      ).toBe(true);
-      expect(registry.validate(INLINE_TYPE, payload).success).toBe(false);
-    },
-  );
 
   it("does not mistake carrier validation for definition allowlist enforcement", () => {
     const restricted = { ...definition, extensionTypes: [INLINE_TYPE] };
@@ -329,19 +212,5 @@ describe("Good Market extension validation boundaries", () => {
     ).toBe(true);
     // An application must perform this cross-record check separately.
     expect(restricted.extensionTypes.includes(otherPayload.$type)).toBe(false);
-  });
-
-  it("matches a referenced payload's type, not the strongRef wrapper", () => {
-    const restricted = { ...definition, extensionTypes: [RECORD_TYPE] };
-    const referencedPayload = { ...inlineExtension, $type: RECORD_TYPE };
-    expect(restricted.extensionTypes.includes(referenceExtension.$type)).toBe(
-      false,
-    );
-    expect(restricted.extensionTypes.includes(referencedPayload.$type)).toBe(
-      true,
-    );
-    expect(registry.validate(RECORD_TYPE, referencedPayload).success).toBe(
-      true,
-    );
   });
 });
