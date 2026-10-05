@@ -104,6 +104,14 @@ When both are used, the style guide recommends a **10–20:1 ratio** for `maxLen
 | -------- | -------------- | --------- | ------------ | --------------------------------------------------------- | ------------------------------------ |
 | `weight` | maxLength only | 50        | —            | Machine-oriented numeric string; never displayed as prose | 50 bytes; generous for weight values |
 
+## Organization (`app.certified.actor.organization`)
+
+| Field                         | Constraint      | maxLength | maxGraphemes | Why this constraint type                                       | Why this value                                                        |
+| ----------------------------- | --------------- | --------- | ------------ | -------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `legalName`                   | both            | 2560      | 256          | Human-readable name displayed in UI; legal names can be long   | 256 graphemes × 10:1 ratio = 2560 bytes; covers long registered names |
+| `publicEmail`                 | maxLength only  | 254       | —            | Machine-oriented address; ATProto has no `email` string format | 254 bytes; the maximum length of a valid email address (RFC 5321)     |
+| `additionalLocations` (array) | array maxLength | 1000      | —            | Array item count limit; not a string                           | Matches activity `locations`; covers enterprises with many outlets    |
+
 ## Fields Without Length Constraints (by design)
 
 The following string fields use `format` and therefore do **not** receive `maxLength`/`maxGraphemes` per the style guide:

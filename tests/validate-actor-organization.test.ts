@@ -63,6 +63,59 @@ describe("app.certified.actor.organization", () => {
     expect(result.success).toBe(true);
   });
 
+  it("should accept legalName, logo, publicEmail and additionalLocations", () => {
+    const locationRef = (n: number) => ({
+      uri: `at://did:plc:example/app.certified.location/3kabc${n}`,
+      cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+    });
+    const result = Organization.validateMain({
+      $type: ids.AppCertifiedActorOrganization,
+      legalName: "Acme Social Enterprises Ltd.",
+      logo: {
+        $type: "org.hypercerts.defs#uri",
+        uri: "https://example.org/logo-horizontal.png",
+      },
+      publicEmail: "hello@example.org",
+      location: locationRef(1),
+      additionalLocations: [locationRef(2), locationRef(3)],
+      createdAt: "2024-01-01T00:00:00.000Z",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.legalName).toBe("Acme Social Enterprises Ltd.");
+      expect(result.value.publicEmail).toBe("hello@example.org");
+      expect(result.value.additionalLocations).toHaveLength(2);
+    }
+  });
+
+  it("should reject publicEmail longer than 254 bytes", () => {
+    const result = validate(
+      {
+        publicEmail: `${"a".repeat(250)}@example.org`,
+        createdAt: "2024-01-01T00:00:00.000Z",
+      },
+      ids.AppCertifiedActorOrganization,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
+  it("should reject additionalLocations entries that are not strong references", () => {
+    const result = validate(
+      {
+        additionalLocations: [
+          { uri: "at://did:plc:example/app.certified.location/3kabc1" },
+        ],
+        createdAt: "2024-01-01T00:00:00.000Z",
+      },
+      ids.AppCertifiedActorOrganization,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
   it("should reject record missing required createdAt", () => {
     const result = validate(
       { organizationType: ["nonprofit"] },

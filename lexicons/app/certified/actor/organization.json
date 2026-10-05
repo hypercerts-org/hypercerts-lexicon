@@ -4,12 +4,31 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Extended metadata for an organization actor. Complements the base actor profile with organization-specific fields like legal structure and reference links.",
+      "description": "Extended metadata for an organization actor. Complements the base actor profile (app.certified.actor.profile), which holds the display name, description, website, avatar, and banner, with organization-specific fields such as legal name, full logo, public contact email, legal structure, reference links, and locations.",
       "key": "literal:self",
       "record": {
         "type": "object",
         "required": ["createdAt"],
         "properties": {
+          "legalName": {
+            "type": "string",
+            "description": "The organization's registered legal name. The public-facing name belongs in app.certified.actor.profile displayName.",
+            "maxLength": 2560,
+            "maxGraphemes": 256
+          },
+          "logo": {
+            "type": "union",
+            "refs": [
+              "org.hypercerts.defs#uri",
+              "org.hypercerts.defs#smallImage"
+            ],
+            "description": "The organization's full logo: a wordmark, or a combination mark pairing the symbol with the name. Used where the logo appears without the name beside it, such as partner listings or badge displays. Prefer a horizontal image with a transparent background (PNG or WebP). The square symbol alone (brandmark) belongs in app.certified.actor.profile avatar, which is cropped to a square or circle."
+          },
+          "publicEmail": {
+            "type": "string",
+            "description": "A contact email address the organization wants shown publicly (e.g. 'hello@example.org'). Records are public, so never put a personal or internal address here.",
+            "maxLength": 254
+          },
           "organizationType": {
             "type": "array",
             "description": "Legal or operational structures of the organization (e.g. 'nonprofit', 'ngo', 'government', 'social-enterprise', 'cooperative').",
@@ -22,7 +41,7 @@
           },
           "urls": {
             "type": "array",
-            "description": "Additional reference URLs (social media profiles, contact pages, donation links, etc.) with a display label for each URL.",
+            "description": "Additional reference URLs, each with a display label: social media profiles, contact pages, donation links, and similar. The organization's main website belongs in app.certified.actor.profile website, not here.",
             "items": {
               "type": "ref",
               "ref": "#urlItem"
@@ -31,7 +50,16 @@
           "location": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "A strong reference to the location where the organization is based. The record referenced must conform with the lexicon app.certified.location."
+            "description": "A strong reference to the organization's primary location: where it is based, and where it is shown when a map displays one point per organization. The referenced record must conform with the lexicon app.certified.location. Because a strong reference pins a specific version (CID) of that record, update this reference whenever the location record is edited. Further locations go in additionalLocations."
+          },
+          "additionalLocations": {
+            "type": "array",
+            "description": "Strong references to further locations where the organization operates, such as branches, outlets, or field offices. Excludes the primary location, which is in location; do not repeat it here. Each referenced record must conform with the lexicon app.certified.location. As with location, update a reference whenever its record is edited.",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 1000
           },
           "foundedDate": {
             "type": "string",
@@ -79,7 +107,7 @@
         },
         "label": {
           "type": "string",
-          "description": "Optional human-readable label for this URL (e.g. 'Support page', 'Donation page').",
+          "description": "Optional human-readable label for this URL (e.g. 'Donation page').",
           "maxLength": 640,
           "maxGraphemes": 64
         }
