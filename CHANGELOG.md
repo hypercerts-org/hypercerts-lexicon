@@ -1,5 +1,17 @@
 # @hypercerts-org/lexicon
 
+## 1.5.0
+
+### Minor Changes
+
+- [#251](https://github.com/hypercerts-org/hypercerts-lexicon/pull/251) [`8ce7b8d`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/8ce7b8db072b06f6ff2eea13d3774ad8ec5cc397) Thanks [@DjimoSerodio](https://github.com/DjimoSerodio)! - Add optional attachment tags using the same strong-reference classifications and logical AND semantics as collections and features.
+
+- [#258](https://github.com/hypercerts-org/hypercerts-lexicon/pull/258) [`4baf102`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/4baf102a5ba82ff11300f88e29299accfc622500) Thanks [@holkexyz](https://github.com/holkexyz)! - Add optional `validFrom` and `validUntil` to `app.certified.badge.award`, so an award can state when it starts and stops applying: a certification granted before it was recorded, or a verification that lapses. Names follow W3C Verifiable Credentials 2.0 and Open Badges 3.0. Expiry is distinct from revocation, which remains deleting the award record.
+
+- [#258](https://github.com/hypercerts-org/hypercerts-lexicon/pull/258) [`5e72f78`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/5e72f78a3f6816563d4078ebb9d859fb98615b6f) Thanks [@holkexyz](https://github.com/holkexyz)! - Add `legalName`, `logo`, `publicEmail`, and `additionalLocations` to `app.certified.actor.organization`, so partner directories can publish an enterprise's registered name, full logo (wordmark or combination mark), public contact email, and every location it operates from. All four are optional, so existing records stay valid.
+
+  Clarify field descriptions to say where each piece of organization data belongs: the square brandmark goes in `app.certified.actor.profile` `avatar` and the full logo in `organization.logo`; the public-facing name in `profile.displayName` and the legal name in `organization.legalName`; the main website in `profile.website` rather than `urls`; and the primary location in `location` (the one point shown on a map), with further locations in `additionalLocations`. The `location` description now notes that a strong reference pins a version, so it must be updated when the location record is edited.
+
 ## 1.4.1
 
 ### Patch Changes
