@@ -282,9 +282,9 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Funding (`org.hypercerts.funding.*`)
 
-| Lexicon     | NSID                             | Description                                                                                                                                                       |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient, with amount, currency, payment rail, and optional transaction ID. The sender (`from`) is optional to support anonymous funders. |
+| Lexicon     | NSID                             | Description                                                                                                                                                                                                                          |
+| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient: currency, the gross `amount` the sender paid and/or the `netAmount` received, payment rail and network, and optional transaction ID. The sender (`from`) is optional to support anonymous funders. |
 
 ### Hyperboards (`org.hyperboards.*`)
 

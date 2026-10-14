@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                           |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: amount, currency, payment rail, optional transaction ID. Sender is optional for anonymous funders |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                             |
+| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: currency, gross amount paid and/or net amount received, payment rail and network, optional transaction ID. Sender is optional for anonymous funders |
 
 ### Hyperboards — visual display layer
 
@@ -653,14 +653,18 @@ import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
-  to: "did:plc:recipient",
-  amount: "1000.00", // gross: what the sender paid, before fees
+  // to and from are unions — use $type to specify the variant
+  to: { $type: "app.certified.defs#did", did: "did:plc:recipient" },
+  amount: "1000.00", // gross the sender paid, before fees; omit if unknown
   currency: "USDC",
   netAmount: "998.50", // optional: what the recipient received
   paymentRail: "onchain",
   paymentNetwork: "eip155:1", // CAIP-2 chain ID; a tx hash needs its chain
   transactionId: "0xabc...",
-  for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+  for: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+    cid: "bafy...",
+  },
   occurredAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
 };
