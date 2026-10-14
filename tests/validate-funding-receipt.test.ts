@@ -166,18 +166,19 @@ describe("org.hypercerts.funding.receipt", () => {
     expect(result.success).toBe(false);
   });
 
-  it("should reject a record missing the required 'amount' field", () => {
-    const result = validate(
-      {
-        to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
-        currency: "EUR",
-        createdAt: "2024-01-01T00:00:00Z",
-      },
-      ids.OrgHypercertsFundingReceipt,
-      "main",
-      false,
-    );
-    expect(result.success).toBe(false);
+  it("should accept a record without 'amount' when only the net amount is known", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
+      currency: "EUR",
+      netAmount: "96.80",
+      createdAt: "2024-01-01T00:00:00Z",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.amount).toBeUndefined();
+      expect(result.value.netAmount).toBe("96.80");
+    }
   });
 
   it("should reject a record missing the required 'currency' field", () => {

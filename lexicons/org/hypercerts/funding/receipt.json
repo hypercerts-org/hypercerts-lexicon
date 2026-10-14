@@ -8,7 +8,7 @@
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["to", "amount", "currency", "createdAt"],
+        "required": ["to", "currency", "createdAt"],
         "properties": {
           "from": {
             "type": "union",
@@ -30,7 +30,7 @@
           },
           "amount": {
             "type": "string",
-            "description": "Gross amount the sender paid, before fees, as a numeric string (e.g. '1000.50'). If only the amount received is known, record it as netAmount and estimate amount, saying so in notes.",
+            "description": "Gross amount the sender paid, before fees, as a numeric string (e.g. '1000.50'). Omit if unknown, and set netAmount instead.",
             "maxLength": 50
           },
           "currency": {
@@ -66,7 +66,7 @@
           "paymentNetwork": {
             "type": "string",
             "description": "Where transactionId can be looked up: the chain for onchain payments, preferably as a CAIP-2 ID (e.g. 'eip155:1'), otherwise the processor or scheme (e.g. stripe, sepa). Set it whenever transactionId is a transaction hash.",
-            "maxLength": 64
+            "maxLength": 50
           },
           "transactionId": {
             "type": "string",

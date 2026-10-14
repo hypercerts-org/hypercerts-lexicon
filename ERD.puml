@@ -386,7 +386,7 @@ dataclass fundingReceipt {
     to
     from?
     for?
-    amount
+    amount?
     currency
     netAmount?
     netCurrency?

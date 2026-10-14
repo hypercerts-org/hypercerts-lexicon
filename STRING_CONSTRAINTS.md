@@ -81,7 +81,7 @@ When both are used, the style guide recommends a **10–20:1 ratio** for `maxLen
 | `netAmount`      | maxLength only | 50        | —            | Machine-oriented numeric string; never displayed as prose                         | 50 bytes; matches `amount`                                       |
 | `netCurrency`    | maxLength only | 10        | —            | Machine-oriented code (ISO 4217 or token symbol); not prose                       | 10 bytes; matches `currency`                                     |
 | `paymentRail`    | maxLength only | 50        | —            | knownValues (open vocabulary); bounds custom values                               | 50 bytes; covers all known rail identifiers                      |
-| `paymentNetwork` | maxLength only | 64        | —            | Machine-oriented identifier (CAIP-2 chain ID or processor/scheme name); not prose | 64 bytes; CAIP-2 IDs are at most 41 chars, leaving headroom      |
+| `paymentNetwork` | maxLength only | 50        | —            | Machine-oriented identifier (CAIP-2 chain ID or processor/scheme name); not prose | 50 bytes; CAIP-2 IDs are at most 41 chars                        |
 | `transactionId`  | maxLength only | 256       | —            | Machine-oriented hash/reference; not prose                                        | 256 bytes; covers hex hashes (64 chars) and bank reference codes |
 | `notes`          | maxLength only | 500       | —            | Short free-text, but not a primary display field; byte limit suffices             | 500 bytes; brief contextual notes (already shipped on develop)   |
 
