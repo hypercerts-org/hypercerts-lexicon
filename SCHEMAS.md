@@ -304,7 +304,7 @@ Overall score for an evaluation on a numeric scale.
 
 ### `org.hypercerts.funding.receipt`
 
-**Description:** Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate, unlinked receipts.
+**Description:** Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts.
 
 **Key:** `tid`
 
