@@ -387,7 +387,7 @@ dataclass fundingReceipt {
     from?
     for?
     amount?
-    currency
+    currency?
     netAmount?
     netCurrency?
     paymentRail?

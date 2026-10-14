@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                                                                             |
-| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: currency, gross amount paid and/or net amount received, payment rail and network, optional transaction ID. Sender is optional for anonymous funders |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                                           |
+| ----------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its currency, payment rail and network, optional transaction ID. Sender is optional for anonymous funders |
 
 ### Hyperboards — visual display layer
 
