@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 1.5.1
+
+### Patch Changes
+
+- [#252](https://github.com/hypercerts-org/hypercerts-lexicon/pull/252) [`3e2ae4a`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/3e2ae4a8fa128ecdf9f2d326131f9138de14c49a) Thanks [@DjimoSerodio](https://github.com/DjimoSerodio)! - Add optional `capturedAt` datetime to `org.hypercerts.context.attachment` to record when the attached material was captured, separately from the record's `createdAt`
+
 ## 1.5.0
 
 ### Minor Changes
