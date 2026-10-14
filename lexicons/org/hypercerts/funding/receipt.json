@@ -35,17 +35,17 @@
           },
           "currency": {
             "type": "string",
-            "description": "Currency of amount, and of netAmount unless netCurrency is set: an ISO 4217 code for fiat (e.g. EUR), a token ticker for digital assets (e.g. USDC). This is what marks the funds as fiat or digital. Set it whenever amount is set.",
+            "description": "Currency of amount: an ISO 4217 code for fiat (e.g. EUR), a token ticker for digital assets (e.g. USDC). This is what marks the funds as fiat or digital. Set it whenever amount is set.",
             "maxLength": 10
           },
           "netAmount": {
             "type": "string",
-            "description": "What the recipient received after fees and conversion, as a numeric string in netCurrency (default: currency).",
+            "description": "What the recipient received after fees and conversion, as a numeric string in netCurrency.",
             "maxLength": 50
           },
           "netCurrency": {
             "type": "string",
-            "description": "Currency of netAmount, if different from currency or currency is omitted (e.g. a EUR donation paid out in KES).",
+            "description": "Currency of netAmount: an ISO 4217 code for fiat, a token ticker for digital assets. Set it whenever netAmount is set.",
             "maxLength": 10
           },
           "paymentRail": {

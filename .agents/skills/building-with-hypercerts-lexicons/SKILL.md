@@ -658,6 +658,7 @@ const receipt = {
   amount: "1000.00", // gross the sender paid, before fees; omit if unknown
   currency: "USDC",
   netAmount: "998.50", // optional: what the recipient received
+  netCurrency: "USDC", // set with netAmount
   paymentRail: "onchain",
   paymentNetwork: "eip155:1", // CAIP-2 chain ID; a tx hash needs its chain
   transactionId: "0xabc...",
