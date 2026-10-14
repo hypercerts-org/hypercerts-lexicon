@@ -50,7 +50,7 @@
           },
           "paymentRail": {
             "type": "string",
-            "description": "How the sender paid. Use 'payment_processor' only when the underlying method is unknown. Read 'credit_card' in existing records as 'card'.",
+            "description": "How the sender paid. Use 'payment_processor' only when the underlying method is unknown.",
             "maxLength": 50,
             "knownValues": [
               "onchain",
@@ -86,7 +86,7 @@
           "occurredAt": {
             "type": "string",
             "format": "datetime",
-            "description": "When the sender paid, not when the funds were passed on."
+            "description": "Timestamp when the payment occurred."
           },
           "createdAt": {
             "type": "string",
