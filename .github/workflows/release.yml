@@ -1,20 +1,76 @@
 name: Release
 
 on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
   workflow_dispatch:
 
-concurrency: ${{ github.workflow }}-${{ github.ref }}
+permissions: {}
+
+concurrency:
+  # Serialize updates per event/ref without letting a main push replace a
+  # pending merged-Release-PR publication run.
+  group: release-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  release:
+  select-mode:
+    name: Validate stable release and select Changesets mode
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-      # Required for npm Trusted Publishers via GitHub OIDC
-      # See: https://docs.npmjs.com/trusted-publishers
-      id-token: write
+      contents: read
+    outputs:
+      mode: ${{ steps.select-mode.outputs.mode }}
+    steps:
+      - name: Check out pushed commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
 
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify no active prerelease mode
+        run: |
+          set -euo pipefail
+          if [ -f .changeset/pre.json ]; then
+            mode="$(node -e "console.log(require('./.changeset/pre.json').mode)")"
+            if [ "$mode" = "pre" ]; then
+              echo "::error::Active prerelease mode detected on main."
+              echo "Exit prerelease mode on the prerelease branch before merging it to main."
+              exit 1
+            fi
+            echo "Prerelease mode is not active (mode=$mode)"
+          else
+            echo "No prerelease mode detected"
+          fi
+
+      - name: Validate package
+        run: npm run check
+
+      - name: Select Changesets mode
+        id: select-mode
+        uses: changesets/action/select-mode@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
+
+  version:
+    name: Create or update stable Release PR
+    if: github.event_name == 'push' && needs.select-mode.outputs.mode == 'version'
+    needs: select-mode
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Generate Release Bot App Token
         id: generate-token
@@ -23,51 +79,134 @@ jobs:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v7
+      - name: Check out pushed commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Persist releasebot app credentials to ensure that the push
-          # below can bypass branch protection rules
+          ref: ${{ github.sha }}
           token: ${{ steps.generate-token.outputs.token }}
-          persist-credentials: true
           fetch-depth: 0
+          persist-credentials: true
 
-      # Branch validation: main for stable, prerelease/* for beta
-      - name: Validate branch
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Version package and update Release PR
+        uses: changesets/action/version@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          script: npm run version-packages
+          commit-message: "release: version packages"
+          pr-title: Release
+          pr-base-branch: main
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+
+      # The split version action takes a static PR title, so restore the
+      # versioned title used by the existing release workflow.
+      - name: Rename Release PR with version
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
-          BRANCH="${{ github.ref }}"
-          if [ "$BRANCH" == "refs/heads/main" ]; then
-            echo "RELEASE_TYPE=stable" >> $GITHUB_ENV
-            echo "Detected stable release from main branch"
-          elif [[ "$BRANCH" == refs/heads/prerelease/* ]]; then
-            echo "RELEASE_TYPE=beta" >> $GITHUB_ENV
-            echo "Detected beta release from ${BRANCH#refs/heads/}"
-          else
-            echo "::error::This workflow can only be run from 'main' (stable) or 'prerelease/*' (beta) branches."
+          set -euo pipefail
+          pr_number="$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --head "${GITHUB_REPOSITORY_OWNER}:changeset-release/main" \
+            --base main \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')"
+          if [ -z "$pr_number" ]; then
+            echo "No open changeset-release/main PR to rename"
+            exit 0
+          fi
+
+          version="$(gh api \
+            "repos/${GITHUB_REPOSITORY}/contents/package.json?ref=changeset-release/main" \
+            -H "Accept: application/vnd.github.raw" \
+            | node -p "JSON.parse(require('fs').readFileSync(0, 'utf8')).version")"
+          if [ -z "$version" ]; then
+            echo "::error::Could not read package version from changeset-release/main"
             exit 1
           fi
 
-      - uses: actions/setup-node@v6
+          title="Release v$version"
+          echo "Renaming PR #$pr_number to: $title"
+          gh pr edit "$pr_number" --repo "$GITHUB_REPOSITORY" --title "$title"
+
+  publish:
+    name: Validate and publish stable release
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'changeset-release/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Generate Release Bot App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+
+      - name: Check out exact merged commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify release commit
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          set -euo pipefail
+          if [ -z "$EXPECTED_SHA" ]; then
+            echo "::error::The merged Release pull request did not provide a merge commit SHA"
+            exit 1
+          fi
+          actual_sha="$(git rev-parse HEAD)"
+          if [ "$actual_sha" != "$EXPECTED_SHA" ]; then
+            echo "::error::Expected commit $EXPECTED_SHA but checked out $actual_sha"
+            exit 1
+          fi
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
-          cache: "npm"
-          # registry-url is required for npm Trusted Publishers
-          registry-url: "https://registry.npmjs.org"
+          cache: npm
+          registry-url: https://registry.npmjs.org
 
-      # Upgrade to npm >=11.5.1 for Trusted Publishers support
-      - run: npm install -g npm@latest
+      - name: Upgrade npm for Trusted Publishers
+        run: npm install -g npm@latest
 
-      - run: npm ci
-      - run: npm run check
+      - name: Install dependencies
+        run: npm ci
 
-      # Stable release: verify prerelease mode is not active
+      - name: Validate release commit
+        run: npm run check
+
       - name: Verify no active prerelease mode
-        if: env.RELEASE_TYPE == 'stable'
         run: |
+          set -euo pipefail
           if [ -f .changeset/pre.json ]; then
-            mode=$(node -e "console.log(require('./.changeset/pre.json').mode)")
+            mode="$(node -e "console.log(require('./.changeset/pre.json').mode)")"
             if [ "$mode" = "pre" ]; then
-              echo "::error::Active prerelease mode detected on main."
-              echo "Prerelease mode must be exited before publishing a stable release."
+              echo "::error::Active prerelease mode detected in the stable release commit."
+              echo "Exit prerelease mode before merging the Release PR."
               exit 1
             fi
             echo "Prerelease mode is not active (mode=$mode)"
@@ -75,16 +214,79 @@ jobs:
             echo "No prerelease mode detected"
           fi
 
-      # Beta: verify prerelease mode is active
-      - name: Verify prerelease mode
-        if: env.RELEASE_TYPE == 'beta'
+      - name: Publish npm package, tags, and GitHub Release
+        uses: changesets/action/publish@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
+        with:
+          github-token: ${{ steps.generate-token.outputs.token }}
+          create-github-releases: true
+          push-git-tags: true
+        env:
+          NPM_CONFIG_PROVENANCE: true
+
+  beta:
+    name: Publish beta release
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Validate prerelease branch
+        env:
+          RELEASE_REF: ${{ github.ref }}
         run: |
+          set -euo pipefail
+          case "$RELEASE_REF" in
+            refs/heads/prerelease/*)
+              echo "Detected beta release from ${RELEASE_REF#refs/heads/}"
+              ;;
+            *)
+              echo "::error::Manual release dispatch is only supported from 'prerelease/*' branches."
+              echo "Stable releases are prepared automatically after pushes to main and published when the Release PR is merged."
+              exit 1
+              ;;
+          esac
+
+      - name: Generate Release Bot App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v3
+        with:
+          app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+
+      - name: Check out prerelease commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ steps.generate-token.outputs.token }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Upgrade npm for Trusted Publishers
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate prerelease package
+        run: npm run check
+
+      - name: Verify prerelease mode
+        run: |
+          set -euo pipefail
           if [ ! -f .changeset/pre.json ]; then
             echo "::error::Prerelease mode is not active."
-            echo "Run 'npx changeset pre enter beta' and commit before running this workflow."
+            echo "Run 'npx changeset pre enter beta' and commit before dispatching this workflow."
             exit 1
           fi
-          mode=$(node -e "console.log(require('./.changeset/pre.json').mode)")
+          mode="$(node -e "console.log(require('./.changeset/pre.json').mode)")"
           if [ "$mode" != "pre" ]; then
             echo "::error::Prerelease mode has been exited (mode=$mode)."
             echo "Re-enter with 'npx changeset pre enter beta' or merge to main for a stable release."
@@ -92,90 +294,32 @@ jobs:
           fi
           echo "Prerelease mode is active"
 
-      # No .npmrc creation needed - npm Trusted Publishers uses GitHub OIDC tokens
-      # automatically via the id-token: write permission and registry-url configuration
+      - name: Version packages (beta)
+        run: npm run version-packages
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
-      # Stable release: changesets/action creates a Release PR with version
-      # bumps and changelogs. When merged, the next run publishes to npm.
-      - name: Create Release Pull Request or Publish
-        if: env.RELEASE_TYPE == 'stable'
-        id: changesets
-        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
-        with:
-          publish: npm run release
-          version: npm run version-packages
-          title: "Release"
-          commit: "Release"
+      - name: Commit and push version changes (beta)
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          echo "Versioning to: $version"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --staged --quiet || git commit -m "release: version beta package $version"
+          git push
+
+      - name: Publish beta package
+        run: npm run release
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           NPM_CONFIG_PROVENANCE: true
 
-      # changesets/action does not support templating the version into the
-      # PR title (see changesets/action#388). As a workaround, rename the
-      # Release PR to include the version number after the action has run
-      # the version bump. The commit message on the release branch is left
-      # as the static "Release" value — it gets rewritten on every re-run
-      # of this workflow, and the merge commit title on main is controlled
-      # by the person merging the PR.
-      - name: Rename Release PR with version
-        if: env.RELEASE_TYPE == 'stable' && steps.changesets.outputs.pullRequestNumber != ''
-        env:
-          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-          PR_NUMBER: ${{ steps.changesets.outputs.pullRequestNumber }}
-        run: |
-          VERSION=$(gh api \
-            "repos/${{ github.repository }}/contents/package.json?ref=changeset-release/main" \
-            -H "Accept: application/vnd.github.raw" \
-            | node -p "JSON.parse(require('fs').readFileSync(0,'utf8')).version")
-          NEW_TITLE="Release v$VERSION"
-          echo "Renaming PR #$PR_NUMBER to: $NEW_TITLE"
-          gh pr edit "$PR_NUMBER" --title "$NEW_TITLE"
-
-      # Beta release: version, commit, publish, and push in one step.
-      # changesets/action is not used here because it requires two workflow
-      # runs (one to create a version PR, another to publish after merging).
-      # For beta releases we want to publish immediately.
-      - name: Version packages (beta)
-        if: env.RELEASE_TYPE == 'beta'
-        # GITHUB_TOKEN is required for @changesets/changelog-github to fetch
-        # PR/commit information from GitHub API when generating changelog entries
-        run: npm run version-packages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit and push version changes (beta)
-        if: env.RELEASE_TYPE == 'beta'
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "Versioning to: $VERSION"
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git diff --staged --quiet || git commit -m "chore: version packages (beta) - $VERSION"
-          git push
-
-      - name: Publish beta packages
-        if: env.RELEASE_TYPE == 'beta'
-        # changeset publish automatically uses the beta tag when in
-        # prerelease mode and creates git tags for the release
-        run: npm run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
-
-      - name: Push git tags (beta)
-        if: env.RELEASE_TYPE == 'beta'
+      - name: Push beta git tags
         run: git push origin --tags
 
-      # Log published packages
-      - name: Log published packages
-        if: |
-          (env.RELEASE_TYPE == 'stable' && steps.changesets.outputs.published == 'true') ||
-          env.RELEASE_TYPE == 'beta'
+      - name: Log beta release
         run: |
-          if [ "${{ env.RELEASE_TYPE }}" == "stable" ]; then
-            echo "Published - ${{ steps.changesets.outputs.publishedPackages }}"
-          else
-            VERSION=$(node -p "require('./package.json').version")
-            echo "Published beta release: $VERSION"
-          fi
+          version="$(node -p "require('./package.json').version")"
+          echo "Published beta release: $version"
