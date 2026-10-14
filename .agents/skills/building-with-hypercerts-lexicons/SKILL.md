@@ -654,9 +654,11 @@ import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
   to: "did:plc:recipient",
-  amount: "1000.00",
-  currency: "USD",
-  paymentRail: "ethereum",
+  amount: "1000.00", // gross: what the sender paid, before fees
+  currency: "USDC",
+  netAmount: "998.50", // optional: what the recipient received
+  paymentRail: "onchain",
+  paymentNetwork: "eip155:1", // CAIP-2 chain ID; a tx hash needs its chain
   transactionId: "0xabc...",
   for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
   occurredAt: new Date().toISOString(),

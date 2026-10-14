@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.",
+      "description": "Records a funding receipt for a payment from a sender to a recipient. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous. When the sender chose the recipient, record one receipt from the sender to the final recipient even if platforms or hosts passed the funds on: amount is what the sender paid, netAmount what arrived; occurredAt is when the sender paid. When an intermediary decides who receives the funds (regranting), record one receipt for the payment into the intermediary and separate receipts for each payment it makes onward; these receipts are not linked to each other.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -30,27 +30,47 @@
           },
           "amount": {
             "type": "string",
-            "description": "Amount of funding received as a numeric string (e.g. '1000.50').",
+            "description": "Gross amount: what the sender paid, before any fees, as a numeric string in the receipt's currency (e.g. '1000.50'). Always gross, whether or not netAmount is present, as with ISO 20022 InstructedAmount. When the author only knows the amount received, record that as netAmount and set amount to the best known gross, explaining any estimate in notes.",
             "maxLength": 50
           },
           "currency": {
             "type": "string",
-            "description": "Currency of the payment (e.g. EUR, USD, ETH).",
+            "description": "Currency of amount (and of netAmount unless netCurrency is set). Use the ISO 4217 alphabetic code for fiat (e.g. EUR, USD) and the token's ticker for digital assets (e.g. ETH, USDC). This also classifies the funds: an ISO 4217 code means fiat, anything else a digital asset.",
+            "maxLength": 10
+          },
+          "netAmount": {
+            "type": "string",
+            "description": "Optional amount the recipient actually received after all fees and conversions, as a numeric string in netCurrency (or the receipt's currency when netCurrency is omitted). Never changes the meaning of amount, which stays gross; the difference is what intermediaries, processors and conversion took.",
+            "maxLength": 50
+          },
+          "netCurrency": {
+            "type": "string",
+            "description": "Optional currency of netAmount when the recipient received a different currency than the sender paid (e.g. a EUR donation paid out in KES or USDC). ISO 4217 code for fiat, token ticker for digital assets. Defaults to the receipt's currency.",
             "maxLength": 10
           },
           "paymentRail": {
             "type": "string",
-            "description": "How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).",
-            "maxLength": 50
+            "description": "How the sender paid: the mechanism of the payment that transactionId identifies. Use 'payment_processor' only when the processor does not reveal the underlying method. 'credit_card' in existing records means the same as 'card'. knownValues is an open, advisory vocabulary; other values are permitted. Whether the funds are fiat or a digital asset follows from currency, not from this field.",
+            "maxLength": 50,
+            "knownValues": [
+              "onchain",
+              "bank_transfer",
+              "card",
+              "direct_debit",
+              "mobile_money",
+              "payment_processor",
+              "cash",
+              "check"
+            ]
           },
           "paymentNetwork": {
             "type": "string",
-            "description": "Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).",
-            "maxLength": 50
+            "description": "The network on which transactionId can be looked up. For 'onchain' payments, the chain, preferably as a CAIP-2 chain ID (e.g. 'eip155:1' for Ethereum mainnet, 'eip155:42220' for Celo); set it whenever transactionId is a transaction hash, since a hash cannot be interpreted without its chain. For other rails, the processor or scheme that issued transactionId (e.g. stripe, paypal, sepa, mpesa).",
+            "maxLength": 64
           },
           "transactionId": {
             "type": "string",
-            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable.",
+            "description": "Identifier of the sender's payment, so the receipt can be checked against it: a transaction hash for 'onchain' payments, otherwise the reference issued by the processor or scheme named in paymentNetwork. When funds reached the recipient through a platform, this is the sender's payment, not the platform's later payout, which may cover many senders. Receipts are public: prefer opaque processor IDs over bank references that embed account details, and note that a transaction hash reveals the sending wallet, so when the sender is deliberately anonymous (from omitted), consider whether to publish it.",
             "maxLength": 256
           },
           "for": {
@@ -66,7 +86,7 @@
           "occurredAt": {
             "type": "string",
             "format": "datetime",
-            "description": "Timestamp when the payment occurred."
+            "description": "Timestamp when the payment occurred. When platforms or hosts passed the funds on, this is when the sender paid, not when the funds were paid out."
           },
           "createdAt": {
             "type": "string",
