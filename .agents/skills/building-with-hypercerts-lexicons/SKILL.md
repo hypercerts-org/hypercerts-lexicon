@@ -612,6 +612,14 @@ Attachments may include up to 20 `tags` strong references to
 AND), without ordering, weighting, negation, or inheritance. Tags classify
 the attachment; they do not establish verification or evidence quality.
 
+Optional `capturedAt` records when the attached material was captured (for
+example, when a photo was taken), separately from `createdAt`, the record's
+creation time. It is a standard atproto `datetime`, so it must include timezone
+information (`Z` or an offset such as `+12:00`). If only a local time without
+offset or only a date is known, omit the field rather than inventing an offset.
+Also omit it for multi-capture material without one truthful shared value; it
+is not a coverage interval. See [capture-time design notes](../../../docs/design/attachment-capture-time.md).
+
 ```typescript
 import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
 

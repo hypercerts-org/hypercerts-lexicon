@@ -85,6 +85,11 @@
               "ref": "com.atproto.repo.strongRef"
             }
           },
+          "capturedAt": {
+            "type": "string",
+            "format": "datetime",
+            "description": "Client-declared time when the attached material was captured (e.g. when a photo was taken), as distinct from createdAt. Omit if capture time is unknown, if only a local time without timezone offset or only a date is known, or if no single capture time applies. Not a coverage interval."
+          },
           "createdAt": {
             "type": "string",
             "format": "datetime",
