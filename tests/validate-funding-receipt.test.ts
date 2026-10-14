@@ -105,8 +105,10 @@ describe("org.hypercerts.funding.receipt", () => {
       $type: ids.OrgHypercertsFundingReceipt,
       ...validBase,
       from: { $type: "app.certified.defs#did", did: "did:plc:abc123" },
+      netAmount: "985.00",
+      netCurrency: "USDC",
       paymentRail: "onchain",
-      paymentNetwork: "ethereum",
+      paymentNetwork: "eip155:1",
       transactionId: "0xabc123",
       for: {
         uri: "at://did:plc:abc123/org.hypercerts.claim.activity/tid123",
@@ -116,6 +118,42 @@ describe("org.hypercerts.funding.receipt", () => {
       occurredAt: "2024-01-01T00:00:00Z",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("should accept a net amount in a different currency from the gross", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      amount: "100.00",
+      currency: "EUR",
+      netAmount: "13250.00",
+      netCurrency: "KES",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.amount).toBe("100.00");
+      expect(result.value.netAmount).toBe("13250.00");
+      expect(result.value.netCurrency).toBe("KES");
+    }
+  });
+
+  it("should accept a paymentRail outside knownValues (open vocabulary)", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      paymentRail: "credit_card",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject a netCurrency longer than 10 bytes", () => {
+    const result = validate(
+      { ...validBase, netAmount: "990.00", netCurrency: "X".repeat(11) },
+      ids.OrgHypercertsFundingReceipt,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
   });
 
   it("should reject a record missing the required 'to' field", () => {
@@ -128,32 +166,20 @@ describe("org.hypercerts.funding.receipt", () => {
     expect(result.success).toBe(false);
   });
 
-  it("should reject a record missing the required 'amount' field", () => {
-    const result = validate(
-      {
-        to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
-        currency: "EUR",
-        createdAt: "2024-01-01T00:00:00Z",
-      },
-      ids.OrgHypercertsFundingReceipt,
-      "main",
-      false,
-    );
-    expect(result.success).toBe(false);
-  });
-
-  it("should reject a record missing the required 'currency' field", () => {
-    const result = validate(
-      {
-        to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
-        amount: "500",
-        createdAt: "2024-01-01T00:00:00Z",
-      },
-      ids.OrgHypercertsFundingReceipt,
-      "main",
-      false,
-    );
-    expect(result.success).toBe(false);
+  it("should accept a record without 'amount' and 'currency' when netAmount and netCurrency are set", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      to: { $type: "app.certified.defs#did", did: "did:plc:recipient123" },
+      netAmount: "13250.00",
+      netCurrency: "KES",
+      createdAt: "2024-01-01T00:00:00Z",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.amount).toBeUndefined();
+      expect(result.value.currency).toBeUndefined();
+      expect(result.value.netCurrency).toBe("KES");
+    }
   });
 
   it("should reject a record missing the required 'createdAt' field", () => {
