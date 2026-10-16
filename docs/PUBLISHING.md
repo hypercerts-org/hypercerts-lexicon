@@ -108,19 +108,58 @@ The filename doesn't affect version ordering—Changesets uses git history
 to determine the order of changes. You can rename these files if desired,
 but it's not necessary.
 
+The contributor PR check rejects a patch Changeset when a Lexicon JSON
+file changes structurally. Compatible additions require a **minor** bump;
+breaking changes require a **major** bump and human review. Description-only
+edits and compatible corrections without a new public capability can be
+**patch**. The check cannot determine whether a change is breaking, nor
+can it judge the clarity of the Changeset prose; reviewers must do both.
+
+## Review a stable Release PR
+
+The generated Release PR is a review gate, not permission to publish
+automatically. Before merging it:
+
+1. Check the combined version bump against the pending Changesets and
+   the published schemas and types. In particular, a compatible new
+   field or record is minor, not patch; a breaking change is major.
+2. Edit the generated `CHANGELOG.md` version section to include a short
+   human-readable summary immediately below the version heading: what
+   changed, why this version exists, and who may need to adjust an
+   integration. Group or clarify the detailed, attributable entries
+   without dropping links to the underlying changes. Recheck this prose
+   if Changesets regenerates the Release PR.
+3. For a major or minor version, open or update a reviewed protocol
+   release note in the [documentation repository](https://github.com/hypercerts-org/documentation)
+   and put its PR URL in the Lexicon Release PR description. Explain the
+   purpose and compatibility there, rather than duplicating the full
+   technical changelog. Patch releases need no new protocol note.
+4. Have a maintainer review the actual Release PR diff, including the
+   version number and changelog, before merging. The automated check
+   can verify the presence of prose and a Docs PR link, not their quality
+   or whether the Docs PR is ready to publish.
+
+The Release PR check blocks a major/minor PR without the summary or
+Docs PR link. Repository branch rules must require that check (and human
+review) to make the gate mandatory before merge. The current `main`
+ruleset requires the `changeset-check` job and an approving review.
+
 ## Publishing a Stable Release
 
 Stable releases are not started with `workflow_dispatch`. The process is
 automatic once a Changeset-bearing change reaches `main`:
 
-1. **Merge the contributor PR to `main`.** The PR check warns when
-   package changes do not include a Changeset.
+1. **Merge the contributor PR to `main`.** The PR check rejects
+   Lexicon JSON changes without a Changeset and structural changes
+   with a patch Changeset.
 
 2. **Review the automatically created or updated Release PR.** A push to
    `main` validates the package and rejects active prerelease mode. If
    Changesets has pending version changes, the workflow creates or
    updates a PR from `changeset-release/main` titled `Release vX.Y.Z`.
    If there are no pending changesets, no new Release PR is needed.
+   Complete the [Release PR review](#review-a-stable-release-pr) before
+   merging.
 
 3. **Review and merge the Release PR.** It contains the package version,
    changelog, and lockfile updates. The publishing job runs only when the
