@@ -47,9 +47,12 @@ Create a changeset for any user-facing changes:
 npm run changeset
 ```
 
-Follow the prompts to select version bump type and describe
-changes. See [AGENTS.md § Versioning](AGENTS.md#versioning) for
-details.
+Follow the prompts to select a version bump and describe what the change
+enables or fixes. Any change to a Lexicon JSON file changes the
+published API and SDK, so it is **minor**, or **major** if it is
+breaking. CI rejects a patch Changeset for Lexicon changes. See the
+[publishing guide](docs/PUBLISHING.md#adding-changesets) and
+[schema stability guidance](README.md#maintenance-and-publishing-releases).
 
 ## Pull Request Process
 
