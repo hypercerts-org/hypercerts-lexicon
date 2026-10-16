@@ -3,6 +3,8 @@ name: PR Check
 on:
   pull_request:
     branches: [main, develop, "release/**"]
+    # `edited` re-runs the Release PR check when the Docs PR link is added.
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   changeset-check:
