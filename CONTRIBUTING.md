@@ -47,9 +47,13 @@ Create a changeset for any user-facing changes:
 npm run changeset
 ```
 
-Follow the prompts to select version bump type and describe
-changes. See [AGENTS.md § Versioning](AGENTS.md#versioning) for
-details.
+Follow the prompts to select a version bump and describe what the change
+enables or fixes. For published Lexicons, an additive schema or type
+change is at least **minor**; an incompatible change is **major**.
+Use **patch** for compatible corrections that do not add a new public
+capability, such as a description-only edit. See the
+[publishing guide](docs/PUBLISHING.md#adding-changesets) and
+[schema stability guidance](README.md#maintenance-and-publishing-releases).
 
 ## Pull Request Process
 
