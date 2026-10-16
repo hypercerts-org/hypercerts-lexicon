@@ -48,10 +48,10 @@ npm run changeset
 ```
 
 Follow the prompts to select a version bump and describe what the change
-enables or fixes. For published Lexicons, an additive schema or type
-change is at least **minor**; an incompatible change is **major**.
-Use **patch** for compatible corrections that do not add a new public
-capability, such as a description-only edit. See the
+enables or fixes. Any change to a published Lexicon's schema, even a
+new optional field, changes the generated API and SDK types and is at
+least **minor**; an incompatible change is **major**. Use **patch**
+only for description-only edits. CI enforces this. See the
 [publishing guide](docs/PUBLISHING.md#adding-changesets) and
 [schema stability guidance](README.md#maintenance-and-publishing-releases).
 
