@@ -108,27 +108,22 @@ The filename doesn't affect version ordering—Changesets uses git history
 to determine the order of changes. You can rename these files if desired,
 but it's not necessary.
 
-Any change to the shape of a published Lexicon changes the generated
-API and SDK types, so it is at least a **minor** release. The contributor
-PR check compares changed Lexicons by NSID, ignoring description text
-and key order, and requires:
+Any change to a Lexicon JSON file changes the published API and SDK, so
+it is a **minor** or **major** release. The contributor PR check rejects
+a Lexicon change without a minor or major Changeset. Reviewers decide
+whether a change is breaking (major).
 
-- **minor** or higher for an added Lexicon or any schema change, including
-  a new optional field;
-- **major** for a removed Lexicon (or a changed `id`);
-- **patch** only when nothing but descriptions changed.
-
-The check cannot determine whether a schema change is breaking; reviewers
-must decide between minor and major, and judge the Changeset prose.
+In the rare case a maintainer is sure a Lexicon change needs no API or
+SDK update and should ship as a patch, a repository admin can bypass the
+check to merge it.
 
 ## Review a stable Release PR
 
 The generated Release PR is a review gate, not permission to publish
 automatically. Before merging it:
 
-1. Check the version. The Release PR check compares the Lexicons with
-   the last release tag (`vX.Y.Z`) and rejects a patch release if any
-   schema changed.
+1. Check the version. The Release PR check rejects a patch release if
+   any Lexicon changed since the last release tag (`vX.Y.Z`).
 2. For a major or minor version, open a Docs PR that adds the release
    note to `lib/protocol-releases.json` in the
    [documentation repository](https://github.com/hypercerts-org/documentation),
@@ -152,8 +147,7 @@ Stable releases are not started with `workflow_dispatch`. The process is
 automatic once a Changeset-bearing change reaches `main`:
 
 1. **Merge the contributor PR to `main`.** The PR check rejects
-   Lexicon JSON changes without a Changeset and schema changes
-   with a patch Changeset.
+   Lexicon JSON changes without a minor or major Changeset.
 
 2. **Review the automatically created or updated Release PR.** A push to
    `main` validates the package and rejects active prerelease mode. If

@@ -3,36 +3,11 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// Any Lexicon change alters the published API and SDK, so it is at least a
+// minor release. Maintainers bypass this check for the rare exception.
+
 const DOCS_PR =
   /(?:https:\/\/github\.com\/hypercerts-org\/documentation\/pull\/|\bhypercerts-org\/documentation#)\d+\b/;
-
-// Drop description strings (prose) but keep schema properties that happen to
-// be named "description", whose values are objects.
-export function withoutDescriptions(value) {
-  if (Array.isArray(value)) return value.map(withoutDescriptions);
-  if (value && typeof value === "object") {
-    return Object.fromEntries(
-      Object.entries(value)
-        .filter(
-          ([key, item]) => key !== "description" || typeof item !== "string",
-        )
-        .map(([key, item]) => [key, withoutDescriptions(item)]),
-    );
-  }
-  return value;
-}
-
-// Key-order-insensitive serialization, so reordering keys is not a change.
-export function canonical(value) {
-  if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
-  if (value && typeof value === "object") {
-    return `{${Object.keys(value)
-      .sort()
-      .map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`)
-      .join(",")}}`;
-  }
-  return JSON.stringify(value);
-}
 
 export function changesetBump(markdown) {
   const frontmatter = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -41,42 +16,19 @@ export function changesetBump(markdown) {
   )?.[1];
 }
 
-// Compare two sets of Lexicons keyed by NSID, so a moved file with the same
-// `id` is not a removal. Returns the smallest bump the change requires.
-export function requiredBump(previous, current) {
-  const ids = new Set([...previous.keys(), ...current.keys()]);
-  let required = "patch";
-  const changes = [];
-  for (const id of [...ids].sort()) {
-    const before = previous.get(id);
-    const after = current.get(id);
-    if (!after) {
-      changes.push(`removed ${id}`);
-      required = "major";
-    } else if (
-      !before ||
-      canonical(withoutDescriptions(before)) !==
-        canonical(withoutDescriptions(after))
-    ) {
-      changes.push(`${before ? "changed" : "added"} ${id}`);
-      if (required === "patch") required = "minor";
-    }
+export function contributorErrors(lexiconsChanged, bumps) {
+  if (!lexiconsChanged) return [];
+  if (!bumps.length) {
+    return [
+      "Changed Lexicon JSON needs a minor or major Changeset for @hypercerts-org/lexicon.",
+    ];
   }
-  return { required, changes };
-}
-
-const RANK = { patch: 0, minor: 1, major: 2 };
-
-export function lexiconChangeErrors(previous, current, bumps) {
-  const { required, changes } = requiredBump(previous, current);
-  const highest = bumps.reduce(
-    (top, bump) => (RANK[bump] > RANK[top] ? bump : top),
-    "patch",
-  );
-  if (RANK[highest] >= RANK[required]) return [];
-  return [
-    `Lexicon schema change (${changes.join(", ")}) requires at least a ${required} Changeset for @hypercerts-org/lexicon, not ${highest}.`,
-  ];
+  if (!bumps.some((bump) => bump === "minor" || bump === "major")) {
+    return [
+      "Lexicon changes alter the published API and SDK: use a minor or major Changeset, not patch.",
+    ];
+  }
+  return [];
 }
 
 function parseVersion(version) {
@@ -102,79 +54,35 @@ export function releaseKind(previous, version) {
   return "patch";
 }
 
-export function releasePrErrors(previous, version, body, schemaChange) {
-  const errors = [];
+export function releasePrErrors(previous, version, lexiconsChanged, body) {
   const kind = releaseKind(previous, version);
-  if (RANK[kind] < RANK[schemaChange.required]) {
-    errors.push(
-      `Lexicon ${version} is a ${kind} release, but the Lexicons changed since ${previous} (${schemaChange.changes.join(", ")}). It must be at least ${schemaChange.required}.`,
-    );
+  if (kind === "patch") {
+    return lexiconsChanged
+      ? [
+          `Lexicon ${version} is a patch release, but Lexicons changed since ${previous}. It must be a minor or major release.`,
+        ]
+      : [];
   }
-  if (kind !== "patch" && !DOCS_PR.test(body)) {
-    errors.push(
+  if (!DOCS_PR.test(body)) {
+    return [
       `Lexicon ${version} is a ${kind} release: link the hypercerts-org/documentation PR with its release note in this PR's description.`,
-    );
+    ];
   }
-  return errors;
+  return [];
 }
 
 function git(...args) {
-  return execFileSync("git", args, {
-    encoding: "utf8",
-    maxBuffer: 64 * 1024 * 1024,
-  });
+  return execFileSync("git", args, { encoding: "utf8" });
 }
 
 function changedFiles(from, path) {
-  return git(
-    "diff",
-    "--no-renames",
-    "--name-only",
-    "-z",
-    from,
-    "HEAD",
-    "--",
-    path,
-  )
+  return git("diff", "--name-only", "-z", from, "HEAD", "--", path)
     .split("\0")
     .filter(Boolean);
 }
 
-function existsAt(ref, path) {
-  return git("ls-tree", "--name-only", ref, "--", path).trim() !== "";
-}
-
-function parseLexicon(source, label, errors) {
-  try {
-    return JSON.parse(source);
-  } catch (error) {
-    errors.push(`Invalid JSON in ${label}: ${error.message}`);
-    return null;
-  }
-}
-
-// Load the Lexicons changed between `from` and HEAD, on each side, by NSID.
-function changedLexicons(from, errors) {
-  const previous = new Map();
-  const current = new Map();
-  const paths = changedFiles(from, "lexicons/").filter((path) =>
-    path.endsWith(".json"),
-  );
-  for (const path of paths) {
-    if (existsAt(from, path)) {
-      const lexicon = parseLexicon(
-        git("show", `${from}:${path}`),
-        `${from}:${path}`,
-        errors,
-      );
-      if (lexicon) previous.set(lexicon.id ?? path, lexicon);
-    }
-    if (existsSync(path)) {
-      const lexicon = parseLexicon(readFileSync(path, "utf8"), path, errors);
-      if (lexicon) current.set(lexicon.id ?? path, lexicon);
-    }
-  }
-  return { paths, previous, current };
+function lexiconsChangedSince(ref) {
+  return changedFiles(ref, "lexicons/").some((path) => path.endsWith(".json"));
 }
 
 function main(base) {
@@ -190,37 +98,22 @@ function main(base) {
     const tag = `v${previous}`;
     if (!git("tag", "--list", tag).trim()) {
       errors.push(
-        `Cannot find tag ${tag} for the last release, so the Lexicon changes in this release cannot be checked.`,
+        `Cannot find tag ${tag} for the last release, so this release cannot be checked.`,
       );
     } else {
-      const { previous: before, current: after } = changedLexicons(tag, errors);
       const body =
         JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"))
           .pull_request?.body || "";
       errors.push(
-        ...releasePrErrors(
-          previous,
-          version,
-          body,
-          requiredBump(before, after),
-        ),
+        ...releasePrErrors(previous, version, lexiconsChangedSince(tag), body),
       );
     }
   } else {
-    const { paths, previous, current } = changedLexicons(mergeBase, errors);
-    if (paths.length) {
-      const bumps = changedFiles(mergeBase, ".changeset/")
-        .filter((path) => path.endsWith(".md") && existsSync(path))
-        .map((path) => changesetBump(readFileSync(path, "utf8")))
-        .filter(Boolean);
-      if (!bumps.length) {
-        errors.push(
-          "Changed Lexicon JSON needs a Changeset for @hypercerts-org/lexicon.",
-        );
-      } else {
-        errors.push(...lexiconChangeErrors(previous, current, bumps));
-      }
-    }
+    const bumps = changedFiles(mergeBase, ".changeset/")
+      .filter((path) => path.endsWith(".md") && existsSync(path))
+      .map((path) => changesetBump(readFileSync(path, "utf8")))
+      .filter(Boolean);
+    errors.push(...contributorErrors(lexiconsChangedSince(mergeBase), bumps));
   }
 
   for (const error of errors) console.error(`::error::${error}`);

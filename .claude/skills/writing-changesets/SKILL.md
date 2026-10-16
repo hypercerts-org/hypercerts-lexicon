@@ -55,10 +55,10 @@ There should be a frontmatter field for each package being changed.
 The field name should be the package name, and the field value should
 be one of the following change types:
 
-- `patch` - Description-only Lexicon edits and fixes that do not change
-  any Lexicon schema. CI rejects patch for any schema change.
-- `minor` - Any Lexicon schema change that is not breaking, including a
-  new optional field or a new Lexicon (also breaking changes if the
+- `patch` - Changes that do not touch any Lexicon JSON file. CI rejects
+  patch for any Lexicon change.
+- `minor` - Any Lexicon change that is not breaking, including a new
+  optional field, a new Lexicon or a description edit (also breaking changes if the
   version in `package.json` is still 0.x.y)
 - `major` - Breaking changes (_ONLY_ use if the version in `package.json`
   is already greater than 0.x.y)
