@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                                                                                           |
-| ----------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its currency, payment rail and network, optional transaction ID. Sender is optional for anonymous funders |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                               |
+| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its currency, payment rail and network, optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the platform or servicer that moved the funds |
 
 ### Hyperboards — visual display layer
 
@@ -655,6 +655,8 @@ const receipt = {
   $type: FUNDING_RECEIPT_NSID,
   // to and from are unions — use $type to specify the variant
   to: { $type: "app.certified.defs#did", did: "did:plc:recipient" },
+  via: { $type: "app.certified.defs#did", did: "did:plc:platform" }, // optional: the platform or servicer that moved the funds
+  type: "donation", // optional: donation, match or grant
   amount: "1000.00", // gross the sender paid, before fees; omit if unknown
   currency: "USDC",
   netAmount: "998.50", // optional: what the recipient received

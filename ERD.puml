@@ -385,7 +385,9 @@ dataclass fundingReceipt {
     !if (SHOW_FIELDS == "true")
     to
     from?
+    via?
     for?
+    type?
     amount?
     currency?
     netAmount?

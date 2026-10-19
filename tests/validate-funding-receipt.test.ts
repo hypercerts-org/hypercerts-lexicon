@@ -105,6 +105,8 @@ describe("org.hypercerts.funding.receipt", () => {
       $type: ids.OrgHypercertsFundingReceipt,
       ...validBase,
       from: { $type: "app.certified.defs#did", did: "did:plc:abc123" },
+      via: { $type: "app.certified.defs#did", did: "did:plc:platform" },
+      type: "donation",
       netAmount: "985.00",
       netCurrency: "USDC",
       paymentRail: "onchain",
@@ -149,6 +151,61 @@ describe("org.hypercerts.funding.receipt", () => {
   it("should reject a netCurrency longer than 10 bytes", () => {
     const result = validate(
       { ...validBase, netAmount: "990.00", netCurrency: "X".repeat(11) },
+      ids.OrgHypercertsFundingReceipt,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
+  it("should accept 'via' as a DID", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      via: { $type: "app.certified.defs#did", did: "did:plc:platform" },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.via).toMatchObject({ did: "did:plc:platform" });
+    }
+  });
+
+  it("should accept 'via' as a text string", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      via: {
+        $type: "org.hypercerts.funding.receipt#text",
+        value: "Acme Giving Platform",
+      },
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept a known type", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      type: "match",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.type).toBe("match");
+    }
+  });
+
+  it("should accept a type outside knownValues (open vocabulary)", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      type: "prize",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject a type longer than 50 bytes", () => {
+    const result = validate(
+      { ...validBase, type: "x".repeat(51) },
       ids.OrgHypercertsFundingReceipt,
       "main",
       false,

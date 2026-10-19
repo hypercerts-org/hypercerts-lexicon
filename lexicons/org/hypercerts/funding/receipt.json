@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts.",
+      "description": "Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts. A receipt may be updated in place under the same record key: its URI does not change, so likes, reposts and references keep resolving, but signatures bind to content and must be renewed. An earlier version cannot be recalled from readers that kept it.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -12,7 +12,7 @@
         "properties": {
           "from": {
             "type": "union",
-            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.",
+            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity. Name a sender only if they chose to be named: from can be added later by updating the receipt in place, but removing it later only hides the name from the current version, and an onchain transactionId still names the sending wallet.",
             "refs": [
               "#text",
               "app.certified.defs#did",
@@ -27,6 +27,21 @@
               "app.certified.defs#did",
               "com.atproto.repo.strongRef"
             ]
+          },
+          "via": {
+            "type": "union",
+            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker), named in the record rather than implied by who authored the receipt. Distinct from paymentNetwork (the scheme or chain) and from the record author; lets consumers group receipts by facilitator regardless of author. Use it for an intermediary that passed the funds on without choosing the recipient; a regrantor that chose is a party in its own receipts.",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "What the payment is: a donation (a gift from the sender), a match (funds a matching pool allocated on the strength of other gifts) or a grant (funds awarded through a selection process). Values beyond the known set are permitted. Omit if unknown.",
+            "maxLength": 50,
+            "knownValues": ["donation", "match", "grant"]
           },
           "amount": {
             "type": "string",
