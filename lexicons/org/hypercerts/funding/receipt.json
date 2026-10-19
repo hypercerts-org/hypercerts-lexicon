@@ -30,7 +30,7 @@
           },
           "via": {
             "type": "union",
-            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker), named in the record rather than implied by who authored the receipt. Distinct from paymentNetwork (the scheme or chain) and from the record author; lets consumers group receipts by facilitator regardless of author. Use it for an intermediary that passed the funds on without choosing the recipient; a regrantor that chose is a party in its own receipts.",
+            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker).",
             "refs": [
               "#text",
               "app.certified.defs#did",
