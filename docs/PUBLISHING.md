@@ -140,7 +140,13 @@ foreign-repository PRs, and other branches do not publish.
 
 ## Publishing Beta Releases
 
-Beta releases use ephemeral prerelease branches.
+Beta releases use ephemeral prerelease branches. Release tooling requires
+Node.js `^22.11 || ^24 || >=26` and npm `>=10.9.0`; these are development
+requirements, not requirements for consumers of the published lexicons.
+
+Changesets v3 archives versioned prerelease changesets in `.changeset/pre/`.
+When migrating an active v2 prerelease, `npx changeset status` migrates the
+state automatically. Review and commit all resulting `.changeset/` changes.
 
 ### Starting a Beta Cycle
 
@@ -156,7 +162,7 @@ Beta releases use ephemeral prerelease branches.
 
    ```bash
    npx changeset pre enter beta
-   git add .changeset/pre.json
+   git add -A .changeset/
    git commit -m "release: enter beta prerelease mode"
    git push -u origin prerelease/beta
    ```
@@ -184,6 +190,9 @@ To add changes and publish more betas:
 3. Merge to `prerelease/beta`
 4. Run the release workflow on `prerelease/beta`
 
+If there are no pending non-empty changesets, the workflow succeeds without
+versioning, committing, publishing, or pushing tags.
+
 ### Finishing a Beta Cycle
 
 When you're ready to promote to stable:
@@ -193,7 +202,7 @@ When you're ready to promote to stable:
    ```bash
    git checkout prerelease/beta
    npx changeset pre exit
-   git add .changeset/pre.json
+   git add -A .changeset/
    git commit -m "release: exit beta prerelease mode"
    git push
    ```

@@ -78,6 +78,8 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - name: Check out pushed commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -113,16 +115,15 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           set -euo pipefail
           pr_number="$(gh pr list \
             --repo "$GITHUB_REPOSITORY" \
-            --head "${GITHUB_REPOSITORY_OWNER}:changeset-release/main" \
+            --head changeset-release/main \
             --base main \
             --state open \
-            --json number \
-            --jq '.[0].number // empty')"
+            --json number,isCrossRepository \
+            --jq '[.[] | select(.isCrossRepository | not)][0].number // empty')"
           if [ -z "$pr_number" ]; then
             echo "No open changeset-release/main PR to rename"
             exit 0
@@ -159,6 +160,7 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          permission-contents: write
 
       - name: Check out exact merged commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -253,6 +255,7 @@ jobs:
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
+          permission-contents: write
 
       - name: Check out prerelease commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -294,12 +297,40 @@ jobs:
           fi
           echo "Prerelease mode is active"
 
+      - name: Check for pending beta changesets
+        id: beta-changesets
+        run: |
+          set -euo pipefail
+          if ! find .changeset -maxdepth 1 -type f -name '*.md' \
+            ! -name README.md ! -name AGENTS.md ! -name CLAUDE.md ! -name GEMINI.md \
+            -print -quit | grep -q .; then
+            echo "pending=false" >> "$GITHUB_OUTPUT"
+            echo "No pending beta changesets; skipping versioning and publication."
+            exit 0
+          fi
+          status_file="$RUNNER_TEMP/beta-changesets.json"
+          npx --no-install changeset status --output "$status_file"
+          pending="$(node --input-type=module - "$status_file" <<'NODE'
+          import fs from 'node:fs';
+          const status = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          console.log(status.changesets.some(change =>
+            !change.id.startsWith('pre/') && change.releases.length > 0
+          ));
+          NODE
+          )"
+          echo "pending=$pending" >> "$GITHUB_OUTPUT"
+          if [ "$pending" = "false" ]; then
+            echo "No pending beta changesets; skipping versioning and publication."
+          fi
+
       - name: Version packages (beta)
+        if: steps.beta-changesets.outputs.pending == 'true'
         run: npm run version-packages
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
       - name: Commit and push version changes (beta)
+        if: steps.beta-changesets.outputs.pending == 'true'
         run: |
           set -euo pipefail
           version="$(node -p "require('./package.json').version")"
@@ -311,15 +342,18 @@ jobs:
           git push
 
       - name: Publish beta package
+        if: steps.beta-changesets.outputs.pending == 'true'
         run: npm run release
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           NPM_CONFIG_PROVENANCE: true
 
       - name: Push beta git tags
+        if: steps.beta-changesets.outputs.pending == 'true'
         run: git push origin --tags
 
       - name: Log beta release
+        if: steps.beta-changesets.outputs.pending == 'true'
         run: |
           version="$(node -p "require('./package.json').version")"
           echo "Published beta release: $version"
