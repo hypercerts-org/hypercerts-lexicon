@@ -256,12 +256,12 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Context — evidence, data, social verification
 
-| Lexicon             | NSID                                     | Purpose                                                                 |
-| ------------------- | ---------------------------------------- | ----------------------------------------------------------------------- |
-| **Attachment**      | `org.hypercerts.context.attachment`      | Documents, reports, evidence, or other files linked to a record         |
-| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records       |
-| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements |
-| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context    |
+| Lexicon             | NSID                                     | Purpose                                                                                                                      |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Attachment**      | `org.hypercerts.context.attachment`      | Updates, reports, evidence, or other material, linked to records via `subjects` or standing alone as an update by its author |
+| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records                                                            |
+| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements                                                      |
+| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context                                                         |
 
 ### Work Scope
 
@@ -642,6 +642,39 @@ const attachment = {
     { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Standalone updates and posts
+
+An attachment with no `subjects` is a standalone update by its author: a
+personal or organization post that is not about any particular project.
+Project updates are the same record with `subjects` pointing at the project
+or activity. One record type carries both, so a feed, a like, a repost, or a
+translation works the same way for either. Use `contentType: "update"` for
+narrative updates; the documentary kinds (`report`, `audit`, `evidence`,
+`testimonial`, `methodology`) are for material about the subjects. Do not
+point a standalone update at the author's own profile; leave `subjects` out.
+
+```typescript
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+
+const update = {
+  $type: CONTEXT_ATTACHMENT_NSID,
+  title: "Primeras lluvias en el vivero",
+  contentType: "update",
+  shortDescription: "Las plántulas de encino ya tienen hojas nuevas.",
+  description: {
+    $type: "org.hypercerts.defs#descriptionString",
+    value: "Después de tres semanas de sequía, las primeras lluvias...",
+  },
+  content: [
+    {
+      $type: "org.hypercerts.defs#uri",
+      uri: "https://example.com/photos/vivero-octubre.jpg",
+    },
+  ],
   createdAt: new Date().toISOString(),
 };
 ```
