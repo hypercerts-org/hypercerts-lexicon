@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                                            |
-| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its currency, payment rail and network, optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                                                                    |
+| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its own currency; one payment rail and network for the receipt; optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment |
 
 ### Hyperboards — visual display layer
 
@@ -666,7 +666,7 @@ const receipt = {
   transactionId: "0xabc...",
   for: {
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
-    cid: "bafy...",
+    cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
   },
   occurredAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),

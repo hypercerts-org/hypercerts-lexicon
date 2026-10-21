@@ -304,7 +304,7 @@ Overall score for an evaluation on a numeric scale.
 
 ### `org.hypercerts.funding.receipt`
 
-**Description:** Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts. A receipt may be updated in place under the same record key: its URI does not change, so likes, reposts and references keep resolving, but signatures bind to content and must be renewed. An earlier version cannot be recalled from readers that kept it.
+**Description:** Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts. A receipt may be updated in place under the same record key: its URI does not change, so references by URI keep resolving, but a strongRef (as likes and reposts use) still pins the earlier CID, and signatures bind to content and must be renewed. An earlier version cannot be recalled from readers that kept it.
 
 **Key:** `tid`
 
