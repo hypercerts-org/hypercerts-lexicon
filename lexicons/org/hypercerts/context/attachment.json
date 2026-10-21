@@ -21,7 +21,7 @@
           },
           "contentType": {
             "type": "string",
-            "description": "The kind of material. `update` is a narrative update or post written by the author, about a project or about the author; `report`, `audit`, `evidence`, `testimonial` and `methodology` are documentary material about the subjects. Values beyond the known set are permitted.",
+            "description": "The type of attachment. Values beyond the known set are permitted.",
             "knownValues": [
               "update",
               "report",
