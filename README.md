@@ -374,6 +374,30 @@ snapshot semantic, and it's what the lexicon uses across
 `badge.award.badge`, `badge.response.badgeAward`, `funding.receipt.for`,
 and similar fields where the historical content needs to stay stable.
 
+### `langs` declares what language a record's text was written in
+
+Records whose text a person writes — `org.hypercerts.collection`,
+`org.hypercerts.claim.activity`, `org.hypercerts.context.attachment`,
+`org.hypercerts.entity.feature`, `app.certified.actor.profile` and
+`app.certified.actor.organization` — carry an optional `langs` array of up
+to three BCP-47 language tags, the same shape as Bluesky's
+`app.bsky.feed.post` `langs`. It says which language(s) the record's title
+and descriptions were written in, so an app can decide what to translate
+and which language to index it under. It is an array because one record
+can mix languages.
+
+- **Store only the original.** The record carries the language the author
+  wrote in. Translations do not go on the record.
+- **Set it when writing, from the text.** Detect the language of what the
+  author wrote, show the result, and let the author correct it. Never write
+  the interface language or a profile preference alone: an author with a
+  Spanish interface who writes in English must not be tagged `es`.
+- **Read it as a hint.** It is self-declared and can be wrong. Never hide a
+  record because it lacks `langs` or because the tag looks wrong; detect
+  the language yourself for records without it.
+- **Prefer language codes to region codes** (`es`, not `es-MX`) unless the
+  text really differs by region.
+
 ## Entity Relationship Diagram
 
 ![Hypercert ERD](ERD.svg)
@@ -663,6 +687,7 @@ const attachment = {
     { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
+  langs: ["en"],
   createdAt: new Date().toISOString(),
 };
 ```

@@ -642,6 +642,7 @@ const attachment = {
     { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
+  langs: ["en"],
   createdAt: new Date().toISOString(),
 };
 ```
@@ -835,6 +836,19 @@ All `createdAt` fields use ISO 8601 format with timezone
 Every record written to AT Protocol must include a `$type` field
 matching the collection NSID. Use the exported `*_NSID` constants to
 avoid typos.
+
+### Languages (`langs`)
+
+Collection, activity, attachment, feature, profile and organization
+records carry an optional `langs` array of up to three BCP-47 tags (same
+shape as Bluesky posts) naming the language(s) the record's text was
+written in. Set it from the text the author wrote and let the author
+correct it; never from the interface language or a profile preference
+alone. Store only the original language, never translations. Read it as a
+hint, not a filter: never hide a record because it lacks `langs` or
+because the tag looks wrong, and detect the language from the text when
+the tag is missing or contradicts it. Prefer `es` to `es-MX` unless the
+text differs by region.
 
 ## Further Reading
 
