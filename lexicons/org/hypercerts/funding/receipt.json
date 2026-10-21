@@ -4,15 +4,15 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Records a funding receipt for a payment from one user to another user. It may be recorded by the recipient, by the sender, or by a third party. The sender may remain anonymous.",
+      "description": "Records a payment from a sender to a recipient. Any party may record it, and the sender may stay anonymous. When the sender chose the recipient, record one receipt to the final recipient even if platforms or hosts passed the funds on. When an intermediary chose (regranting), record the payment into it and each onward payment as separate receipts. A receipt may be updated in place under the same record key: its URI does not change, so references by URI keep resolving, but a strongRef (as likes and reposts use) still pins the earlier CID, and signatures bind to content and must be renewed. An earlier version cannot be recalled from readers that kept it.",
       "key": "tid",
       "record": {
         "type": "object",
-        "required": ["to", "amount", "currency", "createdAt"],
+        "required": ["to", "createdAt"],
         "properties": {
           "from": {
             "type": "union",
-            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity.",
+            "description": "The sender of the funds (a free-text string, an account DID, or a strong reference to a record). Optional — omit to represent anonymity. Name a sender only if they chose to be named: from can be added later by updating the receipt in place, but removing it later only hides the name from the current version, and an onchain transactionId still names the sending wallet.",
             "refs": [
               "#text",
               "app.certified.defs#did",
@@ -28,29 +28,64 @@
               "com.atproto.repo.strongRef"
             ]
           },
+          "via": {
+            "type": "union",
+            "description": "Optional intermediary that facilitated or processed the payment (funding platform, payment servicer, broker).",
+            "refs": [
+              "#text",
+              "app.certified.defs#did",
+              "com.atproto.repo.strongRef"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "description": "What the payment is: a donation (a gift from the sender), a match (funds a matching pool allocated on the strength of other gifts) or a grant (funds awarded through a selection process). Values beyond the known set are permitted. Omit if unknown.",
+            "maxLength": 50,
+            "knownValues": ["donation", "match", "grant"]
+          },
           "amount": {
             "type": "string",
-            "description": "Amount of funding received as a numeric string (e.g. '1000.50').",
+            "description": "Gross amount the sender paid, before fees, as a numeric string (e.g. '1000.50'). Omit if unknown, and set netAmount instead.",
             "maxLength": 50
           },
           "currency": {
             "type": "string",
-            "description": "Currency of the payment (e.g. EUR, USD, ETH).",
+            "description": "Currency of amount: an ISO 4217 code for fiat (e.g. EUR), a token ticker for digital assets (e.g. USDC). This is what marks the funds as fiat or digital. Set it whenever amount is set.",
+            "maxLength": 10
+          },
+          "netAmount": {
+            "type": "string",
+            "description": "What the recipient received after fees and conversion, as a numeric string in netCurrency.",
+            "maxLength": 50
+          },
+          "netCurrency": {
+            "type": "string",
+            "description": "Currency of netAmount: an ISO 4217 code for fiat, a token ticker for digital assets. Set it whenever netAmount is set.",
             "maxLength": 10
           },
           "paymentRail": {
             "type": "string",
-            "description": "How the funds were transferred (e.g. bank_transfer, credit_card, onchain, cash, check, payment_processor).",
-            "maxLength": 50
+            "description": "How the sender paid. Use 'payment_processor' only when the underlying method is unknown.",
+            "maxLength": 50,
+            "knownValues": [
+              "onchain",
+              "bank_transfer",
+              "card",
+              "direct_debit",
+              "mobile_money",
+              "payment_processor",
+              "cash",
+              "check"
+            ]
           },
           "paymentNetwork": {
             "type": "string",
-            "description": "Optional network within the payment rail (e.g. arbitrum, ethereum, sepa, visa, paypal).",
+            "description": "Where transactionId can be looked up: the chain for onchain payments, preferably as a CAIP-2 ID (e.g. 'eip155:1'), otherwise the processor or scheme (e.g. stripe, sepa). Set it whenever transactionId is a transaction hash.",
             "maxLength": 50
           },
           "transactionId": {
             "type": "string",
-            "description": "Identifier of the underlying payment transaction (e.g. bank reference, onchain transaction hash, or processor-specific ID). Use paymentNetwork to specify the network where applicable.",
+            "description": "ID of the sender's payment, not of a platform's later payout: a transaction hash for onchain payments, otherwise the processor's or scheme's reference. Receipts are public: prefer opaque processor IDs to bank references, and note that a hash reveals the sender's wallet even when from is omitted.",
             "maxLength": 256
           },
           "for": {

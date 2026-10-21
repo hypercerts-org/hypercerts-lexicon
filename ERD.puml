@@ -385,9 +385,13 @@ dataclass fundingReceipt {
     !if (SHOW_FIELDS == "true")
     to
     from?
+    via?
     for?
-    amount
-    currency
+    type?
+    amount?
+    currency?
+    netAmount?
+    netCurrency?
     paymentRail?
     paymentNetwork?
     transactionId?

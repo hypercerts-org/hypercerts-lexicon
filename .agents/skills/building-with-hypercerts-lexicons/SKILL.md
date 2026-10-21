@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                           |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: amount, currency, payment rail, optional transaction ID. Sender is optional for anonymous funders |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                                                                    |
+| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its own currency; one payment rail and network for the receipt; optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment |
 
 ### Hyperboards — visual display layer
 
@@ -653,12 +653,21 @@ import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
-  to: "did:plc:recipient",
-  amount: "1000.00",
-  currency: "USD",
-  paymentRail: "ethereum",
+  // to and from are unions — use $type to specify the variant
+  to: { $type: "app.certified.defs#did", did: "did:plc:recipient" },
+  via: { $type: "app.certified.defs#did", did: "did:plc:platform" }, // optional: intermediary that facilitated or processed the payment
+  type: "donation", // optional: donation, match or grant
+  amount: "1000.00", // gross the sender paid, before fees; omit if unknown
+  currency: "USDC",
+  netAmount: "998.50", // optional: what the recipient received
+  netCurrency: "USDC", // set with netAmount
+  paymentRail: "onchain",
+  paymentNetwork: "eip155:1", // CAIP-2 chain ID; a tx hash needs its chain
   transactionId: "0xabc...",
-  for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+  for: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+    cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  },
   occurredAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
 };
