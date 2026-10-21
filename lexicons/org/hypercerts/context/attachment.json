@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "record",
-      "description": "Commentary, context, evidence, or documentary material: a project update, a report, a photo set, an audit. Its `subjects` say what it is about: one or more hypercert records (an activity, project, claim, or evaluation), or an account profile. A standalone update by its author, a person or an organization, such as a personal or organization post that is not about any particular project, takes the author's own app.certified.actor.profile as its subject: it is an update about the author. Both forms are the same record, so feeds, likes, reposts, and translation treat them alike.",
+      "description": "Commentary, context, evidence, or documentary material: a project update, a report, a photo set, an audit, or a standalone update by its author, a person or an organization, such as a personal or organization post that is not about any particular project. Project updates and standalone updates are the same record, so feeds, likes, reposts, and translation treat them alike.",
       "key": "tid",
       "record": {
         "type": "object",
@@ -21,7 +21,7 @@
           },
           "contentType": {
             "type": "string",
-            "description": "The kind of material. `update` is a narrative update or post written by the author, about a project or, with the author's own profile as subject, about the author; `report`, `audit`, `evidence`, `testimonial` and `methodology` are documentary material about the subjects. Values beyond the known set are permitted.",
+            "description": "The kind of material. `update` is a narrative update or post written by the author, about a project or about the author; `report`, `audit`, `evidence`, `testimonial` and `methodology` are documentary material about the subjects. Values beyond the known set are permitted.",
             "knownValues": [
               "update",
               "report",

@@ -256,12 +256,12 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Context — evidence, data, social verification
 
-| Lexicon             | NSID                                     | Purpose                                                                                                                                        |
-| ------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Attachment**      | `org.hypercerts.context.attachment`      | Updates, reports, evidence, or other material about its `subjects`: a project or activity, or the author's own profile for a standalone update |
-| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records                                                                              |
-| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements                                                                        |
-| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context                                                                           |
+| Lexicon             | NSID                                     | Purpose                                                                                   |
+| ------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Attachment**      | `org.hypercerts.context.attachment`      | Project updates, standalone updates by their author, reports, evidence, or other material |
+| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records                         |
+| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements                   |
+| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context                      |
 
 ### Work Scope
 

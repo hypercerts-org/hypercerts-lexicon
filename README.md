@@ -266,12 +266,12 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Context (`org.hypercerts.context.*`)
 
-| Lexicon             | NSID                                     | Description                                                                                                                                     |
-| ------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Attachment**      | `org.hypercerts.context.attachment`      | Updates, reports, evidence, or other material about its `subjects`: a project or activity, or the author's own profile for a standalone update. |
-| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to one or more records.                                                                  |
-| **Evaluation**      | `org.hypercerts.context.evaluation`      | An assessment of a record with evaluators, summary, score, and supporting measurements.                                                         |
-| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion of a record in another context.                                                               |
+| Lexicon             | NSID                                     | Description                                                                                |
+| ------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Attachment**      | `org.hypercerts.context.attachment`      | Project updates, standalone updates by their author, reports, evidence, or other material. |
+| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to one or more records.             |
+| **Evaluation**      | `org.hypercerts.context.evaluation`      | An assessment of a record with evaluators, summary, score, and supporting measurements.    |
+| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion of a record in another context.          |
 
 ### Work Scope (`org.hypercerts.workscope.*`)
 
