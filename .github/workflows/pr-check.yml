@@ -2,7 +2,9 @@ name: PR Check
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, develop, "release/**"]
+    # `edited` re-runs the Release PR check when the Docs PR link is added.
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
   changeset-check:
@@ -16,17 +18,8 @@ jobs:
           node-version: 22
           cache: "npm"
       - run: npm ci
-      - name: Check for changeset
-        run: |
-          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "^lexicons/\|^types/\|^package.json"; then
-            if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "^\.changeset/.*\.md$"; then
-              echo "Changeset found"
-            else
-              echo "::warning::No changeset found. Run 'npm run changeset' if this PR includes user-facing changes."
-            fi
-          else
-            echo "No package changes detected"
-          fi
+      - name: Check Lexicon versioning and Release PR review
+        run: node scripts/check-release-policy.mjs "origin/${{ github.base_ref }}"
       - name: Check prerelease mode
         run: |
           if [ -f .changeset/pre.json ]; then
