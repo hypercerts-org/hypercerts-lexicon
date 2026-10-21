@@ -196,7 +196,7 @@ An item in a collection, with an identifier and optional weight.
 
 ### `org.hypercerts.context.attachment`
 
-**Description:** Commentary, context, evidence, or documentary material: a project update, a report, a photo set, an audit, or a standalone update by its author, a person or an organization, such as a personal or organization post that is not about any particular project. Project updates and standalone updates are the same record, so feeds, likes, reposts, and translation treat them alike.
+**Description:** An attachment providing commentary, context, evidence, or documentary material related to a hypercert record (e.g. an activity, project, claim, or evaluation) or related to an account profile.
 
 **Key:** `tid`
 
