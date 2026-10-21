@@ -47,9 +47,12 @@ Create a changeset for any user-facing changes:
 npm run changeset
 ```
 
-Follow the prompts to select version bump type and describe
-changes. See [AGENTS.md § Versioning](AGENTS.md#versioning) for
-details.
+Follow the prompts to select a version bump and describe what the change
+enables or fixes. Any change to a Lexicon JSON file changes the
+published API and SDK, so it is **minor**, or **major** if it is
+breaking. CI rejects a patch Changeset for Lexicon changes. See the
+[publishing guide](docs/PUBLISHING.md#adding-changesets) and
+[schema stability guidance](README.md#maintenance-and-publishing-releases).
 
 ## Pull Request Process
 
@@ -96,8 +99,10 @@ directory layout and file organization.
 
 ## Release Process
 
-**Contributors only create changesets.** Releases are handled by
-maintainers via GitHub Actions on the `main` branch. See
+**Contributors only create changesets.** Stable releases are automated:
+pushes to `main` create or update a versioned Release PR, and merging
+that PR publishes the package. Beta releases remain manually dispatched
+from `prerelease/*` branches. See
 [docs/PUBLISHING.md](docs/PUBLISHING.md) for details.
 
 ## License
