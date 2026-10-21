@@ -845,8 +845,10 @@ shape as Bluesky posts) naming the language(s) the record's text was
 written in. Set it from the text the author wrote and let the author
 correct it; never from the interface language or a profile preference
 alone. Store only the original language, never translations. Read it as a
-hint: never hide a record because it lacks `langs`, and prefer `es` to
-`es-MX` unless the text differs by region.
+hint, not a filter: never hide a record because it lacks `langs` or
+because the tag looks wrong, and detect the language from the text when
+the tag is missing or contradicts it. Prefer `es` to `es-MX` unless the
+text differs by region.
 
 ## Further Reading
 

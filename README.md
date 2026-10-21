@@ -382,9 +382,9 @@ Records whose text a person writes — `org.hypercerts.collection`,
 `app.certified.actor.organization` — carry an optional `langs` array of up
 to three BCP-47 language tags, the same shape as Bluesky's
 `app.bsky.feed.post` `langs`. It says which language(s) the record's title
-and descriptions were written in, so an app can decide what to translate,
-which language to index, or which records to show a reader. It is an
-array because one record can mix languages.
+and descriptions were written in, so an app can decide what to translate
+and which language to index it under. It is an array because one record
+can mix languages.
 
 - **Store only the original.** The record carries the language the author
   wrote in. Translations do not go on the record.
