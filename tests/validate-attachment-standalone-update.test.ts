@@ -2,17 +2,23 @@ import { describe, it, expect } from "vitest";
 import { validate, ids } from "../generated/lexicons";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment";
 
-// An attachment without `subjects` is a standalone update by its author
-// (TECH-705). These tests pin that contract: no subjects is valid, `update`
-// is a known contentType, and the vocabulary stays open.
+// A standalone update by its author takes the author's own profile as its
+// subject (TECH-705). These tests pin that contract: a profile subject is
+// valid, `update` is a known contentType, `subjects` stays optional, and the
+// vocabulary stays open.
 
 const VALID_CID = "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
 const createdAt = "2026-10-20T00:00:00Z";
+const authorProfile = {
+  uri: "at://did:plc:alice/app.certified.actor.profile/self",
+  cid: VALID_CID,
+};
 
 const standaloneUpdate = {
   $type: ids.OrgHypercertsContextAttachment,
   title: "Primeras lluvias en el vivero",
   contentType: "update",
+  subjects: [authorProfile],
   shortDescription: "Las plántulas de encino ya tienen hojas nuevas.",
   description: {
     $type: "org.hypercerts.defs#descriptionString",
@@ -28,11 +34,11 @@ const standaloneUpdate = {
 };
 
 describe("org.hypercerts.context.attachment as a standalone update", () => {
-  it("accepts an update with no subjects", () => {
+  it("accepts an update with the author's profile as subject", () => {
     const result = Attachment.validateMain(standaloneUpdate);
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.value.subjects).toBeUndefined();
+      expect(result.value.subjects).toEqual([authorProfile]);
       expect(result.value.contentType).toBe("update");
       expect(result.value.title).toBe("Primeras lluvias en el vivero");
     }
@@ -54,7 +60,7 @@ describe("org.hypercerts.context.attachment as a standalone update", () => {
     }
   });
 
-  it("accepts a minimal update: title and createdAt only", () => {
+  it("accepts a minimal attachment: title and createdAt only, no subjects", () => {
     expect(
       Attachment.validateMain({
         $type: ids.OrgHypercertsContextAttachment,
