@@ -12,7 +12,7 @@
         "properties": {
           "subjects": {
             "type": "array",
-            "description": "References to the subject(s) the attachment is about: an activity claim, a collection, a measurement, an evaluation, another attachment (for a comment on it), or an account profile (app.certified.actor.profile). A standalone update by its author points at the author's own profile, for people and organizations alike: it is an update about the author. Optional: omit it only when the attachment is recorded before the claim it will support. A profile is edited over time, so match a profile subject by its `uri`, not its `cid`; the `cid` records the profile version that existed when the attachment was written.",
+            "description": "References to the subject(s) the attachment is about: an activity claim, a collection, a measurement, an evaluation, another attachment (for a comment on it), or an account profile (app.certified.actor.profile). A standalone update by its author points at the author's own profile: it is an update about the author. Optional: omit it only when the attachment is recorded before the claim it will support.",
             "items": {
               "type": "ref",
               "ref": "com.atproto.repo.strongRef"
