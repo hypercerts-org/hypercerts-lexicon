@@ -96,8 +96,10 @@ directory layout and file organization.
 
 ## Release Process
 
-**Contributors only create changesets.** Releases are handled by
-maintainers via GitHub Actions on the `main` branch. See
+**Contributors only create changesets.** Stable releases are automated:
+pushes to `main` create or update a versioned Release PR, and merging
+that PR publishes the package. Beta releases remain manually dispatched
+from `prerelease/*` branches. See
 [docs/PUBLISHING.md](docs/PUBLISHING.md) for details.
 
 ## License

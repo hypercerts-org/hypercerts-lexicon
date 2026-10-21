@@ -1,12 +1,10 @@
 # Publishing Guide for Maintainers
 
 This document describes how to publish the `@hypercerts-org/lexicon`
-package to npm using GitHub Actions workflows with Changesets. The
-workflow uses `main` as the branch from which normal releases are
-published, with ephemeral prerelease branches for beta testing.
-
-All releases are manually triggered to give you full control over when
-releases are made.
+package to npm using GitHub Actions workflows with Changesets. Stable
+releases are prepared automatically after pushes to `main` and published
+when the generated Release PR is merged. Beta releases remain manually
+triggered from ephemeral prerelease branches.
 
 ## Maintenance and publishing releases
 
@@ -39,27 +37,23 @@ and publishing releases" section of
 ### Release Flow
 
 ```text
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│  Stable releases:                                                │
-│                                                                  │
-│  feature/* ───► main ───► Manual publish @latest (1.0.0)         │
-│                                                                  │
-│  Beta releases:                                                  │
-│                                                                  │
-│  prerelease/beta                                                 │
-│        │                                                         │
-│        │  npx changeset pre enter beta                           │
-│        ▼                                                         │
-│  prerelease/beta ──► Manual publish @beta                        │
-│        │              (1.0.0-beta.0, 1.0.0-beta.1)               │
-│        │                                                         │
-│        │  npx changeset pre exit                                 │
-│        │  (when ready for stable)                                │
-│        ▼                                                         │
-│   PR to main ──► Manual publish @latest (1.0.0)                  │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
+Stable releases:
+
+feature/* ──► main ──► automatic checks and Changesets versioning
+                           │
+                           ▼
+                 Release v1.0.1 PR
+                           │ merge
+                           ▼
+              npm @latest + git tag + GitHub Release
+
+Beta releases:
+
+prerelease/beta ──► manual workflow dispatch ──► npm @beta + git tag
+       │
+       └── exit prerelease mode ──► PR to main
+                                      │ merge
+                                      └──► automatic stable Release PR
 ```
 
 ## Prerequisites
@@ -80,7 +74,14 @@ Before publishing, ensure you have:
    - **No `NPM_TOKEN` secret is required** - Trusted Publishers eliminates
      the need for long-lived tokens
 
-2. **Repository URL in package.json:**
+2. **Release Bot GitHub App:**
+   - Configure repository secrets `RELEASE_BOT_APP_ID` and
+     `RELEASE_BOT_APP_PRIVATE_KEY`.
+   - The app must be installed for this repository with permission to
+     write contents and pull requests. It updates the Release PR and
+     pushes release commits or tags where needed.
+
+3. **Repository URL in package.json:**
    - `package.json` must have a `repository.url` field
    - This is required for npm Trusted Publishers to verify the package source
    - The repo already has this configured correctly
@@ -109,23 +110,43 @@ but it's not necessary.
 
 ## Publishing a Stable Release
 
-To publish a stable release to npm:
+Stable releases are not started with `workflow_dispatch`. The process is
+automatic once a Changeset-bearing change reaches `main`:
 
-1. **Run the workflow:**
-   - Navigate to: <https://github.com/hypercerts-org/hypercerts-lexicon/actions/workflows/release.yml>
-   - Click "Run workflow"
-   - Select the branch: **`main`**
-   - Click "Run workflow" to start
+1. **Merge the contributor PR to `main`.** The PR check warns when
+   package changes do not include a Changeset.
 
-2. **What happens:**
-   - The workflow validates the code and regenerates TypeScript types
-   - If there are pending changesets, it creates a "Release Pull Request"
-   - Merge the Release PR to publish to npm with the `latest` tag
-   - If no changesets exist, nothing is published
+2. **Review the automatically created or updated Release PR.** A push to
+   `main` validates the package and rejects active prerelease mode. If
+   Changesets has pending version changes, the workflow creates or
+   updates a PR from `changeset-release/main` titled `Release vX.Y.Z`.
+   If there are no pending changesets, no new Release PR is needed.
+
+3. **Review and merge the Release PR.** It contains the package version,
+   changelog, and lockfile updates. The publishing job runs only when the
+   PR is merged, originates from this repository, and has head branch
+   `changeset-release/main`.
+
+4. **The workflow validates and publishes the exact merged commit.** It
+   checks out and verifies the PR's merge commit SHA, runs
+   `npm run check`, and confirms stable prerelease mode is not active. It then
+   publishes to npm with the `latest` tag, pushes the version tag, and
+   creates the corresponding GitHub Release using npm Trusted
+   Publishers/OIDC.
+
+A manual dispatch from `main` is rejected. It cannot prepare a stable
+Release PR or publish a stable package. Closed-but-unmerged PRs,
+foreign-repository PRs, and other branches do not publish.
 
 ## Publishing Beta Releases
 
-Beta releases use ephemeral prerelease branches.
+Beta releases use ephemeral prerelease branches. Release tooling requires
+Node.js `^22.11 || ^24 || >=26` and npm `>=10.9.0`; these are development
+requirements, not requirements for consumers of the published lexicons.
+
+Changesets v3 archives versioned prerelease changesets in `.changeset/pre/`.
+When migrating an active v2 prerelease, `npx changeset status` migrates the
+state automatically. Review and commit all resulting `.changeset/` changes.
 
 ### Starting a Beta Cycle
 
@@ -141,8 +162,8 @@ Beta releases use ephemeral prerelease branches.
 
    ```bash
    npx changeset pre enter beta
-   git add .changeset/pre.json
-   git commit -m "chore: enter beta prerelease mode"
+   git add -A .changeset/
+   git commit -m "release: enter beta prerelease mode"
    git push -u origin prerelease/beta
    ```
 
@@ -169,6 +190,9 @@ To add changes and publish more betas:
 3. Merge to `prerelease/beta`
 4. Run the release workflow on `prerelease/beta`
 
+If there are no pending non-empty changesets, the workflow succeeds without
+versioning, committing, publishing, or pushing tags.
+
 ### Finishing a Beta Cycle
 
 When you're ready to promote to stable:
@@ -178,8 +202,8 @@ When you're ready to promote to stable:
    ```bash
    git checkout prerelease/beta
    npx changeset pre exit
-   git add .changeset/pre.json
-   git commit -m "chore: exit prerelease mode"
+   git add -A .changeset/
+   git commit -m "release: exit beta prerelease mode"
    git push
    ```
 
@@ -188,11 +212,11 @@ When you're ready to promote to stable:
 
 3. **Merge the PR to `main`**
 
-4. **Run the release workflow on `main`:**
-   - The workflow detects the exit intent in `pre.json`
-   - `changeset version` strips prerelease tags and removes `pre.json`
-   - A "Release Pull Request" is created with the stable versions
-   - Merge the Release PR to publish to npm with the `latest` tag
+4. **Complete the stable release.** The push to `main` automatically
+   validates the stable release state and creates or updates a versioned
+   Release PR when there are pending changesets. Review and merge that
+   Release PR to publish to npm with the `latest` tag; do not dispatch the
+   workflow on `main`.
 
 5. **Delete the prerelease branch** (it's ephemeral)
 
@@ -207,6 +231,9 @@ automatically runs to:
 - **Reject the PR if prerelease mode is still active** - This ensures
   `npx changeset pre exit` has been run before merging a prerelease
   branch to `main`
+
+The Release workflow also validates pushes to `main` and validates the
+exact merged Release PR commit before stable publication.
 
 ## Version Management
 
