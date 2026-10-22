@@ -38,6 +38,36 @@ describe("app.certified.signature.defs#list (via activity carrier)", () => {
     expect(result.success).toBe(true);
   });
 
+  it("should accept a record with a createdVia signature", () => {
+    const result = Activity.validateMain({
+      $type: ids.OrgHypercertsClaimActivity,
+      ...baseActivity,
+      signatures: [
+        {
+          $type: "app.certified.signature.defs#createdVia",
+          signature: new Uint8Array([1, 2, 3, 4]),
+          key: "did:web:app.example#platform-signing",
+        },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept a signature type defined by another application (open union)", () => {
+    const result = Activity.validateMain({
+      $type: ids.OrgHypercertsClaimActivity,
+      ...baseActivity,
+      signatures: [
+        {
+          $type: "com.example.signature.defs#reviewed",
+          signature: new Uint8Array([1, 2, 3, 4]),
+          key: "did:web:reviewer.example#signing",
+        },
+      ],
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("should accept a record with a remote attestation (strongRef)", () => {
     const result = Activity.validateMain({
       $type: ids.OrgHypercertsClaimActivity,

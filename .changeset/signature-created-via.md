@@ -1,0 +1,5 @@
+---
+"@hypercerts-org/lexicon": minor
+---
+
+Add `app.certified.signature.defs#createdVia`, an inline signature by the application that wrote this version of a record, and fix the documented signing procedure. `$sig` is the signature entry without its `signature` bytes, plus the DID of the repository that holds the record, so it includes `key`. Signatures built from the previous README example do not verify under the ATProtocol Attestation Specification. `#inline` now states only that the holder of `key` signed this version of the record. Remote proof CIDs likewise use the proof record without `cid` as `$sig`. The `signatures` description on every record now says each entry's `$type` states what it attests.

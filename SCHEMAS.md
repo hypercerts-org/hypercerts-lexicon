@@ -43,7 +43,7 @@ Hypercerts-specific lexicons for tracking impact work and claims.
 | `locations`              | `ref[]`  | ❌       | An array of strong references to the location where activity was performed. The record referenced must conform with the lexicon app.certified.location.                                       | maxLength: 1000                    |
 | `rights`                 | `ref`    | ❌       | A strong reference to the rights that this hypercert has. The record referenced must conform with the lexicon org.hypercerts.claim.rights.                                                    |                                    |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                             |                                    |
-| `signatures`             | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                         |                                    |
+| `signatures`             | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                              |                                    |
 
 #### Defs
 
@@ -91,14 +91,14 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 #### Properties
 
-| Property                  | Type     | Required | Description                                                                           | Comments                             |
-| ------------------------- | -------- | -------- | ------------------------------------------------------------------------------------- | ------------------------------------ |
-| `role`                    | `string` | ❌       | Role or title of the contributor.                                                     | maxLength: 100                       |
-| `contributionDescription` | `string` | ❌       | Description of what the contribution concretely involved.                             | maxLength: 10000, maxGraphemes: 1000 |
-| `startDate`               | `string` | ❌       | When this contribution started. Should fall within the parent hypercert's timeframe.  |                                      |
-| `endDate`                 | `string` | ❌       | When this contribution finished. Should fall within the parent hypercert's timeframe. |                                      |
-| `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created.                    |                                      |
-| `signatures`              | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                 |                                      |
+| Property                  | Type     | Required | Description                                                                                                                      | Comments                             |
+| ------------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `role`                    | `string` | ❌       | Role or title of the contributor.                                                                                                | maxLength: 100                       |
+| `contributionDescription` | `string` | ❌       | Description of what the contribution concretely involved.                                                                        | maxLength: 10000, maxGraphemes: 1000 |
+| `startDate`               | `string` | ❌       | When this contribution started. Should fall within the parent hypercert's timeframe.                                             |                                      |
+| `endDate`                 | `string` | ❌       | When this contribution finished. Should fall within the parent hypercert's timeframe.                                            |                                      |
+| `createdAt`               | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                               |                                      |
+| `signatures`              | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                                      |
 
 ---
 
@@ -110,13 +110,13 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 #### Properties
 
-| Property      | Type     | Required | Description                                                           | Comments        |
-| ------------- | -------- | -------- | --------------------------------------------------------------------- | --------------- |
-| `identifier`  | `string` | ❌       | DID (did:plc:...) or URI to a social profile of the contributor.      | maxLength: 2048 |
-| `displayName` | `string` | ❌       | Human-readable name for the contributor as it should appear in UI.    | maxLength: 100  |
-| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.         |                 |
-| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created.    |                 |
-| `signatures`  | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content. |                 |
+| Property      | Type     | Required | Description                                                                                                                      | Comments        |
+| ------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `identifier`  | `string` | ❌       | DID (did:plc:...) or URI to a social profile of the contributor.                                                                 | maxLength: 2048 |
+| `displayName` | `string` | ❌       | Human-readable name for the contributor as it should appear in UI.                                                               | maxLength: 100  |
+| `image`       | `union`  | ❌       | The contributor visual representation as a URI or image blob.                                                                    |                 |
+| `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                               |                 |
+| `signatures`  | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                 |
 
 ---
 
@@ -128,14 +128,14 @@ A free-form string describing the work scope for simple or legacy scopes.
 
 #### Properties
 
-| Property            | Type     | Required | Description                                                                                            | Comments                             |
-| ------------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| `rightsName`        | `string` | ✅       | Human-readable name for these rights (e.g. 'All Rights Reserved', 'CC BY-SA 4.0')                      | maxLength: 100                       |
-| `rightsType`        | `string` | ✅       | Short identifier code for this rights type (e.g. 'ARR', 'CC-BY-SA') to facilitate filtering and search | maxLength: 10                        |
-| `rightsDescription` | `string` | ✅       | Detailed explanation of the rights holders' permissions, restrictions, and conditions                  | maxLength: 10000, maxGraphemes: 1000 |
-| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document.                                     |                                      |
-| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                      |                                      |
-| `signatures`        | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                  |                                      |
+| Property            | Type     | Required | Description                                                                                                                      | Comments                             |
+| ------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `rightsName`        | `string` | ✅       | Human-readable name for these rights (e.g. 'All Rights Reserved', 'CC BY-SA 4.0')                                                | maxLength: 100                       |
+| `rightsType`        | `string` | ✅       | Short identifier code for this rights type (e.g. 'ARR', 'CC-BY-SA') to facilitate filtering and search                           | maxLength: 10                        |
+| `rightsDescription` | `string` | ✅       | Detailed explanation of the rights holders' permissions, restrictions, and conditions                                            | maxLength: 10000, maxGraphemes: 1000 |
+| `attachment`        | `union`  | ❌       | An attachment to define the rights further, e.g. a legal document.                                                               |                                      |
+| `createdAt`         | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                |                                      |
+| `signatures`        | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                                      |
 
 ---
 
@@ -160,7 +160,7 @@ A free-form string describing the work scope for simple or legacy scopes.
 | `location`               | `ref`    | ❌       | A strong reference to the location where this collection's activities were performed. The record referenced must conform with the lexicon app.certified.location.                                                                                                                                                        |                                                                             |
 | `tags`                   | `ref[]`  | ❌       | References to org.hypercerts.vocab.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one. | maxLength: 20                                                               |
 | `createdAt`              | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                                                                                                        |                                                                             |
-| `signatures`             | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                    |                                                                             |
+| `signatures`             | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                         |                                                                             |
 
 #### Defs
 
@@ -190,7 +190,7 @@ An item in a collection, with an identifier and optional weight.
 | `acknowledged` | `boolean` | ✅       | Whether the relationship is acknowledged (true) or rejected (false).                                                                                                                                                 |                                      |
 | `comment`      | `string`  | ❌       | Optional plain-text comment providing additional context or reasoning.                                                                                                                                               | maxLength: 10000, maxGraphemes: 1000 |
 | `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                   |                                      |
-| `signatures`   | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                |                                      |
+| `signatures`   | `ref`     | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                     |                                      |
 
 ---
 
@@ -215,7 +215,7 @@ An item in a collection, with an identifier and optional weight.
 | `tags`                   | `ref[]`   | ❌       | References to org.hypercerts.vocab.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one. | maxLength: 20                                                                            |
 | `capturedAt`             | `string`  | ❌       | Client-declared time when the attached material was captured (e.g. when a photo was taken), as distinct from createdAt. Omit if capture time is unknown, if only a local time without timezone offset or only a date is known, or if no single capture time applies. Not a coverage interval.                            |                                                                                          |
 | `createdAt`              | `string`  | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                                       |                                                                                          |
-| `signatures`             | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                    |                                                                                          |
+| `signatures`             | `ref`     | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                         |                                                                                          |
 
 ---
 
@@ -237,7 +237,7 @@ An item in a collection, with an identifier and optional weight.
 | `score`        | `ref`     | ❌       | Overall score for an evaluation on a numeric scale.                                                                                                                    |                                     |
 | `location`     | `ref`     | ❌       | An optional reference for georeferenced evaluations. The record referenced must conform with the lexicon app.certified.location.                                       |                                     |
 | `createdAt`    | `string`  | ✅       | Client-declared timestamp when this record was originally created                                                                                                      |                                     |
-| `signatures`   | `ref`     | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                  |                                     |
+| `signatures`   | `ref`     | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                       |                                     |
 
 #### Defs
 
@@ -277,7 +277,7 @@ Overall score for an evaluation on a numeric scale.
 | `comment`       | `string`   | ❌       | Short comment of this measurement, suitable for previews and list views. Rich text annotations may be provided via `commentFacets`.                     | maxLength: 3000, maxGraphemes: 300 |
 | `commentFacets` | `ref[]`    | ❌       | Rich text annotations for `comment` (mentions, URLs, hashtags, etc).                                                                                    |                                    |
 | `createdAt`     | `string`   | ✅       | Client-declared timestamp when this record was originally created                                                                                       |                                    |
-| `signatures`    | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                   |                                    |
+| `signatures`    | `ref`      | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                        |                                    |
 
 ---
 
@@ -298,7 +298,7 @@ Overall score for an evaluation on a numeric scale.
 | `tags`        | `ref[]`    | ❌       | References to org.hypercerts.vocab.tag records classifying this record. All listed tags apply simultaneously (logical AND); the array carries no ordering, weighting, negation, inheritance, or rule logic, and never will — any future expression logic must arrive as a new field and must never reinterpret this one.                                                                                                                                                                                                                                                                                                                                                                                         | maxLength: 20                                  |
 | `sameAs`      | `string[]` | ❌       | URIs of external identifiers that denote the same real-world subject, for example a cadastral parcel ID or a gazetteer entry. Entity identity only; vocabulary concordance belongs on org.hypercerts.vocab.tag.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | maxLength: 20                                  |
 | `createdAt`   | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |                                                |
-| `signatures`  | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |                                                |
+| `signatures`  | `ref`      | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |                                                |
 
 ---
 
@@ -323,7 +323,7 @@ Overall score for an evaluation on a numeric scale.
 | `notes`          | `string` | ❌       | Optional notes or additional context for this funding receipt.                                                                                                                          | maxLength: 500 |
 | `occurredAt`     | `string` | ❌       | Timestamp when the payment occurred.                                                                                                                                                    |                |
 | `createdAt`      | `string` | ✅       | Client-declared timestamp when this receipt record was created.                                                                                                                         |                |
-| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                   |                |
+| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                        |                |
 
 #### Defs
 
@@ -358,7 +358,7 @@ A free-text string value (e.g. a display name, wallet address, or other identifi
 | `sameAs`            | `string[]` | ❌       | URIs of exactly equivalent concepts in external vocabularies, for example ENVO, IUCN GET, OSM tag conventions, or registry methodology identifiers. Exact matches only; typed broader/narrower/close mappings are a named future field.                                                                                | maxLength: 20                                                                                                                                        |
 | `referenceDocument` | `union`    | ❌       | A document defining or motivating this term, as a URI or an attached small blob.                                                                                                                                                                                                                                       |                                                                                                                                                      |
 | `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                                     |                                                                                                                                                      |
-| `signatures`        | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                  |                                                                                                                                                      |
+| `signatures`        | `ref`      | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                       |                                                                                                                                                      |
 
 ---
 
@@ -398,7 +398,7 @@ A free-text string value (e.g. a display name, wallet address, or other identifi
 | `sameAs`            | `string[]` | ❌       | URIs to semantically equivalent concepts in external ontologies or taxonomies (e.g., Wikidata QIDs, ENVO terms, SDG targets). Used for interoperability, not as documentation.         | maxLength: 20                                                        |
 | `referenceDocument` | `union`    | ❌       | Link to a governance or reference document where this work scope tag is defined and further explained.                                                                                 |                                                                      |
 | `createdAt`         | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                     |                                                                      |
-| `signatures`        | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                  |                                                                      |
+| `signatures`        | `ref`      | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                       |                                                                      |
 
 ---
 
@@ -423,7 +423,7 @@ Certified lexicons are common/shared lexicons that can be used across multiple p
 | `name`         | `string` | ❌       | Human-readable name for this location (e.g. 'Golden Gate Park', 'San Francisco Bay Area')                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | maxLength: 1000, maxGraphemes: 100                                                                                                                    |
 | `description`  | `string` | ❌       | Additional context about this location, such as its significance to the work or specific boundaries                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | maxLength: 2000, maxGraphemes: 500                                                                                                                    |
 | `createdAt`    | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |                                                                                                                                                       |
-| `signatures`   | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |                                                                                                                                                       |
+| `signatures`   | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |                                                                                                                                                       |
 
 #### Defs
 
@@ -445,15 +445,15 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                              | Comments                                                                                                                    |
-| ---------------- | -------- | -------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `badgeType`      | `string` | ✅       | Category of the badge. Values beyond the known set are permitted.                        | maxLength: 100, Known values: `endorsement`, `verification`, `participation`, `certification`, `affiliation`, `recognition` |
-| `title`          | `string` | ✅       | Human-readable title of the badge.                                                       | maxLength: 256                                                                                                              |
-| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                | maxSize: 1048576, accepts: `image/png`, `image/jpeg`, `image/webp`, `image/svg+xml`                                         |
-| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                           | maxLength: 5000, maxGraphemes: 500                                                                                          |
-| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it. | maxLength: 100                                                                                                              |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                        |                                                                                                                             |
-| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                    |                                                                                                                             |
+| Property         | Type     | Required | Description                                                                                                                      | Comments                                                                                                                    |
+| ---------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `badgeType`      | `string` | ✅       | Category of the badge. Values beyond the known set are permitted.                                                                | maxLength: 100, Known values: `endorsement`, `verification`, `participation`, `certification`, `affiliation`, `recognition` |
+| `title`          | `string` | ✅       | Human-readable title of the badge.                                                                                               | maxLength: 256                                                                                                              |
+| `icon`           | `blob`   | ❌       | Icon representing the badge, stored as a blob for compact visual display.                                                        | maxSize: 1048576, accepts: `image/png`, `image/jpeg`, `image/webp`, `image/svg+xml`                                         |
+| `description`    | `string` | ❌       | Optional short statement describing what the badge represents.                                                                   | maxLength: 5000, maxGraphemes: 500                                                                                          |
+| `allowedIssuers` | `ref[]`  | ❌       | Optional allowlist of DIDs allowed to issue this badge. If omitted, anyone may issue it.                                         | maxLength: 100                                                                                                              |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                |                                                                                                                             |
+| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                                                                                                                             |
 
 ---
 
@@ -474,7 +474,7 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 | `validFrom`  | `string` | ❌       | When the badge starts to apply, which can differ from when this record was written (e.g. a certification granted in 2019 and recorded later). If omitted, the badge applies from createdAt. For date-only values, use midnight UTC (e.g. '2019-06-01T00:00:00.000Z'); consumers should treat only the date portion as canonical.                                                                                                                                                                      |                 |
 | `validUntil` | `string` | ❌       | When the badge stops applying, e.g. when a certification lapses or a verification needs renewal. Must not be earlier than validFrom. If omitted, the badge has no end date. After this time the award is expired: still a true historical statement ('was certified until …'), and clients should present it as such. Expiry is not revocation; to revoke an award, the issuer deletes the record. For date-only values, use midnight UTC; consumers should treat only the date portion as canonical. |                 |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                                                                                                                                                                                                                                                                                     |                 |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                                                                                                                                                                                                 |                 |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                                                                                                                                                                                                      |                 |
 
 ---
 
@@ -492,7 +492,7 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 | `response`   | `string` | ✅       | The recipient’s response for the badge (accepted or rejected).                                                                         | Known values: `accepted`, `rejected` |
 | `weight`     | `string` | ❌       | Optional relative weight for accepted badges, assigned by the recipient.                                                               | maxLength: 50                        |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                      |                                      |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                  |                                      |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.       |                                      |
 
 ---
 
@@ -517,7 +517,7 @@ A location represented as a string, e.g. coordinates or a small GeoJSON string.
 | `longDescription`     | `union`    | ❌       | Long-form description of the organization, such as its mission, history, or detailed project narrative. An inline string for plain text or markdown, a Leaflet linear document record embedded directly, or a strong reference to an existing document record.                                                                                                                                                      |                                    |
 | `visibility`          | `string`   | ❌       | Controls whether the organization or project is publicly discoverable on platforms that honor this setting.                                                                                                                                                                                                                                                                                                         | Known values: `public`, `unlisted` |
 | `createdAt`           | `string`   | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                                                                                                                                  |                                    |
-| `signatures`          | `ref`      | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                                                                                                               |                                    |
+| `signatures`          | `ref`      | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                                                                                                                    |                                    |
 
 #### Defs
 
@@ -549,7 +549,7 @@ A labeled URL reference.
 | `avatar`      | `union`  | ❌       | Small image to be displayed next to posts from account. AKA, 'profile picture'. Clients crop it to a square or circle, so an organization should use its brandmark (the symbol without the name); the full logo belongs in app.certified.actor.organization logo. |                                    |
 | `banner`      | `union`  | ❌       | Larger horizontal image to display behind profile view.                                                                                                                                                                                                           |                                    |
 | `createdAt`   | `string` | ✅       | Client-declared timestamp when this record was originally created                                                                                                                                                                                                 |                                    |
-| `signatures`  | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                             |                                    |
+| `signatures`  | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                  |                                    |
 
 ---
 
@@ -580,7 +580,7 @@ A labeled URL reference.
 | `subject`    | `ref`    | ✅       | Strong reference to the record being liked. May be a record of any lexicon (e.g. an activity, a collection, or a repost's subject).                                                                                                                                                                |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                 |
 | `via`        | `ref`    | ❌       | Optional strong reference to the record through which the subject was encountered, typically an app.certified.feed.repost. Lets AppViews credit the account that surfaced the subject. Mirrors the optional `via` field on app.bsky.feed.like; the referenced record may conform with any lexicon. |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                              |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                   |
 
 ---
 
@@ -597,7 +597,7 @@ A labeled URL reference.
 | `subject`    | `ref`    | ✅       | Strong reference to the record being reposted. May be a record of any lexicon (e.g. an activity or a collection).                                                                                                                                                                                                                 |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                                                |
 | `via`        | `ref`    | ❌       | Optional strong reference to the record through which the subject was encountered, typically another app.certified.feed.repost. Lets AppViews trace repost chains and credit the account that surfaced the subject. Mirrors the optional `via` field on app.bsky.feed.repost; the referenced record may conform with any lexicon. |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                                                                                                                             |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                                                                                                                  |
 
 ---
 
@@ -614,7 +614,7 @@ A labeled URL reference.
 | `subject`    | `union`  | ✅       | The entity being followed. Must never include account DIDs; use app.certified.graph.follow for accounts.                                                                                                                         |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                               |
 | `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.certified.graph.follow; the referenced record may conform with any lexicon. |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                            |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                                 |
 
 ---
 
@@ -631,7 +631,7 @@ A labeled URL reference.
 | `subject`    | `string` | ✅       | DID of the account being followed.                                                                                                                                                                                          |
 | `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                          |
 | `via`        | `ref`    | ❌       | Optional strong reference to a record that mediated this follow (e.g. a starter pack or other curated list). Mirrors the optional `via` field on app.bsky.graph.follow; the referenced record may conform with any lexicon. |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                                                                                                                                                       |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`.                                                                                            |
 
 ---
 
@@ -643,12 +643,12 @@ A labeled URL reference.
 
 #### Properties
 
-| Property     | Type     | Required | Description                                                                                                                                                                                                                             | Comments      |
-| ------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `address`    | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                                                                     | maxLength: 42 |
-| `proof`      | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format.                                           |               |
-| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                      |               |
-| `signatures` | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content. The EIP-712 `proof` field proves wallet consent (orthogonal trust statement); `signatures` proves record provenance (e.g. that a platform UI minted this record). |               |
+| Property     | Type     | Required | Description                                                                                                                                                                                                                                                                                                     | Comments      |
+| ------------ | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `address`    | `string` | ✅       | EVM wallet address (0x-prefixed, with EIP-55 checksum recommended).                                                                                                                                                                                                                                             | maxLength: 42 |
+| `proof`      | `union`  | ✅       | Cryptographic proof of wallet ownership. The union is open to allow future proof methods (e.g. ERC-1271, ERC-6492). Each variant bundles its signature with the corresponding message format.                                                                                                                   |               |
+| `createdAt`  | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                                                                                                                                                                                                              |               |
+| `signatures` | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. The EIP-712 `proof` field proves wallet consent (orthogonal trust statement); a `#createdVia` signature proves record provenance (e.g. that a platform UI minted this record). |               |
 
 #### Defs
 
@@ -677,18 +677,27 @@ The EIP-712 typed data message that was signed by the wallet. Contains the field
 
 ### `app.certified.signature.defs`
 
-**Description:** Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification.
+**Description:** Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification. Each signature's `$type` says what it attests.
 
 #### Defs
 
 ##### `app.certified.signature.defs#inline`
 
-Inline attestation signature embedded directly in a record. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` metadata object (containing `$type` and the housing repository DID) inserted before canonical DAG-CBOR encoding. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
+Inline signature by the holder of `key` over this version of the record. It says only that the key holder signed it, not in what role; use a type that states the role, such as `#createdVia`, when consumers should act on it. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` object inserted before canonical DAG-CBOR encoding. `$sig` is this signature entry without its `signature` field (so `$type`, `key` and any other fields), plus `repository`: the DID of the repository that holds the record, which is the user's DID when an application writes on their behalf. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 | Property    | Type     | Required | Description                                                                                                                                                                                       | Comments       |
 | ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                      |                |
 | `key`       | `string` | ✅       | Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and the specific key used; the key's multicodec prefix determines the signing curve. | maxLength: 512 |
+
+##### `app.certified.signature.defs#createdVia`
+
+Inline signature by the application that wrote this version of the record. It means: this version of the record was written through the signing application. It does not mean the application endorses or has checked the content. Any edit breaks the signature; the application that makes the edit replaces it with its own. A record carries at most one `#createdVia` signature. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.
+
+| Property    | Type     | Required | Description                                                                                                                                                                                                                                              | Comments       |
+| ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                                                                             |                |
+| `key`       | `string` | ✅       | DID verification method of the application's signing key (format: did:{method}:{identifier}#{fragment}), e.g. a key in the application's did:web document. The DID identifies the application; the key's multicodec prefix determines the signing curve. | maxLength: 512 |
 
 ---
 
@@ -700,11 +709,11 @@ Inline attestation signature embedded directly in a record. Conforms to the ATPr
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                                                                                                                                 | Comments       |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `cid`       | `string` | ✅       | CID of the attested content, computed per the ATProtocol Attestation Specification: encode the record with the `signatures` field removed and a temporary `$sig` object inserted (containing `$type` and the housing `repository` DID) as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1. |                |
-| `note`      | `string` | ❌       | Optional note explaining the attestation purpose or context.                                                                                                                                                                                                                                                | maxLength: 500 |
-| `createdAt` | `string` | ❌       | Client-declared timestamp when this proof was created.                                                                                                                                                                                                                                                      |                |
+| Property    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                         | Comments       |
+| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `cid`       | `string` | ✅       | CID of the attested content, computed per the ATProtocol Attestation Specification: encode the attested record with its `signatures` field removed and a temporary `$sig` object inserted as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1. `$sig` is this proof record without its `cid` field (so `$type`, plus `note` and `createdAt` when set), plus `repository`: the DID of the repository that holds the attested record. |                |
+| `note`      | `string` | ❌       | Optional note explaining the attestation purpose or context.                                                                                                                                                                                                                                                                                                                                                                                        | maxLength: 500 |
+| `createdAt` | `string` | ❌       | Client-declared timestamp when this proof was created.                                                                                                                                                                                                                                                                                                                                                                                              |                |
 
 ---
 
@@ -886,13 +895,13 @@ Specifies the sub-string range a facet feature applies to. Start index is inclus
 
 #### Properties
 
-| Property             | Type     | Required | Description                                                                                        | Comments        |
-| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------- | --------------- |
-| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.collection this board visualizes. |                 |
-| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                            |                 |
-| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                              | maxLength: 1000 |
-| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                 |                 |
-| `signatures`         | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                              |                 |
+| Property             | Type     | Required | Description                                                                                                                      | Comments        |
+| -------------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `subject`            | `ref`    | ✅       | Reference to the org.hypercerts.claim.activity or org.hypercerts.collection this board visualizes.                               |                 |
+| `config`             | `ref`    | ❌       | Visual configuration for a hyperboard's background, colors, and layout.                                                          |                 |
+| `contributorConfigs` | `ref[]`  | ❌       | Per-contributor configuration entries for this board.                                                                            | maxLength: 1000 |
+| `createdAt`          | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                               |                 |
+| `signatures`         | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                 |
 
 #### Defs
 
@@ -938,16 +947,16 @@ Configuration for a specific contributor within a board. Values serve as fallbac
 
 #### Properties
 
-| Property         | Type     | Required | Description                                                                                     | Comments                         |
-| ---------------- | -------- | -------- | ----------------------------------------------------------------------------------------------- | -------------------------------- |
-| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                             | maxLength: 640, maxGraphemes: 64 |
-| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob.             |                                  |
-| `video`          | `union`  | ❌       | Default video for this user across boards, as a URI (embed/direct link) or uploaded video blob. |                                  |
-| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.                        |                                  |
-| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                           | maxLength: 2048                  |
-| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                     | maxLength: 2048                  |
-| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                              |                                  |
-| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures attesting to this record's content.                           |                                  |
+| Property         | Type     | Required | Description                                                                                                                      | Comments                         |
+| ---------------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| `displayName`    | `string` | ❌       | Display name override for this user on hyperboards.                                                                              | maxLength: 640, maxGraphemes: 64 |
+| `image`          | `union`  | ❌       | Avatar or face image override for this user on hyperboards, as a URI or image blob.                                              |                                  |
+| `video`          | `union`  | ❌       | Default video for this user across boards, as a URI (embed/direct link) or uploaded video blob.                                  |                                  |
+| `hoverImage`     | `union`  | ❌       | Default hover image for this user across boards, as a URI or image blob.                                                         |                                  |
+| `hoverIframeUrl` | `string` | ❌       | Default hover iframe URL for this user across boards.                                                                            | maxLength: 2048                  |
+| `url`            | `string` | ❌       | Default click-through link URL for this user across boards.                                                                      | maxLength: 2048                  |
+| `createdAt`      | `string` | ✅       | Client-declared timestamp when this record was originally created.                                                               |                                  |
+| `signatures`     | `ref`    | ❌       | Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. |                                  |
 
 ---
 

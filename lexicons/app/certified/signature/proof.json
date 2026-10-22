@@ -14,7 +14,7 @@
           "cid": {
             "type": "string",
             "format": "cid",
-            "description": "CID of the attested content, computed per the ATProtocol Attestation Specification: encode the record with the `signatures` field removed and a temporary `$sig` object inserted (containing `$type` and the housing `repository` DID) as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1."
+            "description": "CID of the attested content, computed per the ATProtocol Attestation Specification: encode the attested record with its `signatures` field removed and a temporary `$sig` object inserted as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1. `$sig` is this proof record without its `cid` field (so `$type`, plus `note` and `createdAt` when set), plus `repository`: the DID of the repository that holds the attested record."
           },
           "note": {
             "type": "string",
