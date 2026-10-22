@@ -17,7 +17,7 @@
     },
     "inline": {
       "type": "object",
-      "description": "Inline attestation signature embedded directly in a record. This lexicon does not set its meaning; use a type that states one, such as `#createdVia`, when consumers should act on it. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` object inserted before canonical DAG-CBOR encoding. `$sig` is this signature entry without its `signature` field (so `$type`, `key` and any other fields), plus `repository`: the DID of the repository that holds the record, which is the user's DID when an application writes on their behalf. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.",
+      "description": "Inline signature by the holder of `key` over this version of the record. It says only that the key holder signed it, not in what role; use a type that states the role, such as `#createdVia`, when consumers should act on it. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` object inserted before canonical DAG-CBOR encoding. `$sig` is this signature entry without its `signature` field (so `$type`, `key` and any other fields), plus `repository`: the DID of the repository that holds the record, which is the user's DID when an application writes on their behalf. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.",
       "required": ["signature", "key"],
       "properties": {
         "signature": {
@@ -33,7 +33,7 @@
     },
     "createdVia": {
       "type": "object",
-      "description": "Inline signature by the application that wrote this version of the record. It means: this version of the record was written through the signing application. It does not mean the application endorses or has checked the content. Any edit breaks the signature; the application that makes the edit replaces it with its own. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.",
+      "description": "Inline signature by the application that wrote this version of the record. It means: this version of the record was written through the signing application. It does not mean the application endorses or has checked the content. Any edit breaks the signature; the application that makes the edit replaces it with its own. A record carries at most one `#createdVia` signature. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.",
       "required": ["signature", "key"],
       "properties": {
         "signature": {

@@ -311,10 +311,10 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Signatures (`app.certified.signature.*`)
 
-| Lexicon         | NSID                            | Description                                                                                                                                                                                                                                                                                                                                           |
-| --------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Shared Defs** | `app.certified.signature.defs`  | Shared type definitions for signatures. Provides the `#list` array def (an open union of inline signatures and strongRefs), the `#createdVia` object def (the application that wrote this version of the record) and the `#inline` object def (an inline signature whose meaning is not set), all referenced by the `signatures` property on records. |
-| **Proof**       | `app.certified.signature.proof` | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef.                                                                                                                                                                                                       |
+| Lexicon         | NSID                            | Description                                                                                                                                                                                                                                                                                                                                               |
+| --------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shared Defs** | `app.certified.signature.defs`  | Shared type definitions for signatures. Provides the `#list` array def (an open union of inline signatures and strongRefs), the `#createdVia` object def (the application that wrote this version of the record) and the `#inline` object def (signed by the holder of `key`, in no stated role), all referenced by the `signatures` property on records. |
+| **Proof**       | `app.certified.signature.proof` | Remote attestation proof record containing the CID of attested content. Lives in the attestor's repository and can be referenced via strongRef.                                                                                                                                                                                                           |
 
 All record lexicons include an optional `signatures` property (a ref to `app.certified.signature.defs#list`) enabling cryptographic attestations. See [Cryptographic Signatures](#cryptographic-signatures) for usage details.
 
@@ -671,8 +671,8 @@ const attachment = {
 
 All record lexicons support optional cryptographic signatures via the `signatures` property. Each signature's `$type` says what it attests:
 
-1. **`app.certified.signature.defs#createdVia`**: the application that wrote this version of the record signs it inline. It means "written through this application", not "this application vouches for the content". Feeds and indexers can filter on it. Any edit breaks the signature; the application that makes the edit replaces it with its own.
-2. **`app.certified.signature.defs#inline`**: an inline signature whose meaning this lexicon does not set.
+1. **`app.certified.signature.defs#createdVia`**: the application that wrote this version of the record signs it inline. It means "written through this application", not "this application vouches for the content". Feeds and indexers can filter on it. Any edit breaks the signature; the application that makes the edit replaces it with its own. A record carries at most one.
+2. **`app.certified.signature.defs#inline`**: signed by the holder of `key`. It says only that the key holder signed this version of the record, not in what role.
 3. **Remote attestations**: references to `app.certified.signature.proof` records in other repositories, via `com.atproto.repo.strongRef`.
 
 The union is open. An application can define its own signature type in its own namespace, and consumers ignore types they do not recognize.

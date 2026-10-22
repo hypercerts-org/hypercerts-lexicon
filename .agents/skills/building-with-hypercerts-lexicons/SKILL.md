@@ -301,10 +301,10 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Signatures — cryptographic attestation
 
-| Lexicon             | NSID                            | Purpose                                                                                                                                                                                                                                                                                                                           |
-| ------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs), `#createdVia` (signed by the application that wrote this version of the record) and `#inline` (an inline signature whose meaning is not set). Referenced by the `signatures` property on every record lexicon. |
-| **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                                                                                                              |
+| Lexicon             | NSID                            | Purpose                                                                                                                                                                                                                                                                                                                               |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs), `#createdVia` (signed by the application that wrote this version of the record) and `#inline` (signed by the holder of `key`, in no stated role). Referenced by the `signatures` property on every record lexicon. |
+| **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                                                                                                                  |
 
 All record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object (the signature entry itself without its `signature` bytes, plus the DID of the repository that holds the record) so a signature covers its own `$type` and `key` and cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
@@ -674,9 +674,10 @@ Any record can carry an optional `signatures` array. Each signature's
    through this application", not "this application vouches for the
    content". Feeds and indexers can filter on it. Any edit breaks the
    signature; the application that makes the edit replaces it with its
-   own.
-2. **`app.certified.signature.defs#inline`** — an inline signature whose
-   meaning this lexicon does not set.
+   own. A record carries at most one.
+2. **`app.certified.signature.defs#inline`** — signed by the holder of
+   `key`. It says only that the key holder signed this version of the
+   record, not in what role.
 3. **Remote attestations** — references to
    `app.certified.signature.proof` records in other repositories via
    `com.atproto.repo.strongRef`.
