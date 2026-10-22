@@ -5,7 +5,7 @@
   "defs": {
     "list": {
       "type": "array",
-      "description": "Reusable array of cryptographic signatures on a record. Each entry's `$type` says what it attests: `#createdVia` for the application that wrote this version of the record, `#inline` for a signature whose meaning this lexicon does not set, or a strong reference to a remote attestation proof record. The union is open: other applications may define their own signature types, and consumers ignore types they do not recognize.",
+      "description": "Reusable array of cryptographic signatures on a record. Each entry's `$type` says what it attests. The union is open: other applications may define their own signature types, and consumers ignore types they do not recognize.",
       "items": {
         "type": "union",
         "refs": [
