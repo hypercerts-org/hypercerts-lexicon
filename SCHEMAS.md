@@ -692,7 +692,7 @@ Inline attestation signature embedded directly in a record. Conforms to the ATPr
 
 ##### `app.certified.signature.defs#createdVia`
 
-Inline signature by the application that wrote this version of the record. It means: this version of the record was written through the signing application. It does not mean the application endorses or has checked the content. Any edit breaks the signature; the application that makes the edit replaces it with its own. A record carries at most one `#createdVia` signature. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.
+Inline signature by the application that wrote this version of the record. It does not mean the application endorses the content. A record carries at most one `#createdVia` signature. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.
 
 | Property    | Type     | Required | Description                                                                                                                                                                                                                                              | Comments       |
 | ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |

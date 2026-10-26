@@ -22,7 +22,7 @@
  * lexicon ref, etc.), this test fails. If the test logic needs to
  * change, the docs are what to edit — not the test fixture.
  */
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath, pathToFileURL } from "url";
@@ -52,6 +52,7 @@ interface ExtractedExample {
   keypair: { did(): string };
   repositoryDid: string;
   verified: boolean;
+  resolveSigningKey: (key: string) => Promise<string>;
   proof: { $type: string; cid: string; [field: string]: unknown };
 }
 
@@ -198,6 +199,7 @@ function buildModuleSource(blocks: string[]): string {
     "  keypair,",
     "  repositoryDid,",
     "  verified,",
+    "  resolveSigningKey,",
     "  proof,",
     "};",
     "",
@@ -312,6 +314,72 @@ for (const [label, relPath, basename] of SOURCES) {
 
     it("the docs' own verification step succeeds", () => {
       expect(example.verified).toBe(true);
+    });
+
+    describe("the docs' key resolution", () => {
+      afterEach(() => {
+        vi.unstubAllGlobals();
+      });
+
+      // Serve a DID document whose verification method holds the
+      // example keypair, the way an application's did:web or did:plc
+      // would, and record which URL was fetched.
+      function serveDidDocument(did: string, methodId: string): string[] {
+        const fetched: string[] = [];
+        const multikey = example.keypair.did().slice("did:key:".length);
+        vi.stubGlobal("fetch", async (url: string) => {
+          fetched.push(url);
+          return new Response(
+            JSON.stringify({
+              id: did,
+              verificationMethod: [
+                {
+                  id: methodId,
+                  type: "Multikey",
+                  controller: did,
+                  publicKeyMultibase: multikey,
+                },
+              ],
+            }),
+          );
+        });
+        return fetched;
+      }
+
+      it("resolves a did:web key from its DID document and verifies", async () => {
+        const fetched = serveDidDocument("did:web:app.example", "#platform");
+        const didKey = await example.resolveSigningKey(
+          "did:web:app.example#platform",
+        );
+        expect(fetched).toEqual(["https://app.example/.well-known/did.json"]);
+        expect(didKey).toBe(example.keypair.did());
+        expect(
+          await verifySignature(
+            didKey,
+            example.cidBytes,
+            example.signatureBytes,
+          ),
+        ).toBe(true);
+      });
+
+      it("resolves a did:plc key whose method id is absolute", async () => {
+        const fetched = serveDidDocument(
+          "did:plc:app123",
+          "did:plc:app123#atproto",
+        );
+        const didKey = await example.resolveSigningKey(
+          "did:plc:app123#atproto",
+        );
+        expect(fetched).toEqual(["https://plc.directory/did:plc:app123"]);
+        expect(didKey).toBe(example.keypair.did());
+      });
+
+      it("rejects a key the DID document does not list", async () => {
+        serveDidDocument("did:web:app.example", "#platform");
+        await expect(
+          example.resolveSigningKey("did:web:app.example#other"),
+        ).rejects.toThrow();
+      });
     });
 
     it("verifies when the CID is rebuilt from the signed record per spec §5.1", async () => {

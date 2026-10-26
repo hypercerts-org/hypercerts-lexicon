@@ -800,6 +800,33 @@ To **verify** an inline signature, rebuild `$sig` from the entry as stored: the 
 ```typescript
 import { verifySignature } from "@atproto/crypto";
 
+// verifySignature takes a did:key, which is its own public key. For
+// did:web or did:plc, fetch the DID document and turn the verification
+// method that `key` names into a did:key (atproto keys are Multikeys).
+async function resolveSigningKey(key: string): Promise<string> {
+  const [did, fragment] = key.split("#");
+  if (did.startsWith("did:key:")) return did;
+  let url: string;
+  if (did.startsWith("did:web:")) {
+    const host = decodeURIComponent(did.slice("did:web:".length));
+    url = `https://${host}/.well-known/did.json`;
+  } else if (did.startsWith("did:plc:")) {
+    url = `https://plc.directory/${did}`;
+  } else {
+    throw new Error(`Unsupported DID method: ${did}`);
+  }
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Could not resolve ${did}`);
+  const doc = await response.json();
+  const method = doc.verificationMethod?.find(
+    (m: { id: string }) => m.id === key || m.id === `#${fragment}`,
+  );
+  if (!method?.publicKeyMultibase) {
+    throw new Error(`${key} is not in the DID document`);
+  }
+  return `did:key:${method.publicKeyMultibase}`;
+}
+
 const storedEntry = signedActivity.signatures[0] as typeof createdViaSignature;
 const { signatures: _stored, ...recordWithoutSignatures } = signedActivity;
 const { signature: storedSignature, ...sigMetadata } = storedEntry;
@@ -813,10 +840,8 @@ const rebuiltCid = CID.createV1(
   ),
 );
 
-// A did:key carries its public key. For did:web or did:plc, resolve the
-// DID document and read the verification method named after the `#`.
 const verified = await verifySignature(
-  storedEntry.key.split("#")[0],
+  await resolveSigningKey(storedEntry.key),
   rebuiltCid.bytes,
   storedSignature,
 );
