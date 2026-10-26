@@ -694,10 +694,10 @@ Inline attestation signature embedded directly in a record. Conforms to the ATPr
 
 Inline signature by the application that wrote this version of the record. It does not mean the application endorses the content. A record carries at most one `#createdVia` signature. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.
 
-| Property    | Type     | Required | Description                                                                                                                                                                                                                                              | Comments       |
-| ----------- | -------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                                                                             |                |
-| `key`       | `string` | ✅       | DID verification method of the application's signing key (format: did:{method}:{identifier}#{fragment}), e.g. a key in the application's did:web document. The DID identifies the application; the key's multicodec prefix determines the signing curve. | maxLength: 512 |
+| Property    | Type     | Required | Description                                                                                                                                                                                            | Comments       |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                           |                |
+| `key`       | `string` | ✅       | DID verification method of the application's signing key. It should be in the application's own DID document, preferably a did:web on the application's domain, so that the DID names the application. | maxLength: 512 |
 
 ---
 

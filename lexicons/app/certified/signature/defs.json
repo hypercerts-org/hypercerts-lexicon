@@ -42,7 +42,7 @@
         },
         "key": {
           "type": "string",
-          "description": "DID verification method of the application's signing key (format: did:{method}:{identifier}#{fragment}), e.g. a key in the application's did:web document. The DID identifies the application; the key's multicodec prefix determines the signing curve.",
+          "description": "DID verification method of the application's signing key. It should be in the application's own DID document, preferably a did:web on the application's domain, so that the DID names the application.",
           "maxLength": 512
         }
       }
