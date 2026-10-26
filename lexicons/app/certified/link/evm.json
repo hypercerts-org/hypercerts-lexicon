@@ -29,7 +29,7 @@
           "signatures": {
             "type": "ref",
             "ref": "app.certified.signature.defs#list",
-            "description": "Optional cryptographic signatures on this record. Each entry's `$type` says what it attests; see `app.certified.signature.defs`. The EIP-712 `proof` field proves wallet consent (orthogonal trust statement); a `#createdVia` signature proves record provenance (e.g. that a platform UI minted this record)."
+            "description": "Optional cryptographic signatures attesting to this record's content. The EIP-712 `proof` field proves wallet consent (orthogonal trust statement); `signatures` proves record provenance (e.g. that a platform UI minted this record)."
           }
         }
       }
