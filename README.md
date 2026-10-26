@@ -671,7 +671,7 @@ const attachment = {
 
 All record lexicons support optional cryptographic signatures via the `signatures` property. Each signature's `$type` says what it attests:
 
-1. **`app.certified.signature.defs#createdVia`**: the application that wrote this version of the record signs it inline. It means "written through this application", not "this application vouches for the content". Feeds and indexers can filter on it. Any edit breaks the signature; the application that makes the edit replaces it with its own. A record carries at most one.
+1. **`app.certified.signature.defs#createdVia`**: the application that wrote this version of the record signs it inline. It means "written through this application", not "this application vouches for the content". Feeds and indexers can filter on it. Any change outside `signatures` breaks it; the application that makes the change replaces it with its own. A record carries at most one.
 2. **`app.certified.signature.defs#inline`**: signed by the holder of `key`. It says only that the key holder signed this version of the record, not in what role.
 3. **Remote attestations**: references to `app.certified.signature.proof` records in other repositories, via `com.atproto.repo.strongRef`.
 
