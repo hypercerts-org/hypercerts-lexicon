@@ -803,19 +803,37 @@ import { verifySignature } from "@atproto/crypto";
 // verifySignature takes a did:key, which is its own public key. For
 // did:web or did:plc, fetch the DID document and turn the verification
 // method that `key` names into a did:key (atproto keys are Multikeys).
+//
+// This is an example, not a production resolver. The record's author
+// chooses `key`, and so the host this fetches. A server that verifies
+// records from anyone must also refuse hosts that resolve to private
+// addresses, set a timeout, and cache DID documents.
 async function resolveSigningKey(key: string): Promise<string> {
   const [did, fragment] = key.split("#");
   if (did.startsWith("did:key:")) return did;
   let url: string;
   if (did.startsWith("did:web:")) {
-    const host = decodeURIComponent(did.slice("did:web:".length));
-    url = `https://${host}/.well-known/did.json`;
+    // atproto supports only hostname-level did:web, so a path is
+    // rejected. A port is encoded as %3A and passes.
+    const id = did.slice("did:web:".length);
+    if (id.includes(":")) throw new Error(`Unsupported did:web path: ${did}`);
+    url = `https://${decodeURIComponent(id)}/.well-known/did.json`;
+    // A did:web names a domain, never an IP address or localhost.
+    const { hostname } = new URL(url);
+    if (
+      hostname === "localhost" ||
+      hostname.startsWith("[") ||
+      /^[\d.]+$/.test(hostname)
+    ) {
+      throw new Error(`did:web host is not a domain name: ${did}`);
+    }
   } else if (did.startsWith("did:plc:")) {
     url = `https://plc.directory/${did}`;
   } else {
     throw new Error(`Unsupported DID method: ${did}`);
   }
-  const response = await fetch(url);
+  // A redirect would let the DID's host send the request elsewhere.
+  const response = await fetch(url, { redirect: "error" });
   if (!response.ok) throw new Error(`Could not resolve ${did}`);
   const doc = await response.json();
   const method = doc.verificationMethod?.find(

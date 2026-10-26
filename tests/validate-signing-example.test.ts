@@ -380,6 +380,39 @@ for (const [label, relPath, basename] of SOURCES) {
           example.resolveSigningKey("did:web:app.example#other"),
         ).rejects.toThrow();
       });
+
+      it("rejects a did:web with a path, an IP address or localhost, without fetching", async () => {
+        const fetched = serveDidDocument("did:web:app.example", "#platform");
+        for (const did of [
+          "did:web:app.example:user:alice",
+          "did:web:127.0.0.1",
+          "did:web:%5B%3A%3A1%5D",
+          "did:web:localhost%3A8080",
+        ]) {
+          await expect(
+            example.resolveSigningKey(`${did}#platform`),
+          ).rejects.toThrow();
+        }
+        expect(fetched).toEqual([]);
+      });
+
+      it("keeps a did:web port and refuses redirects", async () => {
+        const fetched = serveDidDocument(
+          "did:web:app.example%3A8443",
+          "#platform",
+        );
+        const serve = fetch;
+        const inits: (RequestInit | undefined)[] = [];
+        vi.stubGlobal("fetch", (url: string, init?: RequestInit) => {
+          inits.push(init);
+          return serve(url, init);
+        });
+        await example.resolveSigningKey("did:web:app.example%3A8443#platform");
+        expect(fetched).toEqual([
+          "https://app.example:8443/.well-known/did.json",
+        ]);
+        expect(inits[0]?.redirect).toBe("error");
+      });
     });
 
     it("verifies when the CID is rebuilt from the signed record per spec §5.1", async () => {
