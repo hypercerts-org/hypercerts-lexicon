@@ -684,7 +684,7 @@ Any record can carry an optional `signatures` array. Each signature's
    through this application", not "this application vouches for the
    content". Feeds and indexers can filter on it. Any change outside
    `signatures` breaks it; the application that makes the change replaces
-   it with its own. A record carries at most one.
+   it with its own. A record carries at most one; applications enforce this, the lexicon does not.
 2. **`app.certified.signature.defs#inline`** — signed by the holder of
    `key`. It says only that the key holder signed this version of the
    record, not in what role.
@@ -803,7 +803,7 @@ the attestation lives in another repo's proof record):
 const remoteAttestation = {
   $type: "com.atproto.repo.strongRef" as const,
   uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-  cid: "bafy...", // CID of the proof record being referenced
+  cid: "bafy...", // CID returned when the proof record was written (see Remote Attestation Proofs)
 };
 ```
 
@@ -871,7 +871,14 @@ async function resolveSigningKey(key: string): Promise<string> {
   return `did:key:${method.publicKeyMultibase}`;
 }
 
-const storedEntry = signedActivity.signatures[0] as typeof createdViaSignature;
+// Inline entries carry key and signature; strongRef entries do not.
+const storedEntry = signedActivity.signatures.find(
+  (entry): entry is typeof createdViaSignature =>
+    entry.$type === "app.certified.signature.defs#createdVia" &&
+    "key" in entry &&
+    "signature" in entry,
+);
+if (!storedEntry) throw new Error("Record has no #createdVia signature");
 const { signatures: _stored, ...recordWithoutSignatures } = signedActivity;
 const { signature: storedSignature, ...sigMetadata } = storedEntry;
 const rebuiltCid = CID.createV1(
@@ -923,6 +930,20 @@ const proofCid = CID.createV1(
 );
 
 const proof = { ...proofWithoutCid, cid: proofCid.toString() };
+
+// The strongRef to this proof must carry the proof record's own CID (the
+// one returned when the attestor writes it), not proofCid, which
+// identifies the attested content. A record's CID is the DAG-CBOR CIDv1
+// of the record, so it can also be computed locally:
+const proofRecordCid = CID.createV1(
+  dagCbor.code,
+  await sha256.digest(dagCbor.encode(proof)),
+);
+const proofReference = {
+  $type: "com.atproto.repo.strongRef" as const,
+  uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+  cid: proofRecordCid.toString(),
+};
 ```
 
 ## Key Concepts
