@@ -75,6 +75,15 @@
             ],
             "description": "Long-form description of the organization, such as its mission, history, or detailed project narrative. An inline string for plain text or markdown, a Leaflet linear document record embedded directly, or a strong reference to an existing document record."
           },
+          "langs": {
+            "type": "array",
+            "description": "Human language(s) of this record's text fields, as BCP-47 language tags (e.g. 'es', 'pt-BR'); up to three for mixed-language text. Set by the writing app from the text the author wrote, with the author able to correct it; never from the interface language or a profile preference alone. A hint for readers, not a guarantee: consumers must not hide a record because it lacks this field.",
+            "maxLength": 3,
+            "items": {
+              "type": "string",
+              "format": "language"
+            }
+          },
           "visibility": {
             "type": "string",
             "knownValues": ["public", "unlisted"],
