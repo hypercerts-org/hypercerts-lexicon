@@ -256,12 +256,12 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Context — evidence, data, social verification
 
-| Lexicon             | NSID                                     | Purpose                                                                 |
-| ------------------- | ---------------------------------------- | ----------------------------------------------------------------------- |
-| **Attachment**      | `org.hypercerts.context.attachment`      | Documents, reports, evidence, or other files linked to a record         |
-| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records       |
-| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements |
-| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context    |
+| Lexicon             | NSID                                     | Purpose                                                                                   |
+| ------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Attachment**      | `org.hypercerts.context.attachment`      | Project updates, standalone updates by their author, reports, evidence, or other material |
+| **Measurement**     | `org.hypercerts.context.measurement`     | Quantitative data point (metric + unit + value) linked to records                         |
+| **Evaluation**      | `org.hypercerts.context.evaluation`      | Assessment with evaluators, summary, score, and supporting measurements                   |
+| **Acknowledgement** | `org.hypercerts.context.acknowledgement` | Bidirectional link: confirms or rejects inclusion in another context                      |
 
 ### Work Scope
 
@@ -643,6 +643,48 @@ const attachment = {
   ],
   shortDescription: "Quarterly field survey documenting project progress",
   langs: ["en"],
+  createdAt: new Date().toISOString(),
+};
+```
+
+### Standalone updates and posts
+
+A standalone update by its author, a personal or organization post that is
+not about any particular project, is an attachment whose `subjects` point at
+the author's own `app.certified.actor.profile`: an update about the author.
+People and organizations both use their profile record. Project updates are
+the same record with `subjects` pointing at the project or activity. One
+record type carries both, so a feed, a like, a repost, or a translation works
+the same way for either. Use `contentType: "update"` for narrative updates;
+the documentary kinds (`report`, `audit`, `evidence`, `testimonial`,
+`methodology`) are for material about the subjects. A profile is edited over
+time, so match a profile subject by its `uri`, not its `cid`.
+
+```typescript
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+
+const update = {
+  $type: CONTEXT_ATTACHMENT_NSID,
+  title: "Primeras lluvias en el vivero",
+  contentType: "update",
+  // the author's own profile: an update about the author
+  subjects: [
+    {
+      uri: "at://did:plc:alice/app.certified.actor.profile/self",
+      cid: "...",
+    },
+  ],
+  shortDescription: "Las plántulas de encino ya tienen hojas nuevas.",
+  description: {
+    $type: "org.hypercerts.defs#descriptionString",
+    value: "Después de tres semanas de sequía, las primeras lluvias...",
+  },
+  content: [
+    {
+      $type: "org.hypercerts.defs#uri",
+      uri: "https://example.com/photos/vivero-octubre.jpg",
+    },
+  ],
   createdAt: new Date().toISOString(),
 };
 ```
