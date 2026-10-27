@@ -55,6 +55,7 @@ dataclass organization {
     additionalLocations[]?
     foundedDate?
     longDescription?
+    langs[]?
     visibility?
     createdAt
     !endif
@@ -75,6 +76,7 @@ dataclass activity <<largeBold>> #B4E5D0 {
     title
     shortDescription
     description?
+    langs[]?
     image?
     workScope?
     startDate?
@@ -95,6 +97,7 @@ dataclass attachment {
     title
     shortDescription?
     description?
+    langs[]?
     location?
     tags[]?
     capturedAt?
@@ -290,6 +293,7 @@ dataclass feature {
     type?
     title
     description?
+    langs[]?
     locations[]?
     tags[]?
     sameAs[]?
@@ -352,6 +356,7 @@ dataclass collection {
     title
     shortDescription?
     description?
+    langs[]?
     items[]?
     location?
     tags[]?
@@ -385,9 +390,13 @@ dataclass fundingReceipt {
     !if (SHOW_FIELDS == "true")
     to
     from?
+    via?
     for?
-    amount
-    currency
+    type?
+    amount?
+    currency?
+    netAmount?
+    netCurrency?
     paymentRail?
     paymentNetwork?
     transactionId?

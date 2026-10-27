@@ -272,9 +272,9 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Funding
 
-| Lexicon     | NSID                             | Purpose                                                                                                           |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: amount, currency, payment rail, optional transaction ID. Sender is optional for anonymous funders |
+| Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                                                                    |
+| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its own currency; one payment rail and network for the receipt; optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment |
 
 ### Hyperboards — visual display layer
 
@@ -642,6 +642,7 @@ const attachment = {
     { $type: "org.hypercerts.defs#uri", uri: "ipfs://Qm..." },
   ],
   shortDescription: "Quarterly field survey documenting project progress",
+  langs: ["en"],
   createdAt: new Date().toISOString(),
 };
 ```
@@ -653,12 +654,21 @@ import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
 
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
-  to: "did:plc:recipient",
-  amount: "1000.00",
-  currency: "USD",
-  paymentRail: "ethereum",
+  // to and from are unions — use $type to specify the variant
+  to: { $type: "app.certified.defs#did", did: "did:plc:recipient" },
+  via: { $type: "app.certified.defs#did", did: "did:plc:platform" }, // optional: intermediary that facilitated or processed the payment
+  type: "donation", // optional: donation, match or grant
+  amount: "1000.00", // gross the sender paid, before fees; omit if unknown
+  currency: "USDC",
+  netAmount: "998.50", // optional: what the recipient received
+  netCurrency: "USDC", // set with netAmount
+  paymentRail: "onchain",
+  paymentNetwork: "eip155:1", // CAIP-2 chain ID; a tx hash needs its chain
   transactionId: "0xabc...",
-  for: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+  for: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+    cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  },
   occurredAt: new Date().toISOString(),
   createdAt: new Date().toISOString(),
 };
@@ -944,6 +954,19 @@ All `createdAt` fields use ISO 8601 format with timezone
 Every record written to AT Protocol must include a `$type` field
 matching the collection NSID. Use the exported `*_NSID` constants to
 avoid typos.
+
+### Languages (`langs`)
+
+Collection, activity, attachment, feature, profile and organization
+records carry an optional `langs` array of up to three BCP-47 tags (same
+shape as Bluesky posts) naming the language(s) the record's text was
+written in. Set it from the text the author wrote and let the author
+correct it; never from the interface language or a profile preference
+alone. Store only the original language, never translations. Read it as a
+hint, not a filter: never hide a record because it lacks `langs` or
+because the tag looks wrong, and detect the language from the text when
+the tag is missing or contradicts it. Prefer `es` to `es-MX` unless the
+text differs by region.
 
 ## Further Reading
 

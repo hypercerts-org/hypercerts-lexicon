@@ -31,6 +31,15 @@
               "com.atproto.repo.strongRef"
             ]
           },
+          "langs": {
+            "type": "array",
+            "description": "Human language(s) of this record's text fields, as BCP-47 language tags (e.g. 'es', 'pt-BR'); up to three for mixed-language text. Set by the writing app from the text the author wrote, with the author able to correct it; never from the interface language or a profile preference alone. A hint for readers, not a guarantee: consumers must not hide a record because it lacks this field.",
+            "maxLength": 3,
+            "items": {
+              "type": "string",
+              "format": "language"
+            }
+          },
           "locations": {
             "type": "array",
             "description": "Optional published spatial representations of this feature. Each referenced record must conform with app.certified.location. Multiple entries are alternative representations of the same subject at different precisions or encodings — never different places. Genuinely different places are either one MultiPolygon inside a single location record, or separate features. Writers SHOULD list entries in publisher-preferred order, most preferred first. All referenced locations are public once published: for sensitive subjects, publish only a coarse representation and keep exact geometry unpublished. An empty or absent array is valid: the subject's geometry is unpublished or not applicable.",
