@@ -282,9 +282,9 @@ await agent.api.com.atproto.repo.createRecord({
 
 ### Funding (`org.hypercerts.funding.*`)
 
-| Lexicon     | NSID                             | Description                                                                                                                                                       |
-| ----------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient, with amount, currency, payment rail, and optional transaction ID. The sender (`from`) is optional to support anonymous funders. |
+| Lexicon     | NSID                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient: the gross `amount` the sender paid and/or the `netAmount` received, each with its own currency, plus one payment rail and network for the receipt and an optional transaction ID. The sender (`from`) is optional to support anonymous funders, an optional `type` says whether the payment is a donation, a match or a grant, and an optional `via` names the intermediary that facilitated or processed the payment. |
 
 ### Hyperboards (`org.hyperboards.*`)
 
