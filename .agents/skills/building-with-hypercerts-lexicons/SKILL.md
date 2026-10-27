@@ -301,12 +301,12 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 ### Signatures — cryptographic attestation
 
-| Lexicon             | NSID                            | Purpose                                                                                                                                                                                                                               |
-| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs) and `#inline` (the inline signature object shape). Referenced by the `signatures` property on every record lexicon. |
-| **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                  |
+| Lexicon             | NSID                            | Purpose                                                                                                                                                                                                                                                                                                                               |
+| ------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Signature Defs**  | `app.certified.signature.defs`  | Shared type definitions. Provides `#list` (open union array of inline signatures and strongRefs to remote proofs), `#createdVia` (signed by the application that wrote this version of the record) and `#inline` (signed by the holder of `key`, in no stated role). Referenced by the `signatures` property on every record lexicon. |
+| **Signature Proof** | `app.certified.signature.proof` | Remote attestation proof record holding the CID of attested content. Lives in the attestor's repository and is referenced from the attested record via `com.atproto.repo.strongRef`.                                                                                                                                                  |
 
-All record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object carrying the housing repository's DID so signatures cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
+All record lexicons carry an optional `signatures` property (a ref to `app.certified.signature.defs#list`). The on-the-wire shape, signing procedure, and verification procedure conform to Nick Gerakines' [ATProtocol Attestation Specification](https://tangled.org/strings/did:plc:cbkjy5n7bk3ax2wplmtjofq2/3m3fy2xuahc22) (see also the [accompanying blog post](https://ngerakines.leaflet.pub/3m3idxul5hc2r)): the signed input is the CID of the record (not its raw bytes), and CID generation injects a `$sig` object (the signature entry itself without its `signature` bytes, plus the DID of the repository that holds the record) so a signature covers its own `$type` and `key` and cannot be replayed across content versions or across repositories. ECDSA with the low-S variant per BIP-0062 is required; the signing curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 ## Relationship Map
 
@@ -356,7 +356,7 @@ CERTIFIED
   graph/entityFollow ─────> record (by AT-URI) (non-account follow)
   feed/like ──────────────> record (by strongRef) (social like)
   feed/repost ────────────> record (by strongRef) (social repost)
-  signature/defs           (shared #list and #inline defs)
+  signature/defs           (shared #list, #inline and #createdVia defs)
   signature/proof          (remote attestation proof record)
 
   Every record lexicon also carries an optional `signatures` array
@@ -718,15 +718,29 @@ const receipt = {
 
 ### Attaching Cryptographic Signatures
 
-Any record can carry an optional `signatures` array, enabling platform
-attestation and verification that records were created through trusted
-services. Two patterns are supported in any combination:
+Any record can carry an optional `signatures` array. Each signature's
+`$type` says what it attests, and the types can be combined:
 
-1. **Inline signatures** — embedded directly in the record via
-   `app.certified.signature.defs#inline`.
-2. **Remote attestations** — references to
+1. **`app.certified.signature.defs#createdVia`** — the application that
+   wrote this version of the record signs it inline. It means "written
+   through this application", not "this application vouches for the
+   content". Feeds and indexers can filter on it. Any change outside
+   `signatures` breaks it; the application that makes the change replaces
+   it with its own. A record carries at most one; applications enforce this, the lexicon does not.
+2. **`app.certified.signature.defs#inline`** — signed by the holder of
+   `key`. It says only that the key holder signed this version of the
+   record, not in what role.
+3. **Remote attestations** — references to
    `app.certified.signature.proof` records in other repositories via
    `com.atproto.repo.strongRef`.
+
+The union is open. An application can define its own signature type in
+its own namespace, and consumers ignore types they do not recognize.
+
+Every inline signature is computed over a temporary `$sig` object: the
+signature entry itself without its `signature` bytes, plus the DID of
+the repository that holds the record. The signature therefore covers
+the entry's `$type` (its meaning) and `key`.
 
 > **Key management.** The platform signing keypair is a long-lived
 > identity, not a per-record artefact. It MUST be generated once,
@@ -759,9 +773,9 @@ const privateKeyBytes = await fresh.export(); // 32 raw bytes
 const keypair = await Secp256k1Keypair.import(privateKeyBytes);
 ```
 
-**Step 2: build an inline signature.** Compute the spec-defined CID
-over the record-to-be-signed, then ECDSA-sign it with the platform's
-key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto)
+**Step 2: build a `createdVia` signature.** Compute the spec-defined
+CID over the record-to-be-signed, then ECDSA-sign it with the
+platform's key. Uses [`@atproto/crypto`](https://www.npmjs.com/package/@atproto/crypto)
 (ATProto's signing primitives — handles low-S automatically),
 [`@ipld/dag-cbor`](https://www.npmjs.com/package/@ipld/dag-cbor) for
 canonical encoding, and [`multiformats`](https://www.npmjs.com/package/multiformats)
@@ -771,7 +785,6 @@ for CID construction:
 import * as dagCbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
-import * as raw from "multiformats/codecs/raw";
 import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
 
 // 1. The record we want to sign (without the signatures field).
@@ -782,40 +795,47 @@ const recordToSign = {
   createdAt: "2026-05-21T12:00:00.000Z",
 };
 
-// 2. Insert temporary $sig metadata: attestation type + housing repo DID.
-//    This binds the signature to a specific repository, preventing
-//    cross-repo replay.
-const platformDid = "did:plc:platform123";
-const cborInput = {
-  ...recordToSign,
-  $sig: {
-    $type: "app.certified.signature.defs#inline",
-    repository: platformDid,
-  },
+// 2. The DID of the repository that will hold the record. When an
+//    application writes on a user's behalf, this is the user's DID,
+//    not the application's.
+const repositoryDid = "did:plc:user123";
+
+// 3. The signature entry without its signature bytes. `key` names the
+//    signing key. In production it points into the application's own
+//    DID document (e.g. "did:web:app.example#platform-signing"), so
+//    verifiers can tell which application signed; this example uses
+//    the keypair's did:key.
+const signerDid = keypair.did();
+if (!signerDid.startsWith("did:key:")) {
+  throw new Error(`Expected did:key signer, got ${signerDid}`);
+}
+const signerKey = `${signerDid}#${signerDid.slice("did:key:".length)}`;
+const unsignedEntry = {
+  $type: "app.certified.signature.defs#createdVia" as const,
+  key: signerKey,
 };
 
-// 3. Encode canonically as DAG-CBOR, then build the 36-byte CIDv1
+// 4. Insert temporary $sig: the entry itself plus the repository DID.
+//    This binds the signature to its meaning ($type), its key and the
+//    repository, preventing relabeling and cross-repo replay.
+const cborInput = {
+  ...recordToSign,
+  $sig: { ...unsignedEntry, repository: repositoryDid },
+};
+
+// 5. Encode canonically as DAG-CBOR, then build the 36-byte CIDv1
 //    (dag-cbor codec 0x71 + SHA-256 multihash).
 const cborBytes = dagCbor.encode(cborInput);
 const hash = await sha256.digest(cborBytes);
 const cid = CID.createV1(dagCbor.code, hash);
 const cidBytes = cid.bytes; // 36 bytes: 0x01 0x71 0x12 0x20 + 32-byte hash
 
-// 4. ECDSA-sign the CID bytes with the persisted keypair from Step 1.
+// 6. ECDSA-sign the CID bytes with the persisted keypair from Step 1.
 //    Keypair.sign() applies the standard ECDSA hash-then-sign convention
 //    and enforces low-S per BIP-0062.
-const signerDid = keypair.did();
-if (!signerDid.startsWith("did:key:")) {
-  throw new Error(`Expected did:key signer, got ${signerDid}`);
-}
-const signerKey = `${signerDid}#${signerDid.slice("did:key:".length)}`;
 const signatureBytes = await keypair.sign(cidBytes);
 
-const inlineSignature = {
-  $type: "app.certified.signature.defs#inline" as const,
-  signature: signatureBytes,
-  key: signerKey, // DID verification method reference for the keypair above
-};
+const createdViaSignature = { ...unsignedEntry, signature: signatureBytes };
 ```
 
 **Step 3: build a remote attestation reference** (optional — only if
@@ -825,7 +845,7 @@ the attestation lives in another repo's proof record):
 const remoteAttestation = {
   $type: "com.atproto.repo.strongRef" as const,
   uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
-  cid: "bafy...", // CID of the proof record being referenced
+  cid: "bafy...", // CID returned when the proof record was written (see Remote Attestation Proofs)
 };
 ```
 
@@ -835,8 +855,89 @@ array; consumers verify each entry independently.
 ```typescript
 const signedActivity = {
   ...recordToSign,
-  signatures: [inlineSignature, remoteAttestation],
+  signatures: [createdViaSignature, remoteAttestation],
 };
+```
+
+**Step 5: verify.** Rebuild `$sig` from the entry as stored: the entry
+without its `signature` field, plus the DID of the repository that
+holds the record. Do not rebuild it from a fixed list of fields; any
+field on the entry is part of what was signed. This works for any
+inline signature type, including types defined by other applications:
+
+```typescript
+import { verifySignature } from "@atproto/crypto";
+
+// verifySignature takes a did:key, which is its own public key. For
+// did:web or did:plc, fetch the DID document and turn the verification
+// method that `key` names into a did:key (atproto keys are Multikeys).
+//
+// This is an example, not a production resolver. The record's author
+// chooses `key`, and so the host this fetches. A server that verifies
+// records from anyone must also refuse hosts that resolve to private
+// addresses, set a timeout, and cache DID documents.
+async function resolveSigningKey(key: string): Promise<string> {
+  const [did, fragment] = key.split("#");
+  if (did.startsWith("did:key:")) return did;
+  let url: string;
+  if (did.startsWith("did:web:")) {
+    // atproto supports only hostname-level did:web, so a path is
+    // rejected. A port is encoded as %3A and passes.
+    const id = did.slice("did:web:".length);
+    if (id.includes(":")) throw new Error(`Unsupported did:web path: ${did}`);
+    url = `https://${decodeURIComponent(id)}/.well-known/did.json`;
+    // A did:web names a domain, never an IP address or localhost.
+    const { hostname } = new URL(url);
+    if (
+      hostname === "localhost" ||
+      hostname.startsWith("[") ||
+      /^[\d.]+$/.test(hostname)
+    ) {
+      throw new Error(`did:web host is not a domain name: ${did}`);
+    }
+  } else if (did.startsWith("did:plc:")) {
+    url = `https://plc.directory/${did}`;
+  } else {
+    throw new Error(`Unsupported DID method: ${did}`);
+  }
+  // A redirect would let the DID's host send the request elsewhere.
+  const response = await fetch(url, { redirect: "error" });
+  if (!response.ok) throw new Error(`Could not resolve ${did}`);
+  const doc = await response.json();
+  const method = doc.verificationMethod?.find(
+    (m: { id: string }) => m.id === key || m.id === `#${fragment}`,
+  );
+  if (!method?.publicKeyMultibase) {
+    throw new Error(`${key} is not in the DID document`);
+  }
+  return `did:key:${method.publicKeyMultibase}`;
+}
+
+// Inline entries carry key and signature; strongRef entries do not.
+const storedEntry = signedActivity.signatures.find(
+  (entry): entry is typeof createdViaSignature =>
+    entry.$type === "app.certified.signature.defs#createdVia" &&
+    "key" in entry &&
+    "signature" in entry,
+);
+if (!storedEntry) throw new Error("Record has no #createdVia signature");
+const { signatures: _stored, ...recordWithoutSignatures } = signedActivity;
+const { signature: storedSignature, ...sigMetadata } = storedEntry;
+const rebuiltCid = CID.createV1(
+  dagCbor.code,
+  await sha256.digest(
+    dagCbor.encode({
+      ...recordWithoutSignatures,
+      $sig: { ...sigMetadata, repository: repositoryDid },
+    }),
+  ),
+);
+
+const verified = await verifySignature(
+  await resolveSigningKey(storedEntry.key),
+  rebuiltCid.bytes,
+  storedSignature,
+);
 ```
 
 See the
@@ -847,14 +948,43 @@ for background and motivation.
 
 ### Creating a Remote Attestation Proof
 
+The proof's `cid` is the CID of the attested record with `$sig` set to
+the proof record itself without `cid`, plus the DID of the repository
+that holds the attested record. Every other field of the proof is
+therefore signed, so set them all before computing the CID:
+
 ```typescript
 import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon";
 
-const proof = {
+const proofWithoutCid = {
   $type: SIGNATURE_PROOF_NSID,
-  cid: "bafy...", // CID of the attested content (computed as above)
   note: "Verified by platform quality assurance process",
   createdAt: new Date().toISOString(),
+};
+const proofCid = CID.createV1(
+  dagCbor.code,
+  await sha256.digest(
+    dagCbor.encode({
+      ...recordToSign,
+      $sig: { ...proofWithoutCid, repository: repositoryDid },
+    }),
+  ),
+);
+
+const proof = { ...proofWithoutCid, cid: proofCid.toString() };
+
+// The strongRef to this proof must carry the proof record's own CID (the
+// one returned when the attestor writes it), not proofCid, which
+// identifies the attested content. A record's CID is the DAG-CBOR CIDv1
+// of the record, so it can also be computed locally:
+const proofRecordCid = CID.createV1(
+  dagCbor.code,
+  await sha256.digest(dagCbor.encode(proof)),
+);
+const proofReference = {
+  $type: "com.atproto.repo.strongRef" as const,
+  uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",
+  cid: proofRecordCid.toString(),
 };
 ```
 

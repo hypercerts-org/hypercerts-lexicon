@@ -687,18 +687,27 @@ The EIP-712 typed data message that was signed by the wallet. Contains the field
 
 ### `app.certified.signature.defs`
 
-**Description:** Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification.
+**Description:** Common type definitions for cryptographic signatures attached to records, per the ATProtocol Attestation Specification. Each signature's `$type` says what it attests.
 
 #### Defs
 
 ##### `app.certified.signature.defs#inline`
 
-Inline attestation signature embedded directly in a record. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` metadata object (containing `$type` and the housing repository DID) inserted before canonical DAG-CBOR encoding. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
+Inline attestation signature embedded directly in a record. Conforms to the ATProtocol Attestation Specification: the signed input is the 36-byte CIDv1 (dag-cbor + SHA-256) of the record with the `signatures` field removed and a temporary `$sig` metadata object (containing `$type`, `key` and the housing repository DID) inserted before canonical DAG-CBOR encoding. ECDSA with the low-S variant per BIP-0062 is required; the curve (P-256 or K-256) is determined by the multicodec prefix of the verification method's `publicKeyMultibase`.
 
 | Property    | Type     | Required | Description                                                                                                                                                                                       | Comments       |
 | ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                      |                |
 | `key`       | `string` | ✅       | Full DID verification method reference (format: did:{method}:{identifier}#{fragment}). Identifies the signer and the specific key used; the key's multicodec prefix determines the signing curve. | maxLength: 512 |
+
+##### `app.certified.signature.defs#createdVia`
+
+Inline signature by the application that wrote this version of the record. It does not mean the application endorses the content. A record should carry at most one `#createdVia` signature; applications enforce this, `#list` validation does not. Signed exactly like `#inline`: `$sig` is this signature entry without its `signature` field (so `$type` and `key`), plus `repository`, the DID of the repository that holds the record.
+
+| Property    | Type     | Required | Description                                                                                                                                                                                            | Comments       |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `signature` | `bytes`  | ✅       | ECDSA signature bytes (raw r,s) over the 36-byte CID of the record. Low-S variant per BIP-0062 is mandatory.                                                                                           |                |
+| `key`       | `string` | ✅       | DID verification method of the application's signing key. It should be in the application's own DID document, preferably a did:web on the application's domain, so that the DID names the application. | maxLength: 512 |
 
 ---
 
@@ -710,11 +719,11 @@ Inline attestation signature embedded directly in a record. Conforms to the ATPr
 
 #### Properties
 
-| Property    | Type     | Required | Description                                                                                                                                                                                                                                                                                                 | Comments       |
-| ----------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `cid`       | `string` | ✅       | CID of the attested content, computed per the ATProtocol Attestation Specification: encode the record with the `signatures` field removed and a temporary `$sig` object inserted (containing `$type` and the housing `repository` DID) as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1. |                |
-| `note`      | `string` | ❌       | Optional note explaining the attestation purpose or context.                                                                                                                                                                                                                                                | maxLength: 500 |
-| `createdAt` | `string` | ❌       | Client-declared timestamp when this proof was created.                                                                                                                                                                                                                                                      |                |
+| Property    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                         | Comments       |
+| ----------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `cid`       | `string` | ✅       | CID of the attested content, computed per the ATProtocol Attestation Specification: encode the attested record with its `signatures` field removed and a temporary `$sig` object inserted as canonical DAG-CBOR, then SHA-256 hash to produce a 36-byte CIDv1. `$sig` is this proof record without its `cid` field (so `$type`, plus `note` and `createdAt` when set), plus `repository`: the DID of the repository that holds the attested record. |                |
+| `note`      | `string` | ❌       | Optional note explaining the attestation purpose or context.                                                                                                                                                                                                                                                                                                                                                                                        | maxLength: 500 |
+| `createdAt` | `string` | ❌       | Client-declared timestamp when this proof was created.                                                                                                                                                                                                                                                                                                                                                                                              |                |
 
 ---
 
