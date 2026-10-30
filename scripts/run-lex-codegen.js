@@ -28,7 +28,7 @@
  *   node ./scripts/run-lex-codegen.js gen-ts-obj > generated/DO-NOT-USE-lexicons.ts
  */
 
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -86,6 +86,12 @@ if (files.length === 0) {
 // still subject to the OS `execve` arg-length limit, but that is ~2 MB on Linux
 // vs. the few KB this list occupies.) stdio inherited so `> file` redirection in
 // the npm script still works.
+if (!existsSync(legacyLexCli)) {
+  process.stderr.write(
+    `run-lex-codegen: @atproto/lex-cli is not installed at ${legacyLexCli}\n`,
+  );
+  process.exit(1);
+}
 const result = spawnSync(
   process.execPath,
   [legacyLexCli, ...lexArgs, ...files],

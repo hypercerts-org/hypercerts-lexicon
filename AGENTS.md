@@ -117,13 +117,17 @@ npm run build
 
 This runs Rollup to compile TypeScript and bundle into ESM, CommonJS,
 and type declaration files in `dist/`, and compiles `generated/records/`
-to ESM and declarations in `dist/records/` (one file per lexicon, so
-`/records/*` deep imports and tree-shaking work).
+to ESM and declarations in `dist/records/`, keeping lex's layout of a
+`.defs` module and a namespace module per lexicon, so `/records/*` deep
+imports and tree-shaking work. The `<nsid path>.defs` modules are public
+API (`@hypercerts-org/api` imports them); `tests/records.test.ts` fails if
+one goes missing.
 
 `npm run check:package` packs the package, installs the tarball in an
 empty project and checks `/records` (Node import, TypeScript consumer,
-browser bundle) and the existing entry points. `npm run check` runs it
-last; it needs network access.
+browser bundle) and the existing entry points. It needs network access, so
+it is not part of `npm run check` (or the pre-commit hook); CI runs it after
+the checks, and `prepublishOnly` runs it before publishing.
 
 ## Development Commands
 

@@ -10,6 +10,7 @@ When you run `npm run gen-api`, the build process:
 
 1. Runs `lex gen-api` to generate TypeScript types in `generated/` (including vendored external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
 2. Runs `scripts/generate-exports.js` to auto-generate `generated/exports.ts`
+3. Runs `scripts/generate-records.js` (`npm run gen-records`) to generate `generated/records/`, the lex-compatible record schemas behind `@hypercerts-org/lexicon/records`, with the modern `@atproto/lex` generator. Its export names reuse the NSID constant names below (`ACTIVITY_NSID` gives `activity` and `Activity`), through the shared `scripts/lexicon-names.js`.
 
 ## The Generation Script
 

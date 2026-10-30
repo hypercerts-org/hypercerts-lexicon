@@ -17,7 +17,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pathToImportName, pathToNamespace } from "./lexicon-names.js";
@@ -89,6 +89,17 @@ function sortNamespaceExports(dir) {
   }
 }
 
+// Names that cannot be export names, or that would be confusing ones.
+const reserved = new Set(
+  (
+    "default break case catch class const continue debugger delete do else " +
+    "enum export extends false finally for function if import in instanceof " +
+    "new null return super switch this throw true try typeof var void while " +
+    "with yield let static implements interface package private protected " +
+    "public await arguments eval"
+  ).split(" "),
+);
+
 function indexSource(lexicons) {
   const lines = [
     header,
@@ -101,6 +112,11 @@ function indexSource(lexicons) {
   /** @type {Set<string>} */
   const names = new Set();
   const claim = (name, path) => {
+    if (!/^[A-Za-z_$][\w$]*$/.test(name) || reserved.has(name)) {
+      throw new Error(
+        `Lexicon ${path} maps to an invalid export name: ${name}`,
+      );
+    }
     if (names.has(name)) {
       throw new Error(`Two lexicons map to the export name ${name} (${path})`);
     }
@@ -131,12 +147,16 @@ function indexSource(lexicons) {
 }
 
 function main() {
-  const lexicons = readLexicons().filter(
-    ({ doc }) => doc?.defs?.main?.type !== "permission-set",
-  );
-  const permissionSets = readLexicons()
-    .filter(({ doc }) => doc?.defs?.main?.type === "permission-set")
-    .map(({ doc }) => doc.id);
+  if (!existsSync(lexEntry)) {
+    throw new Error(
+      `@atproto/lex is not installed at ${lexEntry}; run \`npm install\` first.`,
+    );
+  }
+  const all = readLexicons();
+  const isPermissionSet = ({ doc }) =>
+    doc?.defs?.main?.type === "permission-set";
+  const lexicons = all.filter((lexicon) => !isPermissionSet(lexicon));
+  const permissionSets = all.filter(isPermissionSet).map(({ doc }) => doc.id);
 
   execFileSync(
     process.execPath,

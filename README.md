@@ -506,9 +506,15 @@ const record: Activity | undefined = result.success ? result.value : undefined;
 - **Other definitions** of a lexicon are available through a namespace
   export (`OrgHypercertsDefs.Uri`), or from the lexicon's own module:
   `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs`.
-- **ESM only**, with `@atproto/lex` ^0.4.2 as an optional peer dependency:
-  install it to use `/records`. The root and `/lexicons` entry points are
-  unchanged and do not need it.
+- **Deep imports** use the lexicon's NSID path plus `.defs`, without a file
+  extension: `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs`.
+- **Published as ESM.** TypeScript resolves the types with
+  `moduleResolution` `nodenext`, `node16` or `bundler` (not `node10`, which
+  `@atproto/lex` does not support either).
+- **`@atproto/lex` ^0.4.2** is an optional peer dependency: install it to
+  use `/records`. The range follows the `@atproto/lex` version the schemas
+  are generated with. The root and `/lexicons` entry points are unchanged
+  and do not need it.
 - The root package's `OrgHypercertsClaimActivity` and similar namespaces are
   the older `@atproto/lex-cli` types; they are not lex schemas and cannot be
   passed to `Client`.

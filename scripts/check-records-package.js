@@ -41,8 +41,23 @@ const typescriptVersion = JSON.parse(
   ),
 ).version;
 
-const run = (command, args, cwd) =>
-  execFileSync(command, args, { cwd, encoding: "utf-8", stdio: "pipe" });
+// Child npm and node processes must not inherit the parent's npm settings:
+// `npm publish --dry-run` runs this script with npm_config_dry_run=true,
+// which would make the nested `npm pack` and `npm install` do nothing.
+const childEnv = Object.fromEntries(
+  Object.entries(process.env).filter(
+    ([key]) => !key.toLowerCase().startsWith("npm_config_"),
+  ),
+);
+
+const run = (command, args, cwd, timeout = 120_000) =>
+  execFileSync(command, args, {
+    cwd,
+    env: childEnv,
+    encoding: "utf-8",
+    stdio: "pipe",
+    timeout,
+  });
 
 const workDir = mkdtempSync(join(tmpdir(), "hypercerts-lexicon-records-"));
 try {
@@ -74,6 +89,7 @@ try {
       `typescript@${typescriptVersion}`,
     ],
     consumerDir,
+    300_000,
   );
 
   // 2. Runtime import from the installed tarball.
@@ -157,6 +173,8 @@ export const missing = () => client.create(activity, { shortDescription: "s", cr
     join(consumerDir, "entry.js"),
     `import { activity } from "@hypercerts-org/lexicon/records";\nconsole.log(activity.$type);\n`,
   );
+  /** @type {string[]} */
+  const problems = [];
   const bundle = await rollup({
     input: join(consumerDir, "entry.js"),
     plugins: [
@@ -166,29 +184,38 @@ export const missing = () => client.create(activity, { shortDescription: "s", cr
         preferBuiltins: false,
       }),
     ],
-    onwarn: () => {},
+    onwarn: (warning) => {
+      // An import that cannot be resolved for the browser would otherwise
+      // be left external and the bundle reported as fine.
+      if (warning.code === "UNRESOLVED_IMPORT") problems.push(warning.message);
+    },
   });
   const { output } = await bundle.generate({ format: "es" });
   await bundle.close();
   const code = output
     .map((chunk) => ("code" in chunk ? chunk.code : ""))
     .join("");
+  if (!code.includes('"org.hypercerts.claim.activity"')) {
+    problems.push("the bundle does not contain the activity schema");
+  }
   const unrelated = [
     "org.hyperboards.board",
     "app.certified.badge.award",
     "app.certified.graph.follow",
     "org.hypercerts.funding.receipt",
   ].filter((nsid) => code.includes(`"${nsid}"`));
-  const kib = (Buffer.byteLength(code) / 1024).toFixed(0);
   if (unrelated.length > 0) {
-    console.log(
-      `⚠️  Browser bundle of \`activity\` (${kib} KiB, unminified) still contains: ${unrelated.join(", ")}`,
-    );
-  } else {
-    console.log(
-      `✅ Browser bundle of \`activity\` (${kib} KiB, unminified) leaves out unrelated record schemas`,
+    problems.push(
+      `unrelated record schemas in the bundle: ${unrelated.join(", ")}`,
     );
   }
+  if (problems.length > 0) {
+    throw new Error(`Browser bundle of \`activity\`: ${problems.join("; ")}`);
+  }
+  const kib = (Buffer.byteLength(code) / 1024).toFixed(0);
+  console.log(
+    `✅ Browser bundle of \`activity\` (${kib} KiB, unminified) leaves out unrelated record schemas`,
+  );
 } finally {
   rmSync(workDir, { recursive: true, force: true });
 }

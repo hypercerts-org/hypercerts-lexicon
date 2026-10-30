@@ -1,5 +1,6 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { dirname, join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Client } from "@atproto/lex";
 import { describe, expect, it } from "vitest";
 import * as records from "../generated/records/index.js";
@@ -10,16 +11,28 @@ import {
   type BadgeAward,
 } from "../generated/records/index.js";
 
-const lexiconsDir = join(__dirname, "..", "lexicons");
+const projectRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+const lexiconsDir = join(projectRoot, "lexicons");
 
-function recordNsids(): string[] {
+function lexiconFiles(): {
+  path: string;
+  doc: { id: string; defs?: { main?: { type?: string } } };
+}[] {
   return readdirSync(lexiconsDir, { recursive: true, withFileTypes: true })
     .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
-    .map((entry) =>
-      JSON.parse(readFileSync(join(entry.parentPath, entry.name), "utf-8")),
-    )
-    .filter((doc) => doc.defs?.main?.type === "record")
-    .map((doc) => doc.id as string)
+    .map((entry) => {
+      const file = join(entry.parentPath, entry.name);
+      return {
+        path: relative(lexiconsDir, file).split(sep).join("/"),
+        doc: JSON.parse(readFileSync(file, "utf-8")),
+      };
+    });
+}
+
+function recordNsids(): string[] {
+  return lexiconFiles()
+    .filter(({ doc }) => doc.defs?.main?.type === "record")
+    .map(({ doc }) => doc.id)
     .sort();
 }
 
@@ -45,6 +58,18 @@ describe("@hypercerts-org/lexicon/records", () => {
 
     expect(exported).toEqual(recordNsids());
     expect(exported).toHaveLength(27);
+  });
+
+  // `@hypercerts-org/lexicon/records/<nsid path>.defs` is public API (the
+  // `./records/*` export), so the per-lexicon layout must not change silently.
+  it("has one <nsid path>.defs module per lexicon except permission sets", () => {
+    const missing = lexiconFiles()
+      .filter(({ doc }) => doc.defs?.main?.type !== "permission-set")
+      .map(({ path }) => path.replace(/\.json$/, ".defs.ts"))
+      .filter(
+        (path) => !existsSync(join(projectRoot, "generated", "records", path)),
+      );
+    expect(missing).toEqual([]);
   });
 
   it("accepts a valid record", () => {

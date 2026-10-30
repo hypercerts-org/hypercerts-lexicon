@@ -47,7 +47,7 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test && npm run check:package",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
     "build": "rollup -c && npm run build:types && npm run build:records",
     "build:types": "tsc --project tsconfig.build.json",
     "build:records": "node -e \"require('fs').rmSync('dist/records',{recursive:true,force:true})\" && tsc --project tsconfig.records.json",
@@ -70,7 +70,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "clean": "rm -rf dist generated",
     "style:check": "node ./scripts/check-lexicon-style.js",
-    "prepublishOnly": "npm run check",
+    "prepublishOnly": "npm run check && npm run check:package",
     "changeset": "changeset",
     "version-packages": "changeset version && npm install --package-lock-only",
     "release": "npm run check && changeset publish",
