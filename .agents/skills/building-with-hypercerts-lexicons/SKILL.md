@@ -34,12 +34,13 @@ tooling provided by the packaged releases.
 
 ## Package Entry Points
 
-The package exposes two entry points:
+The package exposes three entry points:
 
-| Import path                        | What you get                                                                                                        | When to use                              |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `@hypercerts-org/lexicon`          | Full package: TS types, NSID constants, JSON lexicons, LexiconDoc objects, semantic mappings, validation, utilities | Application code that needs type safety  |
-| `@hypercerts-org/lexicon/lexicons` | Lightweight: schemas, `validate()`, `ids` only — no TS types                                                        | Runtime-only validation, smaller bundles |
+| Import path                        | What you get                                                                                                        | When to use                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `@hypercerts-org/lexicon`          | Full package: TS types, NSID constants, JSON lexicons, LexiconDoc objects, semantic mappings, validation, utilities | Application code that needs type safety                           |
+| `@hypercerts-org/lexicon/lexicons` | Lightweight: schemas, `validate()`, `ids` only — no TS types                                                        | Runtime-only validation, smaller bundles                          |
+| `@hypercerts-org/lexicon/records`  | Lex-compatible record schemas and types for `@atproto/lex` (ESM only)                                               | Creating and validating records with `Client` from `@atproto/lex` |
 
 ## Quick Start
 
@@ -189,6 +190,42 @@ if (result.success) {
   console.error(result.error);
 }
 ```
+
+## Record schemas for `@atproto/lex` (`/records`)
+
+`@hypercerts-org/lexicon/records` exports lex-compatible record schemas for
+the modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex)
+client: one schema per record type, with its TypeScript type. Use it to
+create, validate and type records with `Client`.
+
+```typescript
+import { Client } from "@atproto/lex";
+import { activity, type Activity } from "@hypercerts-org/lexicon/records";
+
+const client = new Client(session); // an authenticated agent or session
+
+await client.create(activity, {
+  title: "Reforestation in the Amazon Basin 2026",
+  shortDescription: "Planting native trees on degraded pasture.",
+  createdAt: new Date().toISOString(),
+});
+
+const result = activity.safeValidate(input);
+const record: Activity | undefined = result.success ? result.value : undefined;
+```
+
+- **Names** follow the NSID constants: `ACTIVITY_NSID` gives `activity`
+  (schema) and `Activity` (type), `BADGE_AWARD_NSID` gives `badgeAward` and
+  `BadgeAward`, `VOCAB_TAG_NSID` gives `vocabTag` and `VocabTag`.
+- **Other definitions** of a lexicon are available through a namespace
+  export (`OrgHypercertsDefs.Uri`), or from the lexicon's own module:
+  `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs`.
+- **ESM only**, with `@atproto/lex` ^0.4.2 as an optional peer dependency:
+  install it to use `/records`. The root and `/lexicons` entry points are
+  unchanged and do not need it.
+- The root package's `OrgHypercertsClaimActivity` and similar namespaces are
+  the older `@atproto/lex-cli` types; they are not lex schemas and cannot be
+  passed to `Client`.
 
 ## Permission Sets (OAuth scopes)
 

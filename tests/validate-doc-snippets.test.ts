@@ -23,9 +23,12 @@ import * as PackageExports from "../generated/exports";
 // Import the lexicons-only entry point (simulates `@hypercerts-org/lexicon/lexicons`)
 import * as LexiconsExports from "../generated/lexicons";
 
+import * as RecordsExports from "../generated/records/index.js";
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pkgExports = PackageExports as Record<string, unknown>;
 const lexExports = LexiconsExports as unknown as Record<string, unknown>;
+const recordsExports = RecordsExports as unknown as Record<string, unknown>;
 
 // Build set of all known NSID strings and def hashes from the schema dict
 const ALL_KNOWN_TYPE_STRINGS = new Set<string>();
@@ -96,6 +99,9 @@ function collectNamedImports(blocks: string[]): NamedImport[] {
 function exportsForSource(source: string): Record<string, unknown> {
   if (source === "@hypercerts-org/lexicon/lexicons") {
     return lexExports;
+  }
+  if (source === "@hypercerts-org/lexicon/records") {
+    return recordsExports;
   }
   return pkgExports;
 }

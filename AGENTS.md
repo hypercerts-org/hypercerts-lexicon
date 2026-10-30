@@ -100,6 +100,14 @@ This runs `lex gen-api` on all lexicon JSON files and:
 1. Generates TypeScript types in `generated/` (including vendored
    external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
 2. Auto-generates `generated/exports.ts` with clean exports
+3. Generates `generated/records/` (`npm run gen-records`): lex-compatible
+   record schemas for the `@hypercerts-org/lexicon/records` subpath, built
+   with the modern `@atproto/lex` generator (`lex build`)
+
+Two different code generators are installed, and both ship a `lex` binary:
+the legacy `@atproto/lex-cli` (`gen-api`, `gen-md`) and the modern
+`@atproto/lex` (`/records`). The scripts call each one's entry point
+directly; do not rely on `lex` from `PATH` or `npx lex`.
 
 Then to build the distributable bundles:
 
@@ -108,7 +116,14 @@ npm run build
 ```
 
 This runs Rollup to compile TypeScript and bundle into ESM, CommonJS,
-and type declaration files in `dist/`.
+and type declaration files in `dist/`, and compiles `generated/records/`
+to ESM and declarations in `dist/records/` (one file per lexicon, so
+`/records/*` deep imports and tree-shaking work).
+
+`npm run check:package` packs the package, installs the tarball in an
+empty project and checks `/records` (Node import, TypeScript consumer,
+browser bundle) and the existing entry points. `npm run check` runs it
+last; it needs network access.
 
 ## Development Commands
 

@@ -17,6 +17,14 @@
       "import": "./dist/lexicons.mjs",
       "require": "./dist/lexicons.cjs"
     },
+    "./records": {
+      "types": "./dist/records/index.d.ts",
+      "default": "./dist/records/index.js"
+    },
+    "./records/*": {
+      "types": "./dist/records/*.d.ts",
+      "default": "./dist/records/*.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -39,17 +47,20 @@
   },
   "scripts": {
     "list": "find ./lexicons -name '*.json'",
-    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test",
-    "build": "rollup -c && npm run build:types",
+    "check": "npm run gen-api && npm run lint && npm run typecheck && npm run build && npm run test && npm run check:package",
+    "build": "rollup -c && npm run build:types && npm run build:records",
     "build:types": "tsc --project tsconfig.build.json",
+    "build:records": "node -e \"require('fs').rmSync('dist/records',{recursive:true,force:true})\" && tsc --project tsconfig.records.json",
     "//permissions": "permission-set lexicons are published as-is but have no TS shape; lex gen-* cannot codegen them. scripts/run-lex-codegen.js runs a lex subcommand over all lexicons EXCEPT permission-sets (excluded by content — the same check generate-exports.js uses). It is a single Node process that spawns lex with the file list as argv and forwards lex's exit code, so a producer failure propagates without `set -o pipefail` (not portable across npm's sh) and shell word-splitting is avoided. (argv is still bounded by the OS execve arg limit, ~2 MB on Linux — far above this list.)",
-    "gen-api": "node ./scripts/run-lex-codegen.js gen-api --yes ./generated && npm run gen-index",
+    "gen-api": "node ./scripts/run-lex-codegen.js gen-api --yes ./generated && npm run gen-index && npm run gen-records",
     "gen-md": "node ./scripts/run-lex-codegen.js gen-md --yes ./lexicons.md",
     "gen-schemas-md": "node ./scripts/generate-schemas.js",
     "//gen-ts": "UNUSED - use gen-api instead",
     "gen-ts": "node ./scripts/run-lex-codegen.js gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
     "gen-index": "node ./scripts/generate-exports.js",
-    "lex": "lex",
+    "gen-records": "node ./scripts/generate-records.js",
+    "check:package": "node ./scripts/check-records-package.js",
+    "lex": "node ./node_modules/@atproto/lex-cli/dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write .",
@@ -71,6 +82,7 @@
   },
   "devDependencies": {
     "@atproto/crypto": "^0.5.0",
+    "@atproto/lex": "0.4.2",
     "@atproto/lex-cli": "^0.9.5",
     "@atproto/xrpc": "^0.7.5",
     "@changesets/changelog-github": "1.0.1",
@@ -95,6 +107,12 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@atproto/xrpc": "*"
+    "@atproto/xrpc": "*",
+    "@atproto/lex": "^0.4.2"
+  },
+  "peerDependenciesMeta": {
+    "@atproto/lex": {
+      "optional": true
+    }
   }
 }
