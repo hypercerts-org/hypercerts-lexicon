@@ -4,12 +4,24 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@atproto/lex";
 import { describe, expect, it } from "vitest";
 import * as records from "../generated/records/index.js";
-import {
-  activity,
-  badgeAward,
-  type Activity,
-  type BadgeAward,
-} from "../generated/records/index.js";
+import { app, org } from "../generated/records/index.js";
+
+type Activity = org.hypercerts.claim.activity.Main;
+type BadgeAward = app.certified.badge.award.Main;
+const activity = org.hypercerts.claim.activity;
+
+/** Follows an NSID through lex's namespace tree: org.hypercerts.claim.activity. */
+function lookup(nsid: string): unknown {
+  return nsid
+    .split(".")
+    .reduce<unknown>(
+      (node, part) =>
+        node && typeof node === "object"
+          ? (node as Record<string, unknown>)[part]
+          : undefined,
+      records,
+    );
+}
 
 const projectRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lexiconsDir = join(projectRoot, "lexicons");
@@ -44,20 +56,19 @@ const validActivity = {
 } satisfies Activity;
 
 describe("@hypercerts-org/lexicon/records", () => {
-  it("exports a record schema for every record lexicon", () => {
-    const exported = Object.values(records as Record<string, unknown>)
-      .filter(
-        (value): value is { type: "record"; $type: string } =>
-          typeof value === "object" &&
-          value !== null &&
-          "type" in value &&
-          value.type === "record",
-      )
-      .map((schema) => schema.$type)
-      .sort();
+  it("exports lex's NSID namespace tree", () => {
+    expect(Object.keys(records).sort()).toEqual(["app", "com", "org", "pub"]);
+  });
 
-    expect(exported).toEqual(recordNsids());
-    expect(exported).toHaveLength(27);
+  it("has a record schema at the NSID path of every record lexicon", () => {
+    const nsids = recordNsids();
+    expect(nsids).toHaveLength(27);
+    for (const nsid of nsids) {
+      const node = lookup(nsid) as
+        { $type?: string; main?: { type?: string } } | undefined;
+      expect(node?.$type, nsid).toBe(nsid);
+      expect(node?.main?.type, nsid).toBe("record");
+    }
   });
 
   // `@hypercerts-org/lexicon/records/<nsid path>.defs` is public API (the
@@ -73,17 +84,17 @@ describe("@hypercerts-org/lexicon/records", () => {
   });
 
   it("accepts a valid record", () => {
-    const result = activity.safeValidate(validActivity);
+    const result = activity.$safeValidate(validActivity);
     expect(result.success).toBe(true);
   });
 
   it("rejects a record missing a required field", () => {
     const { title: _title, ...missingTitle } = validActivity;
-    expect(activity.safeValidate(missingTitle).success).toBe(false);
+    expect(activity.$safeValidate(missingTitle).success).toBe(false);
   });
 
   it("rejects a record with a field of the wrong type", () => {
-    const result = activity.safeValidate({ ...validActivity, title: 42 });
+    const result = activity.$safeValidate({ ...validActivity, title: 42 });
     expect(result.success).toBe(false);
   });
 
@@ -102,7 +113,7 @@ describe("@hypercerts-org/lexicon/records", () => {
     });
 
     const { $type: _type, ...input } = validActivity;
-    await client.create(activity, input);
+    await client.create(org.hypercerts.claim.activity, input);
 
     expect(requests).toHaveLength(1);
     const request = requests[0];
@@ -126,7 +137,13 @@ describe("@hypercerts-org/lexicon/records", () => {
       subject: { $type: "app.certified.defs#did", did: "did:plc:def456" },
       createdAt: "2026-10-30T12:00:00.000Z",
     };
-    expect(badgeAward.$type).toBe("app.certified.badge.award");
+    expect(app.certified.badge.award.$type).toBe("app.certified.badge.award");
+    expect(
+      app.certified.badge.award.$isTypeOf({
+        ...award,
+        $type: "app.certified.badge.award",
+      }),
+    ).toBe(true);
     expect(award.subject).toBeDefined();
 
     // @ts-expect-error title is required

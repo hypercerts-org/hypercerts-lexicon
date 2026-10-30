@@ -193,35 +193,39 @@ if (result.success) {
 
 ## Record schemas for `@atproto/lex` (`/records`)
 
-`@hypercerts-org/lexicon/records` exports lex-compatible record schemas for
-the modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex)
-client: one schema per record type, with its TypeScript type. Use it to
-create, validate and type records with `Client`.
+`@hypercerts-org/lexicon/records` exports lex-compatible schemas for the
+modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex) client,
+in lex's own layout: the NSID namespace tree (`app`, `com`, `org`, `pub`),
+as in the `@atproto/lex` documentation. Use it to create, validate and type
+records with `Client`.
 
 ```typescript
 import { Client } from "@atproto/lex";
-import { activity, type Activity } from "@hypercerts-org/lexicon/records";
+import { app, org } from "@hypercerts-org/lexicon/records";
 
 const client = new Client(session); // an authenticated agent or session
 
-await client.create(activity, {
+await client.create(org.hypercerts.claim.activity, {
   title: "Reforestation in the Amazon Basin 2026",
   shortDescription: "Planting native trees on degraded pasture.",
   createdAt: new Date().toISOString(),
 });
 
-const result = activity.safeValidate(input);
-const record: Activity | undefined = result.success ? result.value : undefined;
+type Activity = org.hypercerts.claim.activity.Main; // the record type
+type Uri = org.hypercerts.defs.Uri; // another definition
+
+const result = org.hypercerts.claim.activity.$safeParse(input);
+if (app.certified.badge.award.$isTypeOf(record)) {
+  // record is a badge award
+}
 ```
 
-- **Names** follow the NSID constants: `ACTIVITY_NSID` gives `activity`
-  (schema) and `Activity` (type), `BADGE_AWARD_NSID` gives `badgeAward` and
-  `BadgeAward`, `VOCAB_TAG_NSID` gives `vocabTag` and `VocabTag`.
-- **Other definitions** of a lexicon are available through a namespace
-  export (`OrgHypercertsDefs.Uri`), or from the lexicon's own module:
-  `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs`.
-- **Deep imports** use the lexicon's NSID path plus `.defs`, without a file
-  extension: `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs`.
+- **Names are NSIDs.** Every lexicon except permission sets sits at its
+  NSID path; its `main` definition is the schema, `.Main` its type, and its
+  other definitions are named as in the lexicon.
+- **Deep imports** use the NSID path without a file extension:
+  `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity` (the
+  lexicon's module) or `.../activity.defs` (its definitions).
 - **Published as ESM.** TypeScript resolves the types with
   `moduleResolution` `nodenext`, `node16` or `bundler` (not `node10`, which
   `@atproto/lex` does not support either).

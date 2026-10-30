@@ -118,10 +118,18 @@ npm run build
 This runs Rollup to compile TypeScript and bundle into ESM, CommonJS,
 and type declaration files in `dist/`, and compiles `generated/records/`
 to ESM and declarations in `dist/records/`, keeping lex's layout of a
-`.defs` module and a namespace module per lexicon, so `/records/*` deep
-imports and tree-shaking work. The `<nsid path>.defs` modules are public
-API (`@hypercerts-org/api` imports them); `tests/records.test.ts` fails if
-one goes missing.
+namespace module and a `.defs` module per lexicon, so `/records/*` deep
+imports and tree-shaking work. These modules are public API:
+`@hypercerts-org/api` imports them (`/records/<nsid path>` and
+`/records/<nsid path>.defs`), and `tests/records.test.ts` fails if one goes
+missing.
+
+**Upgrading `@atproto/lex`** is the one change that couples this package to
+`@hypercerts-org/api`: both generate code for the same lex version and share
+its runtime. Upgrade it in this repository first (dev dependency and the
+`^x.y.z` peer range), regenerate, release; then upgrade and regenerate
+`@hypercerts-org/api` against that release. A new lex minor (0.4 to 0.5) is
+outside the old caret range, so it is a breaking change for consumers.
 
 `npm run check:package` packs the package, installs the tarball in an
 empty project and checks `/records` (Node import, TypeScript consumer,

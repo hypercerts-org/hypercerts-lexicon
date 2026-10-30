@@ -8,7 +8,8 @@
  * 2. Import `/records` and a per-lexicon `/records/*` path in Node (ESM),
  *    and validate a record.
  * 3. Typecheck a TypeScript consumer against the installed declarations.
- * 4. Bundle `import { activity } from "@hypercerts-org/lexicon/records"`
+ * 4. Bundle `import { org } from "@hypercerts-org/lexicon/records"`, using
+ *    only `org.hypercerts.claim.activity`,
  *    for the browser with Rollup, and report whether unrelated record
  *    schemas were left out (tree-shaking).
  *
@@ -95,8 +96,9 @@ try {
   // 2. Runtime import from the installed tarball.
   writeFileSync(
     join(consumerDir, "runtime.js"),
-    `import { activity, badgeAward } from "@hypercerts-org/lexicon/records";
-import * as ActivityModule from "@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs";
+    `import { app, org } from "@hypercerts-org/lexicon/records";
+import * as ActivityModule from "@hypercerts-org/lexicon/records/org/hypercerts/claim/activity";
+const activity = org.hypercerts.claim.activity;
 const record = {
   $type: "org.hypercerts.claim.activity",
   title: "t",
@@ -104,10 +106,10 @@ const record = {
   createdAt: "2026-10-30T12:00:00.000Z",
 };
 if (activity.$type !== "org.hypercerts.claim.activity") throw new Error("activity.$type");
-if (badgeAward.$type !== "app.certified.badge.award") throw new Error("badgeAward.$type");
-if (ActivityModule.main !== activity) throw new Error("deep import is a different module");
-if (!activity.safeValidate(record).success) throw new Error("valid record rejected");
-if (activity.safeValidate({ ...record, title: 1 }).success) throw new Error("invalid record accepted");
+if (app.certified.badge.award.$type !== "app.certified.badge.award") throw new Error("badge award $type");
+if (ActivityModule.main !== activity.main) throw new Error("deep import is a different module");
+if (!activity.$safeValidate(record).success) throw new Error("valid record rejected");
+if (activity.$safeValidate({ ...record, title: 1 }).success) throw new Error("invalid record accepted");
 `,
   );
   run("node", ["runtime.js"], consumerDir);
@@ -136,14 +138,16 @@ if (ACTIVITY_NSID !== "org.hypercerts.claim.activity") throw new Error("root ESM
   writeFileSync(
     join(consumerDir, "types.ts"),
     `import { Client } from "@atproto/lex";
-import { activity, type Activity, OrgHypercertsDefs } from "@hypercerts-org/lexicon/records";
-import type { Main } from "@hypercerts-org/lexicon/records/org/hypercerts/claim/activity.defs";
+import { org } from "@hypercerts-org/lexicon/records";
+import type { Main } from "@hypercerts-org/lexicon/records/org/hypercerts/claim/activity";
+type Activity = org.hypercerts.claim.activity.Main;
+const activity = org.hypercerts.claim.activity;
 
 const client = new Client({ did: "did:plc:abc123", service: "https://pds.example" });
 export const create = () =>
   client.create(activity, { title: "t", shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" });
 export const same = (record: Activity): Main => record;
-export type Uri = OrgHypercertsDefs.Uri;
+export type Uri = org.hypercerts.defs.Uri;
 // @ts-expect-error title is required
 export const missing = () => client.create(activity, { shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" });
 `,
@@ -171,7 +175,7 @@ export const missing = () => client.create(activity, { shortDescription: "s", cr
   // 4. Browser bundle of a single schema.
   writeFileSync(
     join(consumerDir, "entry.js"),
-    `import { activity } from "@hypercerts-org/lexicon/records";\nconsole.log(activity.$type);\n`,
+    `import { org } from "@hypercerts-org/lexicon/records";\nconsole.log(org.hypercerts.claim.activity.$safeParse({}).success);\n`,
   );
   /** @type {string[]} */
   const problems = [];
@@ -195,7 +199,12 @@ export const missing = () => client.create(activity, { shortDescription: "s", cr
   const code = output
     .map((chunk) => ("code" in chunk ? chunk.code : ""))
     .join("");
-  if (!code.includes('"org.hypercerts.claim.activity"')) {
+  // The schema itself, not just its NSID string (a constant a bundler can
+  // inline): field names only appear in the generated schema code.
+  if (
+    !code.includes('"org.hypercerts.claim.activity"') ||
+    !code.includes("shortDescription")
+  ) {
     problems.push("the bundle does not contain the activity schema");
   }
   const unrelated = [

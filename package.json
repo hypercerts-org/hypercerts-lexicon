@@ -6,6 +6,12 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/exports.d.ts",
+  "sideEffects": [
+    "./dist/index.mjs",
+    "./dist/index.cjs",
+    "./dist/lexicons.mjs",
+    "./dist/lexicons.cjs"
+  ],
   "exports": {
     ".": {
       "types": "./dist/exports.d.ts",
@@ -112,6 +118,9 @@
   },
   "peerDependenciesMeta": {
     "@atproto/lex": {
+      "optional": true
+    },
+    "@atproto/xrpc": {
       "optional": true
     }
   }
