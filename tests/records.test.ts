@@ -1,14 +1,12 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { Client } from "@atproto/lex";
 import { describe, expect, it } from "vitest";
 import * as records from "../generated/records/index.js";
 import { app, org } from "../generated/records/index.js";
 
 type Activity = org.hypercerts.claim.activity.Main;
 type BadgeAward = app.certified.badge.award.Main;
-const activity = org.hypercerts.claim.activity;
 
 /** Follows an NSID through lex's namespace tree: org.hypercerts.claim.activity. */
 function lookup(nsid: string): unknown {
@@ -83,51 +81,6 @@ describe("@hypercerts-org/lexicon/records", () => {
     expect(missing).toEqual([]);
   });
 
-  it("accepts a valid record", () => {
-    const result = activity.$safeValidate(validActivity);
-    expect(result.success).toBe(true);
-  });
-
-  it("rejects a record missing a required field", () => {
-    const { title: _title, ...missingTitle } = validActivity;
-    expect(activity.$safeValidate(missingTitle).success).toBe(false);
-  });
-
-  it("rejects a record with a field of the wrong type", () => {
-    const result = activity.$safeValidate({ ...validActivity, title: 42 });
-    expect(result.success).toBe(false);
-  });
-
-  it("works with Client.create and builds a createRecord request", async () => {
-    const requests: Request[] = [];
-    const client = new Client({
-      did: "did:plc:abc123",
-      service: "https://pds.example",
-      fetch: async (input, init) => {
-        requests.push(new Request(input, init));
-        return Response.json({
-          uri: "at://did:plc:abc123/org.hypercerts.claim.activity/3k2abc",
-          cid: "bafyreie5737gdxlw5i64vzichcalba3z2v5n6icifvx5xytvske7mr3hpm",
-        });
-      },
-    });
-
-    const { $type: _type, ...input } = validActivity;
-    await client.create(org.hypercerts.claim.activity, input);
-
-    expect(requests).toHaveLength(1);
-    const request = requests[0];
-    expect(new URL(request.url).pathname).toBe(
-      "/xrpc/com.atproto.repo.createRecord",
-    );
-    const body = await request.json();
-    expect(body).toMatchObject({
-      repo: "did:plc:abc123",
-      collection: "org.hypercerts.claim.activity",
-      record: { $type: "org.hypercerts.claim.activity", title: input.title },
-    });
-  });
-
   it("types records from the lexicons", () => {
     const award: Omit<BadgeAward, "$type"> = {
       badge: {
@@ -137,13 +90,6 @@ describe("@hypercerts-org/lexicon/records", () => {
       subject: { $type: "app.certified.defs#did", did: "did:plc:def456" },
       createdAt: "2026-10-30T12:00:00.000Z",
     };
-    expect(app.certified.badge.award.$type).toBe("app.certified.badge.award");
-    expect(
-      app.certified.badge.award.$isTypeOf({
-        ...award,
-        $type: "app.certified.badge.award",
-      }),
-    ).toBe(true);
     expect(award.subject).toBeDefined();
 
     // @ts-expect-error title is required

@@ -133,7 +133,7 @@ outside the old caret range, so it is a breaking change for consumers.
 
 `npm run check:package` packs the package, installs the tarball in an
 empty project and checks `/records` (Node import, TypeScript consumer,
-browser bundle) and the existing entry points. It needs network access, so
+browser bundle), like the SDK repository's check. It needs network access, so
 it is not part of `npm run check` (or the pre-commit hook); CI runs it after
 the checks, and `prepublishOnly` runs it before publishing.
 
