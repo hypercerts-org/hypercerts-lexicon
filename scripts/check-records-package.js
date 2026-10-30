@@ -104,6 +104,7 @@ export const record: org.hypercerts.claim.activity.Main = {
   shortDescription: "s",
   createdAt: "2026-10-30T12:00:00.000Z",
 };
+export const valid = () => client.create(org.hypercerts.claim.activity, { title: "t", shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" });
 // @ts-expect-error title is required
 export const missing = () => client.create(org.hypercerts.claim.activity, { shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" });
 `,

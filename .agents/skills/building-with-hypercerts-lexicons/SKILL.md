@@ -221,8 +221,8 @@ if (app.certified.badge.award.$isTypeOf(record)) {
 ```
 
 - **Names are NSIDs.** Every lexicon except permission sets sits at its
-  NSID path; its `main` definition is the schema, `.Main` its type, and its
-  other definitions are named as in the lexicon.
+  NSID path. When the lexicon defines `main`, that definition is the schema
+  and `.Main` its type; other definitions are named as in the lexicon.
 - **Deep imports** use the NSID path without a file extension:
   `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity` (the
   lexicon's module) or `.../activity.defs` (its definitions).
