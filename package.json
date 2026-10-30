@@ -99,7 +99,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-typescript": "^12.3.0",
-    "@types/node": "^20.19.39",
+    "@types/node": "^24.19.2",
     "eslint": "^9.39.2",
     "globals": "^17.0.0",
     "husky": "^9.1.7",
@@ -113,14 +113,10 @@
     "vitest": "^4.0.16"
   },
   "peerDependencies": {
-    "@atproto/xrpc": "*",
     "@atproto/lex": "^0.4.2"
   },
   "peerDependenciesMeta": {
     "@atproto/lex": {
-      "optional": true
-    },
-    "@atproto/xrpc": {
       "optional": true
     }
   }
