@@ -303,7 +303,7 @@ await agent.api.com.atproto.repo.createRecord({
 | **Badge Definition** | `app.certified.badge.definition`   | Defines a badge type with title, icon, and optional issuer allowlist.                                                                                                                                                                                                                              |
 | **Badge Award**      | `app.certified.badge.award`        | Awards a badge to a user, project, or activity, with an optional validity window.                                                                                                                                                                                                                  |
 | **Badge Response**   | `app.certified.badge.response`     | Recipient accepts or rejects a badge award.                                                                                                                                                                                                                                                        |
-| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).                                                                                                                                                                    |
+| **EVM Link**         | `app.certified.link.evm`           | Verifiable ATProto DID ↔ EVM wallet link via EIP-712 signature. Extensible for future proof methods (e.g. ERC-1271, ERC-6492).                                                                                                                                                                     |
 | **Follow**           | `app.certified.graph.follow`       | Social-graph follow relationship — declares that the author follows another account by DID. Schema-compatible with `app.bsky.graph.follow`.                                                                                                                                                        |
 | **Entity Follow**    | `app.certified.graph.entityFollow` | Social-graph follow relationship for non-account entities (e.g. a record, referenced by AT-URI without a CID so the follow survives updates). Account (DID) follows remain in `app.certified.graph.follow`; `subject` is an open union so future non-DID entity kinds can be added non-breakingly. |
 | **Like**             | `app.certified.feed.like`          | Social feedback on any record, referenced by strongRef. Optional `via` credits the repost it was found through. Schema-compatible with `app.bsky.feed.like`.                                                                                                                                       |
@@ -476,6 +476,52 @@ import {
 
 const doc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
 ```
+
+### Record schemas for `@atproto/lex` (`/records`)
+
+`@hypercerts-org/lexicon/records` exports lex-compatible schemas for the
+modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex) client,
+in lex's own layout: the NSID namespace tree (`app`, `com`, `org`, `pub`),
+as in the `@atproto/lex` documentation. Use it to create, validate and type
+records with `Client`.
+
+```typescript
+import { Client } from "@atproto/lex";
+import { app, org } from "@hypercerts-org/lexicon/records";
+
+const client = new Client(session); // an authenticated agent or session
+
+await client.create(org.hypercerts.claim.activity, {
+  title: "Reforestation in the Amazon Basin 2026",
+  shortDescription: "Planting native trees on degraded pasture.",
+  createdAt: new Date().toISOString(),
+});
+
+type Activity = org.hypercerts.claim.activity.Main; // the record type
+type Uri = org.hypercerts.defs.Uri; // another definition
+
+const result = org.hypercerts.claim.activity.$safeParse(input);
+if (app.certified.badge.award.$isTypeOf(record)) {
+  // record is a badge award
+}
+```
+
+- **Names are NSIDs.** Every lexicon except permission sets sits at its
+  NSID path. When the lexicon defines `main`, that definition is the schema
+  and `.Main` its type; other definitions are named as in the lexicon.
+- **Deep imports** use the NSID path without a file extension:
+  `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity` (the
+  lexicon's module) or `.../activity.defs` (its definitions).
+- **Published as ESM.** TypeScript resolves the types with
+  `moduleResolution` `nodenext`, `node16` or `bundler` (not `node10`, which
+  `@atproto/lex` does not support either).
+- **`@atproto/lex` ^0.4.2** is an optional peer dependency: install it to
+  use `/records`. The range follows the `@atproto/lex` version the schemas
+  are generated with. The root and `/lexicons` entry points are unchanged
+  and do not need it.
+- The root package's `OrgHypercertsClaimActivity` and similar namespaces are
+  the older `@atproto/lex-cli` types; they are not lex schemas and cannot be
+  passed to `Client`.
 
 ## Examples
 

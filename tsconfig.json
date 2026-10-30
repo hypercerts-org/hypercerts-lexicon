@@ -26,5 +26,5 @@
     }
   },
   "include": ["generated/**/*", "lexicons/**/*.json"],
-  "exclude": ["node_modules", "dist", "generated/index.ts"]
+  "exclude": ["node_modules", "dist", "generated/index.ts", "generated/records"]
 }

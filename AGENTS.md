@@ -100,6 +100,14 @@ This runs `lex gen-api` on all lexicon JSON files and:
 1. Generates TypeScript types in `generated/` (including vendored
    external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
 2. Auto-generates `generated/exports.ts` with clean exports
+3. Generates `generated/records/` (`npm run gen-records`): lex-compatible
+   record schemas for the `@hypercerts-org/lexicon/records` subpath, built
+   with the modern `@atproto/lex` generator (`lex build`)
+
+Two different code generators are installed, and both ship a `lex` binary:
+the legacy `@atproto/lex-cli` (`gen-api`, `gen-md`) and the modern
+`@atproto/lex` (`/records`). The scripts call each one's entry point
+directly; do not rely on `lex` from `PATH` or `npx lex`.
 
 Then to build the distributable bundles:
 
@@ -108,7 +116,26 @@ npm run build
 ```
 
 This runs Rollup to compile TypeScript and bundle into ESM, CommonJS,
-and type declaration files in `dist/`.
+and type declaration files in `dist/`, and compiles `generated/records/`
+to ESM and declarations in `dist/records/`, keeping lex's layout of a
+namespace module and a `.defs` module per lexicon, so `/records/*` deep
+imports and tree-shaking work. These modules are public API:
+`@hypercerts-org/api` imports them (`/records/<nsid path>` and
+`/records/<nsid path>.defs`), and `tests/records.test.ts` fails if one goes
+missing.
+
+**Upgrading `@atproto/lex`** is the one change that couples this package to
+`@hypercerts-org/api`: both generate code for the same lex version and share
+its runtime. Upgrade it in this repository first (dev dependency and the
+`^x.y.z` peer range), regenerate, release; then upgrade and regenerate
+`@hypercerts-org/api` against that release. A new lex minor (0.4 to 0.5) is
+outside the old caret range, so it is a breaking change for consumers.
+
+`npm run check:package` packs the package, installs the tarball in an
+empty project and checks `/records` (Node import, TypeScript consumer,
+browser bundle), like the SDK repository's check. It needs network access, so
+it is not part of `npm run check` (or the pre-commit hook); CI runs it after
+the checks, and `prepublishOnly` runs it before publishing.
 
 ## Development Commands
 
