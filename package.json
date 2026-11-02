@@ -3,9 +3,8 @@
   "version": "1.6.0",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/exports.d.ts",
+  "main": "./dist/records/index.js",
+  "types": "./dist/records/index.d.ts",
   "sideEffects": [
     "./dist/index.mjs",
     "./dist/index.cjs",
@@ -14,6 +13,26 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/records/index.d.ts",
+      "default": "./dist/records/index.js"
+    },
+    "./app/*": {
+      "types": "./dist/records/app/*.d.ts",
+      "default": "./dist/records/app/*.js"
+    },
+    "./com/*": {
+      "types": "./dist/records/com/*.d.ts",
+      "default": "./dist/records/com/*.js"
+    },
+    "./org/*": {
+      "types": "./dist/records/org/*.d.ts",
+      "default": "./dist/records/org/*.js"
+    },
+    "./pub/*": {
+      "types": "./dist/records/pub/*.d.ts",
+      "default": "./dist/records/pub/*.js"
+    },
+    "./legacy": {
       "types": "./dist/exports.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
@@ -22,14 +41,6 @@
       "types": "./dist/lexicons.d.ts",
       "import": "./dist/lexicons.mjs",
       "require": "./dist/lexicons.cjs"
-    },
-    "./records": {
-      "types": "./dist/records/index.d.ts",
-      "default": "./dist/records/index.js"
-    },
-    "./records/*": {
-      "types": "./dist/records/*.d.ts",
-      "default": "./dist/records/*.js"
     },
     "./package.json": "./package.json"
   },
@@ -65,7 +76,7 @@
     "gen-ts": "node ./scripts/run-lex-codegen.js gen-ts-obj > generated/DO-NOT-USE-lexicons.ts",
     "gen-index": "node ./scripts/generate-exports.js",
     "gen-records": "node ./scripts/generate-records.js",
-    "check:package": "node ./scripts/check-records-package.js",
+    "check:package": "node ./scripts/check-package.js",
     "lex": "node ./node_modules/@atproto/lex-cli/dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -114,10 +125,5 @@
   },
   "peerDependencies": {
     "@atproto/lex": "^0.4.2"
-  },
-  "peerDependenciesMeta": {
-    "@atproto/lex": {
-      "optional": true
-    }
   }
 }

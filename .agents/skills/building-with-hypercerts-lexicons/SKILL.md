@@ -18,7 +18,7 @@ Instead consume published, versioned releases:
 
 - **For TypeScript / JavaScript projects** — install the npm package:
   ```bash
-  npm install @hypercerts-org/lexicon
+  npm install @hypercerts-org/lexicon @atproto/lex
   ```
 - **For projects in other languages** — use [tagged GitHub
   releases](https://github.com/hypercerts-org/hypercerts-lexicon/releases).
@@ -36,164 +36,39 @@ tooling provided by the packaged releases.
 
 The package exposes three entry points:
 
-| Import path                        | What you get                                                                                                        | When to use                                                       |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `@hypercerts-org/lexicon`          | Full package: TS types, NSID constants, JSON lexicons, LexiconDoc objects, semantic mappings, validation, utilities | Application code that needs type safety                           |
-| `@hypercerts-org/lexicon/lexicons` | Lightweight: schemas, `validate()`, `ids` only — no TS types                                                        | Runtime-only validation, smaller bundles                          |
-| `@hypercerts-org/lexicon/records`  | Lex-compatible record schemas and types for `@atproto/lex` (ESM)                                                    | Creating and validating records with `Client` from `@atproto/lex` |
+| Import path                        | What you get                                                                                                     | When to use                                                      |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `@hypercerts-org/lexicon`          | Lex-compatible record schemas and types for `@atproto/lex` (ESM), plus deep imports by NSID path                 | Creating, validating and typing records with `Client` (new code) |
+| `@hypercerts-org/lexicon/legacy`   | The 1.x API: `@atproto/lex-cli` types, NSID constants, JSON lexicons, LexiconDoc objects, mappings, `validate()` | Existing 1.x code; deprecated, will be removed in a later major  |
+| `@hypercerts-org/lexicon/lexicons` | Lightweight: schemas, `validate()`, `ids` only — no TS types                                                     | Runtime-only validation, smaller bundles                         |
+
+Migrating from 1.x: change imports from `@hypercerts-org/lexicon` to
+`@hypercerts-org/lexicon/legacy`. Names and behaviour are unchanged, and
+`/legacy` still works with `require()`.
 
 ## Quick Start
 
 ```typescript
-import {
-  HYPERCERTS_SCHEMAS,
-  ACTIVITY_NSID,
-  validate,
-} from "@hypercerts-org/lexicon";
-import { Agent } from "@atproto/api";
+import { Client } from "@atproto/lex";
+import { org } from "@hypercerts-org/lexicon";
 
-const agent = new Agent({ service: "https://bsky.social" });
+const client = new Client(session); // an authenticated agent or session
 
-// Register lexicons with the agent
-agent.api.lex.add(...HYPERCERTS_SCHEMAS);
-
-// Build a record
-const record = {
-  $type: ACTIVITY_NSID,
+// The schema types the record; client.create writes it to the repository.
+await client.create(org.hypercerts.claim.activity, {
   title: "Reforestation in Amazon Basin 2024",
   shortDescription: "Planted 5,000 native trees across 12 hectares",
   createdAt: new Date().toISOString(),
-};
-
-// Validate before writing
-const result = validate(record, ACTIVITY_NSID, "main");
-if (!result.success) throw new Error(String(result.error));
-
-// Write to the network
-await agent.api.com.atproto.repo.createRecord({
-  repo: agent.session?.did,
-  collection: ACTIVITY_NSID,
-  record,
 });
+
+// Check data from elsewhere against the same schema.
+const result = org.hypercerts.claim.activity.$safeParse(input);
+if (!result.success) console.error(result.error);
 ```
 
-## Accessing NSIDs
+## Record schemas and types
 
-NSIDs (Namespaced Identifiers) are the string keys that identify each
-lexicon type on the AT Protocol network.
-
-**Individual constants** (recommended — tree-shakeable):
-
-```typescript
-import {
-  ACTIVITY_NSID,
-  HYPERCERTS_COLLECTION_NSID,
-  CONTEXT_ATTACHMENT_NSID,
-  FUNDING_RECEIPT_NSID,
-} from "@hypercerts-org/lexicon";
-```
-
-**Semantic mapping object** (all NSIDs in one object):
-
-```typescript
-import { HYPERCERTS_NSIDS } from "@hypercerts-org/lexicon";
-const id = HYPERCERTS_NSIDS.ACTIVITY;
-```
-
-**Type-based mapping** (keys match generated type names):
-
-```typescript
-import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon";
-const id = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
-```
-
-## TypeScript Types
-
-Every lexicon has a corresponding TypeScript namespace with a `Main`
-interface and validation helpers:
-
-```typescript
-import { OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon";
-
-const activity: OrgHypercertsClaimActivity.Main = {
-  $type: "org.hypercerts.claim.activity",
-  title: "My Impact Work",
-  shortDescription: "...",
-  createdAt: new Date().toISOString(),
-};
-```
-
-Sub-types (defs) are also exported within each namespace, e.g.
-`OrgHypercertsClaimActivity.Contributor`,
-`OrgHypercertsClaimActivity.WorkScopeString`.
-
-## Lexicon Documents (JSON and Typed)
-
-Access raw or typed lexicon definitions for runtime introspection:
-
-```typescript
-import {
-  ACTIVITY_LEXICON_JSON, // raw JSON object (untyped)
-  ACTIVITY_LEXICON_DOC, // LexiconDoc (typed)
-} from "@hypercerts-org/lexicon";
-```
-
-Or via semantic mapping objects:
-
-```typescript
-import {
-  HYPERCERTS_LEXICON_JSON,
-  HYPERCERTS_LEXICON_DOC,
-} from "@hypercerts-org/lexicon";
-
-const doc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
-```
-
-## Validation
-
-### Using the Generic `validate()` Function
-
-```typescript
-import { validate, ACTIVITY_NSID } from "@hypercerts-org/lexicon";
-
-const result = validate(record, ACTIVITY_NSID, "main");
-if (!result.success) {
-  console.error(result.error);
-}
-```
-
-### Using Per-Lexicon `validateMain()` (Typed Results)
-
-For type-safe validation results, use `validateMain` from the
-per-lexicon namespace export. This requires `$type` to be present on
-the input:
-
-```typescript
-import {
-  OrgHypercertsClaimActivity,
-  ACTIVITY_NSID,
-} from "@hypercerts-org/lexicon";
-
-const record = {
-  $type: ACTIVITY_NSID,
-  title: "Open-source climate modeling",
-  shortDescription: "Built ML models for regional climate prediction",
-  createdAt: new Date().toISOString(),
-};
-
-// validateMain returns a typed ValidationResult
-// where result.value has all lexicon-specific fields
-const result = OrgHypercertsClaimActivity.validateMain(record);
-if (result.success) {
-  console.log(result.value.title); // type-safe access
-} else {
-  console.error(result.error);
-}
-```
-
-## Record schemas for `@atproto/lex` (`/records`)
-
-`@hypercerts-org/lexicon/records` exports lex-compatible schemas for the
+`@hypercerts-org/lexicon` exports lex-compatible schemas for the
 modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex) client,
 in lex's own layout: the NSID namespace tree (`app`, `com`, `org`, `pub`),
 as in the `@atproto/lex` documentation. Use it to create, validate and type
@@ -201,7 +76,7 @@ records with `Client`.
 
 ```typescript
 import { Client } from "@atproto/lex";
-import { app, org } from "@hypercerts-org/lexicon/records";
+import { app, org } from "@hypercerts-org/lexicon";
 
 const client = new Client(session); // an authenticated agent or session
 
@@ -224,18 +99,137 @@ if (app.certified.badge.award.$isTypeOf(record)) {
   NSID path. When the lexicon defines `main`, that definition is the schema
   and `.Main` its type; other definitions are named as in the lexicon.
 - **Deep imports** use the NSID path without a file extension:
-  `@hypercerts-org/lexicon/records/org/hypercerts/claim/activity` (the
+  `@hypercerts-org/lexicon/org/hypercerts/claim/activity` (the
   lexicon's module) or `.../activity.defs` (its definitions).
 - **Published as ESM.** TypeScript resolves the types with
   `moduleResolution` `nodenext`, `node16` or `bundler` (not `node10`, which
   `@atproto/lex` does not support either).
-- **`@atproto/lex` ^0.4.2** is an optional peer dependency: install it to
-  use `/records`. The range follows the `@atproto/lex` version the schemas
-  are generated with. The root and `/lexicons` entry points are unchanged
-  and do not need it.
-- The root package's `OrgHypercertsClaimActivity` and similar namespaces are
-  the older `@atproto/lex-cli` types; they are not lex schemas and cannot be
+- **`@atproto/lex` ^0.4.2** is a peer dependency. The range follows the
+  `@atproto/lex` version the schemas are generated with.
+- `OrgHypercertsClaimActivity` and similar namespaces in `/legacy` are the
+  older `@atproto/lex-cli` types; they are not lex schemas and cannot be
   passed to `Client`.
+
+## Legacy API (`/legacy`)
+
+The 1.x API, unchanged: types and validators generated by the older
+`@atproto/lex-cli`, NSID constants and lexicon documents, published as ESM
+and CommonJS. Deprecated; prefer the record schemas above for new code.
+The common patterns further down still use it.
+
+### Accessing NSIDs
+
+NSIDs (Namespaced Identifiers) are the string keys that identify each
+lexicon type on the AT Protocol network.
+
+**Individual constants** (recommended — tree-shakeable):
+
+```typescript
+import {
+  ACTIVITY_NSID,
+  HYPERCERTS_COLLECTION_NSID,
+  CONTEXT_ATTACHMENT_NSID,
+  FUNDING_RECEIPT_NSID,
+} from "@hypercerts-org/lexicon/legacy";
+```
+
+**Semantic mapping object** (all NSIDs in one object):
+
+```typescript
+import { HYPERCERTS_NSIDS } from "@hypercerts-org/lexicon/legacy";
+const id = HYPERCERTS_NSIDS.ACTIVITY;
+```
+
+**Type-based mapping** (keys match generated type names):
+
+```typescript
+import { HYPERCERTS_NSIDS_BY_TYPE } from "@hypercerts-org/lexicon/legacy";
+const id = HYPERCERTS_NSIDS_BY_TYPE.OrgHypercertsClaimActivity;
+```
+
+### TypeScript Types
+
+Every lexicon has a corresponding TypeScript namespace with a `Main`
+interface and validation helpers:
+
+```typescript
+import { OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon/legacy";
+
+const activity: OrgHypercertsClaimActivity.Main = {
+  $type: "org.hypercerts.claim.activity",
+  title: "My Impact Work",
+  shortDescription: "...",
+  createdAt: new Date().toISOString(),
+};
+```
+
+Sub-types (defs) are also exported within each namespace, e.g.
+`OrgHypercertsClaimActivity.Contributor`,
+`OrgHypercertsClaimActivity.WorkScopeString`.
+
+### Lexicon Documents (JSON and Typed)
+
+Access raw or typed lexicon definitions for runtime introspection:
+
+```typescript
+import {
+  ACTIVITY_LEXICON_JSON, // raw JSON object (untyped)
+  ACTIVITY_LEXICON_DOC, // LexiconDoc (typed)
+} from "@hypercerts-org/lexicon/legacy";
+```
+
+Or via semantic mapping objects:
+
+```typescript
+import {
+  HYPERCERTS_LEXICON_JSON,
+  HYPERCERTS_LEXICON_DOC,
+} from "@hypercerts-org/lexicon/legacy";
+
+const doc = HYPERCERTS_LEXICON_DOC.ACTIVITY;
+```
+
+### Validation
+
+#### Using the Generic `validate()` Function
+
+```typescript
+import { validate, ACTIVITY_NSID } from "@hypercerts-org/lexicon/legacy";
+
+const result = validate(record, ACTIVITY_NSID, "main");
+if (!result.success) {
+  console.error(result.error);
+}
+```
+
+#### Using Per-Lexicon `validateMain()` (Typed Results)
+
+For type-safe validation results, use `validateMain` from the
+per-lexicon namespace export. This requires `$type` to be present on
+the input:
+
+```typescript
+import {
+  OrgHypercertsClaimActivity,
+  ACTIVITY_NSID,
+} from "@hypercerts-org/lexicon/legacy";
+
+const record = {
+  $type: ACTIVITY_NSID,
+  title: "Open-source climate modeling",
+  shortDescription: "Built ML models for regional climate prediction",
+  createdAt: new Date().toISOString(),
+};
+
+// validateMain returns a typed ValidationResult
+// where result.value has all lexicon-specific fields
+const result = OrgHypercertsClaimActivity.validateMain(record);
+if (result.success) {
+  console.log(result.value.title); // type-safe access
+} else {
+  console.error(result.error);
+}
+```
 
 ## Permission Sets (OAuth scopes)
 
@@ -415,10 +409,12 @@ Every arrow is a `strongRef` or union reference stored on AT Protocol.
 
 ## Common Patterns
 
+These patterns use the [legacy API](#legacy-api-legacy).
+
 ### Creating an Activity (Hypercert)
 
 ```typescript
-import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
+import { ACTIVITY_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const activity = {
   $type: ACTIVITY_NSID,
@@ -446,7 +442,7 @@ const activity = {
 ### Creating a Collection
 
 ```typescript
-import { HYPERCERTS_COLLECTION_NSID } from "@hypercerts-org/lexicon";
+import { HYPERCERTS_COLLECTION_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const project = {
   $type: HYPERCERTS_COLLECTION_NSID,
@@ -475,7 +471,7 @@ const project = {
 ### Creating an Acknowledgement
 
 ```typescript
-import { CONTEXT_ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ACKNOWLEDGEMENT_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const ack = {
   $type: CONTEXT_ACKNOWLEDGEMENT_NSID,
@@ -497,7 +493,7 @@ const ack = {
 ### Creating a Location Record
 
 ```typescript
-import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+import { LOCATION_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const location = {
   $type: LOCATION_NSID,
@@ -521,7 +517,7 @@ so producers must emit valid codes and consumers should validate them. Although
 it.
 
 ```typescript
-import { LOCATION_NSID } from "@hypercerts-org/lexicon";
+import { LOCATION_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const countryLocation = {
   $type: LOCATION_NSID,
@@ -540,7 +536,7 @@ const countryLocation = {
 ### Following another account
 
 ```typescript
-import { GRAPH_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+import { GRAPH_FOLLOW_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const follow = {
   $type: GRAPH_FOLLOW_NSID,
@@ -564,7 +560,7 @@ they already use for Bluesky follows.
 ### Following a Non-Account Entity
 
 ```typescript
-import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon";
+import { GRAPH_ENTITY_FOLLOW_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const entityFollow = {
   $type: GRAPH_ENTITY_FOLLOW_NSID,
@@ -593,7 +589,10 @@ non-DID entity kinds can be added non-breakingly.
 ### Liking and Reposting a Record
 
 ```typescript
-import { FEED_LIKE_NSID, FEED_REPOST_NSID } from "@hypercerts-org/lexicon";
+import {
+  FEED_LIKE_NSID,
+  FEED_REPOST_NSID,
+} from "@hypercerts-org/lexicon/legacy";
 
 const repost = {
   $type: FEED_REPOST_NSID,
@@ -631,7 +630,7 @@ subject do not split the count.
 ### Linking an EVM Wallet
 
 ```typescript
-import { LINK_EVM_NSID } from "@hypercerts-org/lexicon";
+import { LINK_EVM_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const evmLink = {
   $type: LINK_EVM_NSID,
@@ -668,7 +667,7 @@ Also omit it for multi-capture material without one truthful shared value; it
 is not a coverage interval. See [capture-time design notes](../../../docs/design/attachment-capture-time.md).
 
 ```typescript
-import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const attachment = {
   $type: CONTEXT_ATTACHMENT_NSID,
@@ -708,7 +707,7 @@ the documentary kinds (`report`, `audit`, `evidence`, `testimonial`,
 time, so match a profile subject by its `uri`, not its `cid`.
 
 ```typescript
-import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon";
+import { CONTEXT_ATTACHMENT_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const update = {
   $type: CONTEXT_ATTACHMENT_NSID,
@@ -739,7 +738,7 @@ const update = {
 ### Recording a Funding Receipt
 
 ```typescript
-import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon";
+import { FUNDING_RECEIPT_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const receipt = {
   $type: FUNDING_RECEIPT_NSID,
@@ -832,7 +831,7 @@ for CID construction:
 import * as dagCbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
-import { ACTIVITY_NSID } from "@hypercerts-org/lexicon";
+import { ACTIVITY_NSID } from "@hypercerts-org/lexicon/legacy";
 
 // 1. The record we want to sign (without the signatures field).
 const recordToSign = {
@@ -1001,7 +1000,7 @@ that holds the attested record. Every other field of the proof is
 therefore signed, so set them all before computing the CID:
 
 ```typescript
-import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon";
+import { SIGNATURE_PROOF_NSID } from "@hypercerts-org/lexicon/legacy";
 
 const proofWithoutCid = {
   $type: SIGNATURE_PROOF_NSID,

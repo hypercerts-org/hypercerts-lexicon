@@ -53,7 +53,7 @@ const validActivity = {
   createdAt: "2026-10-30T12:00:00.000Z",
 } satisfies Activity;
 
-describe("@hypercerts-org/lexicon/records", () => {
+describe("@hypercerts-org/lexicon (package root)", () => {
   it("exports lex's NSID namespace tree", () => {
     expect(Object.keys(records).sort()).toEqual(["app", "com", "org", "pub"]);
   });
@@ -69,8 +69,9 @@ describe("@hypercerts-org/lexicon/records", () => {
     }
   });
 
-  // `@hypercerts-org/lexicon/records/<nsid path>.defs` is public API (the
-  // `./records/*` export), so the per-lexicon layout must not change silently.
+  // `@hypercerts-org/lexicon/<nsid path>.defs` is public API (the `./app/*`,
+  // `./com/*`, `./org/*` and `./pub/*` exports), so the per-lexicon layout
+  // must not change silently.
   it("has one <nsid path>.defs module per lexicon except permission sets", () => {
     const missing = lexiconFiles()
       .filter(({ doc }) => doc.defs?.main?.type !== "permission-set")

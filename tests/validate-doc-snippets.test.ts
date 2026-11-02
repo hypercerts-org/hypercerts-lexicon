@@ -8,7 +8,7 @@
  * 4. Every `$type` string literal matches a known lexicon NSID or def
  * 5. Every dotted property access on mapping objects (e.g.
  *    HYPERCERTS_NSIDS.ACTIVITY) resolves to a real key
- * 6. Every NSID tree path in `/records` snippets (e.g.
+ * 6. Every NSID tree path in snippets importing the package root (e.g.
  *    org.hypercerts.claim.activity.Main) resolves in the tree
  *
  * These tests read documentation at runtime so they never go stale —
@@ -19,12 +19,13 @@ import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
-// Import the full package exports (simulates `@hypercerts-org/lexicon`)
+// Import the legacy exports (simulates `@hypercerts-org/lexicon/legacy`)
 import * as PackageExports from "../generated/exports";
 
 // Import the lexicons-only entry point (simulates `@hypercerts-org/lexicon/lexicons`)
 import * as LexiconsExports from "../generated/lexicons";
 
+// Import the lex schemas (simulates the package root, `@hypercerts-org/lexicon`)
 import * as RecordsExports from "../generated/records/index.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -102,10 +103,14 @@ function exportsForSource(source: string): Record<string, unknown> {
   if (source === "@hypercerts-org/lexicon/lexicons") {
     return lexExports;
   }
-  if (source === "@hypercerts-org/lexicon/records") {
+  if (source === "@hypercerts-org/lexicon/legacy") {
+    return pkgExports;
+  }
+  if (source === "@hypercerts-org/lexicon") {
     return recordsExports;
   }
-  return pkgExports;
+  // Any other entry point does not exist, so every import from it fails.
+  return {};
 }
 
 /** Collect all UPPER_SNAKE_CASE identifiers from code (likely constants). */
@@ -280,7 +285,7 @@ function collectSuspiciousValidateCalls(blocks: string[]): ValidateCall[] {
 
 /**
  * Collect NSID tree paths (`org.hypercerts.claim.activity.Main`) used in
- * blocks that import the tree from `@hypercerts-org/lexicon/records`. Only
+ * blocks that import the tree from the package root. Only
  * roots the block imports are collected; string literals and comments are
  * skipped, so `$type: "org.hypercerts..."` is not mistaken for a path.
  */
@@ -289,7 +294,7 @@ function collectRecordsTreePaths(blocks: string[]): string[] {
   for (const block of blocks) {
     const roots = new Set<string>();
     const importPattern =
-      /import\s+(?:type\s+)?\{([^}]+)\}\s*from\s*["']@hypercerts-org\/lexicon\/records["']/g;
+      /import\s+(?:type\s+)?\{([^}]+)\}\s*from\s*["']@hypercerts-org\/lexicon["']/g;
     for (const m of block.matchAll(importPattern)) {
       for (const part of m[1].split(",")) {
         const name = part
@@ -321,7 +326,7 @@ function collectRecordsTreePaths(blocks: string[]): string[] {
 }
 
 /**
- * Walk a tree path in the `/records` exports. A final PascalCase segment
+ * Walk a tree path in the package root's exports. A final PascalCase segment
  * is a type (`Main`, `Contributor`): it resolves when the module exports the
  * schema it is generated from (`main`, `contributor`).
  */
@@ -446,11 +451,11 @@ function describeDocSnippets(label: string, relPath: string) {
       });
     });
 
-    // 7. NSID tree paths in `/records` snippets
+    // 7. NSID tree paths in snippets importing the package root
     //    (e.g. org.hypercerts.claim.activity.$safeParse, ….activity.Main)
     describe("records tree paths resolve", () => {
       for (const path of collectRecordsTreePaths(blocks)) {
-        it(`${path} exists in /records`, () => {
+        it(`${path} exists in the package root`, () => {
           expect(resolveRecordsTreePath(path)).toBeUndefined();
         });
       }

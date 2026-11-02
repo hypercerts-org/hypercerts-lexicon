@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Generates generated/records/ for the `@hypercerts-org/lexicon/records`
- * subpath: lex-compatible schemas for @atproto/lex, in lex's own layout.
+ * Generates generated/records/, published as the package root
+ * (`@hypercerts-org/lexicon`): lex-compatible schemas for @atproto/lex, in
+ * lex's own layout.
  *
  * - Runs the modern @atproto/lex generator (`lex build --index-file`) over
  *   every lexicon except permission sets, so referenced definitions are

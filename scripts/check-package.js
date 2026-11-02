@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Packs the package and installs the tarball, with @atproto/lex, into a
- * consumer project outside this repository, then checks the
- * `@hypercerts-org/lexicon/records` subpath the way the SDK repository checks
- * its packages: Node imports it, a TypeScript consumer typechecks, and it
- * bundles for the browser. This catches packaging errors (bad exports,
+ * consumer project outside this repository, then checks it the way the SDK
+ * repository checks its packages: Node imports the root and a deep import,
+ * CommonJS requires `/legacy`, a TypeScript consumer typechecks, and the
+ * root bundles for the browser. This catches packaging errors (bad exports,
  * missing files) that tests against the source would not.
  *
  * Run after `npm run build`. Needs network access for `npm install`.
@@ -85,18 +85,27 @@ try {
 
   writeFileSync(
     join(consumer, "runtime.js"),
-    `import { org } from "@hypercerts-org/lexicon/records";
-import * as activity from "@hypercerts-org/lexicon/records/org/hypercerts/claim/activity";
-if (org.hypercerts.claim.activity.main !== activity.main) throw new Error("/records/* is a different module");
+    `import { org } from "@hypercerts-org/lexicon";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
+if (org.hypercerts.claim.activity.main !== activity.main) throw new Error("the deep import is a different module");
 `,
   );
   run("node", ["runtime.js"], consumer);
-  console.log("✅ Node imports /records and /records/*");
+  console.log("✅ Node imports the root and a deep import");
+
+  writeFileSync(
+    join(consumer, "legacy.cjs"),
+    `const { ACTIVITY_NSID } = require("@hypercerts-org/lexicon/legacy");
+if (ACTIVITY_NSID !== "org.hypercerts.claim.activity") throw new Error("/legacy is missing ACTIVITY_NSID");
+`,
+  );
+  run("node", ["legacy.cjs"], consumer);
+  console.log("✅ CommonJS requires /legacy");
 
   writeFileSync(
     join(consumer, "types.ts"),
     `import { Client } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon/records";
+import { org } from "@hypercerts-org/lexicon";
 const client = new Client({ did: "did:plc:abc123", service: "https://pds.example" });
 export const record: org.hypercerts.claim.activity.Main = {
   $type: "org.hypercerts.claim.activity",
@@ -127,7 +136,7 @@ export const missing = () => client.create(org.hypercerts.claim.activity, { shor
 
   writeFileSync(
     join(consumer, "entry.js"),
-    `import { org } from "@hypercerts-org/lexicon/records";\nconsole.log(org.hypercerts.claim.activity.$safeParse({}).success);\n`,
+    `import { org } from "@hypercerts-org/lexicon";\nconsole.log(org.hypercerts.claim.activity.$safeParse({}).success);\n`,
   );
   const unresolved = [];
   const bundle = await rollup({
@@ -145,7 +154,7 @@ export const missing = () => client.create(org.hypercerts.claim.activity, { shor
   await bundle.close();
   if (unresolved.length > 0)
     throw new Error(`Browser bundle: ${unresolved.join("; ")}`);
-  console.log("✅ /records bundles for the browser");
+  console.log("✅ The root bundles for the browser");
 } finally {
   rmSync(workDir, { recursive: true, force: true });
 }
