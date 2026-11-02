@@ -44,7 +44,9 @@ The package exposes three entry points:
 
 Migrating from 1.x: change imports from `@hypercerts-org/lexicon` to
 `@hypercerts-org/lexicon/legacy`. Names and behaviour are unchanged, and
-`/legacy` still works with `require()`.
+`/legacy` still works with `require()`. Unlike `validate()`, `$safeParse`
+requires the record's `$type`; add it to form or API data before checking:
+`$safeParse({ ...data, $type: org.hypercerts.claim.activity.$type })`.
 
 ## Quick Start
 
@@ -61,7 +63,8 @@ await client.create(org.hypercerts.claim.activity, {
   createdAt: new Date().toISOString(),
 });
 
-// Check data from elsewhere against the same schema.
+// Check data from elsewhere against the same schema. The record must
+// include its $type, as records read from a repository do.
 const result = org.hypercerts.claim.activity.$safeParse(input);
 if (!result.success) console.error(result.error);
 ```
@@ -89,7 +92,7 @@ await client.create(org.hypercerts.claim.activity, {
 type Activity = org.hypercerts.claim.activity.Main; // the record type
 type Uri = org.hypercerts.defs.Uri; // another definition
 
-const result = org.hypercerts.claim.activity.$safeParse(input);
+const result = org.hypercerts.claim.activity.$safeParse(input); // input must include $type
 if (app.certified.badge.award.$isTypeOf(record)) {
   // record is a badge award
 }

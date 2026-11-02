@@ -215,7 +215,8 @@ await client.create(org.hypercerts.claim.activity, {
   createdAt: new Date().toISOString(),
 });
 
-// Check data from elsewhere against the same schema.
+// Check data from elsewhere against the same schema. The record must
+// include its $type, as records read from a repository do.
 const result = org.hypercerts.claim.activity.$safeParse(input);
 if (!result.success) console.error(result.error);
 ```
@@ -236,7 +237,9 @@ lexicon documents) moves unchanged to `@hypercerts-org/lexicon/legacy`:
 ```
 
 - Only the import path changes. Names and behaviour are the same, and
-  `/legacy` still works with `require()`.
+  `/legacy` still works with `require()`. As in 1.x, a CommonJS `.cts`
+  file compiled with TypeScript's `node16` module setting cannot import its
+  types; `node10`, `nodenext` and `bundler` can.
 - The lexicons themselves do not change, and neither does `/lexicons`.
 - `@atproto/lex` is now a peer dependency; npm 7 and later install it
   automatically.
@@ -249,6 +252,17 @@ lexicon documents) moves unchanged to `@hypercerts-org/lexicon/legacy`:
 | `validate(record, ACTIVITY_NSID, "main")`   | `org.hypercerts.claim.activity.$safeParse(record)` |
 | `ACTIVITY_NSID`                             | `org.hypercerts.claim.activity.$type`              |
 | `agent.api.com.atproto.repo.createRecord()` | `client.create(org.hypercerts.claim.activity, …)`  |
+
+`$safeParse` is stricter than `validate()` in one way: the record must
+include its `$type`. Records read from a repository have it; add it to
+data from forms or other APIs before checking:
+
+```typescript
+import { org } from "@hypercerts-org/lexicon";
+
+const activity = org.hypercerts.claim.activity;
+const result = activity.$safeParse({ ...formData, $type: activity.$type });
+```
 
 ## Lexicon Reference
 
@@ -449,7 +463,7 @@ await client.create(org.hypercerts.claim.activity, {
 type Activity = org.hypercerts.claim.activity.Main; // the record type
 type Uri = org.hypercerts.defs.Uri; // another definition
 
-const result = org.hypercerts.claim.activity.$safeParse(input);
+const result = org.hypercerts.claim.activity.$safeParse(input); // input must include $type
 if (app.certified.badge.award.$isTypeOf(record)) {
   // record is a badge award
 }

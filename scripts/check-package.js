@@ -3,9 +3,10 @@
  * Packs the package and installs the tarball, with @atproto/lex, into a
  * consumer project outside this repository, then checks it the way the SDK
  * repository checks its packages: Node imports the root and a deep import,
- * CommonJS requires `/legacy`, a TypeScript consumer typechecks, and the
- * root bundles for the browser. This catches packaging errors (bad exports,
- * missing files) that tests against the source would not.
+ * CommonJS requires `/legacy`, TypeScript consumers typecheck (including the
+ * older `node10` resolution against `/legacy`), and the root bundles for the
+ * browser. This catches packaging errors (bad exports, missing files) that
+ * tests against the source would not.
  *
  * Run after `npm run build`. Needs network access for `npm install`.
  */
@@ -88,6 +89,10 @@ try {
     `import { org } from "@hypercerts-org/lexicon";
 import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 if (org.hypercerts.claim.activity.main !== activity.main) throw new Error("the deep import is a different module");
+// The README tells users to add $type before $safeParse; check that advice.
+const formData = { title: "t", shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" };
+if (activity.$safeParse(formData).success) throw new Error("$safeParse accepted a record without $type; update the README");
+if (!activity.$safeParse({ ...formData, $type: activity.$type }).success) throw new Error("$safeParse rejected a record with $type");
 `,
   );
   run("node", ["runtime.js"], consumer);
@@ -106,6 +111,13 @@ if (ACTIVITY_NSID !== "org.hypercerts.claim.activity") throw new Error("/legacy 
     join(consumer, "types.ts"),
     `import { Client } from "@atproto/lex";
 import { org } from "@hypercerts-org/lexicon";
+import { ACTIVITY_NSID, type OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon/legacy";
+export const legacyRecord: OrgHypercertsClaimActivity.Main = {
+  $type: ACTIVITY_NSID,
+  title: "t",
+  shortDescription: "s",
+  createdAt: "2026-10-30T12:00:00.000Z",
+};
 const client = new Client({ did: "did:plc:abc123", service: "https://pds.example" });
 export const record: org.hypercerts.claim.activity.Main = {
   $type: "org.hypercerts.claim.activity",
@@ -133,6 +145,40 @@ export const missing = () => client.create(org.hypercerts.claim.activity, { shor
     consumer,
   );
   console.log("✅ A TypeScript consumer typechecks against the declarations");
+
+  // Projects on the older `node10` resolution (the default with
+  // `module: commonjs`) ignore `exports`; `typesVersions` gives them the
+  // `/legacy` and `/lexicons` types.
+  writeFileSync(
+    join(consumer, "node10.ts"),
+    `import { ACTIVITY_NSID, OrgHypercertsClaimActivity } from "@hypercerts-org/lexicon/legacy";
+import { ids } from "@hypercerts-org/lexicon/lexicons";
+export const record: OrgHypercertsClaimActivity.Main = {
+  $type: ACTIVITY_NSID,
+  title: "t",
+  shortDescription: "s",
+  createdAt: "2026-10-30T12:00:00.000Z",
+};
+export const nsid: string = ids.OrgHypercertsClaimActivity;
+`,
+  );
+  run(
+    join(consumer, "node_modules/.bin/tsc"),
+    [
+      "--noEmit",
+      "--strict",
+      "--skipLibCheck",
+      "--module",
+      "commonjs",
+      "--moduleResolution",
+      "node10",
+      "--target",
+      "es2022",
+      "node10.ts",
+    ],
+    consumer,
+  );
+  console.log("✅ A node10 TypeScript consumer typechecks against /legacy");
 
   writeFileSync(
     join(consumer, "entry.js"),
