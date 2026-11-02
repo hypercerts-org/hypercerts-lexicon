@@ -109,6 +109,18 @@ function exportsForSource(source: string): Record<string, unknown> {
   if (source === "@hypercerts-org/lexicon") {
     return recordsExports;
   }
+  // Deep imports (`/org/hypercerts/claim/activity`, or `.defs`) are the
+  // modules the root tree re-exports at the same NSID path.
+  const deep = source.match(
+    /^@hypercerts-org\/lexicon\/((?:app|com|org|pub)\/.+?)(?:\.defs)?$/,
+  );
+  if (deep) {
+    let node: unknown = recordsExports;
+    for (const segment of deep[1].split("/")) {
+      node = (node as Record<string, unknown> | undefined)?.[segment];
+    }
+    return (node as Record<string, unknown> | undefined) ?? {};
+  }
   // Any other entry point does not exist, so every import from it fails.
   return {};
 }
