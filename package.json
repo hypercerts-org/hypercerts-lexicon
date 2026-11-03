@@ -1,6 +1,6 @@
 {
   "name": "@hypercerts-org/lexicon",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "ATProto lexicon definitions and TypeScript types for the Hypercerts protocol",
   "type": "module",
   "packageManager": "pnpm@12.15.0",

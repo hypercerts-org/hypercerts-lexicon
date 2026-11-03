@@ -1,5 +1,11 @@
 # @hypercerts-org/lexicon
 
+## 2.0.1
+
+### Patch Changes
+
+- [#272](https://github.com/hypercerts-org/hypercerts-lexicon/pull/272) [`1aa2acd`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/1aa2acde2d47ef6693cbf1f6d42b5d023058e80c) Thanks [@kristoferlund](https://github.com/kristoferlund)! - The package is now built with TypeScript 7 and Vite, as the API and SDK packages are; the lexicons and the exported API do not change. One difference in the published type declarations: optional properties are written `x?: T` instead of `x?: T | undefined`. Only projects with `exactOptionalPropertyTypes` notice it, as they can no longer assign `undefined` explicitly to an optional field. The package also no longer ships duplicate declaration files under `dist/generated/`, which no entry point exports.
+
 ## 2.0.0
 
 ### Major Changes
