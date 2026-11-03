@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
-import * as Tag from "../generated/types/org/hypercerts/vocab/tag";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Collection from "../generated/types/org/hypercerts/collection";
+import * as Tag from "../generated/types/org/hypercerts/vocab/tag";
 
 const VALID_TAG_URI =
   "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.vocab.tag/zone-role.site";

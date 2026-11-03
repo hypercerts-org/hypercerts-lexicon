@@ -1,11 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
-import * as Collection from "../generated/types/org/hypercerts/collection";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
+import * as Organization from "../generated/types/app/certified/actor/organization";
+import * as Profile from "../generated/types/app/certified/actor/profile";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity";
+import * as Collection from "../generated/types/org/hypercerts/collection";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment";
 import * as Feature from "../generated/types/org/hypercerts/entity/feature";
-import * as Profile from "../generated/types/app/certified/actor/profile";
-import * as Organization from "../generated/types/app/certified/actor/organization";
 
 // `langs` is a cross-cutting optional field (TECH-712). One test file covers
 // every carrier rather than six near-identical files.

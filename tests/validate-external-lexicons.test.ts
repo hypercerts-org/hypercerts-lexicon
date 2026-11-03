@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons.js";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 import * as Collection from "../generated/types/org/hypercerts/collection.js";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment.js";
@@ -187,31 +187,19 @@ describe("published Leaflet schema updates", () => {
     let result: ReturnType<typeof validate> | undefined;
 
     expect(() => {
-      result = validate(
-        { limit: 0 },
-        "pub.leaflet.blocks.postsList",
-        "main",
-        true,
-      );
+      result = validate({ limit: 0 }, "pub.leaflet.blocks.postsList", "main", true);
     }).not.toThrow();
 
     expect(result?.success).toBe(false);
   });
 
   it("registers Leaflet theme colors and enforces RGB channel bounds", () => {
-    expect((ids as Record<string, string>).PubLeafletThemeColor).toBe(
-      "pub.leaflet.theme.color",
-    );
+    expect((ids as Record<string, string>).PubLeafletThemeColor).toBe("pub.leaflet.theme.color");
 
     let result: ReturnType<typeof validate> | undefined;
 
     expect(() => {
-      result = validate(
-        { r: 256, g: 0, b: 0 },
-        "pub.leaflet.theme.color",
-        "rgb",
-        true,
-      );
+      result = validate({ r: 256, g: 0, b: 0 }, "pub.leaflet.theme.color", "rgb", true);
     }).not.toThrow();
 
     expect(result?.success).toBe(false);

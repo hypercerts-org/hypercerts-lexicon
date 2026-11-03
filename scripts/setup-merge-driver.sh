@@ -6,6 +6,6 @@
 # ./SCHEMAS.md as a worktree side effect leaves rebases dirty between steps.
 # This script should be auto-run on npm install via the "prepare" script.
 
-git config --local merge.schemas.driver "npm run --silent gen-schemas-md -- --outfile \"%A\""
+git config --local merge.schemas.driver "pnpm --silent gen-schemas-md --outfile \"%A\""
 
 echo "✅ Configured merge driver for SCHEMAS.md"

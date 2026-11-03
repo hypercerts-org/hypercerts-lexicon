@@ -129,13 +129,13 @@ Enumerates every `type: "record"` collection under `org.hypercerts.*`:
             "org.hypercerts.context.evaluation",
             "org.hypercerts.context.measurement",
             "org.hypercerts.funding.receipt",
-            "org.hypercerts.workscope.tag",
+            "org.hypercerts.workscope.tag"
           ],
-          "action": ["create", "update", "delete"],
-        },
-      ],
-    },
-  },
+          "action": ["create", "update", "delete"]
+        }
+      ]
+    }
+  }
 }
 ```
 
@@ -156,15 +156,12 @@ Enumerates every `type: "record"` collection under `org.hyperboards.*`:
         {
           "type": "permission",
           "resource": "repo",
-          "collection": [
-            "org.hyperboards.board",
-            "org.hyperboards.displayProfile",
-          ],
-          "action": ["create", "update", "delete"],
-        },
-      ],
-    },
-  },
+          "collection": ["org.hyperboards.board", "org.hyperboards.displayProfile"],
+          "action": ["create", "update", "delete"]
+        }
+      ]
+    }
+  }
 }
 ```
 
@@ -194,13 +191,13 @@ Enumerates every `type: "record"` collection under `app.certified.*`:
             "app.certified.graph.follow",
             "app.certified.link.evm",
             "app.certified.location",
-            "app.certified.signature.proof",
+            "app.certified.signature.proof"
           ],
-          "action": ["create", "update", "delete"],
-        },
-      ],
-    },
-  },
+          "action": ["create", "update", "delete"]
+        }
+      ]
+    }
+  }
 }
 ```
 

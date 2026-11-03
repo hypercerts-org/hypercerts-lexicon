@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { validate } from "../generated/lexicons.js";
 import { validateInline } from "../generated/types/app/certified/signature/defs.js";
 

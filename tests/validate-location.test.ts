@@ -29,8 +29,7 @@ describe("app.certified.location", () => {
   });
 
   it("publishes country-code as a recognized location type", () => {
-    const locationType =
-      schemaDict.AppCertifiedLocation.defs.main.record.properties.locationType;
+    const locationType = schemaDict.AppCertifiedLocation.defs.main.record.properties.locationType;
 
     expect(locationType.knownValues).toContain("country-code");
   });

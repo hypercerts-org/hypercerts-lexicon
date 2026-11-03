@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as EvmLink from "../generated/types/app/certified/link/evm";
 
 const EIP712_DOMAIN = {
@@ -18,8 +18,7 @@ const EIP712_TYPES = {
 } as const;
 
 // Hardhat account #0 — well-known test key, not a secret
-const TEST_PRIVATE_KEY =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+const TEST_PRIVATE_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
 
 async function signEvmLinkRecord() {
   const { privateKeyToAccount } = await import("viem/accounts");

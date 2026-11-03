@@ -1,0 +1,6 @@
+# Dependencies whose install scripts may run. pnpm blocks them by default;
+# list each one explicitly. lefthook is installed by the `prepare` script, and
+# core-js only prints a funding notice.
+allowBuilds:
+  lefthook: false
+  core-js: false

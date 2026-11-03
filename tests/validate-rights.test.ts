@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Rights from "../generated/types/org/hypercerts/claim/rights";
 
 describe("org.hypercerts.claim.rights", () => {

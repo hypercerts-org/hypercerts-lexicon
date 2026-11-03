@@ -2,8 +2,8 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import type { app, org } from "../generated/records/index.js";
 import * as records from "../generated/records/index.js";
-import { app, org } from "../generated/records/index.js";
 
 type Activity = org.hypercerts.claim.activity.Main;
 type BadgeAward = app.certified.badge.award.Main;
@@ -14,9 +14,7 @@ function lookup(nsid: string): unknown {
     .split(".")
     .reduce<unknown>(
       (node, part) =>
-        node && typeof node === "object"
-          ? (node as Record<string, unknown>)[part]
-          : undefined,
+        node && typeof node === "object" ? (node as Record<string, unknown>)[part] : undefined,
       records,
     );
 }
@@ -66,8 +64,7 @@ describe("@hypercerts-org/lexicon (package root)", () => {
     // Guards against the filter matching nothing; the loop checks each one.
     expect(nsids.length).toBeGreaterThan(0);
     for (const nsid of nsids) {
-      const node = lookup(nsid) as
-        { $type?: string; main?: { type?: string } } | undefined;
+      const node = lookup(nsid) as { $type?: string; main?: { type?: string } } | undefined;
       expect(node?.$type, nsid).toBe(nsid);
       expect(node?.main?.type, nsid).toBe("record");
     }
@@ -80,9 +77,7 @@ describe("@hypercerts-org/lexicon (package root)", () => {
     const missing = lexiconFiles()
       .filter(({ doc }) => doc.defs?.main?.type !== "permission-set")
       .map(({ path }) => path.replace(/\.json$/, ".defs.ts"))
-      .filter(
-        (path) => !existsSync(join(projectRoot, "generated", "records", path)),
-      );
+      .filter((path) => !existsSync(join(projectRoot, "generated", "records", path)));
     expect(missing).toEqual([]);
   });
 

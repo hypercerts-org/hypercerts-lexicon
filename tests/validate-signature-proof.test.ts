@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons.js";
 import * as SignatureProof from "../generated/types/app/certified/signature/proof.js";
 
 describe("app.certified.signature.proof", () => {
@@ -12,12 +12,8 @@ describe("app.certified.signature.proof", () => {
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.value.cid).toBe(
-        "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae",
-      );
-      expect(result.value.note).toBe(
-        "Verified by platform quality assurance process",
-      );
+      expect(result.value.cid).toBe("bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae");
+      expect(result.value.note).toBe("Verified by platform quality assurance process");
     }
   });
 

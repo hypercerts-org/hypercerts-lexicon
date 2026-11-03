@@ -6,11 +6,11 @@ The `generated/exports.ts` file is **automatically generated** from lexicon JSON
 
 ## How It Works
 
-When you run `npm run gen-api`, the build process:
+When you run `pnpm gen-api`, the build process:
 
 1. Runs `lex gen-api` to generate TypeScript types in `generated/` (including vendored external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
 2. Runs `scripts/generate-exports.js` to auto-generate `generated/exports.ts`
-3. Runs `scripts/generate-records.js` (`npm run gen-records`) to generate `generated/records/`, the lex-compatible record schemas published as the package root (`@hypercerts-org/lexicon`), with the modern `@atproto/lex` generator. It uses lex's own NSID namespace tree (`org.hypercerts.claim.activity`), generated with `lex build --index-file`, so it needs no naming rules of its own.
+3. Runs `scripts/generate-records.js` (`pnpm gen-records`) to generate `generated/records/`, the lex-compatible record schemas published as the package root (`@hypercerts-org/lexicon`), with the modern `@atproto/lex` generator. It uses lex's own NSID namespace tree (`org.hypercerts.claim.activity`), generated with `lex build --index-file`, so it needs no naming rules of its own.
 
 ## The Generation Script
 
@@ -48,7 +48,7 @@ The script generates intelligent names:
 
 ## When to Regenerate
 
-Run `npm run gen-api` (or just `npm run gen-index`) whenever:
+Run `pnpm gen-api` (or just `pnpm gen-index`) whenever:
 
 - You add a new lexicon JSON file
 - You remove a lexicon JSON file
@@ -68,7 +68,7 @@ Run `npm run gen-api` (or just `npm run gen-index`) whenever:
 If you need to regenerate just `generated/exports.ts`:
 
 ```bash
-npm run gen-index
+pnpm gen-index
 ```
 
 This is useful for testing the generation script without regenerating all the types.

@@ -69,14 +69,17 @@ Before publishing, ensure you have:
      - Organization/User: `hypercerts-org`
      - Repository: `hypercerts-lexicon`
      - Workflow filename: `release.yml` (must match exactly, case-sensitive)
-   - The npm CLI (v11.5.1+) automatically detects OIDC and uses it
+   - `changeset publish` runs `pnpm publish`, which uses OIDC and attaches
+     provenance by itself (pnpm 12, pinned in `package.json`)
    - See: <https://docs.npmjs.com/trusted-publishers>
    - **No `NPM_TOKEN` secret is required** - Trusted Publishers eliminates
      the need for long-lived tokens
 
 2. **Release Bot GitHub App:**
-   - Configure repository secrets `RELEASE_BOT_APP_ID` and
-     `RELEASE_BOT_APP_PRIVATE_KEY`.
+   - Uses the organization secrets `RELEASE_BOT_APP_ID` and
+     `RELEASE_BOT_APP_PRIVATE_KEY`, shared with the `api` and `sdk`
+     repositories. A repository secret with the same name would override
+     them, so do not add one.
    - The app must be installed for this repository with permission to
      write contents and pull requests. It updates the Release PR and
      pushes release commits or tags where needed.
@@ -92,7 +95,7 @@ Before publishing, you need to create changesets for any user-facing
 changes:
 
 ```bash
-npx changeset
+pnpm changeset
 ```
 
 This will:
@@ -164,7 +167,7 @@ automatic once a Changeset-bearing change reaches `main`:
 
 4. **The workflow validates and publishes the exact merged commit.** It
    checks out and verifies the PR's merge commit SHA, runs
-   `npm run check`, and confirms stable prerelease mode is not active. It then
+   `pnpm check`, and confirms stable prerelease mode is not active. It then
    publishes to npm with the `latest` tag, pushes the version tag, and
    creates the corresponding GitHub Release using npm Trusted
    Publishers/OIDC.
@@ -180,7 +183,7 @@ Node.js `^22.11 || ^24 || >=26` and npm `>=10.9.0`; these are development
 requirements, not requirements for consumers of the published lexicons.
 
 Changesets v3 archives versioned prerelease changesets in `.changeset/pre/`.
-When migrating an active v2 prerelease, `npx changeset status` migrates the
+When migrating an active v2 prerelease, `pnpm changeset status` migrates the
 state automatically. Review and commit all resulting `.changeset/` changes.
 
 ### Starting a Beta Cycle
@@ -196,7 +199,7 @@ state automatically. Review and commit all resulting `.changeset/` changes.
 2. **Enter prerelease mode:**
 
    ```bash
-   npx changeset pre enter beta
+   pnpm changeset pre enter beta
    git add -A .changeset/
    git commit -m "release: enter beta prerelease mode"
    git push -u origin prerelease/beta
@@ -236,7 +239,7 @@ When you're ready to promote to stable:
 
    ```bash
    git checkout prerelease/beta
-   npx changeset pre exit
+   pnpm changeset pre exit
    git add -A .changeset/
    git commit -m "release: exit beta prerelease mode"
    git push
@@ -264,7 +267,7 @@ automatically runs to:
   corresponding changesets
 - Warn if changesets are missing
 - **Reject the PR if prerelease mode is still active** - This ensures
-  `npx changeset pre exit` has been run before merging a prerelease
+  `pnpm changeset pre exit` has been run before merging a prerelease
   branch to `main`
 
 The Release workflow also validates pushes to `main` and validates the
@@ -279,7 +282,7 @@ Versions are determined by Changesets:
 - **Major**: Breaking changes (1.0.0 → 2.0.0)
 
 You specify the version bump type when creating a changeset with
-`npx changeset`.
+`pnpm changeset`.
 
 The `prepublishOnly` script ensures types are regenerated before
 publishing, so the published package always includes the latest

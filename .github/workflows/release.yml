@@ -33,14 +33,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Set up pnpm
+        # Reads the pnpm version from the packageManager field in package.json.
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Verify no active prerelease mode
         run: |
@@ -58,7 +62,7 @@ jobs:
           fi
 
       - name: Validate package
-        run: npm run check
+        run: pnpm check
 
       - name: Select Changesets mode
         id: select-mode
@@ -74,7 +78,7 @@ jobs:
     steps:
       - name: Generate Release Bot App Token
         id: generate-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
@@ -89,20 +93,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Set up pnpm
+        # Reads the pnpm version from the packageManager field in package.json.
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: npm
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Version package and update Release PR
         uses: changesets/action/version@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
-          script: npm run version-packages
+          script: pnpm version-packages
           commit-message: "release: version packages"
           pr-title: Release
           pr-base-branch: main
@@ -156,7 +164,7 @@ jobs:
     steps:
       - name: Generate Release Bot App Token
         id: generate-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
@@ -185,21 +193,21 @@ jobs:
             exit 1
           fi
 
+      - name: Set up pnpm
+        # Reads the pnpm version from the packageManager field in package.json.
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: npm
-          registry-url: https://registry.npmjs.org
-
-      - name: Upgrade npm for Trusted Publishers
-        run: npm install -g npm@latest
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Validate release commit
-        run: npm run check
+        run: pnpm check
 
       - name: Verify no active prerelease mode
         run: |
@@ -251,7 +259,7 @@ jobs:
 
       - name: Generate Release Bot App Token
         id: generate-token
-        uses: actions/create-github-app-token@v3
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
           private-key: ${{ secrets.RELEASE_BOT_APP_PRIVATE_KEY }}
@@ -265,34 +273,34 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      - name: Set up pnpm
+        # Reads the pnpm version from the packageManager field in package.json.
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: npm
-          registry-url: https://registry.npmjs.org
-
-      - name: Upgrade npm for Trusted Publishers
-        run: npm install -g npm@latest
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Validate prerelease package
-        run: npm run check
+        run: pnpm check
 
       - name: Verify prerelease mode
         run: |
           set -euo pipefail
           if [ ! -f .changeset/pre.json ]; then
             echo "::error::Prerelease mode is not active."
-            echo "Run 'npx changeset pre enter beta' and commit before dispatching this workflow."
+            echo "Run 'pnpm changeset pre enter beta' and commit before dispatching this workflow."
             exit 1
           fi
           mode="$(node -e "console.log(require('./.changeset/pre.json').mode)")"
           if [ "$mode" != "pre" ]; then
             echo "::error::Prerelease mode has been exited (mode=$mode)."
-            echo "Re-enter with 'npx changeset pre enter beta' or merge to main for a stable release."
+            echo "Re-enter with 'pnpm changeset pre enter beta' or merge to main for a stable release."
             exit 1
           fi
           echo "Prerelease mode is active"
@@ -309,7 +317,7 @@ jobs:
             exit 0
           fi
           status_file="$RUNNER_TEMP/beta-changesets.json"
-          npx --no-install changeset status --output "$status_file"
+          pnpm exec changeset status --output "$status_file"
           pending="$(node --input-type=module - "$status_file" <<'NODE'
           import fs from 'node:fs';
           const status = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
@@ -325,7 +333,7 @@ jobs:
 
       - name: Version packages (beta)
         if: steps.beta-changesets.outputs.pending == 'true'
-        run: npm run version-packages
+        run: pnpm version-packages
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
 
@@ -343,7 +351,7 @@ jobs:
 
       - name: Publish beta package
         if: steps.beta-changesets.outputs.pending == 'true'
-        run: npm run release
+        run: pnpm release
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
           NPM_CONFIG_PROVENANCE: true

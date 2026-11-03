@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment";
 
 const tag = {
@@ -34,12 +34,7 @@ describe("attachment tags", () => {
     { tags: ["field-photo"] },
   ])("rejects invalid tag arrays: %j", ({ tags }) => {
     expect(
-      validate(
-        { ...base, tags },
-        ids.OrgHypercertsContextAttachment,
-        "main",
-        false,
-      ).success,
+      validate({ ...base, tags }, ids.OrgHypercertsContextAttachment, "main", false).success,
     ).toBe(false);
   });
 });

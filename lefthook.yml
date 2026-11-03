@@ -1,0 +1,15 @@
+# Git hooks. Installed by `pnpm install` via the `prepare` script.
+# Keep pre-commit fast (staged files only); slower checks run at pre-push and in CI.
+pre-commit:
+  commands:
+    biome:
+      run: pnpm exec biome check --write --no-errors-on-unmatched --files-ignore-unknown=true {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    typecheck:
+      run: pnpm typecheck
+    schemas-md:
+      # Regenerates SCHEMAS.md; fails if the committed file was stale, leaving the fresh file to commit.
+      run: pnpm -s gen-schemas-md && git diff --exit-code HEAD -- SCHEMAS.md

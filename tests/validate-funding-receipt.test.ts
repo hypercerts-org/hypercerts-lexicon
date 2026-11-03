@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as FundingReceipt from "../generated/types/org/hypercerts/funding/receipt";
 
 const validBase = {
@@ -274,22 +274,12 @@ describe("org.hypercerts.funding.receipt", () => {
   });
 
   it("should require $type when requiredType is true", () => {
-    const result = validate(
-      validBase,
-      ids.OrgHypercertsFundingReceipt,
-      "main",
-      true,
-    );
+    const result = validate(validBase, ids.OrgHypercertsFundingReceipt, "main", true);
     expect(result.success).toBe(false);
   });
 
   it("should not require $type when requiredType is false", () => {
-    const result = validate(
-      validBase,
-      ids.OrgHypercertsFundingReceipt,
-      "main",
-      false,
-    );
+    const result = validate(validBase, ids.OrgHypercertsFundingReceipt, "main", false);
     expect(result.success).toBe(true);
   });
 });

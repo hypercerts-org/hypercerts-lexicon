@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment";
 
 const base = {
@@ -9,12 +9,7 @@ const base = {
 };
 
 function validateCapturedAt(capturedAt: unknown) {
-  return validate(
-    { ...base, capturedAt },
-    ids.OrgHypercertsContextAttachment,
-    "main",
-    false,
-  );
+  return validate({ ...base, capturedAt }, ids.OrgHypercertsContextAttachment, "main", false);
 }
 
 describe("org.hypercerts.context.attachment capturedAt", () => {

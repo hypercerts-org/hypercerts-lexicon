@@ -23,14 +23,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..");
 const lexiconsDir = join(projectRoot, "lexicons");
 const outDir = join(projectRoot, "generated", "records");
-const lexEntry = join(
-  projectRoot,
-  "node_modules",
-  "@atproto",
-  "lex",
-  "bin",
-  "lex",
-);
+const lexEntry = join(projectRoot, "node_modules", "@atproto", "lex", "bin", "lex");
 
 /** Plain code-unit comparison, independent of locale. */
 const byCodeUnit = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
@@ -52,9 +45,7 @@ function readLexicons() {
 
 function main() {
   if (!existsSync(lexEntry)) {
-    throw new Error(
-      `@atproto/lex is not installed at ${lexEntry}; run \`npm install\` first.`,
-    );
+    throw new Error(`@atproto/lex is not installed at ${lexEntry}; run \`npm install\` first.`);
   }
   const lexicons = readLexicons();
   const permissionSets = lexicons

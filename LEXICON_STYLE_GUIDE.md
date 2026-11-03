@@ -188,7 +188,7 @@ The `style:check` script checks for:
 ## Running the Checker
 
 ```bash
-npm run style:check
+pnpm style:check
 ```
 
 This will check all lexicons in the `lexicons/` directory and report any style guide violations.
