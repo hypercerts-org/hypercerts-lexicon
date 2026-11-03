@@ -8,6 +8,8 @@
  * 4. Every `$type` string literal matches a known lexicon NSID or def
  * 5. Every dotted property access on mapping objects (e.g.
  *    HYPERCERTS_NSIDS.ACTIVITY) resolves to a real key
+ * 6. Every NSID tree path in snippets importing the package root (e.g.
+ *    org.hypercerts.claim.activity.Main) resolves in the tree
  *
  * These tests read documentation at runtime so they never go stale —
  * any renamed or removed export will cause a failure here.
@@ -17,15 +19,19 @@ import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
-// Import the full package exports (simulates `@hypercerts-org/lexicon`)
+// Import the legacy exports (simulates `@hypercerts-org/lexicon/legacy`)
 import * as PackageExports from "../generated/exports";
 
 // Import the lexicons-only entry point (simulates `@hypercerts-org/lexicon/lexicons`)
 import * as LexiconsExports from "../generated/lexicons";
 
+// Import the lex schemas (simulates the package root, `@hypercerts-org/lexicon`)
+import * as RecordsExports from "../generated/records/index.js";
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pkgExports = PackageExports as Record<string, unknown>;
 const lexExports = LexiconsExports as unknown as Record<string, unknown>;
+const recordsExports = RecordsExports as unknown as Record<string, unknown>;
 
 // Build set of all known NSID strings and def hashes from the schema dict
 const ALL_KNOWN_TYPE_STRINGS = new Set<string>();
@@ -97,7 +103,26 @@ function exportsForSource(source: string): Record<string, unknown> {
   if (source === "@hypercerts-org/lexicon/lexicons") {
     return lexExports;
   }
-  return pkgExports;
+  if (source === "@hypercerts-org/lexicon/legacy") {
+    return pkgExports;
+  }
+  if (source === "@hypercerts-org/lexicon") {
+    return recordsExports;
+  }
+  // Deep imports (`/org/hypercerts/claim/activity`, or `.defs`) are the
+  // modules the root tree re-exports at the same NSID path.
+  const deep = source.match(
+    /^@hypercerts-org\/lexicon\/((?:app|com|org|pub)\/.+?)(?:\.defs)?$/,
+  );
+  if (deep) {
+    let node: unknown = recordsExports;
+    for (const segment of deep[1].split("/")) {
+      node = (node as Record<string, unknown> | undefined)?.[segment];
+    }
+    return (node as Record<string, unknown> | undefined) ?? {};
+  }
+  // Any other entry point does not exist, so every import from it fails.
+  return {};
 }
 
 /** Collect all UPPER_SNAKE_CASE identifiers from code (likely constants). */
@@ -270,6 +295,72 @@ function collectSuspiciousValidateCalls(blocks: string[]): ValidateCall[] {
   return suspicious;
 }
 
+/**
+ * Collect NSID tree paths (`org.hypercerts.claim.activity.Main`) used in
+ * blocks that import the tree from the package root. Only
+ * roots the block imports are collected; string literals and comments are
+ * skipped, so `$type: "org.hypercerts..."` is not mistaken for a path.
+ */
+function collectRecordsTreePaths(blocks: string[]): string[] {
+  const paths = new Set<string>();
+  for (const block of blocks) {
+    const roots = new Set<string>();
+    const importPattern =
+      /import\s+(?:type\s+)?\{([^}]+)\}\s*from\s*["']@hypercerts-org\/lexicon["']/g;
+    for (const m of block.matchAll(importPattern)) {
+      for (const part of m[1].split(",")) {
+        const name = part
+          .trim()
+          .replace(/^type\s+/, "")
+          .split(/\s+as\s+/)
+          .pop()
+          ?.trim();
+        if (name) roots.add(name);
+      }
+    }
+    if (roots.size === 0) continue;
+    const code = block
+      .split("\n")
+      .filter((line) => !line.trimStart().startsWith("import "))
+      .join("\n")
+      .replace(/\/\/.*$/gm, "")
+      .replace(
+        /"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g,
+        '""',
+      );
+    for (const m of code.matchAll(
+      /(?<![\w$.])([A-Za-z_$][\w$]*)((?:\.[A-Za-z_$][\w$]*)+)/g,
+    )) {
+      if (roots.has(m[1])) paths.add(m[0]);
+    }
+  }
+  return [...paths];
+}
+
+/**
+ * Walk a tree path in the package root's exports. A final PascalCase segment
+ * is a type (`Main`, `Contributor`): it resolves when the module exports the
+ * schema it is generated from (`main`, `contributor`).
+ */
+function resolveRecordsTreePath(path: string): string | undefined {
+  const segments = path.split(".");
+  let node: unknown = recordsExports;
+  for (const [index, segment] of segments.entries()) {
+    const current = node as Record<string, unknown>;
+    if (current[segment] !== undefined) {
+      node = current[segment];
+      continue;
+    }
+    const isLast = index === segments.length - 1;
+    const schemaName = segment.charAt(0).toLowerCase() + segment.slice(1);
+    if (isLast && /^[A-Z]/.test(segment) && current[schemaName] !== undefined) {
+      return undefined;
+    }
+    return `${segments.slice(0, index + 1).join(".")} does not exist`;
+  }
+  return undefined;
+}
+
 // ─── Per-file auto-extracted checks ──────────────────────────────
 
 function describeDocSnippets(label: string, relPath: string) {
@@ -329,13 +420,17 @@ function describeDocSnippets(label: string, relPath: string) {
     describe("mapping object property accesses resolve", () => {
       const accesses = collectMappingAccesses(blocks);
 
-      for (const { object, property } of accesses) {
-        it(`${object}.${property} exists`, () => {
+      // The docs use the legacy mapping objects rarely, so there may be none.
+      it("checks mapping object accesses (if any)", () => {
+        for (const { object, property } of accesses) {
           const obj = pkgExports[object];
-          expect(obj).toBeDefined();
-          expect((obj as Record<string, unknown>)[property]).toBeDefined();
-        });
-      }
+          expect(obj, `"${object}" should be exported`).toBeDefined();
+          expect(
+            (obj as Record<string, unknown>)[property],
+            `${object}.${property} should exist`,
+          ).toBeDefined();
+        }
+      });
     });
 
     // 5. Runtime namespace property accesses
@@ -370,6 +465,16 @@ function describeDocSnippets(label: string, relPath: string) {
           ).not.toMatch(/^[A-Z_]+_NSID$/);
         }
       });
+    });
+
+    // 7. NSID tree paths in snippets importing the package root
+    //    (e.g. org.hypercerts.claim.activity.$safeParse, ….activity.Main)
+    describe("records tree paths resolve", () => {
+      for (const path of collectRecordsTreePaths(blocks)) {
+        it(`${path} exists in the package root`, () => {
+          expect(resolveRecordsTreePath(path)).toBeUndefined();
+        });
+      }
     });
   });
 }
