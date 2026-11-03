@@ -1,7 +1,0 @@
----
-"@hypercerts-org/lexicon": major
----
-
-The package root now exports lex-compatible schemas and TypeScript types for the modern `@atproto/lex` client, generated from the lexicons in lex's own layout: the NSID namespace tree (`app`, `com`, `org`, `pub`), so records are used as in the `@atproto/lex` documentation, `client.create(org.hypercerts.claim.activity, …)` with the type `org.hypercerts.claim.activity.Main`. Every lexicon except permission sets is also available as a module at `@hypercerts-org/lexicon/<nsid path>`. The root is published as ESM and needs `@atproto/lex` ^0.4.2, now a required peer dependency; the range follows the `@atproto/lex` version the schemas are generated with. Like `@atproto/lex`, the package now requires Node.js 22 or later (`engines`).
-
-**Breaking:** the 1.x API (the `@atproto/lex-cli` types and validators, `validate()`, the `*_NSID` constants, the lexicon documents and the mapping objects) moves unchanged to `@hypercerts-org/lexicon/legacy`. To keep using it, change `from "@hypercerts-org/lexicon"` to `from "@hypercerts-org/lexicon/legacy"`; names and behaviour are the same, and `/legacy` still supports `require()`. `/legacy` is deprecated and will be removed in a later major version; the README's "Migrating from 1.x" section shows how the old names map to the new ones. Note that the new schemas' `$safeParse` requires the record's `$type`, which `validate()` did not. The lexicons and the `/lexicons` entry point do not change. The `@atproto/xrpc` peer dependency is removed: the published entry points do not import it.
