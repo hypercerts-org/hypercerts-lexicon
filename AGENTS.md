@@ -110,6 +110,12 @@ the legacy `@atproto/lex-cli` (`gen-api`, `gen-md`) and the modern
 `@atproto/lex` (the package root). The scripts call each one's entry point
 directly; do not rely on `lex` from `PATH` or `npx lex`.
 
+The root `tsconfig.json` excludes `generated/records` on purpose: otherwise
+Rollup would also emit its declarations into `dist/generated/`. Those files
+are still typechecked: `npm run build:records` compiles them in strict mode
+with `tsconfig.records.json`, and the tests import them under
+`tsconfig.test.json`.
+
 Then to build the distributable bundles:
 
 ```bash

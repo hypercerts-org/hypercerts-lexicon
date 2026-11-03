@@ -420,13 +420,17 @@ function describeDocSnippets(label: string, relPath: string) {
     describe("mapping object property accesses resolve", () => {
       const accesses = collectMappingAccesses(blocks);
 
-      for (const { object, property } of accesses) {
-        it(`${object}.${property} exists`, () => {
+      // The docs use the legacy mapping objects rarely, so there may be none.
+      it("checks mapping object accesses (if any)", () => {
+        for (const { object, property } of accesses) {
           const obj = pkgExports[object];
-          expect(obj).toBeDefined();
-          expect((obj as Record<string, unknown>)[property]).toBeDefined();
-        });
-      }
+          expect(obj, `"${object}" should be exported`).toBeDefined();
+          expect(
+            (obj as Record<string, unknown>)[property],
+            `${object}.${property} should exist`,
+          ).toBeDefined();
+        }
+      });
     });
 
     // 5. Runtime namespace property accesses

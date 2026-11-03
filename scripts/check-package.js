@@ -92,7 +92,8 @@ if (org.hypercerts.claim.activity.main !== activity.main) throw new Error("the d
 // The README tells users to add $type before $safeParse; check that advice.
 const formData = { title: "t", shortDescription: "s", createdAt: "2026-10-30T12:00:00.000Z" };
 if (activity.$safeParse(formData).success) throw new Error("$safeParse accepted a record without $type; update the README");
-if (!activity.$safeParse({ ...formData, $type: activity.$type }).success) throw new Error("$safeParse rejected a record with $type");
+if (!activity.$safeParse({ $type: activity.$type, ...formData }).success) throw new Error("$safeParse rejected a record with $type");
+if (activity.$safeParse({ $type: activity.$type, ...formData, ...{ $type: "org.hypercerts.collection" } }).success) throw new Error("$safeParse accepted a record with another $type");
 `,
   );
   run("node", ["runtime.js"], consumer);
