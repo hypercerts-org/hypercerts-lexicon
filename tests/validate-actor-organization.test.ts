@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons.js";
 import * as Organization from "../generated/types/app/certified/actor/organization.js";
 
 describe("app.certified.actor.organization", () => {
@@ -104,9 +104,7 @@ describe("app.certified.actor.organization", () => {
   it("should reject additionalLocations entries that are not strong references", () => {
     const result = validate(
       {
-        additionalLocations: [
-          { uri: "at://did:plc:example/app.certified.location/3kabc1" },
-        ],
+        additionalLocations: [{ uri: "at://did:plc:example/app.certified.location/3kabc1" }],
         createdAt: "2024-01-01T00:00:00.000Z",
       },
       ids.AppCertifiedActorOrganization,

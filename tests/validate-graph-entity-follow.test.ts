@@ -1,9 +1,8 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as EntityFollow from "../generated/types/app/certified/graph/entityFollow";
 
-const VALID_URI =
-  "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.claim.activity/3k2abc";
+const VALID_URI = "at://did:plc:ewvi7nxzyoun6zhxrhs64oiz/org.hypercerts.claim.activity/3k2abc";
 const VALID_CID = "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
 
 describe("app.certified.graph.entityFollow", () => {

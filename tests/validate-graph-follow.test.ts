@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Follow from "../generated/types/app/certified/graph/follow";
 
 const VALID_DID = "did:plc:ewvi7nxzyoun6zhxrhs64oiz";
@@ -47,12 +47,7 @@ describe("app.certified.graph.follow", () => {
   });
 
   it("should reject a record missing required createdAt", () => {
-    const result = validate(
-      { subject: VALID_DID },
-      ids.AppCertifiedGraphFollow,
-      "main",
-      false,
-    );
+    const result = validate({ subject: VALID_DID }, ids.AppCertifiedGraphFollow, "main", false);
     expect(result.success).toBe(false);
   });
 

@@ -8,11 +8,9 @@ import {
 
 describe("Lexicon release policy", () => {
   it("reads Changesets for this package only", () => {
-    expect(
-      changesetBump(
-        '---\n"@hypercerts-org/lexicon": minor\n---\n\nAdd a field',
-      ),
-    ).toBe("minor");
+    expect(changesetBump('---\n"@hypercerts-org/lexicon": minor\n---\n\nAdd a field')).toBe(
+      "minor",
+    );
     expect(changesetBump('---\n"other-package": patch\n---\n')).toBeUndefined();
   });
 

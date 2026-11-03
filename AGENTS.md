@@ -92,7 +92,7 @@ Do not edit files in these directories directly.**
 To regenerate code after modifying lexicon JSON files:
 
 ```bash
-npm run gen-api
+pnpm gen-api
 ```
 
 This runs `lex gen-api` on all lexicon JSON files and:
@@ -101,7 +101,7 @@ This runs `lex gen-api` on all lexicon JSON files and:
    external lexicons from `lexicons/pub/` and `lexicons/app/bsky/`)
 2. Auto-generates `generated/exports.ts` with clean exports, published as
    the deprecated `/legacy` entry point
-3. Generates `generated/records/` (`npm run gen-records`): lex-compatible
+3. Generates `generated/records/` (`pnpm gen-records`): lex-compatible
    record schemas, published as the package root, built with the modern
    `@atproto/lex` generator (`lex build`)
 
@@ -110,20 +110,15 @@ the legacy `@atproto/lex-cli` (`gen-api`, `gen-md`) and the modern
 `@atproto/lex` (the package root). The scripts call each one's entry point
 directly; do not rely on `lex` from `PATH` or `npx lex`.
 
-The root `tsconfig.json` excludes `generated/records` on purpose: otherwise
-Rollup would also emit its declarations into `dist/generated/`. Those files
-are still typechecked: `npm run build:records` compiles them in strict mode
-with `tsconfig.records.json`, and the tests import them under
-`tsconfig.test.json`.
-
 Then to build the distributable bundles:
 
 ```bash
-npm run build
+pnpm build
 ```
 
-This runs Rollup to compile the `/legacy` and `/lexicons` entry points
-into ESM, CommonJS and type declaration files in `dist/`, and compiles
+This bundles the `/legacy` and `/lexicons` entry points with Vite
+(`scripts/build-legacy.js`) into ESM and CommonJS, emits their type
+declarations with `tsc`, and compiles
 `generated/records/` to ESM and declarations in `dist/records/` for the
 package root, keeping lex's layout of a namespace module and a `.defs`
 module per lexicon, so deep imports by NSID path (`./app/*`, `./com/*`,
@@ -138,16 +133,16 @@ its runtime. Upgrade it in this repository first (dev dependency and the
 `@hypercerts-org/api` against that release. A new lex minor (0.4 to 0.5) is
 outside the old caret range, so it is a breaking change for consumers.
 
-`npm run check:package` packs the package, installs the tarball in an
+`pnpm check:package` packs the package, installs the tarball in an
 empty project and checks it (Node import of the root and a deep import,
 `require()` of `/legacy`, TypeScript consumers including `node10` against `/legacy`, browser bundle), like the SDK repository's check. It needs network access, so
-it is not part of `npm run check` (or the pre-commit hook); CI runs it after
+it is not part of `pnpm check` (or the pre-commit hook); CI runs it after
 the checks, and `prepublishOnly` runs it before publishing.
 
 ## Development Commands
 
 **⚠️ IMPORTANT FOR AI AGENTS**: Always run scripts through npm scripts
-(e.g., `npm run gen-schemas-md`) rather than executing Node.js files
+(e.g., `pnpm gen-schemas-md`) rather than executing Node.js files
 directly (e.g., `node scripts/generate-schemas.js`). This ensures
 proper environment setup and consistency with the project's workflow.
 
@@ -155,44 +150,44 @@ proper environment setup and consistency with the project's workflow.
 
 ```bash
 # Regenerate TypeScript API types from lexicons and auto-generate generated/exports.ts
-npm run gen-api
+pnpm gen-api
 
 # Manually regenerate just generated/exports.ts
-npm run gen-index
+pnpm gen-index
 
 # Build distributable bundles
-npm run build
+pnpm build
 
 # Generate SCHEMAS.md from lexicon definitions
-npm run gen-schemas-md
+pnpm gen-schemas-md
 
 # Generate markdown documentation from lexicons
-npm run gen-md
+pnpm gen-md
 
 # List all lexicon JSON files
-npm run list
+pnpm list
 ```
 
 ### Code Quality
 
 ```bash
 # Check code formatting
-npm run lint
+pnpm lint
 # or
-npm run format:check
+pnpm format:check
 
 # Auto-fix formatting issues
-npm run format
+pnpm format
 ```
 
 ### Validation
 
 ```bash
 # Validate lexicon definitions, regenerate types, typecheck, and build
-npm run check
+pnpm check
 
 # Type-check TypeScript without building
-npm run typecheck
+pnpm typecheck
 ```
 
 ### Changesets and Versioning
@@ -264,7 +259,7 @@ scripts/                Build and codegen scripts
 1. Create / edit JSON file in `lexicons/` following the namespace
    structure
 
-2. Run `npm run gen-api` to:
+2. Run `pnpm gen-api` to:
    - Generate types in `generated/` (including vendored external lexicons)
    - Auto-generate `generated/exports.ts` with all exports
 
@@ -313,17 +308,17 @@ scripts/                Build and codegen scripts
    - Document all properties **except facet fields** (facets may be
      omitted)
 
-   - `npm run test` runs `tests/validate-doc-snippets.test.ts` which
+   - `pnpm test` runs `tests/validate-doc-snippets.test.ts` which
      auto-checks that all TypeScript code blocks in both files use
      valid export names, `$type` strings, and API call signatures.
      This will catch many (but not all) documentation errors.
 
-6. Run `npm run gen-schemas-md` to regenerate `SCHEMAS.md`
+6. Run `pnpm gen-schemas-md` to regenerate `SCHEMAS.md`
 
-7. Run `npm run format` to ensure everything is formatted correctly
-   via Prettier
+7. Run `pnpm format` to ensure everything is formatted correctly
+   with Biome
 
-8. Run `npm run check` to validate, typecheck, and build
+8. Run `pnpm check` to validate, typecheck, and build
 
 9. **REQUIRED: Create a changeset file** using the `writing-changesets` skill
    - **This step is MANDATORY for ALL changes that affect users**
@@ -341,10 +336,10 @@ After modifying lexicons:
 
 ```bash
 # Check formatting
-npm run lint
+pnpm lint
 
 # Validate lexicon syntax
-npm run check
+pnpm check
 ```
 
 ### Writing Tests
@@ -411,10 +406,10 @@ expect(bad.success).toBe(false);
 ## Important Notes
 
 - Lexicon JSON files should follow ATProto lexicon schema v1
-- Use `npm run format` before committing to ensure consistent formatting
-- Use `npm run check` before committing to ensure valid lexicons
+- Use `pnpm format` before committing to ensure consistent formatting
+- Use `pnpm check` before committing to ensure valid lexicons
 - **Never edit `generated/` or `dist/` directly** - all changes are lost on regeneration
-- The `.prettierignore` excludes `generated/` and `dist/` since they're auto-generated
+- Biome skips `generated/` and `dist/` (they are gitignored), and formats `lexicons/` at 80 columns so published lexicon files keep their formatting
 - The `.gitignore` excludes `generated/` and `dist/` to keep the repo clean
 
 ## Entity Relationships
@@ -444,9 +439,9 @@ tracking, use your own agent task tooling; do not resurrect bd.
 
 The `.beads/` files (and any bd git hooks under `.beads/hooks/`) are
 retained only for historical reference and are not maintained. The
-scripts under `.beads/hooks/` are inert: `npm run prepare` installs
-husky, which points `core.hooksPath` at `.husky/`, so git never
-executes anything under `.beads/hooks/`.
+scripts under `.beads/hooks/` are inert: `pnpm install` runs
+`lefthook install`, which installs the hooks defined in `lefthook.yml`
+into `.git/hooks/`, so git never executes anything under `.beads/hooks/`.
 
 <!-- END BEADS INTEGRATION -->
 
@@ -460,6 +455,7 @@ executes anything under `.beads/hooks/`.
    that needs follow-up
 2. **Run quality gates** (if code changed) - Tests, linters, builds
 3. **PUSH TO REMOTE** - This is MANDATORY:
+
    ```bash
    git pull --rebase
    git push origin HEAD

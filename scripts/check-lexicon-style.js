@@ -14,9 +14,9 @@
  *   --json: Output results as JSON
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -297,12 +297,7 @@ class StyleChecker {
 
     // Check record schema
     if (def.record) {
-      this.checkObjectDefinition(
-        def.record,
-        `${path}.record`,
-        fileResult,
-        lexicon,
-      );
+      this.checkObjectDefinition(def.record, `${path}.record`, fileResult, lexicon);
     }
   }
 
@@ -337,12 +332,7 @@ class StyleChecker {
       }
 
       // Check property type-specific rules
-      this.checkProperty(
-        prop,
-        `${path}.properties.${propName}`,
-        fileResult,
-        lexicon,
-      );
+      this.checkProperty(prop, `${path}.properties.${propName}`, fileResult, lexicon);
     }
 
     // Check for createdAt in main records
@@ -354,8 +344,7 @@ class StyleChecker {
       fileResult.issues.push({
         severity: SEVERITY.INFO,
         rule: "timestamp-fields",
-        message:
-          "Consider adding 'createdAt' or 'updatedAt' timestamp field to record",
+        message: "Consider adding 'createdAt' or 'updatedAt' timestamp field to record",
         location: path,
       });
     }
@@ -383,13 +372,7 @@ class StyleChecker {
    */
   checkStringProperty(prop, path, fileResult) {
     // Check for maxLength
-    if (
-      !prop.maxLength &&
-      !prop.maxGraphemes &&
-      !prop.format &&
-      !prop.enum &&
-      !prop.knownValues
-    ) {
+    if (!prop.maxLength && !prop.maxGraphemes && !prop.format && !prop.enum && !prop.knownValues) {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,
         rule: "string-max-length",
@@ -410,8 +393,7 @@ class StyleChecker {
         fileResult.issues.push({
           severity: SEVERITY.INFO,
           rule: "datetime-naming",
-          message:
-            "Datetime fields should have descriptive names (e.g., createdAt, startDate)",
+          message: "Datetime fields should have descriptive names (e.g., createdAt, startDate)",
           location: path,
         });
       }
@@ -420,13 +402,8 @@ class StyleChecker {
     // Check for format when type is string
     const uriLikeNames = ["uri", "url", "link", "href"];
     const pathSegments = path.split(".");
-    const propName =
-      pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : "";
-    if (
-      propName &&
-      uriLikeNames.includes(propName.toLowerCase()) &&
-      prop.format !== "uri"
-    ) {
+    const propName = pathSegments.length > 0 ? pathSegments[pathSegments.length - 1] : "";
+    if (propName && uriLikeNames.includes(propName.toLowerCase()) && prop.format !== "uri") {
       fileResult.issues.push({
         severity: SEVERITY.WARNING,
         rule: "string-format-uri",
@@ -505,15 +482,11 @@ class StyleChecker {
 
     // Check if strongRef is documented
     if (prop.ref === "com.atproto.repo.strongRef" && prop.description) {
-      if (
-        !prop.description.includes("lexicon") &&
-        !prop.description.includes("conform")
-      ) {
+      if (!prop.description.includes("lexicon") && !prop.description.includes("conform")) {
         fileResult.issues.push({
           severity: SEVERITY.WARNING,
           rule: "strongref-documentation",
-          message:
-            "StrongRef should document the expected lexicon type in description",
+          message: "StrongRef should document the expected lexicon type in description",
           location: `${path}.description`,
         });
       }
@@ -529,7 +502,7 @@ class StyleChecker {
     }
 
     const defName = ref.substring(1); // Remove the '#'
-    if (lexicon.defs && lexicon.defs[defName]) {
+    if (lexicon.defs?.[defName]) {
       return lexicon.defs[defName];
     }
 
@@ -550,7 +523,7 @@ class StyleChecker {
     const defName = parts[1] || "main";
 
     const targetLexicon = this.lexiconIndex.get(lexiconId);
-    if (!targetLexicon || !targetLexicon.defs) {
+    if (!targetLexicon?.defs) {
       return null;
     }
 
@@ -611,11 +584,7 @@ class StyleChecker {
       // Known-external lexicon namespaces are not present in the local lexicons/ directory.
       // Skip resolution for these — they are valid by convention (the same namespaces skipped
       // during file-level style checks).
-      const knownExternalPrefixes = [
-        "pub.leaflet.",
-        "app.bsky.",
-        "com.atproto.",
-      ];
+      const knownExternalPrefixes = ["pub.leaflet.", "app.bsky.", "com.atproto."];
       if (knownExternalPrefixes.some((prefix) => ref.startsWith(prefix))) {
         return;
       }
@@ -723,9 +692,7 @@ class StyleChecker {
   }
 
   formatSummary() {
-    const filesWithIssues = this.results.files.filter(
-      (f) => f.issues.length > 0,
-    );
+    const filesWithIssues = this.results.files.filter((f) => f.issues.length > 0);
     return (
       `Checked ${this.results.files.length} lexicon files\n` +
       `Found ${this.results.totalIssues} issues in ${filesWithIssues.length} files\n` +
@@ -750,9 +717,7 @@ class StyleChecker {
         continue;
       }
 
-      const icon = file.issues.some((i) => i.severity === SEVERITY.ERROR)
-        ? "❌"
-        : "⚠️";
+      const icon = file.issues.some((i) => i.severity === SEVERITY.ERROR) ? "❌" : "⚠️";
       output += `${icon} ${relativePath} (${file.issues.length} issues)\n`;
 
       for (const issue of file.issues) {
@@ -800,7 +765,7 @@ class StyleChecker {
       const [severity, rule] = key.split(":");
       output += `  ${SEVERITY_ICONS[severity]} ${rule}: ${count}\n`;
     }
-    return output + "\n";
+    return `${output}\n`;
   }
 
   formatFooter() {
@@ -843,4 +808,4 @@ if (scriptPath === process.argv[1]) {
   });
 }
 
-export { StyleChecker, SEVERITY };
+export { SEVERITY, StyleChecker };

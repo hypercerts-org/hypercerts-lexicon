@@ -28,10 +28,10 @@
  *   node ./scripts/run-lex-codegen.js gen-ts-obj > generated/DO-NOT-USE-lexicons.ts
  */
 
+import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 
 const lexiconsDir = fileURLToPath(new URL("../lexicons", import.meta.url));
 // The legacy CLI's entry point, run with this Node. Not `lex` from PATH:
@@ -53,10 +53,7 @@ function findJsonFiles(dir) {
 
 function isPermissionSet(file) {
   try {
-    return (
-      JSON.parse(readFileSync(file, "utf-8"))?.defs?.main?.type ===
-      "permission-set"
-    );
+    return JSON.parse(readFileSync(file, "utf-8"))?.defs?.main?.type === "permission-set";
   } catch {
     return false; // let lex surface a parse error rather than silently skip
   }
@@ -87,20 +84,14 @@ if (files.length === 0) {
 // vs. the few KB this list occupies.) stdio inherited so `> file` redirection in
 // the npm script still works.
 if (!existsSync(legacyLexCli)) {
-  process.stderr.write(
-    `run-lex-codegen: @atproto/lex-cli is not installed at ${legacyLexCli}\n`,
-  );
+  process.stderr.write(`run-lex-codegen: @atproto/lex-cli is not installed at ${legacyLexCli}\n`);
   process.exit(1);
 }
-const result = spawnSync(
-  process.execPath,
-  [legacyLexCli, ...lexArgs, ...files],
-  { stdio: "inherit" },
-);
+const result = spawnSync(process.execPath, [legacyLexCli, ...lexArgs, ...files], {
+  stdio: "inherit",
+});
 if (result.error) {
-  process.stderr.write(
-    `run-lex-codegen: failed to spawn lex: ${result.error.message}\n`,
-  );
+  process.stderr.write(`run-lex-codegen: failed to spawn lex: ${result.error.message}\n`);
   process.exit(1);
 }
 process.exit(result.status ?? 1);

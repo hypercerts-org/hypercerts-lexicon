@@ -1,4 +1,5 @@
 ---
+
 name: building-with-hypercerts-lexicons
 description: Guide for building downstream applications on top of the @hypercerts-org/lexicon package. Use when creating apps that read/write Hypercerts records on the AT Protocol network.
 ---
@@ -17,6 +18,7 @@ need to do so, because they cannot provide any stability guarantees.**
 Instead consume published, versioned releases:
 
 - **For TypeScript / JavaScript projects** — install the npm package:
+
   ```bash
   npm install @hypercerts-org/lexicon @atproto/lex
   ```
@@ -337,8 +339,7 @@ await client.create(org.hypercerts.claim.activity, {
   shortDescription: "Restored 3 hectares of mangrove forest",
   workScope: {
     $type: "org.hypercerts.workscope.cel",
-    expression:
-      "scope.hasAll(['mangrove_restoration']) && location.country == 'KE'",
+    expression: "scope.hasAll(['mangrove_restoration']) && location.country == 'KE'",
     usedTags: [
       {
         uri: "at://did:plc:alice/org.hypercerts.workscope.tag/3k2abc",
@@ -845,11 +846,7 @@ async function resolveSigningKey(key: string): Promise<string> {
     url = `https://${decodeURIComponent(id)}/.well-known/did.json`;
     // A did:web names a domain, never an IP address or localhost.
     const { hostname } = new URL(url);
-    if (
-      hostname === "localhost" ||
-      hostname.startsWith("[") ||
-      /^[\d.]+$/.test(hostname)
-    ) {
+    if (hostname === "localhost" || hostname.startsWith("[") || /^[\d.]+$/.test(hostname)) {
       throw new Error(`did:web host is not a domain name: ${did}`);
     }
   } else if (did.startsWith("did:plc:")) {
@@ -934,10 +931,7 @@ const proof = { ...proofWithoutCid, cid: proofCid.toString() };
 // one returned when the attestor writes it), not proofCid, which
 // identifies the attested content. A record's CID is the DAG-CBOR CIDv1
 // of the record, so it can also be computed locally:
-const proofRecordCid = CID.createV1(
-  dagCbor.code,
-  await sha256.digest(dagCbor.encode(proof)),
-);
+const proofRecordCid = CID.createV1(dagCbor.code, await sha256.digest(dagCbor.encode(proof)));
 const proofReference = {
   $type: "com.atproto.repo.strongRef" as const,
   uri: "at://did:plc:verifier/app.certified.signature.proof/abc123",

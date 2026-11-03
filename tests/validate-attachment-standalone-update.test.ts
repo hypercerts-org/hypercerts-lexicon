@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Attachment from "../generated/types/org/hypercerts/context/attachment";
 
 // A standalone update by its author takes the author's own profile as its
@@ -72,17 +72,14 @@ describe("org.hypercerts.context.attachment as a standalone update", () => {
 
   it("keeps contentType an open vocabulary", () => {
     for (const contentType of ["update", "report", "post", "coffee"]) {
-      expect(
-        Attachment.validateMain({ ...standaloneUpdate, contentType }).success,
-      ).toBe(true);
+      expect(Attachment.validateMain({ ...standaloneUpdate, contentType }).success).toBe(true);
     }
   });
 
   it("still requires a title", () => {
     const { title: _title, ...noTitle } = standaloneUpdate;
-    expect(
-      validate(noTitle, ids.OrgHypercertsContextAttachment, "main", false)
-        .success,
-    ).toBe(false);
+    expect(validate(noTitle, ids.OrgHypercertsContextAttachment, "main", false).success).toBe(
+      false,
+    );
   });
 });

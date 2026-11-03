@@ -22,14 +22,15 @@
  * lexicon ref, etc.), this test fails. If the test logic needs to
  * change, the docs are what to edit — not the test fixture.
  */
-import { describe, it, expect, vi, afterEach } from "vitest";
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath, pathToFileURL } from "url";
+
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { verifySignature } from "@atproto/crypto";
 import * as dagCbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -101,10 +102,7 @@ async function verifyInline(
  * matches `sectionPattern` (and any nested subheadings until the next
  * heading at the same or shallower level).
  */
-function extractSectionBlocks(
-  markdown: string,
-  sectionPattern: RegExp,
-): string[] {
+function extractSectionBlocks(markdown: string, sectionPattern: RegExp): string[] {
   const lines = markdown.split("\n");
   const blocks: string[] = [];
   let inSection = false;
@@ -170,7 +168,7 @@ function buildModuleSource(blocks: string[]): string {
         let stmt = line;
         while (!/["'];?\s*$/.test(stmt) && i + 1 < blockLines.length) {
           i += 1;
-          stmt += "\n" + blockLines[i];
+          stmt += `\n${blockLines[i]}`;
         }
         importLines.add(stmt.trim());
         i += 1;
@@ -185,7 +183,7 @@ function buildModuleSource(blocks: string[]): string {
   return [
     "// AUTO-GENERATED from documentation code blocks.",
     "// Do not edit; edit the source markdown instead.",
-    "/* eslint-disable */",
+    "/* biome-ignore-all lint: generated from the docs */",
     ...Array.from(importLines),
     "",
     bodyChunks.join("\n\n"),
@@ -206,10 +204,7 @@ function buildModuleSource(blocks: string[]): string {
   ].join("\n");
 }
 
-async function loadExampleFrom(
-  relPath: string,
-  outputBasename: string,
-): Promise<ExtractedExample> {
+async function loadExampleFrom(relPath: string, outputBasename: string): Promise<ExtractedExample> {
   const markdown = readFileSync(resolve(ROOT, relPath), "utf-8");
   const blocks = extractSectionBlocks(
     markdown,
@@ -249,9 +244,7 @@ for (const [label, relPath, basename] of SOURCES) {
       expect(example.cidBytes).toBeInstanceOf(Uint8Array);
       expect(example.cidBytes.length).toBe(36);
       // CIDv1 + dag-cbor codec + SHA-256 multihash + 32-byte digest length
-      expect(Array.from(example.cidBytes.slice(0, 4))).toEqual([
-        0x01, 0x71, 0x12, 0x20,
-      ]);
+      expect(Array.from(example.cidBytes.slice(0, 4))).toEqual([0x01, 0x71, 0x12, 0x20]);
     });
 
     it("produces 64 raw r,s bytes from Secp256k1Keypair.sign()", () => {
@@ -260,38 +253,27 @@ for (const [label, relPath, basename] of SOURCES) {
     });
 
     it("builds a createdVia signature with the correct $type and shape", () => {
-      expect(example.createdViaSignature.$type).toBe(
-        "app.certified.signature.defs#createdVia",
-      );
-      expect(example.createdViaSignature.signature).toEqual(
-        example.signatureBytes,
-      );
+      expect(example.createdViaSignature.$type).toBe("app.certified.signature.defs#createdVia");
+      expect(example.createdViaSignature.signature).toEqual(example.signatureBytes);
       expect(example.createdViaSignature.key).toMatch(/^did:[^:]+:.+#.+$/);
     });
 
     it("builds a remote-attestation strongRef", () => {
-      expect(example.remoteAttestation.$type).toBe(
-        "com.atproto.repo.strongRef",
-      );
+      expect(example.remoteAttestation.$type).toBe("com.atproto.repo.strongRef");
       expect(example.remoteAttestation.uri).toMatch(/^at:\/\//);
     });
 
     it("attaches both signatures to the final record", () => {
       expect(example.signedActivity.signatures).toHaveLength(2);
-      expect(example.signedActivity.signatures[0]).toEqual(
-        example.createdViaSignature,
-      );
-      expect(example.signedActivity.signatures[1]).toEqual(
-        example.remoteAttestation,
-      );
+      expect(example.signedActivity.signatures[0]).toEqual(example.createdViaSignature);
+      expect(example.signedActivity.signatures[1]).toEqual(example.remoteAttestation);
     });
 
     it("produces a record that passes lexicon validation", () => {
       // Replace the placeholder remote-attestation strongRef CID with a
       // syntactically-valid CID so the record can be validated; the
       // example uses "bafy..." which the lexicon validator rejects.
-      const VALID_PROOF_CID =
-        "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae";
+      const VALID_PROOF_CID = "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae";
       const validatable = {
         ...example.signedActivity,
         signatures: [
@@ -348,37 +330,22 @@ for (const [label, relPath, basename] of SOURCES) {
 
       it("resolves a did:web key from its DID document and verifies", async () => {
         const fetched = serveDidDocument("did:web:app.example", "#platform");
-        const didKey = await example.resolveSigningKey(
-          "did:web:app.example#platform",
-        );
+        const didKey = await example.resolveSigningKey("did:web:app.example#platform");
         expect(fetched).toEqual(["https://app.example/.well-known/did.json"]);
         expect(didKey).toBe(example.keypair.did());
-        expect(
-          await verifySignature(
-            didKey,
-            example.cidBytes,
-            example.signatureBytes,
-          ),
-        ).toBe(true);
+        expect(await verifySignature(didKey, example.cidBytes, example.signatureBytes)).toBe(true);
       });
 
       it("resolves a did:plc key whose method id is absolute", async () => {
-        const fetched = serveDidDocument(
-          "did:plc:app123",
-          "did:plc:app123#atproto",
-        );
-        const didKey = await example.resolveSigningKey(
-          "did:plc:app123#atproto",
-        );
+        const fetched = serveDidDocument("did:plc:app123", "did:plc:app123#atproto");
+        const didKey = await example.resolveSigningKey("did:plc:app123#atproto");
         expect(fetched).toEqual(["https://plc.directory/did:plc:app123"]);
         expect(didKey).toBe(example.keypair.did());
       });
 
       it("rejects a key the DID document does not list", async () => {
         serveDidDocument("did:web:app.example", "#platform");
-        await expect(
-          example.resolveSigningKey("did:web:app.example#other"),
-        ).rejects.toThrow();
+        await expect(example.resolveSigningKey("did:web:app.example#other")).rejects.toThrow();
       });
 
       it("rejects a did:web with a path, an IP address or localhost, without fetching", async () => {
@@ -389,18 +356,13 @@ for (const [label, relPath, basename] of SOURCES) {
           "did:web:%5B%3A%3A1%5D",
           "did:web:localhost%3A8080",
         ]) {
-          await expect(
-            example.resolveSigningKey(`${did}#platform`),
-          ).rejects.toThrow();
+          await expect(example.resolveSigningKey(`${did}#platform`)).rejects.toThrow();
         }
         expect(fetched).toEqual([]);
       });
 
       it("keeps a did:web port and refuses redirects", async () => {
-        const fetched = serveDidDocument(
-          "did:web:app.example%3A8443",
-          "#platform",
-        );
+        const fetched = serveDidDocument("did:web:app.example%3A8443", "#platform");
         const serve = fetch;
         const inits: (RequestInit | undefined)[] = [];
         vi.stubGlobal("fetch", (url: string, init?: RequestInit) => {
@@ -408,20 +370,14 @@ for (const [label, relPath, basename] of SOURCES) {
           return serve(url, init);
         });
         await example.resolveSigningKey("did:web:app.example%3A8443#platform");
-        expect(fetched).toEqual([
-          "https://app.example:8443/.well-known/did.json",
-        ]);
+        expect(fetched).toEqual(["https://app.example:8443/.well-known/did.json"]);
         expect(inits[0]?.redirect).toBe("error");
       });
     });
 
     it("verifies when the CID is rebuilt from the signed record per spec §5.1", async () => {
       const entry = example.signedActivity.signatures[0] as SignatureEntry;
-      const ok = await verifyInline(
-        example.signedActivity,
-        entry,
-        example.repositoryDid,
-      );
+      const ok = await verifyInline(example.signedActivity, entry, example.repositoryDid);
       expect(ok).toBe(true);
     });
 
@@ -431,21 +387,13 @@ for (const [label, relPath, basename] of SOURCES) {
         ...entry,
         $type: "app.certified.signature.defs#inline",
       };
-      const ok = await verifyInline(
-        example.signedActivity,
-        relabeled,
-        example.repositoryDid,
-      );
+      const ok = await verifyInline(example.signedActivity, relabeled, example.repositoryDid);
       expect(ok).toBe(false);
     });
 
     it("fails when verified against another repository", async () => {
       const entry = example.signedActivity.signatures[0] as SignatureEntry;
-      const ok = await verifyInline(
-        example.signedActivity,
-        entry,
-        "did:plc:someoneelse",
-      );
+      const ok = await verifyInline(example.signedActivity, entry, "did:plc:someoneelse");
       expect(ok).toBe(false);
     });
 
@@ -456,9 +404,7 @@ for (const [label, relPath, basename] of SOURCES) {
         { $type: example.createdViaSignature.$type },
         example.repositoryDid,
       );
-      expect(Array.from(withoutKey.bytes)).not.toEqual(
-        Array.from(example.cidBytes),
-      );
+      expect(Array.from(withoutKey.bytes)).not.toEqual(Array.from(example.cidBytes));
     });
 
     it("computes the remote proof CID per spec §5.2", async () => {

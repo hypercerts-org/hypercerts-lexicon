@@ -11,12 +11,18 @@ contribution process. For technical details about the codebase, see
 git clone https://github.com/your-username/hypercerts-lexicon.git
 cd hypercerts-lexicon
 
-# Install dependencies
-npm install
+# Install dependencies (Node.js 24 from .nvmrc, pnpm from package.json;
+# `corepack enable` provides the pinned pnpm). This also installs the git
+# hooks from lefthook.yml.
+pnpm install
 
 # Verify setup
-npm run check
+pnpm check
 ```
+
+If your checkout predates the move from npm and husky, run
+`git config --unset core.hooksPath` once before `pnpm install`, so that
+lefthook can install its hooks.
 
 ## Making Changes
 
@@ -34,9 +40,9 @@ If making changes manually, follow the workflow in [AGENTS.md § Adding
 **Key points:**
 
 - Never edit `generated/` or `dist/` directories directly
-- Run `npm run gen-api` after modifying lexicon JSON files
-- Run `npm run format` before committing
-- Run `npm run check` to validate everything
+- Run `pnpm gen-api` after modifying lexicon JSON files
+- Run `pnpm format` before committing
+- Run `pnpm check` to validate everything
 - **Always create a changeset** for public API changes
 
 ## Changesets (Required)
@@ -44,7 +50,7 @@ If making changes manually, follow the workflow in [AGENTS.md § Adding
 Create a changeset for any user-facing changes:
 
 ```bash
-npm run changeset
+pnpm changeset
 ```
 
 Follow the prompts to select a version bump and describe what the change
@@ -59,7 +65,7 @@ breaking. CI rejects a patch Changeset for Lexicon changes. See the
 1. **Target the `main` branch** unless there is a specific need
    to use a `prerelease/*` branch. Consult the maintainers / community
    if unsure.
-2. **Ensure all checks pass**: `npm run check`
+2. **Ensure all checks pass**: `pnpm check`
 3. **Include a changeset** if required
 4. **Write clear commit messages** using conventional commit format
 5. **Respond to review feedback** promptly
@@ -67,16 +73,16 @@ breaking. CI rejects a patch Changeset for Lexicon changes. See the
 ### Before Submitting
 
 ```bash
-npm run format  # Format code
-npm run check   # Validate everything passes
+pnpm format  # Format code
+pnpm check   # Validate everything passes
 ```
 
 ## Code Quality Standards
 
-- **Formatting**: Run `npm run format` (uses Prettier + EditorConfig)
-- **Linting**: Run `npm run lint`
-- **Type checking**: Run `npm run typecheck`
-- **Lexicon style**: Run `npm run style:check`
+- **Formatting**: Run `pnpm format` (uses Biome)
+- **Linting**: Run `pnpm lint`
+- **Type checking**: Run `pnpm typecheck`
+- **Lexicon style**: Run `pnpm style:check`
 
 See [LEXICON_STYLE_GUIDE.md](LEXICON_STYLE_GUIDE.md) for lexicon best
 practices.

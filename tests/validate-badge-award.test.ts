@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons.js";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons.js";
 import * as BadgeAward from "../generated/types/app/certified/badge/award.js";
 
 const VALID_DID = "did:plc:ewvi7nxzyoun6zhxrhs64oiz";

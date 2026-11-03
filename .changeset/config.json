@@ -1,9 +1,6 @@
 {
   "$schema": "https://unpkg.com/@changesets/config@4.0.1/schema.json",
-  "changelog": [
-    "@changesets/changelog-github",
-    { "repo": "hypercerts-org/hypercerts-lexicon" }
-  ],
+  "changelog": ["@changesets/changelog-github", { "repo": "hypercerts-org/hypercerts-lexicon" }],
   "commit": false,
   "fixed": [],
   "linked": [],

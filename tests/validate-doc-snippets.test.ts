@@ -14,10 +14,11 @@
  * These tests read documentation at runtime so they never go stale —
  * any renamed or removed export will cause a failure here.
  */
-import { describe, it, expect } from "vitest";
-import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { describe, expect, it } from "vitest";
 
 // Import the legacy exports (simulates `@hypercerts-org/lexicon/legacy`)
 import * as PackageExports from "../generated/exports";
@@ -56,8 +57,7 @@ function extractTypeScriptBlocks(markdown: string): string[] {
   // strings, and either LF or CRLF line endings so no fences are silently
   // skipped.
   const regex = /```(?:ts|tsx|typescript)\b[^\n]*\r?\n([\s\S]*?)```/gi;
-  let match: RegExpExecArray | null;
-  while ((match = regex.exec(markdown)) !== null) {
+  for (const match of markdown.matchAll(regex)) {
     blocks.push(match[1].trim());
   }
   return blocks;
@@ -111,9 +111,7 @@ function exportsForSource(source: string): Record<string, unknown> {
   }
   // Deep imports (`/org/hypercerts/claim/activity`, or `.defs`) are the
   // modules the root tree re-exports at the same NSID path.
-  const deep = source.match(
-    /^@hypercerts-org\/lexicon\/((?:app|com|org|pub)\/.+?)(?:\.defs)?$/,
-  );
+  const deep = source.match(/^@hypercerts-org\/lexicon\/((?:app|com|org|pub)\/.+?)(?:\.defs)?$/);
   if (deep) {
     let node: unknown = recordsExports;
     for (const segment of deep[1].split("/")) {
@@ -174,14 +172,9 @@ function collectMappingAccesses(blocks: string[]): DottedAccess[] {
     "HYPERCERTS_LEXICON_JSON",
     "HYPERCERTS_LEXICON_DOC",
   ];
-  const pattern = new RegExp(
-    `\\b(${mappingObjects.join("|")})\\.([A-Za-z_][A-Za-z0-9_]*)`,
-    "g",
-  );
+  const pattern = new RegExp(`\\b(${mappingObjects.join("|")})\\.([A-Za-z_][A-Za-z0-9_]*)`, "g");
   for (const block of blocks) {
-    pattern.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = pattern.exec(block)) !== null) {
+    for (const m of block.matchAll(pattern)) {
       const key = `${m[1]}.${m[2]}`;
       if (!seen.has(key)) {
         seen.add(key);
@@ -212,17 +205,13 @@ function collectRuntimeNamespaceAccesses(blocks: string[]): DottedAccess[] {
   // First collect all type-position accesses so we can exclude them
   const typePositions = new Set<string>();
   for (const block of blocks) {
-    typeContextPattern.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = typeContextPattern.exec(block)) !== null) {
+    for (const m of block.matchAll(typeContextPattern)) {
       typePositions.add(`${m[1]}.${m[2]}`);
     }
   }
 
   for (const block of blocks) {
-    pattern.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = pattern.exec(block)) !== null) {
+    for (const m of block.matchAll(pattern)) {
       const key = `${m[1]}.${m[2]}`;
       if (seen.has(key)) continue;
 
@@ -281,8 +270,7 @@ function collectSuspiciousValidateCalls(blocks: string[]): ValidateCall[] {
     // Match: validate(SOMETHING, ...
     // but NOT: .validateMain( which is a different function
     const pattern = /\bvalidate\(\s*([A-Z_]+_NSID)\b/g;
-    let m: RegExpExecArray | null;
-    while ((m = pattern.exec(block)) !== null) {
+    for (const m of block.matchAll(pattern)) {
       suspicious.push({
         firstArg: m[1],
         context: block.substring(
@@ -324,13 +312,8 @@ function collectRecordsTreePaths(blocks: string[]): string[] {
       .filter((line) => !line.trimStart().startsWith("import "))
       .join("\n")
       .replace(/\/\/.*$/gm, "")
-      .replace(
-        /"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g,
-        '""',
-      );
-    for (const m of code.matchAll(
-      /(?<![\w$.])([A-Za-z_$][\w$]*)((?:\.[A-Za-z_$][\w$]*)+)/g,
-    )) {
+      .replace(/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '""');
+    for (const m of code.matchAll(/(?<![\w$.])([A-Za-z_$][\w$]*)((?:\.[A-Za-z_$][\w$]*)+)/g)) {
       if (roots.has(m[1])) paths.add(m[0]);
     }
   }
@@ -394,9 +377,7 @@ function describeDocSnippets(label: string, relPath: string) {
       // Only check identifiers that look like they come from this package
       // (contain NSID, LEXICON, HYPERCERTS, SCHEMAS, etc.)
       const packagePrefixes = ["_NSID", "_LEXICON_", "HYPERCERTS_", "_SCHEMAS"];
-      const relevant = [...ids].filter((id) =>
-        packagePrefixes.some((p) => id.includes(p)),
-      );
+      const relevant = [...ids].filter((id) => packagePrefixes.some((p) => id.includes(p)));
 
       for (const id of relevant) {
         it(`"${id}" is exported`, () => {
@@ -480,10 +461,7 @@ function describeDocSnippets(label: string, relPath: string) {
 }
 
 // Run auto-extracted checks for both documentation files
-describeDocSnippets(
-  "SKILL.md",
-  ".agents/skills/building-with-hypercerts-lexicons/SKILL.md",
-);
+describeDocSnippets("SKILL.md", ".agents/skills/building-with-hypercerts-lexicons/SKILL.md");
 describeDocSnippets("README.md", "README.md");
 
 // ─── Package export smoke tests ──────────────────────────────────
@@ -506,11 +484,7 @@ describe("package export smoke tests", () => {
       shortDescription: "A test",
       createdAt: new Date().toISOString(),
     };
-    const result = PackageExports.validate(
-      record,
-      PackageExports.ACTIVITY_NSID,
-      "main",
-    );
+    const result = PackageExports.validate(record, PackageExports.ACTIVITY_NSID, "main");
     expect(result.success).toBe(true);
   });
 
@@ -531,8 +505,7 @@ describe("package export smoke tests", () => {
       shortDescription: "test",
       createdAt: new Date().toISOString(),
     };
-    const result =
-      PackageExports.OrgHypercertsClaimActivity.validateMain(record);
+    const result = PackageExports.OrgHypercertsClaimActivity.validateMain(record);
     expect(result.success).toBe(true);
     if (result.success) {
       expect(result.value.title).toBe("Typed test");
@@ -541,9 +514,7 @@ describe("package export smoke tests", () => {
 
   it("/lexicons entry point exports validate, ids, schemas", () => {
     expect(typeof LexiconsExports.validate).toBe("function");
-    expect(LexiconsExports.ids.OrgHypercertsClaimActivity).toBe(
-      "org.hypercerts.claim.activity",
-    );
+    expect(LexiconsExports.ids.OrgHypercertsClaimActivity).toBe("org.hypercerts.claim.activity");
     expect(Array.isArray(LexiconsExports.schemas)).toBe(true);
   });
 });

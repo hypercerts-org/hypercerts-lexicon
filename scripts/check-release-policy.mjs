@@ -19,9 +19,7 @@ export function changesetBump(markdown) {
 export function contributorErrors(lexiconsChanged, bumps) {
   if (!lexiconsChanged) return [];
   if (!bumps.length) {
-    return [
-      "Changed Lexicon JSON needs a minor or major Changeset for @hypercerts-org/lexicon.",
-    ];
+    return ["Changed Lexicon JSON needs a minor or major Changeset for @hypercerts-org/lexicon."];
   }
   if (!bumps.some((bump) => bump === "minor" || bump === "major")) {
     return [
@@ -76,9 +74,7 @@ function git(...args) {
 }
 
 function changedFiles(from, path) {
-  return git("diff", "--name-only", "-z", from, "HEAD", "--", path)
-    .split("\0")
-    .filter(Boolean);
+  return git("diff", "--name-only", "-z", from, "HEAD", "--", path).split("\0").filter(Boolean);
 }
 
 function lexiconsChangedSince(ref) {
@@ -91,9 +87,7 @@ function main(base) {
   const mergeBase = git("merge-base", base, "HEAD").trim();
 
   if (process.env.GITHUB_HEAD_REF === "changeset-release/main") {
-    const previous = JSON.parse(
-      git("show", `${mergeBase}:package.json`),
-    ).version;
+    const previous = JSON.parse(git("show", `${mergeBase}:package.json`)).version;
     const version = JSON.parse(readFileSync("package.json", "utf8")).version;
     const tag = `v${previous}`;
     if (!git("tag", "--list", tag).trim()) {
@@ -102,11 +96,8 @@ function main(base) {
       );
     } else {
       const body =
-        JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"))
-          .pull_request?.body || "";
-      errors.push(
-        ...releasePrErrors(previous, version, lexiconsChangedSince(tag), body),
-      );
+        JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")).pull_request?.body || "";
+      errors.push(...releasePrErrors(previous, version, lexiconsChangedSince(tag), body));
     }
   } else {
     const bumps = changedFiles(mergeBase, ".changeset/")
@@ -121,9 +112,6 @@ function main(base) {
   else console.log("Lexicon release policy check passed.");
 }
 
-if (
-  process.argv[1] &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-) {
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main(process.argv[2] || "origin/main");
 }

@@ -5,7 +5,7 @@
  */
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, dirname, relative, isAbsolute } from "node:path";
+import { dirname, isAbsolute, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import stringWidth from "string-width";
 
@@ -78,8 +78,7 @@ function readLexicon(filePath) {
 function getTypeString(prop) {
   if (!prop.type) return "unknown";
   if (prop.type === "array") {
-    const itemType =
-      prop.items?.type === "ref" ? "ref" : prop.items?.type || "unknown";
+    const itemType = prop.items?.type === "ref" ? "ref" : prop.items?.type || "unknown";
     return `${itemType}[]`;
   }
   return prop.type;
@@ -95,9 +94,7 @@ function getComments(prop) {
   if (prop.accept?.length > 0)
     comments.push(`accepts: ${prop.accept.map((a) => `\`${a}\``).join(", ")}`);
   if (prop.knownValues) {
-    comments.push(
-      `Known values: ${prop.knownValues.map((v) => `\`${v}\``).join(", ")}`,
-    );
+    comments.push(`Known values: ${prop.knownValues.map((v) => `\`${v}\``).join(", ")}`);
   }
   return comments.join(", ");
 }
@@ -130,12 +127,7 @@ function calculateColumnWidths(rows, headers) {
   const widths = headers.map((h) => getVisualWidth(h));
 
   for (const row of rows) {
-    const values = [
-      `\`${row.name}\``,
-      `\`${row.type}\``,
-      row.required,
-      row.description,
-    ];
+    const values = [`\`${row.name}\``, `\`${row.type}\``, row.required, row.description];
     if (row.comments !== undefined) {
       values.push(row.comments);
     }
@@ -164,10 +156,10 @@ function pad(str, length) {
 }
 
 function formatRow(cells, widths) {
-  return "| " + cells.map((cell, i) => pad(cell, widths[i])).join(" | ") + " |";
+  return `| ${cells.map((cell, i) => pad(cell, widths[i])).join(" | ")} |`;
 }
 
-function formatSeparatorRow(headers, widths) {
+function formatSeparatorRow(_headers, widths) {
   const separators = widths.map((w) => "-".repeat(w));
   return `| ${separators.join(" | ")} |`;
 }
@@ -180,18 +172,10 @@ function renderTable(rows, includeComments = false) {
     : ["Property", "Type", "Required", "Description"];
 
   const widths = calculateColumnWidths(rows, headers);
-  const output = [
-    formatRow(headers, widths),
-    formatSeparatorRow(headers, widths),
-  ];
+  const output = [formatRow(headers, widths), formatSeparatorRow(headers, widths)];
 
   for (const row of rows) {
-    const cells = [
-      `\`${row.name}\``,
-      `\`${row.type}\``,
-      row.required,
-      row.description,
-    ];
+    const cells = [`\`${row.name}\``, `\`${row.type}\``, row.required, row.description];
     if (includeComments) {
       cells.push(row.comments || "");
     }
@@ -212,8 +196,7 @@ function categorizeLexicons(lexicons) {
     },
     hypercerts: {
       title: "Hypercerts Lexicons",
-      description:
-        "Hypercerts-specific lexicons for tracking impact work and claims.",
+      description: "Hypercerts-specific lexicons for tracking impact work and claims.",
       lexicons: [],
       ordering: (lex) => lex.data.id,
     },
@@ -287,9 +270,7 @@ function generatePermissionSetSection(mainDef) {
     // repo permissions carry collection/action; rpc permissions carry
     // lxm/aud/inheritAud. Render whichever fields are present so an rpc
     // permission isn't reduced to a bare "**Resource:** `rpc`".
-    const collections = (permission.collection || [])
-      .map((c) => `\`${c}\``)
-      .join(", ");
+    const collections = (permission.collection || []).map((c) => `\`${c}\``).join(", ");
     const actions = (permission.action || []).map((a) => `\`${a}\``).join(", ");
     if (collections) output.push(`**Collections:** ${collections}`, "");
     if (actions) output.push(`**Actions:** ${actions}`, "");
@@ -368,11 +349,7 @@ function generateAdditionalDefsSection(lexicon, hasPropertiesBefore = false) {
       output.push("", defData.description);
     }
     output.push("");
-    const defRows = extractPropertyRows(
-      defData,
-      defData.required || [],
-      lexicon.data.defs,
-    );
+    const defRows = extractPropertyRows(defData, defData.required || [], lexicon.data.defs);
     if (defRows.length > 0) {
       const hasComments = defRows.some((r) => r.comments);
       output.push(...renderTable(defRows, hasComments));
@@ -417,12 +394,7 @@ function generateLexiconSection(lexicon, isFirst = false) {
   return output;
 }
 
-function generateCategoryMarkdown(
-  category,
-  allLexicons,
-  emittedIds,
-  isFirstCategory = false,
-) {
+function generateCategoryMarkdown(category, _allLexicons, emittedIds, isFirstCategory = false) {
   const output = [];
 
   if (!isFirstCategory) {
@@ -482,14 +454,7 @@ function generateMarkdown() {
     const category = categories[categoryKey];
     if (category.lexicons.length === 0) continue;
 
-    output.push(
-      ...generateCategoryMarkdown(
-        category,
-        lexicons,
-        emittedIds,
-        isFirstCategory,
-      ),
-    );
+    output.push(...generateCategoryMarkdown(category, lexicons, emittedIds, isFirstCategory));
     isFirstCategory = false;
   }
 
@@ -504,7 +469,7 @@ function generateMarkdown() {
   ];
   output.push(...notes.map((note) => `- ${note}`));
 
-  return output.join("\n") + "\n";
+  return `${output.join("\n")}\n`;
 }
 
 async function main() {
@@ -519,4 +484,4 @@ async function main() {
   }
 }
 
-main();
+await main();

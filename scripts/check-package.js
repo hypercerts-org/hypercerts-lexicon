@@ -5,42 +5,37 @@
  * repository checks its packages: Node imports the root and a deep import,
  * CommonJS requires `/legacy`, TypeScript consumers typecheck (including the
  * older `node10` resolution against `/legacy`), and the root bundles for the
- * browser. This catches packaging errors (bad exports, missing files) that
+ * browser with Vite. This catches packaging errors (bad exports, missing files) that
  * tests against the source would not.
  *
- * Run after `npm run build`. Needs network access for `npm install`.
+ * Run after `pnpm build`. Needs network access for `npm install`. The consumer
+ * uses npm, as most consumers do; the tarball is packed with pnpm, as for a
+ * release.
  */
 
 import { execFileSync } from "node:child_process";
-import {
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { rollup } from "rollup";
-import nodeResolve from "@rollup/plugin-node-resolve";
+import { build } from "vite";
 
 const projectRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (file) => JSON.parse(readFileSync(file, "utf-8"));
-const lexVersion = readJson(join(projectRoot, "package.json")).devDependencies[
-  "@atproto/lex"
-];
+const lexVersion = readJson(join(projectRoot, "package.json")).devDependencies["@atproto/lex"];
 const typescriptVersion = readJson(
   join(projectRoot, "node_modules/typescript/package.json"),
 ).version;
 
+// TypeScript 7 removed `moduleResolution: node10`; projects that still use it
+// are on TypeScript 6 or older, so that consumer is checked with TypeScript 5.
+const legacyTypescriptVersion = "5.9.3";
+
 // Child processes must not inherit the parent's npm settings: `npm publish
 // --dry-run` sets npm_config_dry_run=true, which would make the nested
-// `npm pack` and `npm install` do nothing.
+// `npm install` do nothing.
 const childEnv = Object.fromEntries(
-  Object.entries(process.env).filter(
-    ([key]) => !key.toLowerCase().startsWith("npm_config_"),
-  ),
+  Object.entries(process.env).filter(([key]) => !key.toLowerCase().startsWith("npm_config_")),
 );
 
 const run = (command, args, cwd) =>
@@ -54,16 +49,10 @@ const run = (command, args, cwd) =>
 
 const workDir = mkdtempSync(join(tmpdir(), "hypercerts-lexicon-consumer-"));
 try {
-  // `npm pack` runs the `prepare` script, which prints its own output; the
-  // tarball name is the last line.
-  const tarball = run(
-    "npm",
-    ["pack", "--silent", "--pack-destination", workDir],
-    projectRoot,
-  )
-    .trim()
-    .split("\n")
-    .at(-1);
+  // `pnpm pack` prints the output of the `prepare` script before its JSON.
+  const packOutput = run("pnpm", ["pack", "--json", "--pack-destination", workDir], projectRoot);
+  const { filename } = JSON.parse(packOutput.slice(packOutput.search(/^\{$/m)));
+  const tarball = join(workDir, filename.split("/").at(-1));
   const consumer = join(workDir, "consumer");
   mkdirSync(consumer);
   writeFileSync(
@@ -77,9 +66,10 @@ try {
       "--silent",
       "--no-audit",
       "--no-fund",
-      join(workDir, tarball),
+      tarball,
       `@atproto/lex@${lexVersion}`,
       `typescript@${typescriptVersion}`,
+      `typescript5@npm:typescript@${legacyTypescriptVersion}`,
     ],
     consumer,
   );
@@ -164,8 +154,9 @@ export const nsid: string = ids.OrgHypercertsClaimActivity;
 `,
   );
   run(
-    join(consumer, "node_modules/.bin/tsc"),
+    "node",
     [
+      join(consumer, "node_modules/typescript5/bin/tsc"),
       "--noEmit",
       "--strict",
       "--skipLibCheck",
@@ -185,22 +176,16 @@ export const nsid: string = ids.OrgHypercertsClaimActivity;
     join(consumer, "entry.js"),
     `import { org } from "@hypercerts-org/lexicon";\nconsole.log(org.hypercerts.claim.activity.$safeParse({}).success);\n`,
   );
-  const unresolved = [];
-  const bundle = await rollup({
-    input: join(consumer, "entry.js"),
-    plugins: [
-      nodeResolve({ browser: true, rootDir: consumer, preferBuiltins: false }),
-    ],
-    // Rollup leaves an import it cannot resolve external instead of failing.
-    onwarn: (warning) => {
-      if (warning.code === "UNRESOLVED_IMPORT")
-        unresolved.push(warning.message);
+  // Vite fails the build on an import it cannot resolve for the browser.
+  await build({
+    configFile: false,
+    root: consumer,
+    logLevel: "silent",
+    build: {
+      write: false,
+      rolldownOptions: { input: join(consumer, "entry.js") },
     },
   });
-  await bundle.generate({ format: "es" });
-  await bundle.close();
-  if (unresolved.length > 0)
-    throw new Error(`Browser bundle: ${unresolved.join("; ")}`);
   console.log("✅ The root bundles for the browser");
 } finally {
   rmSync(workDir, { recursive: true, force: true });

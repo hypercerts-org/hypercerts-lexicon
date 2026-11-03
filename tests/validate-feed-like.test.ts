@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { validate, ids } from "../generated/lexicons";
+import { describe, expect, it } from "vitest";
+import { ids, validate } from "../generated/lexicons";
 import * as Like from "../generated/types/app/certified/feed/like";
 
 const VALID_CID = "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
@@ -50,12 +50,7 @@ describe("app.certified.feed.like", () => {
   });
 
   it("should reject a record missing required createdAt", () => {
-    const result = validate(
-      { subject: SUBJECT },
-      ids.AppCertifiedFeedLike,
-      "main",
-      false,
-    );
+    const result = validate({ subject: SUBJECT }, ids.AppCertifiedFeedLike, "main", false);
     expect(result.success).toBe(false);
   });
 

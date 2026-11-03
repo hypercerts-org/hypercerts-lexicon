@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ids } from "../generated/lexicons.js";
 import * as Activity from "../generated/types/org/hypercerts/claim/activity.js";
 
