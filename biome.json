@@ -13,7 +13,9 @@
       "!.changeset/*.md",
       "!.beads",
       "!CHANGELOG.md",
-      "!**/*.svg"
+      "!**/*.svg",
+      "!.agents/skills",
+      "!.claude/skills"
     ]
   },
   "formatter": {

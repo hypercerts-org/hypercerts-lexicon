@@ -165,7 +165,7 @@ pnpm gen-schemas-md
 pnpm gen-md
 
 # List all lexicon JSON files
-pnpm list
+pnpm run list
 ```
 
 ### Code Quality

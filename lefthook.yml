@@ -11,5 +11,5 @@ pre-push:
     typecheck:
       run: pnpm typecheck
     schemas-md:
-      # Regenerates SCHEMAS.md; fails if it was stale, leaving the fresh file to commit.
-      run: pnpm -s gen-schemas-md && git diff --exit-code -- SCHEMAS.md
+      # Regenerates SCHEMAS.md; fails if the committed file was stale, leaving the fresh file to commit.
+      run: pnpm -s gen-schemas-md && git diff --exit-code HEAD -- SCHEMAS.md

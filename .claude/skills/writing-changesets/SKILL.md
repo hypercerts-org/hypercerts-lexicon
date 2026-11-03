@@ -1,5 +1,4 @@
 ---
-
 name: writing-changesets
 description: Create changeset files for user-facing changes. Use when making schema changes, modifying types, or any change that affects package consumers.
 ---
@@ -44,8 +43,8 @@ Create in `.changeset/` a Markdown file with a descriptive name (e.g.,
 
 ```markdown
 ---
-
-## "@hypercerts-org/lexicon": minor
+"@hypercerts-org/lexicon": minor
+---
 
 Add new attachment and outcome record types to support rich media claims
 ```
@@ -76,8 +75,8 @@ and why.
 
 ```markdown
 ---
-
-## "@hypercerts-org/lexicon": minor
+"@hypercerts-org/lexicon": minor
+---
 
 Add attachment record type for supporting rich media evidence on claims
 ```
@@ -86,8 +85,8 @@ Add attachment record type for supporting rich media evidence on claims
 
 ```markdown
 ---
-
-## "@hypercerts-org/lexicon": minor
+"@hypercerts-org/lexicon": minor
+---
 
 Convert location field to locations array across activity, evaluation, and measurement records
 ```
@@ -96,8 +95,8 @@ Convert location field to locations array across activity, evaluation, and measu
 
 ```markdown
 ---
-
-## "@hypercerts-org/lexicon": major
+"@hypercerts-org/lexicon": major
+---
 
 Rename evidence record to attachment and outcome, requiring migration of existing records
 ```
@@ -106,8 +105,8 @@ Rename evidence record to attachment and outcome, requiring migration of existin
 
 ```markdown
 ---
-
-## "@hypercerts-org/lexicon": minor
+"@hypercerts-org/lexicon": minor
+---
 
 Rename evidence record to attachment and outcome, requiring migration of existing records
 ```
