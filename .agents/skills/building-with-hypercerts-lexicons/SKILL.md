@@ -108,6 +108,11 @@ if (app.certified.badge.award.$isTypeOf(record)) {
 - **Deep imports** use the NSID path without a file extension:
   `@hypercerts-org/lexicon/org/hypercerts/claim/activity` (the
   lexicon's module) or `.../activity.defs` (its definitions).
+  Prefer them in libraries and bundled apps: importing from the root
+  (`import { org } from "@hypercerts-org/lexicon"`) can pull far more into
+  a bundle than the schemas you use. In an esbuild test, reading
+  `org.hypercerts.claim.activity.$type` through the root bundled 31 KB of
+  the package's 58 KB; the deep import bundled under 1 KB.
 - **Published as ESM.** TypeScript resolves the types with
   `moduleResolution` `nodenext`, `node16` or `bundler` (not `node10`, which
   `@atproto/lex` does not support either).
