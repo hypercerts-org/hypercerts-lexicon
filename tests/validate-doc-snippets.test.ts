@@ -9,7 +9,9 @@
  * 5. Every dotted property access on mapping objects (e.g.
  *    HYPERCERTS_NSIDS.ACTIVITY) resolves to a real key
  * 6. Every NSID tree path in snippets importing the package root (e.g.
- *    org.hypercerts.claim.activity.Main) resolves in the tree
+ *    org.hypercerts.claim.activity.Main) or a deep import (e.g.
+ *    activity.Main after `import * as activity from ".../claim/activity"`)
+ *    resolves in the tree
  *
  * These tests read documentation at runtime so they never go stale —
  * any renamed or removed export will cause a failure here.
@@ -285,14 +287,22 @@ function collectSuspiciousValidateCalls(blocks: string[]): ValidateCall[] {
 
 /**
  * Collect NSID tree paths (`org.hypercerts.claim.activity.Main`) used in
- * blocks that import the tree from the package root. Only
- * roots the block imports are collected; string literals and comments are
- * skipped, so `$type: "org.hypercerts..."` is not mistaken for a path.
+ * blocks that import the tree from the package root or import a module by
+ * its NSID path. A deep import's alias stands for its path, so
+ * `activity.Main` after `import * as activity from ".../claim/activity"`
+ * is collected as `org.hypercerts.claim.activity.Main`. Only roots the block
+ * imports are collected; string literals and comments are skipped, so
+ * `$type: "org.hypercerts..."` is not mistaken for a path.
  */
 function collectRecordsTreePaths(blocks: string[]): string[] {
   const paths = new Set<string>();
   for (const block of blocks) {
-    const roots = new Set<string>();
+    const roots = new Map<string, string>();
+    const deepPattern =
+      /import\s+\*\s+as\s+([A-Za-z_$][\w$]*)\s+from\s*["']@hypercerts-org\/lexicon\/((?:app|com|org|pub)\/[^"']+?)(?:\.defs)?["']/g;
+    for (const m of block.matchAll(deepPattern)) {
+      roots.set(m[1], m[2].split("/").join("."));
+    }
     const importPattern =
       /import\s+(?:type\s+)?\{([^}]+)\}\s*from\s*["']@hypercerts-org\/lexicon["']/g;
     for (const m of block.matchAll(importPattern)) {
@@ -303,7 +313,7 @@ function collectRecordsTreePaths(blocks: string[]): string[] {
           .split(/\s+as\s+/)
           .pop()
           ?.trim();
-        if (name) roots.add(name);
+        if (name) roots.set(name, name);
       }
     }
     if (roots.size === 0) continue;
@@ -314,7 +324,8 @@ function collectRecordsTreePaths(blocks: string[]): string[] {
       .replace(/\/\/.*$/gm, "")
       .replace(/"(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '""');
     for (const m of code.matchAll(/(?<![\w$.])([A-Za-z_$][\w$]*)((?:\.[A-Za-z_$][\w$]*)+)/g)) {
-      if (roots.has(m[1])) paths.add(m[0]);
+      const root = roots.get(m[1]);
+      if (root) paths.add(root + m[2]);
     }
   }
   return [...paths];
@@ -448,8 +459,8 @@ function describeDocSnippets(label: string, relPath: string) {
       });
     });
 
-    // 7. NSID tree paths in snippets importing the package root
-    //    (e.g. org.hypercerts.claim.activity.$safeParse, ….activity.Main)
+    // 7. NSID tree paths in snippets importing the package root or a deep
+    //    import (e.g. org.hypercerts.claim.activity.$safeParse, activity.Main)
     describe("records tree paths resolve", () => {
       for (const path of collectRecordsTreePaths(blocks)) {
         it(`${path} exists in the package root`, () => {
