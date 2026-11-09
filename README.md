@@ -801,6 +801,12 @@ await client.create(attachment, {
 });
 ```
 
+### Comments
+
+A comment is an attachment with `contentType: "comment"` whose `subjects`
+point at the record it comments on: an update, an activity, or another
+comment.
+
 ### Cryptographic Signatures
 
 All record lexicons support optional cryptographic signatures via the `signatures` property. Each signature's `$type` says what it attests:

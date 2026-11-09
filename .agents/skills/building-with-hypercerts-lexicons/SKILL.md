@@ -658,6 +658,12 @@ await client.create(attachment, {
 });
 ```
 
+### Comments
+
+A comment is an attachment with `contentType: "comment"` whose `subjects`
+point at the record it comments on: an update, an activity, or another
+comment.
+
 ### Recording a Funding Receipt
 
 ```typescript
