@@ -24,6 +24,7 @@
             "description": "The type of attachment. Values beyond the known set are permitted.",
             "knownValues": [
               "update",
+              "comment",
               "report",
               "audit",
               "evidence",
