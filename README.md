@@ -204,12 +204,12 @@ npm install @hypercerts-org/lexicon @atproto/lex
 
 ```typescript
 import { Client, currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 
 const client = new Client(session); // an authenticated agent or session
 
 // The schema types the record; client.create writes it to the repository.
-await client.create(org.hypercerts.claim.activity, {
+await client.create(activity, {
   title: "Reforestation in Amazon Basin 2024",
   shortDescription: "Planted 5,000 native trees across 12 hectares",
   createdAt: currentDatetimeString(),
@@ -217,7 +217,7 @@ await client.create(org.hypercerts.claim.activity, {
 
 // Check data from elsewhere against the same schema. The record must
 // include its $type, as records read from a repository do.
-const result = org.hypercerts.claim.activity.$safeParse(input);
+const result = activity.$safeParse(input);
 if (!result.success) console.error(result.error);
 ```
 
@@ -253,13 +253,12 @@ lexicon documents) moves unchanged to `@hypercerts-org/lexicon/legacy`:
 | `ACTIVITY_NSID`                             | `org.hypercerts.claim.activity.$type`              |
 | `agent.api.com.atproto.repo.createRecord()` | `client.create(org.hypercerts.claim.activity, …)`  |
 
-The new names are long, so bind a schema once and reuse it:
+The new names are long. Import a schema from its NSID path instead, which
+also keeps bundles small (see [Usage](#usage)):
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
-
-const activity = org.hypercerts.claim.activity;
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 
 activity.$type; // was ACTIVITY_NSID
 activity.$safeParse(record); // was validate(record, ACTIVITY_NSID, "main")
@@ -275,9 +274,8 @@ include its `$type`. Records read from a repository have it; add it to
 data from forms or other APIs before checking:
 
 ```typescript
-import { org } from "@hypercerts-org/lexicon";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 
-const activity = org.hypercerts.claim.activity;
 const result = activity.$safeParse({ $type: activity.$type, ...formData });
 ```
 
@@ -463,25 +461,26 @@ can mix languages.
 modern [`@atproto/lex`](https://www.npmjs.com/package/@atproto/lex) client,
 in lex's own layout: the NSID namespace tree (`app`, `com`, `org`, `pub`),
 as in the `@atproto/lex` documentation. Use it to create, validate and type
-records with `Client`.
+records with `Client`. Import each schema from its NSID path:
 
 ```typescript
 import { Client, currentDatetimeString } from "@atproto/lex";
-import { app, org } from "@hypercerts-org/lexicon";
+import * as award from "@hypercerts-org/lexicon/app/certified/badge/award";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
+import type { Uri } from "@hypercerts-org/lexicon/org/hypercerts/defs";
 
 const client = new Client(session); // an authenticated agent or session
 
-await client.create(org.hypercerts.claim.activity, {
+await client.create(activity, {
   title: "Reforestation in the Amazon Basin 2026",
   shortDescription: "Planting native trees on degraded pasture.",
   createdAt: currentDatetimeString(),
 });
 
-type Activity = org.hypercerts.claim.activity.Main; // the record type
-type Uri = org.hypercerts.defs.Uri; // another definition
+type Activity = activity.Main; // the record type; Uri is another definition
 
-const result = org.hypercerts.claim.activity.$safeParse(input); // input must include $type
-if (app.certified.badge.award.$isTypeOf(record)) {
+const result = activity.$safeParse(input); // input must include $type
+if (award.$isTypeOf(record)) {
   // record is a badge award
 }
 ```
@@ -492,9 +491,12 @@ if (app.certified.badge.award.$isTypeOf(record)) {
 - **Deep imports** use the NSID path without a file extension:
   `@hypercerts-org/lexicon/org/hypercerts/claim/activity` (the
   lexicon's module) or `.../activity.defs` (its definitions).
-  Prefer them in libraries and bundled apps: importing from the root
-  (`import { org } from "@hypercerts-org/lexicon"`) can pull far more into
-  a bundle than the schemas you use. In an esbuild test, reading
+  `import * as activity` from the module gives the same schema as
+  `org.hypercerts.claim.activity` from the root.
+- **Prefer deep imports in libraries and bundled apps.** The root also
+  exports the whole tree (`import { org } from "@hypercerts-org/lexicon"`),
+  which is convenient in scripts, but it can pull far more into a bundle
+  than the schemas you use. In an esbuild test, reading
   `org.hypercerts.claim.activity.$type` through the root bundled 31 KB of
   the package's 58 KB; the deep import bundled under 1 KB.
 - **Published as ESM.** TypeScript resolves the types with
@@ -550,9 +552,9 @@ third argument to also validate the record before it is written.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 
-await client.create(org.hypercerts.claim.activity, {
+await client.create(activity, {
   title: "Mangrove Restoration in Mombasa",
   shortDescription: "Restored 3 hectares of mangrove forest",
   // Structured work scope via CEL expression:
@@ -578,9 +580,9 @@ await client.create(org.hypercerts.claim.activity, {
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as collection from "@hypercerts-org/lexicon/org/hypercerts/collection";
 
-await client.create(org.hypercerts.collection, {
+await client.create(collection, {
   type: "project",
   title: "Carbon Offset Initiative",
   shortDescription: "Activities focused on carbon reduction and reforestation",
@@ -620,9 +622,9 @@ await client.create(org.hypercerts.collection, {
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as feature from "@hypercerts-org/lexicon/org/hypercerts/entity/feature";
 
-await client.create(org.hypercerts.entity.feature, {
+await client.create(feature, {
   type: "zone",
   title: "North restoration area",
   locations: [
@@ -645,9 +647,9 @@ await client.create(org.hypercerts.entity.feature, {
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as tag from "@hypercerts-org/lexicon/org/hypercerts/vocab/tag";
 
-await client.create(org.hypercerts.vocab.tag, {
+await client.create(tag, {
   key: "site",
   name: "Project site",
   category: "zone-role",
@@ -661,10 +663,10 @@ await client.create(org.hypercerts.vocab.tag, {
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { app } from "@hypercerts-org/lexicon";
+import * as location from "@hypercerts-org/lexicon/app/certified/location";
 
 // Decimal coordinates
-await client.create(app.certified.location, {
+await client.create(location, {
   lpVersion: "1.0",
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "coordinate-decimal",
@@ -677,7 +679,7 @@ await client.create(app.certified.location, {
 });
 
 // GeoJSON
-await client.create(app.certified.location, {
+await client.create(location, {
   lpVersion: "1.0",
   srs: "http://www.opengis.net/def/crs/OGC/1.3/CRS84",
   locationType: "geojson-point",
@@ -697,9 +699,9 @@ collection), the owner can confirm or reject with an acknowledgement:
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as acknowledgement from "@hypercerts-org/lexicon/org/hypercerts/context/acknowledgement";
 
-await client.create(org.hypercerts.context.acknowledgement, {
+await client.create(acknowledgement, {
   subject: {
     uri: "at://did:plc:bob/org.hypercerts.claim.activity/3k2abc",
     cid: "bafy...",
@@ -732,9 +734,9 @@ is not a coverage interval. See [capture-time design notes](docs/design/attachme
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as attachment from "@hypercerts-org/lexicon/org/hypercerts/context/attachment";
 
-await client.create(org.hypercerts.context.attachment, {
+await client.create(attachment, {
   title: "Field Survey Report",
   contentType: "report",
   subjects: [
@@ -772,9 +774,9 @@ time, so match a profile subject by its `uri`, not its `cid`.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { org } from "@hypercerts-org/lexicon";
+import * as attachment from "@hypercerts-org/lexicon/org/hypercerts/context/attachment";
 
-await client.create(org.hypercerts.context.attachment, {
+await client.create(attachment, {
   title: "Primeras lluvias en el vivero",
   contentType: "update",
   // the author's own profile: an update about the author
@@ -849,11 +851,11 @@ Compute the spec-defined CID over the record-to-be-signed, then ECDSA-sign it wi
 import * as dagCbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import { sha256 } from "multiformats/hashes/sha2";
-import { org } from "@hypercerts-org/lexicon";
+import * as activity from "@hypercerts-org/lexicon/org/hypercerts/claim/activity";
 
 // 1. The record we want to sign (without the signatures field).
 const recordToSign = {
-  $type: org.hypercerts.claim.activity.$type,
+  $type: activity.$type,
   title: "Verified Reforestation Project",
   shortDescription: "Planted 1,000 trees in partnership with local community",
   createdAt: "2026-05-21T12:00:00.000Z",
@@ -1005,10 +1007,10 @@ const verified = await verifySignature(
 For remote attestations, create a proof record in the attestor's repository. Its `cid` is the CID of the attested record with `$sig` set to the proof record itself without `cid`, plus the DID of the repository that holds the attested record. Every other field of the proof is therefore signed, so set them all before computing the CID:
 
 ```typescript
-import { app } from "@hypercerts-org/lexicon";
+import * as signatureProof from "@hypercerts-org/lexicon/app/certified/signature/proof";
 
 const proofWithoutCid = {
-  $type: app.certified.signature.proof.$type,
+  $type: signatureProof.$type,
   note: "Verified by platform quality assurance process",
   createdAt: new Date().toISOString(),
 };
@@ -1062,9 +1064,9 @@ same logic they already use for Bluesky follows.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { app } from "@hypercerts-org/lexicon";
+import * as follow from "@hypercerts-org/lexicon/app/certified/graph/follow";
 
-await client.create(app.certified.graph.follow, {
+await client.create(follow, {
   // DID of the account being followed (any valid DID — did:plc, did:web, etc.)
   subject: "did:plc:ewvi7nxzyoun6zhxrhs64oiz",
   createdAt: currentDatetimeString(),
@@ -1094,9 +1096,9 @@ can be added in the future without a breaking change.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { app } from "@hypercerts-org/lexicon";
+import * as entityFollow from "@hypercerts-org/lexicon/app/certified/graph/entityFollow";
 
-await client.create(app.certified.graph.entityFollow, {
+await client.create(entityFollow, {
   // subject is a union — use $type to specify the variant
   subject: {
     $type: "app.certified.defs#recordSubject",
@@ -1128,9 +1130,10 @@ reposts should group by `subject.uri`.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { app } from "@hypercerts-org/lexicon";
+import * as like from "@hypercerts-org/lexicon/app/certified/feed/like";
+import * as repost from "@hypercerts-org/lexicon/app/certified/feed/repost";
 
-await client.create(app.certified.feed.repost, {
+await client.create(repost, {
   subject: {
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
     cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
@@ -1138,7 +1141,7 @@ await client.create(app.certified.feed.repost, {
   createdAt: currentDatetimeString(),
 });
 
-await client.create(app.certified.feed.like, {
+await client.create(like, {
   subject: {
     uri: "at://did:plc:alice/org.hypercerts.claim.activity/3k2abc",
     cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
@@ -1170,9 +1173,9 @@ to allow future signature methods (e.g. ERC-1271, ERC-6492).
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
-import { app } from "@hypercerts-org/lexicon";
+import * as evm from "@hypercerts-org/lexicon/app/certified/link/evm";
 
-await client.create(app.certified.link.evm, {
+await client.create(evm, {
   address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
   proof: {
     $type: "app.certified.link.evm#eip712Proof",
