@@ -225,7 +225,7 @@ jobs:
           fi
 
       - name: Publish npm package, tags, and GitHub Release
-        uses: changesets/action/publish@8488615a623b1b9c987934bb89eae8af6a946ac1 # v2.1.1
+        uses: changesets/action/publish@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
         with:
           github-token: ${{ steps.generate-token.outputs.token }}
           create-github-releases: true
