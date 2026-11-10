@@ -1211,4 +1211,6 @@ await client.create(evm, {
 
 ## License
 
-MIT
+Licensed under either [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option.
+
+Lexicon schemas copied from other publishers (`app.bsky` and `com.atproto`, from Bluesky, and `pub.leaflet`) keep their publishers' licenses.
