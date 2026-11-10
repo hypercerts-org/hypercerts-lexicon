@@ -1213,4 +1213,7 @@ await client.create(evm, {
 
 Licensed under either [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option.
 
-Lexicon schemas copied from other publishers (`app.bsky` and `com.atproto`, from Bluesky, and `pub.leaflet`) keep their publishers' licenses.
+Lexicon schemas copied from other projects keep their upstream licenses:
+
+- `app.bsky` and `com.atproto` come from Bluesky's [atproto](https://github.com/bluesky-social/atproto): MIT OR Apache-2.0, Copyright (c) 2022-2026 Bluesky Social PBC, and Contributors.
+- `pub.leaflet` comes from [Leaflet](https://github.com/hyperlink-academy/leaflet): MIT, Copyright (c) 2025 Learning Futures Inc.
