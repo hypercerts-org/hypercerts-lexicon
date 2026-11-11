@@ -423,28 +423,6 @@ See `ERD.puml` for the entity relationship diagram. Key relationships:
 - Evidence and measurements support claims
 - Evaluations provide assessments of claims
 
-<!-- BEGIN BEADS INTEGRATION -->
-
-## Issue Tracking (historical: bd / beads)
-
-**The `.beads/` directory and its bd (beads) database are a historical
-artifact.** They date from the repository's initial buildout, when bd
-was used for some issue tracking. That workflow is no longer in use.
-
-**Do not use bd / beads for task tracking in this repository.** Any
-`bd`-based guidance you may have picked up elsewhere does not apply
-here — the database is stale and may not even open. Use the **GitHub
-issue tracker** instead. If you need lightweight, in-session task
-tracking, use your own agent task tooling; do not resurrect bd.
-
-The `.beads/` files (and any bd git hooks under `.beads/hooks/`) are
-retained only for historical reference and are not maintained. The
-scripts under `.beads/hooks/` are inert: `pnpm install` runs
-`lefthook install`, which installs the hooks defined in `lefthook.yml`
-into `.git/hooks/`, so git never executes anything under `.beads/hooks/`.
-
-<!-- END BEADS INTEGRATION -->
-
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.

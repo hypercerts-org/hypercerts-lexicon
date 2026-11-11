@@ -23,10 +23,10 @@ Skip changesets for purely internal changes that don't reach any users
 
 **Do not skip changesets for changes to files that are published in the
 npm package.** Check the `files` field in `package.json` to see what
-ships. Currently that includes `dist/`, `lexicons/`, `SCHEMAS.md`, and
-`CHANGELOG.md`. Additionally, npm automatically includes `README.md`
-regardless of the `files` field. Changes to any of these files warrant
-a changeset.
+ships. Currently that includes `dist/`, `lexicons/`, `SCHEMAS.md`,
+`CHANGELOG.md`, `LICENSE-MIT`, and `LICENSE-APACHE`. Additionally, npm
+automatically includes `README.md` regardless of the `files` field.
+Changes to any of these files warrant a changeset.
 
 **Also do not skip changesets for changes to
 `.agents/skills/building-with-hypercerts-lexicons/SKILL.md`.** Although

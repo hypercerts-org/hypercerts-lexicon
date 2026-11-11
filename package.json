@@ -62,7 +62,9 @@
     "dist",
     "lexicons",
     "SCHEMAS.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "LICENSE-MIT",
+    "LICENSE-APACHE"
   ],
   "keywords": [
     "hypercerts",
@@ -71,7 +73,7 @@
     "typescript"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "MIT OR Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hypercerts-org/hypercerts-lexicon.git"

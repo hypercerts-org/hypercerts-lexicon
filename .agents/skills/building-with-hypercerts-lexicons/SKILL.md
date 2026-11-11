@@ -1,6 +1,7 @@
 ---
 name: building-with-hypercerts-lexicons
 description: Guide for building downstream applications on top of the @hypercerts-org/lexicon package. Use when creating apps that read/write Hypercerts records on the AT Protocol network.
+license: MIT OR Apache-2.0
 ---
 
 # Building with Hypercerts Lexicons

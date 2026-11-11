@@ -11,7 +11,6 @@
       "!**/dist",
       "!pnpm-lock.yaml",
       "!.changeset/*.md",
-      "!.beads",
       "!CHANGELOG.md",
       "!**/*.svg",
       "!.agents/skills",

@@ -113,7 +113,9 @@ from `prerelease/*` branches. See
 
 ## License
 
-Contributions are licensed under the MIT License.
+Contributions are licensed under either [MIT](LICENSE-MIT) or
+[Apache-2.0](LICENSE-APACHE), at the user's option, like the rest of
+the project.
 
 ---
 
