@@ -1,5 +1,17 @@
 # @hypercerts-org/lexicon
 
+## 2.1.0
+
+### Minor Changes
+
+- [#279](https://github.com/hypercerts-org/hypercerts-lexicon/pull/279) [`6a46017`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/6a46017848f808a18d96899e062e03bc4911fc22) Thanks [@holkexyz](https://github.com/holkexyz)! - Attachment: add `comment` to the `contentType` known values, for a comment whose `subjects` point at the record it comments on, so apps that write comments as attachments use the same value. No schema shape changes: every existing record remains valid.
+
+### Patch Changes
+
+- [#281](https://github.com/hypercerts-org/hypercerts-lexicon/pull/281) [`e230723`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/e230723e0bca56ea0e44c33219d2f1b114744029) Thanks [@holkexyz](https://github.com/holkexyz)! - License: the package is now licensed under either MIT or Apache-2.0, at your option. It was MIT only; earlier versions stay MIT.
+
+- [#274](https://github.com/hypercerts-org/hypercerts-lexicon/pull/274) [`1af908d`](https://github.com/hypercerts-org/hypercerts-lexicon/commit/1af908db11492d51d71b92a21f461c8f6bc1c225) Thanks [@Kzoeps](https://github.com/Kzoeps)! - Docs: recommend deep imports by NSID path over root imports in libraries and bundled apps, for smaller bundles, and use them in the README and skill examples.
+
 ## 2.0.1
 
 ### Patch Changes
