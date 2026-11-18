@@ -273,6 +273,39 @@ describe("org.hypercerts.funding.receipt", () => {
     expect(result.success).toBe(false);
   });
 
+  it("should accept 'matchingReceipt' as a strongRef to another receipt", () => {
+    const result = FundingReceipt.validateMain({
+      $type: ids.OrgHypercertsFundingReceipt,
+      ...validBase,
+      matchingReceipt: {
+        $type: "com.atproto.repo.strongRef",
+        uri: "at://did:plc:platform/org.hypercerts.funding.receipt/3kabc123",
+        cid: "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae",
+      },
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.value.matchingReceipt?.uri).toBe(
+        "at://did:plc:platform/org.hypercerts.funding.receipt/3kabc123",
+      );
+    }
+  });
+
+  it("should reject a 'matchingReceipt' without a cid", () => {
+    const result = validate(
+      {
+        ...validBase,
+        matchingReceipt: {
+          uri: "at://did:plc:platform/org.hypercerts.funding.receipt/3kabc123",
+        },
+      },
+      ids.OrgHypercertsFundingReceipt,
+      "main",
+      false,
+    );
+    expect(result.success).toBe(false);
+  });
+
   it("should require $type when requiredType is true", () => {
     const result = validate(validBase, ids.OrgHypercertsFundingReceipt, "main", true);
     expect(result.success).toBe(false);

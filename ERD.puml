@@ -392,6 +392,7 @@ dataclass fundingReceipt {
     from?
     via?
     for?
+    matchingReceipt?
     type?
     amount?
     currency?
@@ -517,6 +518,7 @@ fundingReceipt::from --> funder
 fundingReceipt::to --> contributorEntity
 
 fundingReceipt::for --> activity : funds
+fundingReceipt::matchingReceipt --> fundingReceipt : confirms
 
 badgeAward::badge --> badgeDefinition
 badgeResponse::badgeAward --> badgeAward

@@ -239,7 +239,7 @@ description (e.g. "Manage your Hypercerts data"). Notes:
 
 | Lexicon     | NSID                             | Purpose                                                                                                                                                                                                                                                                                                                    |
 | ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its own currency; one payment rail and network for the receipt; optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment |
+| **Receipt** | `org.hypercerts.funding.receipt` | Payment record: gross amount paid and/or net amount received, each with its own currency; one payment rail and network for the receipt; optional transaction ID and type (donation, match, grant). Sender is optional for anonymous funders; optional via names the intermediary that facilitated or processed the payment; optional matchingReceipt links it to another party's receipt for the same payment |
 
 ### Hyperboards — visual display layer
 
@@ -688,6 +688,37 @@ await client.create(receipt, {
     cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
   },
   occurredAt: currentDatetimeString(),
+  createdAt: currentDatetimeString(),
+});
+```
+
+### Confirming Another Party's Receipt
+
+Any party may record a payment. When the sender, the recipient or a
+platform has already recorded it, another party confirms it by writing
+their own receipt with the same `from`, `to`, `amount`, `currency` and
+`for`, plus a `matchingReceipt` strong reference to the receipt they
+confirm. Readers can then count the linked receipts as one payment that
+each of their authors recorded.
+
+```typescript
+import { currentDatetimeString } from "@atproto/lex";
+import * as receipt from "@hypercerts-org/lexicon/org/hypercerts/funding/receipt";
+
+// The recipient confirms a receipt the platform recorded.
+await client.create(receipt, {
+  from: { $type: "app.certified.defs#did", did: "did:plc:funder" },
+  to: { $type: "app.certified.defs#did", did: "did:plc:recipient" },
+  amount: "1000.00",
+  currency: "USDC",
+  for: {
+    uri: "at://did:plc:alice/org.hypercerts.claim.activity/abc123",
+    cid: "bafyreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+  },
+  matchingReceipt: {
+    uri: "at://did:plc:platform/org.hypercerts.funding.receipt/3kabc123",
+    cid: "bafyreie5737gdxlw5i64vngml6xvqeatqy3a4erphoqtso54z2eooh4zae",
+  },
   createdAt: currentDatetimeString(),
 });
 ```
