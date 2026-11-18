@@ -96,7 +96,7 @@
           "matchingReceipt": {
             "type": "ref",
             "ref": "com.atproto.repo.strongRef",
-            "description": "Optional strong reference to another receipt for the same payment, recorded by a different party: for example, the recipient confirming a receipt that the sender or a platform recorded. The record referenced must conform with the lexicon org.hypercerts.funding.receipt. Give it the same from, to, amount, currency and for as that receipt, so readers can count linked receipts as one payment that each of their authors recorded. The CID pins the version that was confirmed: if that receipt is later updated in place, this still points at the earlier version."
+            "description": "Optional strong reference to another receipt for the same payment, recorded by a different party: for example, the recipient confirming a receipt that the sender or a platform recorded. The record referenced must conform with the lexicon org.hypercerts.funding.receipt. Readers can count linked receipts as one payment that each of their authors recorded. The CID pins the version that was confirmed: if that receipt is later updated in place, this still points at the earlier version."
           },
           "notes": {
             "type": "string",

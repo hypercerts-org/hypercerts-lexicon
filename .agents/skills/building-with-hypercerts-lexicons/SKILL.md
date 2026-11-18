@@ -696,10 +696,9 @@ await client.create(receipt, {
 
 Any party may record a payment. When the sender, the recipient or a
 platform has already recorded it, another party confirms it by writing
-their own receipt with the same `from`, `to`, `amount`, `currency` and
-`for`, plus a `matchingReceipt` strong reference to the receipt they
-confirm. Readers can then count the linked receipts as one payment that
-each of their authors recorded.
+their own receipt for the payment with a `matchingReceipt` strong
+reference to the receipt they confirm. Readers can then count the linked
+receipts as one payment that each of their authors recorded.
 
 ```typescript
 import { currentDatetimeString } from "@atproto/lex";
