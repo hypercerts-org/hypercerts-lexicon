@@ -326,9 +326,9 @@ const result = activity.$safeParse({ $type: activity.$type, ...formData });
 
 ### Funding (`org.hypercerts.funding.*`)
 
-| Lexicon     | NSID                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ----------- | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient: the gross `amount` the sender paid and/or the `netAmount` received, each with its own currency, plus one payment rail and network for the receipt and an optional transaction ID. The sender (`from`) is optional to support anonymous funders, an optional `type` says whether the payment is a donation, a match or a grant, and an optional `via` names the intermediary that facilitated or processed the payment. |
+| Lexicon     | NSID                             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Receipt** | `org.hypercerts.funding.receipt` | Records a payment to a recipient: the gross `amount` the sender paid and/or the `netAmount` received, each with its own currency, plus one payment rail and network for the receipt and an optional transaction ID. The sender (`from`) is optional to support anonymous funders, an optional `type` says whether the payment is a donation, a match or a grant, an optional `via` names the intermediary that facilitated or processed the payment, and an optional `matchingReceipt` links it to another party's receipt for the same payment, so readers can count both as one payment. |
 
 ### Hyperboards (`org.hyperboards.*`)
 
@@ -416,6 +416,7 @@ This matters when you might otherwise be tempted to embed a full record
 by value to "snapshot" it. A strongRef + CID already provides the
 snapshot semantic, and it's what the lexicon uses across
 `badge.award.badge`, `badge.response.badgeAward`, `funding.receipt.for`,
+`funding.receipt.matchingReceipt`,
 and similar fields where the historical content needs to stay stable.
 
 ### `langs` declares what language a record's text was written in
