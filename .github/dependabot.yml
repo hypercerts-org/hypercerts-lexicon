@@ -1,7 +1,36 @@
+# Weekly version updates. Minor and patch bumps are grouped into one PR per
+# ecosystem; major bumps get their own PRs. New releases wait 7 days before
+# Dependabot proposes them. Security updates are configured separately, in the
+# organization's code security settings.
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: npm
+    directories:
+      - /
     schedule:
-      interval: "weekly"
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      npm-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directories:
+      - /
+    schedule:
+      interval: weekly
     open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+    groups:
+      actions-minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
